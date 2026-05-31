@@ -27,9 +27,20 @@
   },
   "files": [
     "schema/",
+    "tools/",
     "LICENSE",
     "README.md"
   ],
+  "scripts": {
+    "validate": "node tools/validator/src/validate-realm.mjs"
+  },
+  "bin": {
+    "realm-validate": "tools/validator/src/validate-realm.mjs"
+  },
+  "dependencies": {
+    "ajv": "^8.17.0",
+    "yaml": "^2.7.0"
+  },
   "engines": {
     "node": ">=20.0.0"
   }
