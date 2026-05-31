@@ -1,0 +1,1177 @@
+---
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "metamodel.schema.yaml"
+title: "Realm Metamodel"
+description: >
+  Cross-cutting type definitions, typed reference patterns, spatial primitives,
+  scheduling patterns, and external data contract shapes for the Realm schema
+  suite. All schema files in this suite import from this file. This is the
+  entry point for machine traversal.
+
+x-gdsm:
+  version: "2.0.0"
+  methodology: "GDSM v1.0"
+  suite_name: "Realm"
+  suite_description: >
+    A private real estate management model covering physical topology,
+    infrastructure systems, vegetation and biomass cycles, maintenance
+    operations, and surrounding context. Descriptive and planning state
+    lives in YAML; operational telemetry and cost history are delegated
+    to a companion external store (SQLite-format).
+  design_rationale: >
+    Designed using GDSM v1.0 greenfield mode. Five planes separate
+    physical form (topology), built systems (infrastructure), living
+    elements (nature), management workflows (operations), and external
+    environment (context). Spatial primitives and scheduling patterns
+    are cross-cutting concerns shared via metamodel $defs. External data
+    contracts define the shape of records stored in the companion store.
+    Informed by RESO Data Dictionary, IFC spatial hierarchy, Brick Schema
+    relationships, CMMS maintenance patterns, iCalendar RRULE (RFC 5545),
+    Trefle botanical API, and ISO 55000 asset lifecycle.
+  planes:
+    - id: topology
+      description: "Physical form: parcels, buildings, wings, rooms, outdoor zones, boundaries, spatial layout, equipment, construction geometry"
+      schemas:
+        - "topology/estate.schema.yaml"
+        - "topology/spatial.schema.yaml"
+        - "topology/boundary.schema.yaml"
+        - "topology/equipment.schema.yaml"
+        - "topology/tools.schema.yaml"
+        - "topology/construction.schema.yaml"
+    - id: infrastructure
+      description: "Built systems: energy, heating, water, electrical, network topology, IoT"
+      schemas:
+        - "infrastructure/systems.schema.yaml"
+        - "infrastructure/network.schema.yaml"
+    - id: nature
+      description: "Living elements: specimen plants, categorical plantings, biomass circular flows, species care profiles, soil profiles"
+      schemas:
+        - "nature/vegetation.schema.yaml"
+        - "nature/biomass.schema.yaml"
+        - "nature/care.schema.yaml"
+        - "nature/soil.schema.yaml"
+        - "nature/recommendations.schema.yaml"
+    - id: operations
+      description: "Management: maintenance tasks, schedules, warranties, regulatory compliance, costs"
+      schemas:
+        - "operations/maintenance.schema.yaml"
+        - "operations/compliance.schema.yaml"
+    - id: context
+      description: "Surroundings: neighbor properties, shared concerns, environmental factors, persons"
+      schemas:
+        - "context/surroundings.schema.yaml"
+        - "context/persons.schema.yaml"
+  drawable_entities:
+    spatial_plan:
+      - LP    # Land Parcel
+      - BLD   # Building
+      - WNG   # Wing (structural section of building, v2.0)
+      - OZ    # Outdoor Zone
+      - BS    # Boundary Segment
+      - SPM   # Specimen
+      - PTG   # Planting
+      - NP    # Neighbor Property
+      - EQP   # Equipment (gates on boundaries)
+    floor_plan:
+      - FLR   # Floor
+      - RM    # Room
+      - FRN   # Furniture
+      - EQP   # Equipment
+    construction:
+      - WSG   # Wall Segment (v2.0)
+      - SLB   # Floor Slab (v2.0)
+      - RFP   # Roof Plane (v2.0)
+    infrastructure_diagram:
+      - SYS   # System
+      - CMP   # Component
+      - NN    # Network Node
+      - IOT   # IoT Device
+    non_drawable:
+      - MT    # Maintenance Task
+      - NR    # Notification Rule
+      - CC    # Cost Category
+      - WRT   # Warranty
+      - REG   # Regulatory Requirement
+      - MIG   # Migration
+      - RSK   # Risk
+      - ISS   # Issue
+      - SCP   # Species Care Profile
+      - SOIL  # Soil Profile
+      - NL    # Network Link
+      - BMF   # Biomass Flow
+      - REC   # Planting Recommendation
+      - PRS   # Person
+      - SC    # Shared Concern
+      - EF    # Environmental Factor
+      - TL    # Tool
+      - UC    # Utility Connection
+      - EVT   # Event (v2.0)
+
+  schema_graph:
+    LP:
+      schema: "topology/estate.schema.yaml"
+      entity: "parcel"
+      description: "Land parcel with cadastral identity and area"
+    BLD:
+      schema: "topology/estate.schema.yaml"
+      entity: "building"
+      description: "Building structure (house, garage, shed, greenhouse)"
+    FLR:
+      schema: "topology/estate.schema.yaml"
+      entity: "floor"
+      description: "Floor or storey within a building"
+    RM:
+      schema: "topology/estate.schema.yaml"
+      entity: "room"
+      description: "Room or indoor space with designated purpose"
+    OZ:
+      schema: "topology/estate.schema.yaml"
+      entity: "outdoor_zone"
+      description: "Outdoor area (garden, forest, driveway, orchard)"
+    BS:
+      schema: "topology/boundary.schema.yaml"
+      entity: "boundary_segment"
+      description: "Property boundary segment (fence, wall, hedge, natural)"
+    SYS:
+      schema: "infrastructure/systems.schema.yaml"
+      entity: "system"
+      description: "Infrastructure system (heating, solar, water, electrical)"
+    CMP:
+      schema: "infrastructure/systems.schema.yaml"
+      entity: "component"
+      description: "Physical component within an infrastructure system"
+    UC:
+      schema: "infrastructure/systems.schema.yaml"
+      entity: "utility_connection"
+      description: "External utility grid connection (electricity, gas, water, internet)"
+    NN:
+      schema: "infrastructure/network.schema.yaml"
+      entity: "network_node"
+      description: "Network device (router, switch, AP, mesh node)"
+    IOT:
+      schema: "infrastructure/network.schema.yaml"
+      entity: "iot_device"
+      description: "IoT or smart-home sensor, actuator, or controller"
+    NL:
+      schema: "infrastructure/network.schema.yaml"
+      entity: "network_link"
+      description: "Physical or wireless link between network nodes"
+    SPM:
+      schema: "nature/vegetation.schema.yaml"
+      entity: "specimen"
+      description: "Individual plant or tree with identity and position"
+    PTG:
+      schema: "nature/vegetation.schema.yaml"
+      entity: "planting"
+      description: "Categorical planting group (hedge row, flower bed, lawn)"
+    BMF:
+      schema: "nature/biomass.schema.yaml"
+      entity: "biomass_flow"
+      description: "Biomass circular flow from source through process to use"
+    SCP:
+      schema: "nature/care.schema.yaml"
+      entity: "species_care_profile"
+      description: "Species-level care protocol with annual calendar, supplies, threats (v1.6)"
+    SOIL:
+      schema: "nature/soil.schema.yaml"
+      entity: "soil_profile"
+      description: "Soil characteristics and amendment recommendations for an area (v1.6)"
+    MT:
+      schema: "operations/maintenance.schema.yaml"
+      entity: "maintenance_task"
+      description: "Recurring maintenance task with schedule and target"
+    NR:
+      schema: "operations/maintenance.schema.yaml"
+      entity: "notification_rule"
+      description: "Alert trigger with lead time and delivery channel"
+    CC:
+      schema: "operations/maintenance.schema.yaml"
+      entity: "cost_category"
+      description: "Cost classification for budget tracking"
+    WRT:
+      schema: "operations/compliance.schema.yaml"
+      entity: "warranty"
+      description: "Manufacturer warranty with service conditions"
+    REG:
+      schema: "operations/compliance.schema.yaml"
+      entity: "regulatory_requirement"
+      description: "Legally mandated inspection or certification"
+    NP:
+      schema: "context/surroundings.schema.yaml"
+      entity: "neighbor_property"
+      description: "Adjacent property with descriptive attributes"
+    SC:
+      schema: "context/surroundings.schema.yaml"
+      entity: "shared_concern"
+      description: "Shared issue between this property and a neighbor"
+    FRN:
+      schema: "topology/equipment.schema.yaml"
+      entity: "furniture"
+      description: "Furniture piece placed in a room (v1.1)"
+    EQP:
+      schema: "topology/equipment.schema.yaml"
+      entity: "equipment"
+      description: "Appliance or equipment installed in a room (v1.1)"
+    TL:
+      schema: "topology/tools.schema.yaml"
+      entity: "tool"
+      description: "Portable tool stored on property (v1.4)"
+    EF:
+      schema: "context/surroundings.schema.yaml"
+      entity: "environmental_factor"
+      description: "Environmental condition affecting the property"
+    PRS:
+      schema: "context/persons.schema.yaml"
+      entity: "person"
+      description: "Person or organization involved with the property (v1.4)"
+    RSK:
+      schema: "risks.schema.yaml"
+      entity: "risk"
+      description: "Identified risk with mitigation plan (cross-cutting)"
+    ISS:
+      schema: "risks.schema.yaml"
+      entity: "issue"
+      description: "Identified current problem with measures (cross-cutting)"
+    REC:
+      schema: "nature/recommendations.schema.yaml"
+      entity: "planting_recommendation"
+      description: "Analytically-derived planting recommendation with screening/safety analysis (v1.7)"
+    WNG:
+      schema: "topology/estate.schema.yaml"
+      entity: "wing"
+      description: "Structural wing of a building with own footprint and roof geometry (v2.0)"
+    WSG:
+      schema: "topology/construction.schema.yaml"
+      entity: "wall_segment"
+      description: "Construction-layer wall segment with 3D coordinates and space adjacency (v2.0)"
+    SLB:
+      schema: "topology/construction.schema.yaml"
+      entity: "floor_slab"
+      description: "Construction-layer floor/ceiling slab with elevation (v2.0)"
+    RFP:
+      schema: "topology/construction.schema.yaml"
+      entity: "roof_plane"
+      description: "Construction-layer roof plane with pitch and orientation (v2.0)"
+    MIG:
+      schema: "migration.schema.yaml"
+      entity: "migration"
+      description: "AS-IS to TO-BE property change with dependency ordering (cross-cutting)"
+    EVT:
+      schema: "events.schema.yaml"
+      entity: "event"
+      description: "Fact or observation log entry with timestamp and affected entities (v2.0)"
+  tasks:
+    - id: T1
+      name: "Maintenance Calendar Generation"
+      type: generative
+      mfs_target: 90
+    - id: T2
+      name: "Property Inventory Report"
+      type: generative
+      mfs_target: 85
+    - id: T3
+      name: "Garden Planning Advisory"
+      type: analytical
+      mfs_target: 80
+    - id: T4
+      name: "Boundary & Privacy Assessment"
+      type: analytical
+      mfs_target: 85
+    - id: T5
+      name: "2D Spatial Layout Visualization"
+      type: visualization
+      mfs_target: 80
+    - id: T6
+      name: "Infrastructure Topology Map"
+      type: visualization
+      mfs_target: 75
+    - id: T7
+      name: "Biomass Circular Flow Diagram"
+      type: visualization
+      mfs_target: 75
+    - id: T8
+      name: "Migration Planning Report"
+      type: governance
+      mfs_target: 80
+    - id: T9
+      name: "Cost Overview Dashboard"
+      type: visualization
+      mfs_target: 70
+    - id: T10
+      name: "Seasonal Garden Care Calendar"
+      type: generative
+      mfs_target: 85
+    - id: T11
+      name: "Shopping List Generator"
+      type: generative
+      mfs_target: 75
+
+type: object
+
+$defs:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Versioning
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  semver:
+    type: string
+    title: "Semantic Version"
+    description: "Semantic version string (MAJOR.MINOR.PATCH)."
+    pattern: "^\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9.]+)?(\\+[a-zA-Z0-9.]+)?$"
+    examples: ["1.0.0", "0.3.1-beta"]
+
+  schema_version:
+    type: string
+    title: "Schema Version"
+    description: "Version of the Realm schema this model conforms to."
+    enum: ["2.0.0"]
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Common
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  tags:
+    type: array
+    title: "Tags"
+    description: "Arbitrary classification tags for filtering and grouping."
+    items:
+      type: string
+      minLength: 1
+    uniqueItems: true
+    examples: [["heating", "warranty", "urgent"]]
+
+  iso_date:
+    type: string
+    format: date
+    title: "ISO 8601 Date"
+    description: "Date in YYYY-MM-DD format."
+    examples: ["2026-03-08"]
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Spatial Primitives
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  position:
+    type: object
+    title: "2D Position"
+    description: >
+      Property-relative position in the coordinate system's unit (default meters).
+      Origin and north direction defined by the realm's coordinate_system.
+      Answers CQ21. Used by T5 for 2D spatial layout rendering.
+    required: [x, y]
+    additionalProperties: false
+    properties:
+      x:
+        type: number
+        title: "X Coordinate"
+        description: "Horizontal position from origin (east-positive when north is +Y)."
+        examples: [12.5]
+      y:
+        type: number
+        title: "Y Coordinate"
+        description: "Vertical position from origin (north-positive by default)."
+        examples: [30.0]
+
+  polygon_footprint:
+    type: object
+    title: "Polygon Footprint"
+    description: >
+      Closed polygon defined by vertices relative to the element's position
+      (centroid). Vertices are in local coordinates before rotation. The
+      renderer rotates by the element's rotation_degrees then translates
+      by position. Used by T5.
+    required: [shape, vertices]
+    additionalProperties: false
+    properties:
+      shape:
+        type: string
+        const: "polygon"
+      vertices:
+        type: array
+        title: "Polygon Vertices"
+        description: "Ordered vertices relative to centroid. First and last are implicitly connected."
+        minItems: 3
+        items:
+          $ref: "#/$defs/position"
+        examples:
+          - [{x: -5, y: -4}, {x: 5, y: -4}, {x: 5, y: 4}, {x: -5, y: 4}]
+
+  circle_footprint:
+    type: object
+    title: "Circle Footprint"
+    description: >
+      Circular shape centered on the element's position. Used for tree
+      canopies (CQ09) and round features. Used by T5.
+    required: [shape, radius]
+    additionalProperties: false
+    properties:
+      shape:
+        type: string
+        const: "circle"
+      radius:
+        type: number
+        title: "Radius"
+        description: "Radius in coordinate system units (default meters) from center."
+        exclusiveMinimum: 0
+        examples: [3.5]
+
+  footprint:
+    title: "Footprint"
+    description: "Ground-projection shape of an element — polygon or circle."
+    anyOf:
+      - $ref: "#/$defs/polygon_footprint"
+      - $ref: "#/$defs/circle_footprint"
+
+  # ── 3D Spatial Primitives (v2.0) ──────────────────────────────────────────
+  # Convention: polygon vertices are counter-clockwise (CCW) when viewed from
+  # above, with +Y pointing north in model space. This aligns with GeoJSON,
+  # Three.js, and most geometry libraries. Renderers compute outward normals
+  # from vertex winding order.
+
+  position3d:
+    type: object
+    title: "3D Position"
+    description: "Property-relative position with elevation above vertical datum."
+    required: [x, y, z]
+    additionalProperties: false
+    properties:
+      x:
+        type: number
+        title: "X Coordinate"
+        description: "Horizontal position from origin (east-positive when north is +Y)."
+      y:
+        type: number
+        title: "Y Coordinate"
+        description: "Vertical position from origin (north-positive by default)."
+      z:
+        type: number
+        title: "Z Coordinate"
+        description: "Height above vertical datum (meters)."
+
+  vertex3d:
+    type: object
+    title: "3D Vertex"
+    description: >
+      3D vertex for use in polygon and polyline contexts. Identical shape to
+      position3d — use position3d for point locations, vertex3d for polygon
+      and polyline vertices.
+    required: [x, y, z]
+    additionalProperties: false
+    properties:
+      x: { type: number }
+      y: { type: number }
+      z: { type: number }
+
+  polyline3d:
+    type: object
+    title: "3D Polyline"
+    description: "Ordered sequence of 3D vertices forming an open path."
+    required: [vertices]
+    additionalProperties: false
+    properties:
+      vertices:
+        type: array
+        minItems: 2
+        items:
+          $ref: "#/$defs/vertex3d"
+
+  polygon3d:
+    type: object
+    title: "3D Polygon"
+    description: >
+      Closed 3D polygon defined by ordered vertices. First and last vertices
+      are implicitly connected. Vertices must be CCW when viewed from the
+      outward-facing side (normal follows right-hand rule).
+    required: [vertices]
+    additionalProperties: false
+    properties:
+      vertices:
+        type: array
+        minItems: 3
+        items:
+          $ref: "#/$defs/vertex3d"
+
+  coordinate_system:
+    type: object
+    title: "Coordinate System"
+    description: >
+      Property-relative 2D coordinate system. Defines where (0,0) is,
+      which direction is north, and the measurement unit. All positions
+      in the model are relative to this system. Answers CQ21. Used by T5.
+    required: [unit]
+    additionalProperties: false
+    properties:
+      origin_description:
+        type: string
+        title: "Origin Description"
+        description: "Human-readable description of the (0,0) point on the property."
+        examples: ["South-west corner of main parcel LP001"]
+      north_angle_degrees:
+        type: number
+        title: "North Angle"
+        description: >
+          Angle in degrees from the +Y axis to true north, measured clockwise.
+          Default 0 means +Y points north. Set to 90 if +X points north.
+        default: 0
+        minimum: 0
+        exclusiveMaximum: 360
+        examples: [0, 15.5]
+      unit:
+        type: string
+        title: "Measurement Unit"
+        description: "Unit for all position and dimension values in the model."
+        enum: ["meters", "feet"]
+        default: "meters"
+      description:
+        type: string
+        title: "Description"
+        description: >
+          Additional notes about the coordinate system: design rationale,
+          relationship to true geographic north, alignment choices.
+
+      # ── Vertical Datum (v2.0) ──
+      vertical_datum_type:
+        type: string
+        title: "Vertical Datum"
+        description: >
+          Reference plane for all Z values in the model. local-ground means
+          Z=0 is the ground level at the coordinate origin point. parcel-benchmark
+          uses a surveyed benchmark on a specific parcel. sea-level-relative uses
+          meters above mean sea level.
+        enum: ["local-ground", "parcel-benchmark", "sea-level-relative"]
+        default: "local-ground"
+      vertical_datum_description:
+        type: string
+        title: "Vertical Datum Description"
+        description: "Human-readable clarification of the Z reference plane."
+        examples: ["Ground level at NW corner of LP001 (coordinate origin)"]
+
+  compass_direction:
+    type: string
+    title: "Compass Direction"
+    description: "Cardinal or intercardinal compass direction."
+    enum: ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
+
+  spatial_relation:
+    type: object
+    title: "Spatial Relation"
+    description: >
+      Directional or proximity relationship between two positioned elements.
+      Answers CQ21 (relative positioning) and CQ22 (shade/exposure).
+      Used by T4 (privacy assessment) and T5 (layout rendering).
+    required: [from_ref, to_ref, relation_type]
+    additionalProperties: false
+    properties:
+      from_ref:
+        $ref: "#/$defs/positioned_element_ref"
+        title: "From Element"
+        description: "Source element of the spatial relation."
+      to_ref:
+        $ref: "#/$defs/positioned_element_ref"
+        title: "To Element"
+        description: "Target element of the spatial relation."
+      relation_type:
+        type: string
+        title: "Relation Type"
+        description: "Kind of spatial relationship between elements."
+        enum:
+          - "overlooks"
+          - "shades"
+          - "blocks-wind"
+          - "drains-to"
+          - "faces"
+          - "enables-access"
+          - "shares-boundary"
+          - "blocks-view"
+        examples: ["shades"]
+      distance_m:
+        type: number
+        title: "Distance (meters)"
+        description: "Approximate distance between elements in meters."
+        minimum: 0
+        examples: [4.5]
+      notes:
+        type: string
+        title: "Notes"
+        description: "Free-text clarification of the spatial relationship."
+        examples: ["Neighbor's oak shades vegetable garden after 3pm in summer"]
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Scheduling (iCalendar RRULE — RFC 5545)
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  rrule_schedule:
+    type: object
+    title: "Recurrence Schedule"
+    description: >
+      Recurring schedule using iCalendar RRULE (RFC 5545). Stores the
+      pattern; instances are calculated at runtime. Answers CQ13 (due dates),
+      CQ14 (warranty service intervals), CQ10 (watering). Used by T1, T3, T8.
+    required: [rrule, summary]
+    additionalProperties: false
+    properties:
+      rrule:
+        type: string
+        title: "RRULE String"
+        description: "iCalendar recurrence rule per RFC 5545."
+        pattern: "^RRULE:"
+        examples:
+          - "RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=3MO"
+          - "RRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=SA"
+          - "RRULE:FREQ=DAILY;INTERVAL=3;BYMONTH=4,5,6,7,8,9"
+      summary:
+        type: string
+        title: "Human Summary"
+        description: "Plain-language description of the recurrence."
+        examples:
+          - "Every year in March, third Monday"
+          - "Every 2 weeks on Saturday"
+          - "Every 3 days from April through September"
+      active_months:
+        type: array
+        title: "Active Months"
+        description: "Months (1-12) during which the schedule is active. Omit for year-round."
+        items:
+          type: integer
+          minimum: 1
+          maximum: 12
+        uniqueItems: true
+        examples: [[4, 5, 6, 7, 8, 9]]
+      start_date:
+        $ref: "#/$defs/iso_date"
+        title: "Effective Start"
+        description: "Date from which this schedule takes effect."
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # External Data Contracts
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  cost_record_shape:
+    type: object
+    title: "Cost Record Shape"
+    description: >
+      Contract for cost records stored in the external data store (SQLite).
+      Not stored in the YAML model — defines the record shape for the
+      companion store. Answers CQ16. Used by T9.
+    required: [date, amount, currency, cost_category_ref]
+    additionalProperties: false
+    properties:
+      date:
+        $ref: "#/$defs/iso_date"
+        description: "Date the cost was incurred."
+      amount:
+        type: number
+        description: "Cost amount in the specified currency."
+        examples: [125.50]
+      currency:
+        type: string
+        description: "ISO 4217 currency code."
+        pattern: "^[A-Z]{3}$"
+        examples: ["EUR", "USD", "PLN"]
+      cost_category_ref:
+        $ref: "#/$defs/cost_category_ref"
+        description: "Reference to the cost category this record belongs to."
+      description:
+        type: string
+        description: "What the cost was for."
+        examples: ["Annual boiler service by TechHeat GmbH"]
+      source:
+        type: string
+        description: "Origin document (invoice number, receipt ID)."
+        examples: ["INV-2026-0042"]
+
+  measurement_record_shape:
+    type: object
+    title: "Measurement Record Shape"
+    description: >
+      Contract for telemetry/measurement records in the external data store.
+      Covers energy readings, temperature, humidity, flow meters, etc.
+      Used by T6 (infrastructure map), T9 (cost dashboard).
+    required: [timestamp, value, unit, system_ref]
+    additionalProperties: false
+    properties:
+      timestamp:
+        type: string
+        format: date-time
+        description: "ISO 8601 date-time of the measurement."
+        examples: ["2026-03-08T14:30:00Z"]
+      value:
+        type: number
+        description: "Measured value."
+        examples: [12450.5]
+      unit:
+        type: string
+        description: "Unit of measurement."
+        examples: ["kWh", "°C", "%RH", "m³", "hPa"]
+      system_ref:
+        $ref: "#/$defs/system_ref"
+        description: "System this measurement belongs to."
+      point_name:
+        type: string
+        description: "Named measurement point on the system."
+        examples: ["supply_temperature", "total_consumption", "battery_soc"]
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Notification
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  notification_channel:
+    type: string
+    title: "Notification Channel"
+    description: "Delivery channel for maintenance and compliance notifications. Answers CQ17."
+    enum: ["email", "sms", "push", "calendar", "webhook"]
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Location & Climate
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  location:
+    type: object
+    title: "Property Location"
+    description: >
+      Geographic location and postal address. Latitude/longitude are for
+      climate lookups and sun-path estimation, not for spatial layout
+      (which uses the property-relative coordinate system). Answers CQ01. Used by T2.
+    additionalProperties: false
+    properties:
+      address:
+        type: string
+        title: "Street Address"
+        examples: ["123 Oak Lane"]
+      city:
+        type: string
+        title: "City"
+        examples: ["Springfield"]
+      region:
+        type: string
+        title: "State / Province / Region"
+        examples: ["Bavaria", "Oregon"]
+      country:
+        type: string
+        title: "Country"
+        examples: ["Germany", "United States"]
+      postal_code:
+        type: string
+        title: "Postal Code"
+        examples: ["80331"]
+      latitude:
+        type: number
+        title: "Latitude"
+        description: "WGS84 latitude for climate and sun-path lookups."
+        minimum: -90
+        maximum: 90
+        examples: [48.1351]
+      longitude:
+        type: number
+        title: "Longitude"
+        description: "WGS84 longitude for climate and sun-path lookups."
+        minimum: -180
+        maximum: 180
+        examples: [11.5820]
+
+  climate_profile:
+    type: object
+    title: "Climate Profile"
+    description: >
+      Climate metadata for the property. Drives garden planning (CQ11),
+      plant selection (CQ09, CQ10), and seasonal maintenance scheduling
+      (CQ13). Used by T3 (garden advisory).
+    additionalProperties: false
+    properties:
+      hardiness_zone:
+        type: string
+        title: "USDA Hardiness Zone"
+        description: "Plant hardiness zone. Determines cold-tolerance requirements for plants."
+        pattern: "^\\d{1,2}[ab]$"
+        examples: ["7a", "6b"]
+      koppen_classification:
+        type: string
+        title: "Köppen Climate Classification"
+        description: "Climate type code (e.g., Cfb = oceanic, Dfb = humid continental)."
+        examples: ["Cfb", "Dfb", "Csa"]
+      avg_annual_rainfall_mm:
+        type: number
+        title: "Average Annual Rainfall (mm)"
+        minimum: 0
+        examples: [850]
+      frost_free_days:
+        type: integer
+        title: "Frost-Free Days per Year"
+        minimum: 0
+        examples: [180]
+      first_frost_date:
+        type: string
+        title: "Typical First Frost (MM-DD)"
+        pattern: "^\\d{2}-\\d{2}$"
+        examples: ["10-15"]
+      last_frost_date:
+        type: string
+        title: "Typical Last Frost (MM-DD)"
+        pattern: "^\\d{2}-\\d{2}$"
+        examples: ["04-20"]
+      prevailing_wind_direction:
+        $ref: "#/$defs/compass_direction"
+        title: "Prevailing Wind"
+        description: "Dominant wind direction at this location."
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Entity Reference Types — Topology
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  parcel_ref:
+    type: string
+    title: "Parcel Reference"
+    description: "Typed reference to a Land Parcel entity."
+    pattern: "^([a-z][a-z0-9-]*\\.)?LP\\d{3,}$"
+    examples: ["LP001", "main.LP001"]
+
+  building_ref:
+    type: string
+    title: "Building Reference"
+    description: "Typed reference to a Building entity."
+    pattern: "^([a-z][a-z0-9-]*\\.)?BLD\\d{3,}$"
+    examples: ["BLD001", "east-wing.BLD002"]
+
+  floor_ref:
+    type: string
+    title: "Floor Reference"
+    description: "Typed reference to a Floor entity."
+    pattern: "^([a-z][a-z0-9-]*\\.)?FLR\\d{3,}$"
+    examples: ["FLR001", "main-house.FLR002"]
+
+  room_ref:
+    type: string
+    title: "Room Reference"
+    description: "Typed reference to a Room entity."
+    pattern: "^([a-z][a-z0-9-]*\\.)?RM\\d{3,}$"
+    examples: ["RM001", "main-house.RM012"]
+
+  outdoor_zone_ref:
+    type: string
+    title: "Outdoor Zone Reference"
+    description: "Typed reference to an Outdoor Zone entity."
+    pattern: "^([a-z][a-z0-9-]*\\.)?OZ\\d{3,}$"
+    examples: ["OZ001", "garden.OZ003"]
+
+  boundary_segment_ref:
+    type: string
+    title: "Boundary Segment Reference"
+    description: "Typed reference to a Boundary Segment entity."
+    pattern: "^([a-z][a-z0-9-]*\\.)?BS\\d{3,}$"
+    examples: ["BS001"]
+
+  furniture_ref:
+    type: string
+    title: "Furniture Reference"
+    description: "Typed reference to a Furniture entity (v1.1)."
+    pattern: "^([a-z][a-z0-9-]*\\.)?FRN\\d{3,}$"
+    examples: ["FRN001"]
+
+  equipment_ref:
+    type: string
+    title: "Equipment Reference"
+    description: "Typed reference to an Equipment entity (v1.1)."
+    pattern: "^([a-z][a-z0-9-]*\\.)?EQP\\d{3,}$"
+    examples: ["EQP001"]
+
+  tool_ref:
+    type: string
+    title: "Tool Reference"
+    description: "Typed reference to a portable Tool entity (v1.4)."
+    pattern: "^([a-z][a-z0-9-]*\\.)?TL\\d{3,}$"
+    examples: ["TL001"]
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Entity Reference Types — Construction (v2.0)
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  wing_ref:
+    type: string
+    title: "Wing Reference"
+    description: "Typed reference to a structural wing of a building (v2.0)."
+    pattern: "^([a-z][a-z0-9-]*\\.)?WNG\\d{3,}$"
+    examples: ["WNG001", "main.WNG001"]
+
+  wall_segment_ref:
+    type: string
+    title: "Wall Segment Reference"
+    description: "Typed reference to a wall segment in the construction layer (v2.0)."
+    pattern: "^([a-z][a-z0-9-]*\\.)?WSG\\d{3,}$"
+    examples: ["WSG001"]
+
+  slab_ref:
+    type: string
+    title: "Floor Slab Reference"
+    description: "Typed reference to a floor/ceiling slab in the construction layer (v2.0)."
+    pattern: "^([a-z][a-z0-9-]*\\.)?SLB\\d{3,}$"
+    examples: ["SLB001"]
+
+  roof_plane_ref:
+    type: string
+    title: "Roof Plane Reference"
+    description: "Typed reference to a roof plane in the construction layer (v2.0)."
+    pattern: "^([a-z][a-z0-9-]*\\.)?RFP\\d{3,}$"
+    examples: ["RFP001"]
+
+  event_ref:
+    type: string
+    title: "Event Reference"
+    description: "Typed reference to an Event entity in the event log (v2.0)."
+    pattern: "^([a-z][a-z0-9-]*\\.)?EVT\\d{3,}$"
+    examples: ["EVT001", "EVT042"]
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Entity Reference Types — Infrastructure
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  system_ref:
+    type: string
+    title: "System Reference"
+    description: "Typed reference to an infrastructure System entity."
+    pattern: "^([a-z][a-z0-9-]*\\.)?SYS\\d{3,}$"
+    examples: ["SYS001", "heating.SYS001"]
+
+  component_ref:
+    type: string
+    title: "Component Reference"
+    description: "Typed reference to a Component entity within a system."
+    pattern: "^([a-z][a-z0-9-]*\\.)?CMP\\d{3,}$"
+    examples: ["CMP001", "boiler.CMP003"]
+
+  utility_connection_ref:
+    type: string
+    title: "Utility Connection Reference"
+    description: "Typed reference to a Utility Connection entity."
+    pattern: "^([a-z][a-z0-9-]*\\.)?UC\\d{3,}$"
+    examples: ["UC001"]
+
+  network_node_ref:
+    type: string
+    title: "Network Node Reference"
+    description: "Typed reference to a Network Node entity."
+    pattern: "^([a-z][a-z0-9-]*\\.)?NN\\d{3,}$"
+    examples: ["NN001"]
+
+  iot_device_ref:
+    type: string
+    title: "IoT Device Reference"
+    description: "Typed reference to an IoT Device entity."
+    pattern: "^([a-z][a-z0-9-]*\\.)?IOT\\d{3,}$"
+    examples: ["IOT001"]
+
+  network_link_ref:
+    type: string
+    title: "Network Link Reference"
+    description: "Typed reference to a Network Link entity."
+    pattern: "^([a-z][a-z0-9-]*\\.)?NL\\d{3,}$"
+    examples: ["NL001"]
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Entity Reference Types — Nature
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  specimen_ref:
+    type: string
+    title: "Specimen Reference"
+    description: "Typed reference to a Specimen (individual plant/tree) entity."
+    pattern: "^([a-z][a-z0-9-]*\\.)?SPM\\d{3,}$"
+    examples: ["SPM001"]
+
+  planting_ref:
+    type: string
+    title: "Planting Reference"
+    description: "Typed reference to a Planting (categorical group) entity."
+    pattern: "^([a-z][a-z0-9-]*\\.)?PTG\\d{3,}$"
+    examples: ["PTG001"]
+
+  biomass_flow_ref:
+    type: string
+    title: "Biomass Flow Reference"
+    description: "Typed reference to a Biomass Flow entity."
+    pattern: "^([a-z][a-z0-9-]*\\.)?BMF\\d{3,}$"
+    examples: ["BMF001"]
+
+  care_profile_ref:
+    type: string
+    title: "Care Profile Reference"
+    description: "Typed reference to a Species Care Profile entity (v1.6)."
+    pattern: "^([a-z][a-z0-9-]*\\.)?SCP\\d{3,}$"
+    examples: ["SCP001"]
+
+  soil_profile_ref:
+    type: string
+    title: "Soil Profile Reference"
+    description: "Typed reference to a Soil Profile entity (v1.6)."
+    pattern: "^([a-z][a-z0-9-]*\\.)?SOIL\\d{3,}$"
+    examples: ["SOIL001"]
+
+  planting_recommendation_ref:
+    type: string
+    title: "Planting Recommendation Reference"
+    description: "Typed reference to a Planting Recommendation entity (v1.7)."
+    pattern: "^([a-z][a-z0-9-]*\\.)?REC\\d{3,}$"
+    examples: ["REC001"]
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Entity Reference Types — Operations
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  maintenance_task_ref:
+    type: string
+    title: "Maintenance Task Reference"
+    description: "Typed reference to a Maintenance Task entity."
+    pattern: "^([a-z][a-z0-9-]*\\.)?MT\\d{3,}$"
+    examples: ["MT001"]
+
+  notification_rule_ref:
+    type: string
+    title: "Notification Rule Reference"
+    description: "Typed reference to a Notification Rule entity."
+    pattern: "^([a-z][a-z0-9-]*\\.)?NR\\d{3,}$"
+    examples: ["NR001"]
+
+  cost_category_ref:
+    type: string
+    title: "Cost Category Reference"
+    description: "Typed reference to a Cost Category entity."
+    pattern: "^([a-z][a-z0-9-]*\\.)?CC\\d{3,}$"
+    examples: ["CC001"]
+
+  warranty_ref:
+    type: string
+    title: "Warranty Reference"
+    description: "Typed reference to a Warranty entity."
+    pattern: "^([a-z][a-z0-9-]*\\.)?WRT\\d{3,}$"
+    examples: ["WRT001"]
+
+  regulatory_requirement_ref:
+    type: string
+    title: "Regulatory Requirement Reference"
+    description: "Typed reference to a Regulatory Requirement entity."
+    pattern: "^([a-z][a-z0-9-]*\\.)?REG\\d{3,}$"
+    examples: ["REG001"]
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Entity Reference Types — Context
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  neighbor_property_ref:
+    type: string
+    title: "Neighbor Property Reference"
+    description: "Typed reference to a Neighbor Property entity."
+    pattern: "^([a-z][a-z0-9-]*\\.)?NP\\d{3,}$"
+    examples: ["NP001"]
+
+  shared_concern_ref:
+    type: string
+    title: "Shared Concern Reference"
+    description: "Typed reference to a Shared Concern entity."
+    pattern: "^([a-z][a-z0-9-]*\\.)?SC\\d{3,}$"
+    examples: ["SC001"]
+
+  environmental_factor_ref:
+    type: string
+    title: "Environmental Factor Reference"
+    description: "Typed reference to an Environmental Factor entity."
+    pattern: "^([a-z][a-z0-9-]*\\.)?EF\\d{3,}$"
+    examples: ["EF001"]
+
+  person_ref:
+    type: string
+    title: "Person Reference"
+    description: "Typed reference to a Person or Organization entity (v1.4)."
+    pattern: "^([a-z][a-z0-9-]*\\.)?PRS\\d{3,}$"
+    examples: ["PRS001"]
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Polymorphic Reference Types
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  positioned_element_ref:
+    title: "Positioned Element Reference"
+    description: >
+      Reference to any element that can have a spatial position on the
+      property layout. Used in spatial_relation from/to fields.
+    anyOf:
+      - $ref: "#/$defs/parcel_ref"
+      - $ref: "#/$defs/building_ref"
+      - $ref: "#/$defs/outdoor_zone_ref"
+      - $ref: "#/$defs/boundary_segment_ref"
+      - $ref: "#/$defs/specimen_ref"
+      - $ref: "#/$defs/system_ref"
+      - $ref: "#/$defs/component_ref"
+      - $ref: "#/$defs/network_node_ref"
+      - $ref: "#/$defs/iot_device_ref"
+
+  maintainable_element_ref:
+    title: "Maintainable Element Reference"
+    description: >
+      Reference to any element that can be a maintenance target.
+      Used in maintenance_task.target_ref.
+    anyOf:
+      - $ref: "#/$defs/parcel_ref"
+      - $ref: "#/$defs/system_ref"
+      - $ref: "#/$defs/component_ref"
+      - $ref: "#/$defs/building_ref"
+      - $ref: "#/$defs/room_ref"
+      - $ref: "#/$defs/outdoor_zone_ref"
+      - $ref: "#/$defs/boundary_segment_ref"
+      - $ref: "#/$defs/specimen_ref"
+      - $ref: "#/$defs/planting_ref"
+      - $ref: "#/$defs/network_node_ref"
+      - $ref: "#/$defs/iot_device_ref"
+      - $ref: "#/$defs/equipment_ref"
+      - $ref: "#/$defs/tool_ref"
+
+  biomass_source_ref:
+    title: "Biomass Source Reference"
+    description: "Reference to an element that produces biomass (specimen or outdoor zone)."
+    anyOf:
+      - $ref: "#/$defs/specimen_ref"
+      - $ref: "#/$defs/outdoor_zone_ref"
+
+  biomass_destination_ref:
+    title: "Biomass Destination Reference"
+    description: "Reference to where processed biomass is used (zone for compost, system for fuel)."
+    anyOf:
+      - $ref: "#/$defs/outdoor_zone_ref"
+      - $ref: "#/$defs/system_ref"
+
+  room_or_zone_ref:
+    title: "Room or Zone Reference"
+    description: "Reference to a room or outdoor zone (for system distribution targets)."
+    anyOf:
+      - $ref: "#/$defs/room_ref"
+      - $ref: "#/$defs/outdoor_zone_ref"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Generic Specifications (v1.3)
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  specs:
+    type: array
+    title: "Technical Specifications"
+    description: >
+      Generic key-value-unit specification pairs for equipment, appliances,
+      or other entities with diverse technical attributes. Used by T2
+      (inventory report) to surface specifications without schema-per-type.
+    items:
+      type: object
+      required: [key, value]
+      additionalProperties: false
+      properties:
+        key:
+          type: string
+          title: "Specification Key"
+          description: "Specification name (e.g., cutting_width_cm, tank_capacity_liters, battery_voltage)."
+          minLength: 1
+        value:
+          type: string
+          title: "Specification Value"
+          description: "Specification value as string."
+          minLength: 1
+        unit:
+          type: string
+          title: "Unit"
+          description: "Unit of measurement (omit for dimensionless values)."
+          minLength: 1

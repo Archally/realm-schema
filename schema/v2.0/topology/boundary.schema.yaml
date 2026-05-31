@@ -1,0 +1,364 @@
+---
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "topology/boundary.schema.yaml"
+title: "Property Boundaries"
+description: >
+  Property boundary segments: fences, walls, hedges, and natural boundaries.
+  Each segment describes physical construction, condition, screening properties,
+  and neighbor associations. Topology plane.
+
+x-gdsm:
+  version: "2.0.0"
+  methodology: "GDSM v1.0"
+  plane: "topology"
+  domain_slice: null
+  designed_for:
+    - id: T4
+      name: "Boundary & Privacy Assessment"
+      mfs_target: 85
+    - id: T5
+      name: "2D Spatial Layout Visualization"
+      mfs_target: 80
+  competency_questions:
+    - "CQ18: What type of boundary exists on each side of the property, and what is its condition?"
+    - "CQ20: What privacy screening exists or is needed on each boundary?"
+    - "CQ27: What are the construction specifications (posts, mesh, footing) of each boundary segment?"
+  fitness:
+    last_evaluated: "2026-03-08"
+    scores: {}
+  non_goals:
+    - "Legal boundary dispute records"
+    - "Surveyor measurement precision (sub-centimeter)"
+  status: draft
+  owned_by: null
+  schema_ref_prefix: "BS"
+
+type: object
+additionalProperties: false
+properties:
+  boundary_segments:
+    type: array
+    title: "Boundary Segments"
+    description: "Property perimeter segments. Answers CQ18, CQ20."
+    items:
+      $ref: "#/$defs/boundary_segment"
+
+$defs:
+  fence_post:
+    type: object
+    title: "Fence Post"
+    description: >
+      An individual fence post with measured position, type classification,
+      and optional annotation. Posts are sequentially numbered along the
+      boundary segment. Used by 2D/3D renderers for post visualization
+      and by migration planning for reinforcement tracking.
+    required: [seq, type, position]
+    additionalProperties: false
+    properties:
+      seq:
+        type: integer
+        title: "Sequence Number"
+        description: "1-based sequential post number along this boundary segment."
+        minimum: 1
+      type:
+        type: string
+        title: "Post Type"
+        description: >
+          Classification: end (corner/terminal), intermediate (standard),
+          reinforced (strengthened, e.g. diagonal bracing + concrete footing).
+        enum: ["end", "intermediate", "reinforced"]
+      position:
+        $ref: "../metamodel.schema.yaml#/$defs/position"
+        description: "Absolute position in property coordinate system (meters)."
+      cumulative_m:
+        type: number
+        title: "Cumulative Distance (m)"
+        description: "Distance from the first post along the boundary line."
+        minimum: 0
+      span_cm:
+        title: "Span to Previous Post (cm)"
+        description: "Center-to-center distance from the previous post. Null for the first post."
+        oneOf:
+          - type: number
+            exclusiveMinimum: 0
+          - type: "null"
+      above_ground_cm:
+        type: number
+        title: "Above Ground Height (cm)"
+        description: >
+          Per-post override for above-ground height. When omitted, the
+          boundary-level post_construction.above_ground_cm applies. Use
+          when individual posts differ (e.g. extended posts for a higher
+          fence section).
+        exclusiveMinimum: 0
+        examples: [120, 220]
+      description:
+        type: string
+        title: "Post Description"
+        description: >
+          Per-post annotation for reinforcement notes, migration context,
+          inspection observations, or structural details (e.g. "MIG009a:
+          diagonale + dobetonowanie").
+
+  boundary_segment:
+    type: object
+    title: "Boundary Segment"
+    description: >
+      A continuous section of property boundary with uniform construction.
+      A property's full perimeter is composed of multiple segments. Answers
+      CQ18 (type and condition) and CQ20 (privacy screening). Used by T4, T5.
+    required: [id, name, boundary_type]
+    additionalProperties: false
+    patternProperties:
+      "^x-":
+        description: >
+          Custom extension properties for domain-specific detail that the
+          base schema does not cover (e.g. x-fence for detailed post/span
+          measurements, x-gate for gate automation specs). Follows the
+          OpenAPI x- extension convention. Values may be any valid YAML.
+    properties:
+      id:
+        type: string
+        title: "BS### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?BS\\d{3,}$"
+        examples: ["BS001"]
+      name:
+        type: string
+        title: "Segment Name"
+        minLength: 1
+        examples: ["North Fence", "East Hedge", "South Wall"]
+      boundary_type:
+        type: string
+        title: "Boundary Type"
+        description: "Physical construction type of this boundary segment."
+        enum:
+          - "fence-wood"
+          - "fence-metal"
+          - "fence-chain-link"
+          - "fence-vinyl"
+          - "wall-brick"
+          - "wall-stone"
+          - "wall-concrete"
+          - "hedge-evergreen"
+          - "hedge-deciduous"
+          - "hedge-mixed"
+          - "natural-treeline"
+          - "natural-waterway"
+          - "natural-slope"
+          - "none"
+        examples: ["fence-wood"]
+      direction:
+        $ref: "../metamodel.schema.yaml#/$defs/compass_direction"
+        title: "Side of Property"
+        description: "Which side of the property this segment faces."
+      height_m:
+        type: number
+        title: "Height (m)"
+        description: "Current height of the boundary element."
+        exclusiveMinimum: 0
+        examples: [1.8, 2.5]
+      length_m:
+        type: number
+        title: "Length (m)"
+        description: "Length of this boundary segment."
+        exclusiveMinimum: 0
+        examples: [25, 40]
+      condition:
+        type: string
+        title: "Condition"
+        description: "Current physical condition. Used by T4 for replacement planning."
+        enum: ["excellent", "good", "fair", "poor", "needs-replacement"]
+        examples: ["good"]
+      installed_year:
+        type: integer
+        title: "Year Installed"
+        examples: [2018]
+      # ── Screening / Privacy ──
+      screening_opacity:
+        type: string
+        title: "Screening Opacity"
+        description: >
+          Visual screening level. Answers CQ20 (privacy screening adequacy).
+          Used by T4 to identify privacy gaps.
+        enum: ["solid", "semi-transparent", "transparent", "none"]
+        examples: ["solid"]
+      year_round_screening:
+        type: boolean
+        title: "Year-Round Screening"
+        description: "True if screening is effective all year (evergreen hedge, solid fence). False for deciduous hedges."
+      mature_height_m:
+        type: number
+        title: "Mature Height (m)"
+        description: "Expected height at maturity (for hedges and natural boundaries)."
+        exclusiveMinimum: 0
+        examples: [3.0]
+      # ── Construction Details (v1.3) ──
+      post_construction:
+        type: object
+        title: "Post Construction"
+        description: "Fence post specifications. Answers CQ27."
+        additionalProperties: false
+        properties:
+          diameter_mm:
+            type: number
+            title: "Post Diameter (mm)"
+            exclusiveMinimum: 0
+            examples: [42, 60]
+          wall_thickness_mm:
+            type: number
+            title: "Wall Thickness (mm)"
+            exclusiveMinimum: 0
+            examples: [2, 1.8]
+          coating:
+            type: string
+            title: "Post Coating"
+            enum: ["pvc", "galvanized", "powder-coated", "painted", "none"]
+          total_height_cm:
+            type: number
+            title: "Total Post Height (cm)"
+            description: "Full post length including buried section."
+            exclusiveMinimum: 0
+            examples: [170, 250]
+          above_ground_cm:
+            type: number
+            title: "Above Ground (cm)"
+            exclusiveMinimum: 0
+            examples: [120, 200]
+          below_ground_cm:
+            type: number
+            title: "Below Ground (cm)"
+            exclusiveMinimum: 0
+            examples: [50]
+          spacing_m:
+            type: number
+            title: "Post Spacing (m)"
+            description: "Distance between posts."
+            exclusiveMinimum: 0
+            examples: [2.5, 3.0]
+          footing_diameter_cm:
+            type: number
+            title: "Footing Diameter (cm)"
+            exclusiveMinimum: 0
+            examples: [30]
+          footing_depth_cm:
+            type: number
+            title: "Footing Depth (cm)"
+            exclusiveMinimum: 0
+            examples: [20, 40]
+          post_count:
+            type: integer
+            title: "Post Count"
+            minimum: 1
+      mesh_or_infill:
+        type: object
+        title: "Mesh or Infill"
+        description: "Mesh, wire, or panel infill between posts. Answers CQ27."
+        additionalProperties: false
+        properties:
+          material:
+            type: string
+            title: "Infill Material"
+            enum:
+              - "chain-link"
+              - "welded-mesh"
+              - "wood-panel"
+              - "metal-panel"
+              - "vinyl-panel"
+              - "glass"
+              - "polycarbonate"
+              - "woven-wire"
+              - "privacy-mesh"
+              - "none"
+          wire_gauge_mm:
+            type: number
+            title: "Wire Gauge (mm)"
+            exclusiveMinimum: 0
+            examples: [3, 2.5]
+          mesh_height_cm:
+            type: number
+            title: "Mesh Height (cm)"
+            exclusiveMinimum: 0
+            examples: [120, 150]
+          density_gsm:
+            type: number
+            title: "Fabric Density (g/m²)"
+            description: "For privacy mesh or shade cloth."
+            exclusiveMinimum: 0
+            examples: [180, 200]
+          opacity_percent:
+            type: number
+            title: "Opacity (%)"
+            minimum: 0
+            maximum: 100
+            examples: [95, 50]
+      # ── Individual Posts (v2.0) ──
+      posts:
+        type: array
+        title: "Fence Posts"
+        description: >
+          Individual fence posts with measured positions, types, and
+          annotations. Used by 2D/3D renderers and migration planning.
+          Each post is a measured physical entity along this boundary segment.
+        items:
+          $ref: "#/$defs/fence_post"
+      screening_planting_refs:
+        type: array
+        title: "Screening Plantings"
+        description: "Plantings providing visual screening along this boundary. Used by T4."
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/planting_ref"
+        uniqueItems: true
+      # ── Parcel association (v1.5) ──
+      parcel_refs:
+        type: array
+        title: "Parcel References"
+        description: >
+          Land parcels this boundary segment borders. A segment on the
+          boundary between two parcels lists both. Used by renderers to
+          assign boundaries to per-parcel site plans.
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/parcel_ref"
+        uniqueItems: true
+      # ── Spatial ──
+      position_start:
+        $ref: "../metamodel.schema.yaml#/$defs/position"
+        title: "Start Position"
+        description: "Start point of this segment on the property grid. Deprecated in v1.5 — use vertices[] instead."
+      position_end:
+        $ref: "../metamodel.schema.yaml#/$defs/position"
+        title: "End Position"
+        description: "End point of this segment on the property grid. Deprecated in v1.5 — use vertices[] instead."
+      # ── Polyline (v1.5) ──
+      vertices:
+        type: array
+        title: "Boundary Vertices"
+        description: >
+          Polyline in model coordinates (meters). Ordered list of points
+          defining this boundary segment's geometry. Supports multi-point
+          segments (e.g., boundaries with bends). Supersedes position_start
+          and position_end.
+        minItems: 2
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/position"
+      # ── Relations ──
+      neighbor_property_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/neighbor_property_ref"
+        title: "Adjacent Neighbor"
+        description: "Neighbor property on the other side of this boundary."
+      shared_ownership:
+        type: boolean
+        title: "Shared Ownership"
+        description: "Whether this boundary is jointly owned/maintained with the neighbor."
+      # ── Elevation (v2.0) ──
+      base_elevation_m:
+        type: number
+        title: "Base Elevation (m)"
+        description: >
+          Ground elevation at the base of this boundary above vertical datum.
+          Default 0. Non-zero for fences on retaining walls or slopes.
+        default: 0
+        examples: [0, 0.5]
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"

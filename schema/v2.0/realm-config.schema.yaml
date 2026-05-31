@@ -1,0 +1,294 @@
+---
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "realm-config.schema.yaml"
+title: "Realm Configuration"
+description: >
+  Per-model inference and validation configuration. Placed alongside the
+  realm.yaml root file as realm-config.yaml. Controls tolerances, defaults,
+  and thresholds used by the AI agent during construction geometry inference
+  and by validation tools during post-inference quality checks.
+
+  This is a standalone schema — NOT referenced from realm.schema.yaml.
+  The config file is a sibling to the model, not part of the model.
+
+type: object
+additionalProperties: false
+properties:
+  schema_version:
+    type: string
+    title: "Schema Version"
+    description: "Realm schema version this configuration targets."
+    enum: ["2.0.0"]
+    examples: ["2.0.0"]
+
+  inference:
+    $ref: "#/$defs/inference_config"
+    title: "Inference Parameters"
+
+  validation:
+    $ref: "#/$defs/validation_config"
+    title: "Validation Thresholds"
+
+  rendering:
+    $ref: "#/$defs/rendering_config"
+    title: "Rendering Preferences"
+
+$defs:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Inference Parameters
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  inference_config:
+    type: object
+    title: "Inference Configuration"
+    description: >
+      Tolerances and defaults used by the AI agent during semantic →
+      construction geometry inference. Each parameter documents which
+      inference rule (R01–R07) consumes it.
+    additionalProperties: false
+    properties:
+      # ── Wall Alignment ──
+      wall_alignment_tolerance_cm:
+        type: number
+        title: "Wall Alignment Tolerance (cm)"
+        description: >
+          When two room edges are within this distance, they are considered
+          to share a wall line. Used in R05 (wall segment generation) for
+          snapping parallel edges into a single wall line.
+        default: 5
+        minimum: 0
+        exclusiveMaximum: 50
+        examples: [5, 10]
+
+      room_overlap_tolerance_sqm:
+        type: number
+        title: "Room Overlap Tolerance (m²)"
+        description: >
+          Maximum acceptable overlap area between two room footprints
+          before a warning is raised. Small overlaps occur due to wall
+          thickness sharing and rounding.
+        default: 0.1
+        minimum: 0
+        examples: [0.1, 0.5]
+
+      room_gap_threshold_m:
+        type: number
+        title: "Room Gap Threshold (m)"
+        description: >
+          When the gap between two adjacent rooms exceeds this threshold,
+          the agent classifies it as a potential corridor or open space
+          rather than a wall alignment error.
+        default: 0.5
+        minimum: 0
+        examples: [0.5, 1.0]
+
+      # ── Fallback Dimensions ──
+      default_interior_wall_thickness_cm:
+        type: number
+        title: "Default Interior Wall Thickness (cm)"
+        description: >
+          Fallback wall thickness for interior walls when the semantic
+          room data does not specify walls.X.thickness_cm. Used in R05.
+        default: 12
+        exclusiveMinimum: 0
+        examples: [12, 15, 10]
+
+      default_exterior_wall_thickness_cm:
+        type: number
+        title: "Default Exterior Wall Thickness (cm)"
+        description: >
+          Fallback wall thickness for exterior walls when the semantic
+          room data does not specify walls.X.thickness_cm. Typically
+          includes structure + insulation. Used in R05.
+        default: 24
+        exclusiveMinimum: 0
+        examples: [24, 30, 38]
+
+      default_slab_thickness_cm:
+        type: number
+        title: "Default Slab Thickness (cm)"
+        description: >
+          Fallback slab thickness when floor data does not specify
+          slab_thickness_cm. Used in R02 (floor slab generation).
+        default: 20
+        exclusiveMinimum: 0
+        examples: [20, 25, 30]
+
+      default_roof_overhang_cm:
+        type: number
+        title: "Default Roof Overhang (cm)"
+        description: >
+          Default eave overhang distance beyond the building footprint
+          when not specified on individual wing.roof_overhang_cm. Used
+          in R07 (roof plane generation).
+        default: 30
+        minimum: 0
+        examples: [30, 40, 50]
+
+      default_ceiling_height_m:
+        type: number
+        title: "Default Ceiling Height (m)"
+        description: >
+          Fallback ceiling height when floor.ceiling_height_m and
+          room.ceiling_height_cm are both absent. Used in R04 and R05
+          for wall height computation.
+        default: 2.6
+        exclusiveMinimum: 0
+        examples: [2.6, 2.8, 3.0]
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Validation Thresholds
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  validation_config:
+    type: object
+    title: "Validation Configuration"
+    description: >
+      Thresholds used during post-inference validation (V01–V05) to
+      determine acceptable geometric tolerances.
+    additionalProperties: false
+    properties:
+      slab_area_tolerance_percent:
+        type: number
+        title: "Slab Area Tolerance (%)"
+        description: >
+          Maximum percentage by which a slab outline area may differ
+          from the building footprint area. Used in V03 (slab coverage).
+        default: 10
+        minimum: 0
+        maximum: 100
+        examples: [10, 15]
+
+      roof_coverage_tolerance_percent:
+        type: number
+        title: "Roof Coverage Tolerance (%)"
+        description: >
+          Maximum percentage by which the sum of projected roof plane
+          areas may exceed the building footprint area. Allows for
+          overhangs. Used in V04 (roof coverage).
+        default: 15
+        minimum: 0
+        maximum: 100
+        examples: [15, 20]
+
+      coplanarity_tolerance_cm:
+        type: number
+        title: "Coplanarity Tolerance (cm)"
+        description: >
+          Maximum distance a roof plane vertex may deviate from the
+          ideal geometric plane before a warning is raised.
+        default: 1
+        minimum: 0
+        examples: [1, 2, 0.5]
+
+      wall_coverage_tolerance_percent:
+        type: number
+        title: "Wall Coverage Tolerance (%)"
+        description: >
+          Maximum percentage of building perimeter that may lack
+          wall segments before a warning is raised. Used in V01
+          (wall coverage check).
+        default: 5
+        minimum: 0
+        maximum: 100
+        examples: [5, 10]
+
+      opening_fit_tolerance_cm:
+        type: number
+        title: "Opening Fit Tolerance (cm)"
+        description: >
+          Maximum distance an opening may overshoot a wall segment
+          edge before being flagged as an error. Accounts for reveal
+          depth and measurement imprecision. Used in V02.
+        default: 2
+        minimum: 0
+        examples: [2, 5]
+
+      # ── Cross-layer consistency checks ──
+      wall_thickness_tolerance_cm:
+        type: number
+        title: "Wall Thickness Tolerance (cm)"
+        description: >
+          Maximum acceptable difference between a semantic wall thickness
+          (room.walls.X.thickness_cm) and the generated WSG thickness_cm.
+          Accounts for rounding during shared-wall merging.
+        default: 2
+        minimum: 0
+        examples: [2, 3]
+
+      opening_width_tolerance_cm:
+        type: number
+        title: "Opening Width Tolerance (cm)"
+        description: >
+          Maximum acceptable difference between a semantic opening width
+          and the generated wall_opening width_cm.
+        default: 1
+        minimum: 0
+        examples: [1, 2]
+
+      head_height_tolerance_cm:
+        type: number
+        title: "Head Height Tolerance (cm)"
+        description: >
+          Maximum acceptable deviation when checking sill_height_cm +
+          height_cm ≈ head_height_cm on wall openings.
+        default: 5
+        minimum: 0
+        examples: [5, 10]
+
+      elevation_tolerance_m:
+        type: number
+        title: "Elevation Tolerance (m)"
+        description: >
+          Maximum acceptable difference between computed and declared
+          floor elevations. Used for floor stacking consistency.
+        default: 0.01
+        minimum: 0
+        examples: [0.01, 0.05]
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Rendering Preferences
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  rendering_config:
+    type: object
+    title: "Rendering Configuration"
+    description: >
+      Preferences for visualization consumers. These do not affect
+      inference or validation — they guide how renderers display
+      the model and construction data.
+    additionalProperties: false
+    properties:
+      default_lod:
+        type: string
+        title: "Default Level of Detail"
+        description: >
+          Default LOD for 3D rendering. "auto" selects the highest LOD
+          achievable from available data (shell-only → LOD1, with walls/
+          roofs → LOD2).
+        enum: ["auto", "lod0", "lod1", "lod2"]
+        default: "auto"
+
+      show_construction_layer:
+        type: boolean
+        title: "Show Construction Layer"
+        description: >
+          Whether to render construction geometry (wall segments, roof
+          planes) in 2D/3D views. When false, only semantic data is shown.
+        default: true
+
+      show_neighbor_massing:
+        type: boolean
+        title: "Show Neighbor Massing"
+        description: >
+          Whether to render neighbor properties as massing blocks in
+          3D views. Requires neighbor_property.footprint and building_height_m.
+        default: true
+
+      neighbor_massing_color:
+        type: string
+        title: "Neighbor Massing Color"
+        description: "CSS color for neighbor massing blocks in 3D views."
+        pattern: "^#[0-9A-Fa-f]{6}$"
+        default: "#9E9E9E"
+        examples: ["#9E9E9E", "#BDBDBD"]

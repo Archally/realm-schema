@@ -1,0 +1,236 @@
+---
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "nature/soil.schema.yaml"
+title: "Soil Profiles"
+description: >
+  Soil profiles for outdoor zones: type classification, pH level, texture,
+  drainage, organic matter, and amendment recommendations with dosage and
+  product info. One zone may have multiple soil profiles (e.g., lawn area
+  vs raised beds within the same zone). Nature plane.
+
+x-gdsm:
+  version: "1.6.0"
+  methodology: "GDSM v1.0"
+  plane: "nature"
+  domain_slice: null
+  designed_for:
+    - id: T3
+      name: "Garden Planning Advisory"
+      mfs_target: 80
+    - id: T10
+      name: "Seasonal Garden Care Calendar"
+      mfs_target: 85
+  competency_questions:
+    - "CQ37: What is the soil composition in each zone and what amendments are recommended?"
+  fitness:
+    last_evaluated: "2026-03-15"
+    scores: {}
+  non_goals:
+    - "Geological soil survey (professional assessment)"
+    - "Soil moisture telemetry (external sensor store)"
+    - "Soil contamination testing (laboratory analysis)"
+  status: draft
+  owned_by: null
+  schema_ref_prefix: "SOIL"
+
+type: object
+additionalProperties: false
+properties:
+  soil_profiles:
+    type: array
+    title: "Soil Profiles"
+    description: "Soil profiles for outdoor zones. Answers CQ37."
+    items:
+      $ref: "#/$defs/soil_profile"
+
+$defs:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Soil Profile — SOIL###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  soil_profile:
+    type: object
+    title: "Soil Profile"
+    description: >
+      Soil characteristics for a specific area within an outdoor zone.
+      Covers type, pH, texture, drainage, organic matter, and recommended
+      amendments with dosage. A separate entity because the same OZ may
+      contain different soil types (e.g., OZ004 has lawn soil vs raised
+      bed soil). Answers CQ37. Used by T3, T10.
+    required: [id, name, outdoor_zone_ref]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "SOIL### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?SOIL\\d{3,}$"
+        examples: ["SOIL001"]
+      name:
+        type: string
+        title: "Profile Name"
+        minLength: 1
+        examples: ["Gleba trawnika głównego", "Ziemia leśna LP002"]
+
+      # ── Location ──
+      outdoor_zone_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/outdoor_zone_ref"
+        title: "Outdoor Zone"
+        description: "Zone where this soil profile applies."
+      position:
+        $ref: "../metamodel.schema.yaml#/$defs/position"
+        title: "Center Position"
+        description: "Center of soil profile area (when it covers only part of the zone)."
+      footprint:
+        $ref: "../metamodel.schema.yaml#/$defs/footprint"
+        title: "Soil Area Footprint"
+        description: "Shape of the area this soil profile covers."
+      area_sqm:
+        type: number
+        title: "Area (m²)"
+        description: "Approximate area covered by this soil profile."
+        exclusiveMinimum: 0
+
+      # ── Soil Properties ──
+      soil_type:
+        type: string
+        title: "Soil Type"
+        description: "Primary soil classification."
+        enum:
+          - "clay"
+          - "sandy"
+          - "loam"
+          - "silt"
+          - "peat"
+          - "chalky"
+          - "clay-loam"
+          - "sandy-loam"
+          - "forest-humus"
+          - "garden-mix"
+          - "compost-enriched"
+        examples: ["sandy-loam"]
+      ph_level:
+        type: number
+        title: "pH Level"
+        description: "Measured or estimated soil pH. 7.0 = neutral."
+        minimum: 0
+        maximum: 14
+        examples: [6.5, 4.5]
+      ph_measured_date:
+        $ref: "../metamodel.schema.yaml#/$defs/iso_date"
+        title: "pH Measured Date"
+        description: "When pH was last measured. Omit if estimated."
+      organic_matter_percent:
+        type: number
+        title: "Organic Matter (%)"
+        description: "Estimated organic matter content."
+        minimum: 0
+        maximum: 100
+        examples: [5, 12]
+      moisture_retention:
+        type: string
+        title: "Moisture Retention"
+        description: "How well the soil retains water."
+        enum: ["very-low", "low", "moderate", "high", "very-high"]
+      drainage:
+        type: string
+        title: "Drainage"
+        description: "How quickly water drains through."
+        enum: ["poor", "moderate", "good", "excessive"]
+      texture_description:
+        type: string
+        title: "Texture Description"
+        description: "Free-text description of soil feel and composition."
+        examples: ["Piaszczysty z domieszką gliny, dobrze przepuszczalny"]
+
+      # ── Amendments ──
+      amendments:
+        type: array
+        title: "Soil Amendments"
+        description: >
+          Recommended or applied soil amendments with dosage, timing,
+          and product info. Answers CQ37. Used by T10 (calendar)
+          and T11 (shopping list).
+        items:
+          $ref: "#/$defs/soil_amendment"
+
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Soil Amendment — improvement recommendation
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  soil_amendment:
+    type: object
+    title: "Soil Amendment"
+    description: >
+      A soil improvement action: what to apply, when, how much, and
+      why. Includes product recommendations with pricing.
+    required: [amendment_type, name]
+    additionalProperties: false
+    properties:
+      amendment_type:
+        type: string
+        title: "Amendment Type"
+        description: "Category of soil amendment."
+        enum:
+          - "lime"
+          - "calcium-sulfate"
+          - "basalt-meal"
+          - "compost"
+          - "peat"
+          - "sand"
+          - "clay"
+          - "manure"
+          - "sulfur"
+          - "iron-sulfate"
+          - "gypsum"
+          - "bark-mulch"
+          - "green-manure"
+          - "vermiculite"
+          - "perlite"
+          - "biochar"
+        examples: ["lime"]
+      name:
+        type: string
+        title: "Amendment Name"
+        minLength: 1
+        examples: ["Wapno ogrodowe granulowane", "Mączka bazaltowa"]
+      purpose:
+        type: string
+        title: "Purpose"
+        description: "Why this amendment is needed."
+        examples: ["Korekta pH — podniesienie z 5.5 do 6.5"]
+      application_months:
+        type: array
+        title: "Application Months"
+        description: "Best months (1-12) for applying this amendment."
+        items:
+          type: integer
+          minimum: 1
+          maximum: 12
+        uniqueItems: true
+        examples: [[3, 10]]
+      dosage:
+        type: string
+        title: "Dosage"
+        description: "Application rate per unit area."
+        examples: ["200g/m²", "5kg/10m²", "1 worek 25kg na 100m²"]
+      frequency_description:
+        type: string
+        title: "Frequency"
+        description: "How often to apply."
+        examples: ["Co roku w marcu", "Co 2-3 lata w zależności od pH"]
+      supplies:
+        type: array
+        title: "Supplies"
+        description: "Products for this amendment with pricing."
+        items:
+          $ref: "care.schema.yaml#/$defs/supply_item"
+      notes:
+        type: string
+        title: "Notes"
+        description: "Application tips or warnings."
+        examples: ["Min. 4 tygodnie przed nawożeniem NPK — neutralizacja pH wymaga czasu"]

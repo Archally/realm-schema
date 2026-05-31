@@ -1,0 +1,179 @@
+---
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "events.schema.yaml"
+title: "Realm Event Log"
+description: >
+  Cross-cutting event log. Events are facts or observations about things
+  that happened on or around the property: neighbor requests, tree
+  transplants, storm damage, inspections, completed migrations, etc.
+  Events reference entities across all planes. Not part of any plane —
+  chronological overlay. An applied migration produces an event; events
+  may also exist without any migration.
+
+x-gdsm:
+  version: "2.0.0"
+  methodology: "GDSM v1.0"
+  plane: null
+  domain_slice: null
+  designed_for:
+    - id: T1
+      name: "Maintenance Calendar Generation"
+      mfs_target: 90
+    - id: T8
+      name: "Migration Planning Report"
+      mfs_target: 80
+  competency_questions:
+    - "CQ45: What events have occurred on the property and when?"
+    - "CQ46: Which entities were affected by a specific event?"
+    - "CQ47: What external requests or observations are pending action?"
+  fitness:
+    last_evaluated: "2026-03-22"
+    scores: {}
+  non_goals:
+    - "Real-time telemetry or sensor event streams"
+    - "Audit trail for model editing (git provides that)"
+    - "Calendar scheduling (use MaintenanceTask for recurring work)"
+  status: draft
+  owned_by: null
+  schema_ref_prefix: "EVT"
+
+type: object
+additionalProperties: false
+properties:
+  events:
+    type: array
+    title: "Events"
+    description: >
+      Chronological log of facts, observations, and external triggers.
+      Answers CQ45-CQ47.
+    items:
+      $ref: "#/$defs/event"
+
+$defs:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Event — EVT###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  event:
+    type: object
+    title: "Event"
+    description: >
+      A fact or observation about something that happened on or around
+      the property. Events are immutable records — once logged, they
+      represent historical truth. An applied migration (MIG) produces
+      an event; external triggers (neighbor requests, inspections, weather
+      damage) create events without migrations. Events reference affected
+      entities across all planes.
+    required: [id, name, event_type, occurred_at]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "EVT### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?EVT\\d{3,}$"
+        examples: ["EVT001", "EVT042"]
+      name:
+        type: string
+        title: "Event Name"
+        minLength: 1
+        examples:
+          - "Sąsiad poprosił o przycięcie drzew"
+          - "Przesadzenie dębu z OZ003 do OZ007"
+          - "Uszkodzenie ogrodzenia po wichurze"
+          - "Neighbour asked to cut overhanging trees"
+          - "Tree transplanted from front to back garden"
+      event_type:
+        type: string
+        title: "Event Type"
+        description: "Classification of what kind of event this is."
+        enum:
+          - "request"
+          - "incident"
+          - "action"
+          - "observation"
+          - "milestone"
+          - "inspection"
+          - "complaint"
+          - "weather"
+          - "migration-applied"
+        examples: ["request", "action"]
+      occurred_at:
+        $ref: "#/$defs/event_date"
+        title: "Occurred At"
+        description: "Date (or date-time) when the event happened."
+      resolved_at:
+        $ref: "#/$defs/event_date"
+        title: "Resolved At"
+        description: "Date when the event was resolved or closed. Omit if still open."
+
+      # ── Status ──
+      status:
+        type: string
+        title: "Status"
+        description: "Current status of the event."
+        enum: ["open", "in-progress", "resolved", "noted"]
+        default: "noted"
+        examples: ["open", "resolved"]
+
+      # ── Entity References ──
+      entity_refs:
+        type: array
+        title: "Affected Entities"
+        description: >
+          IDs of entities affected by or related to this event (SPM, PTG,
+          NP, BS, OZ, BLD, MIG, etc.). Cross-plane references.
+        items:
+          type: string
+          pattern: "^([a-z][a-z0-9-]*\\.)?[A-Z]{2,4}\\d{3,}$"
+        examples: [["SPM020", "NP001", "BS003"]]
+
+      # ── People ──
+      initiated_by_ref:
+        $ref: "metamodel.schema.yaml#/$defs/person_ref"
+        title: "Initiated By"
+        description: "Person or organization that triggered or reported this event."
+      participants:
+        type: array
+        title: "Participants"
+        description: "People involved in the event (witnesses, responders, contractors)."
+        items:
+          $ref: "metamodel.schema.yaml#/$defs/person_ref"
+
+      # ── Migration link ──
+      migration_ref:
+        type: string
+        title: "Migration Reference"
+        description: >
+          Migration (MIG###) that produced this event. Present when an
+          applied migration is the source of this event record.
+        pattern: "^([a-z][a-z0-9-]*\\.)?MIG\\d{3,}$"
+        examples: ["MIG015"]
+
+      # ── Detail ──
+      description:
+        type: string
+        title: "Description"
+        description: "Free-text description of what happened."
+      outcome:
+        type: string
+        title: "Outcome"
+        description: "Result or consequence of the event."
+      cost_pln:
+        type: number
+        title: "Cost (PLN)"
+        description: "Financial impact or cost of responding to this event."
+        minimum: 0
+
+      tags:
+        $ref: "metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Event Date (flexible: date or date-time)
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  event_date:
+    title: "Event Date"
+    description: "Date (YYYY-MM-DD) or full ISO 8601 date-time."
+    type: string
+    pattern: "^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}(:\\d{2})?([+-]\\d{2}:\\d{2}|Z)?)?$"
+    examples: ["2026-03-22", "2026-03-22T14:30:00+01:00"]

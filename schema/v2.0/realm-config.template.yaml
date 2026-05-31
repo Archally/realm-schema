@@ -1,0 +1,47 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Realm Configuration — inference and validation parameters
+# Schema: realm-config.schema.yaml
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# Place this file alongside realm.yaml as realm-config.yaml.
+# The AI agent reads these parameters before generating construction geometry.
+# Validation tools use the thresholds for post-inference quality checks.
+#
+# All values shown are defaults. Uncomment and adjust as needed for your
+# specific model. Properties not present fall back to schema defaults.
+
+schema_version: "2.0.0"
+
+inference:
+  # ── Wall Alignment (R05) ──
+  # wall_alignment_tolerance_cm: 5        # Snap room edges within this distance
+  # room_overlap_tolerance_sqm: 0.1       # Max acceptable room overlap area
+  # room_gap_threshold_m: 0.5             # Gaps larger than this → corridor
+
+  # ── Fallback Dimensions ──
+  # default_interior_wall_thickness_cm: 12 # When room.walls.X.thickness_cm missing
+  # default_exterior_wall_thickness_cm: 24 # When room.walls.X.thickness_cm missing
+  # default_slab_thickness_cm: 20          # When floor.slab_thickness_cm missing
+  # default_roof_overhang_cm: 30           # When wing.roof_overhang_cm missing
+  # default_ceiling_height_m: 2.6          # When floor/room ceiling height missing
+
+validation:
+  # ── Post-Inference Quality Checks ──
+  # slab_area_tolerance_percent: 10        # V03: slab vs building footprint area
+  # roof_coverage_tolerance_percent: 15    # V04: projected roof area vs footprint
+  # coplanarity_tolerance_cm: 1            # Roof vertex planarity tolerance
+  # wall_coverage_tolerance_percent: 5     # V01: building perimeter coverage
+  # opening_fit_tolerance_cm: 2            # V02: opening overshooting wall edge
+
+  # ── Cross-Layer Consistency ──
+  # wall_thickness_tolerance_cm: 2         # Semantic ↔ construction thickness match
+  # opening_width_tolerance_cm: 1          # Semantic ↔ construction width match
+  # head_height_tolerance_cm: 5            # sill + height ≈ head tolerance
+  # elevation_tolerance_m: 0.01            # Floor elevation precision
+
+rendering:
+  # ── Visualization Preferences ──
+  # default_lod: "auto"                    # auto | lod0 | lod1 | lod2
+  # show_construction_layer: true          # Render WSG/RFP in 2D/3D views
+  # show_neighbor_massing: true            # Neighbor massing blocks in 3D
+  # neighbor_massing_color: "#9E9E9E"      # CSS hex color for massing blocks

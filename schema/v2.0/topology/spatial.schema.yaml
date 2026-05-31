@@ -1,0 +1,68 @@
+---
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "topology/spatial.schema.yaml"
+
+x-gdsm:
+  version: "2.0.0"
+  methodology: "GDSM v1.0"
+  plane: "topology"
+  domain_slice: null
+  designed_for:
+    - id: T4
+      name: "Boundary & Privacy Assessment"
+      mfs_target: 85
+    - id: T5
+      name: "2D Spatial Layout Visualization"
+      mfs_target: 80
+  competency_questions:
+    - "CQ21: Where is element X positioned relative to element Y?"
+    - "CQ22: What is the sun exposure of a zone given property orientation and surrounding structures?"
+  fitness:
+    last_evaluated: "2026-03-08"
+    scores: {}
+  non_goals:
+    - "Full GIS / geodetic computation"
+    - "Real-time shadow simulation"
+    - "Terrain elevation modeling (flat terrain assumed per parcel, v2.0)"
+  status: draft
+  owned_by: null
+  schema_ref_prefix: "n/a (uses metamodel spatial primitives)"
+  design_notes: >
+    Spatial relations are lightweight edge records, not full entities with
+    typed IDs. They connect any two positioned elements via directional or
+    proximity relationships. The coordinate_system and position/footprint
+    types live in metamodel.schema.yaml. This file defines the composition
+    type used by the root schema's topology.spatial property.
+
+type: object
+title: "Spatial Layout Configuration"
+description: "Coordinate system definition and spatial relation edges."
+additionalProperties: false
+properties:
+  coordinate_system:
+    $ref: "../metamodel.schema.yaml#/$defs/coordinate_system"
+    title: "Coordinate System"
+    description: >
+      Property-relative coordinate system with optional vertical datum (v2.0).
+      All positions in the model are relative to this origin and north direction.
+      Z values reference the vertical datum when 3D data is present.
+
+  spatial_relations:
+    type: array
+    title: "Spatial Relations"
+    description: >
+      Explicit directional and proximity relationships between positioned
+      elements. Used for shade analysis (CQ22), privacy assessment (T4),
+      and spatial reasoning in layout visualization (T5).
+    items:
+      $ref: "../metamodel.schema.yaml#/$defs/spatial_relation"
+    examples:
+      - - from_ref: "BLD001"
+          to_ref: "OZ003"
+          relation_type: "shades"
+          distance_m: 6
+          notes: "Main house casts afternoon shadow on vegetable garden"
+        - from_ref: "NP001"
+          to_ref: "OZ001"
+          relation_type: "overlooks"
+          notes: "Neighbor's second-floor windows overlook front garden"

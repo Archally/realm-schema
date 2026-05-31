@@ -1,0 +1,37 @@
+# Archally Realm Schema
+
+YAML-based schema for modeling **private real estate** — a dual-layer spatial format covering physical topology, infrastructure systems, vegetation and garden care, maintenance operations, and surrounding context in a single machine-readable model.
+
+[![npm version](https://img.shields.io/npm/v/@archally/realm-schema)](https://www.npmjs.com/package/@archally/realm-schema)
+[![license](https://img.shields.io/npm/l/@archally/realm-schema)](./LICENSE)
+[![CI](https://github.com/archally/realm-schema/actions/workflows/validate.yml/badge.svg)](https://github.com/archally/realm-schema/actions)
+
+> **Status: scaffolding in progress.** This commit ships the schema only. The validator, a worked example, the bundled tools, and the full documentation arrive in subsequent commits. See the schema under [`schema/v2.0/`](./schema/v2.0/).
+
+## What is a Realm model?
+
+A **realm** is a single formal model of a property — what physically exists, what systems serve it, what grows there, how it is maintained, and what surrounds it. It is expressed as plain YAML files organized into five planes plus cross-cutting concerns.
+
+| Plane | Question | Key entities |
+|-------|----------|--------------|
+| **Topology** | What exists physically? | parcels, buildings, wings, floors, rooms, outdoor zones, boundaries, construction geometry |
+| **Infrastructure** | What systems serve it? | systems, components, utility connections, network nodes, IoT devices |
+| **Nature** | What grows here, and how is it cared for? | specimens, plantings, biomass flows, species care profiles, soil profiles |
+| **Operations** | How is it maintained? | maintenance tasks, cost categories, warranties, regulations |
+| **Context** | What surrounds it? | neighbours, surroundings, environmental factors, persons |
+
+Cross-cutting: migrations, risks/issues, and a chronological event log.
+
+**Dual-layer spatial model:** a *semantic layer* (human-authored rooms, walls, openings) and a *construction layer* (deterministic wall segments, floor slabs, roof planes) — so a model rich enough to draw an accurate plan is also rich enough for spatial reasoning.
+
+## Schema
+
+- **Version:** 2.0.0 (JSON Schema draft 2020-12, expressed in YAML)
+- **Methodology:** GDSM v1.0 (Goal-Driven Schema Modeling)
+- **Location:** [`schema/v2.0/`](./schema/v2.0/) — root composition + `metamodel`, `migration`, `risks`, `events`, `realm-config`, and per-plane subfolders (`topology/`, `infrastructure/`, `nature/`, `operations/`, `context/`, `visualization/`).
+
+Each plane's data files are validated independently against their own schema; cross-cutting files validate against `migration`, `risks`, and `events`.
+
+## License
+
+[Apache-2.0](./LICENSE) — © 2026 Adam Walkowski. Part of the [Archally](https://archally.pro) family of modeling schemas (alongside [blueprint-schema](https://github.com/archally/blueprint-schema) and [brandvoice-schema](https://github.com/archally/brandvoice-schema)).

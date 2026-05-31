@@ -1,0 +1,155 @@
+---
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "realm.schema.yaml"
+title: "Realm Schema"
+description: >
+  Root schema for a Realm model — validates the realm.yaml metadata file.
+  Each plane's data files are validated independently against their own
+  schema (estate, boundary, spatial, systems, network, vegetation, biomass,
+  maintenance, compliance, surroundings). Cross-cutting: migrations against
+  migration.schema.yaml, risks and issues against risks.schema.yaml.
+
+x-gdsm:
+  version: "2.0.0"
+  methodology: "GDSM v1.0"
+  plane: null
+  domain_slice: null
+  designed_for:
+    - id: T1
+      name: "Maintenance Calendar Generation"
+      mfs_target: 90
+    - id: T2
+      name: "Property Inventory Report"
+      mfs_target: 85
+    - id: T3
+      name: "Garden Planning Advisory"
+      mfs_target: 80
+    - id: T4
+      name: "Boundary & Privacy Assessment"
+      mfs_target: 85
+    - id: T5
+      name: "2D Spatial Layout Visualization"
+      mfs_target: 80
+    - id: T6
+      name: "Infrastructure Topology Map"
+      mfs_target: 75
+    - id: T7
+      name: "Biomass Circular Flow Diagram"
+      mfs_target: 75
+    - id: T8
+      name: "Migration Planning Report"
+      mfs_target: 80
+    - id: T9
+      name: "Cost Overview Dashboard"
+      mfs_target: 70
+  competency_questions:
+    - "All 44 competency questions — this is the root composition schema"
+  fitness:
+    last_evaluated: "2026-03-08"
+    scores: {}
+  non_goals:
+    - "Multi-estate portfolio management (one realm = one estate)"
+    - "Real-time telemetry storage (external data store)"
+    - "Contractor and vendor management"
+    - "Property valuation and financial modeling"
+    - "Smart home automation rules"
+  status: released
+  owned_by: null
+  schema_ref_prefix: "all (root composition)"
+  planes:
+    - id: topology
+      description: "Physical form: parcels, buildings, wings, rooms, outdoor zones, boundaries, spatial layout, equipment, construction geometry"
+      schemas:
+        - "topology/estate.schema.yaml"
+        - "topology/spatial.schema.yaml"
+        - "topology/boundary.schema.yaml"
+        - "topology/equipment.schema.yaml"
+        - "topology/tools.schema.yaml"
+        - "topology/construction.schema.yaml"
+    - id: infrastructure
+      description: "Built systems: energy, heating, water, electrical, network topology, IoT"
+      schemas:
+        - "infrastructure/systems.schema.yaml"
+        - "infrastructure/network.schema.yaml"
+    - id: nature
+      description: "Living elements: specimen plants, categorical plantings, biomass circular flows, species care profiles, soil profiles, planting recommendations"
+      schemas:
+        - "nature/vegetation.schema.yaml"
+        - "nature/biomass.schema.yaml"
+        - "nature/care.schema.yaml"
+        - "nature/soil.schema.yaml"
+        - "nature/recommendations.schema.yaml"
+    - id: operations
+      description: "Management: maintenance tasks, schedules, warranties, regulatory compliance, costs"
+      schemas:
+        - "operations/maintenance.schema.yaml"
+        - "operations/compliance.schema.yaml"
+    - id: context
+      description: "Surroundings: neighbor properties, shared concerns, environmental factors, persons"
+      schemas:
+        - "context/surroundings.schema.yaml"
+        - "context/persons.schema.yaml"
+  migration_schema: "migration.schema.yaml"
+  risks_schema: "risks.schema.yaml"
+  events_schema: "events.schema.yaml"
+
+type: object
+required: [version, name]
+additionalProperties: false
+patternProperties:
+  # Vendor extensions (`x-*`) — opaque to the schema validator but reserved
+  # for tooling and georeferencing metadata. Existing in-tree usage:
+  #   x-photos          — array of photo paths (Cewice)
+  #   x-epsg-origin     — EPSG:2180 anchor for local-frame georeferencing
+  #   x-elevation-data  — DEM/raster references for vertical context
+  "^x-": {}
+
+properties:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Identity & Metadata
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  version:
+    $ref: "metamodel.schema.yaml#/$defs/semver"
+    title: "Model Version"
+    description: "Semantic version of this realm model instance."
+
+  schemaVersion:
+    $ref: "metamodel.schema.yaml#/$defs/schema_version"
+    title: "Schema Version"
+    description: "Version of the Realm schema this model conforms to."
+
+  name:
+    type: string
+    title: "Realm Name"
+    description: "Human-readable name for this estate."
+    minLength: 1
+    examples: ["Oak Hill Estate", "Berghaus am Wald"]
+
+  description:
+    type: string
+    title: "Description"
+    description: "Brief overview of the estate."
+
+  location:
+    $ref: "metamodel.schema.yaml#/$defs/location"
+    title: "Location"
+    description: "Geographic address and coordinates."
+
+  climate:
+    $ref: "metamodel.schema.yaml#/$defs/climate_profile"
+    title: "Climate Profile"
+    description: "Climate metadata for garden planning and seasonal scheduling."
+
+  coordinate_system:
+    $ref: "metamodel.schema.yaml#/$defs/coordinate_system"
+    title: "Model Coordinate System"
+    description: >
+      Coordinate system orientation for the entire realm model. Documents
+      how the model's 2D/3D grid relates to true geographic north and the
+      vertical datum. Authoritative definition also in topology/spatial.yaml;
+      this top-level copy gives immediate visibility when inspecting the
+      root realm file.
+
+  tags:
+    $ref: "metamodel.schema.yaml#/$defs/tags"

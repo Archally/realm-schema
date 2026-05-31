@@ -1,0 +1,328 @@
+---
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "operations/maintenance.schema.yaml"
+title: "Maintenance Operations"
+description: >
+  Recurring maintenance tasks with RRULE scheduling, notification rules,
+  and cost categories. The engine for generating maintenance calendars
+  and cost dashboards. Operations plane.
+
+x-gdsm:
+  version: "1.6.0"
+  methodology: "GDSM v1.0"
+  plane: "operations"
+  domain_slice: null
+  designed_for:
+    - id: T1
+      name: "Maintenance Calendar Generation"
+      mfs_target: 90
+    - id: T9
+      name: "Cost Overview Dashboard"
+      mfs_target: 70
+    - id: T10
+      name: "Seasonal Garden Care Calendar"
+      mfs_target: 85
+    - id: T11
+      name: "Shopping List Generator"
+      mfs_target: 75
+  competency_questions:
+    - "CQ13: What maintenance tasks are due in the next 30 / 90 / 365 days?"
+    - "CQ16: What are the annual costs by category (energy, water, maintenance, waste)?"
+    - "CQ17: What notification should fire, how far in advance, and through which channel?"
+    - "CQ36: What products/supplies are needed for garden maintenance in a given period? (via care_profile_ref → SCP)"
+  fitness:
+    last_evaluated: "2026-03-08"
+    scores: {}
+  non_goals:
+    - "Work order tracking (execution state, completion records — external store)"
+    - "Contractor/vendor management"
+    - "Parts inventory"
+  status: draft
+  owned_by: null
+  schema_ref_prefix: "MT, NR, CC"
+
+type: object
+additionalProperties: false
+properties:
+  maintenance_tasks:
+    type: array
+    title: "Maintenance Tasks"
+    description: "Recurring maintenance activities. Answers CQ13."
+    items:
+      $ref: "#/$defs/maintenance_task"
+  notification_rules:
+    type: array
+    title: "Notification Rules"
+    description: "Alert triggers for maintenance and compliance. Answers CQ17."
+    items:
+      $ref: "#/$defs/notification_rule"
+  cost_categories:
+    type: array
+    title: "Cost Categories"
+    description: "Budget categories for cost tracking. Answers CQ16."
+    items:
+      $ref: "#/$defs/cost_category"
+
+$defs:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Maintenance Task — MT###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  maintenance_task:
+    type: object
+    title: "Maintenance Task"
+    description: >
+      A recurring maintenance activity targeting a specific element (system,
+      building, zone, plant, etc.). Defines what needs doing, how often
+      (RRULE schedule), and what alerts to trigger. Answers CQ13 (due dates).
+      Used by T1 (calendar generation).
+    required: [id, name, task_type, target_ref, schedule]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "MT### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?MT\\d{3,}$"
+        examples: ["MT001"]
+      name:
+        type: string
+        title: "Task Name"
+        minLength: 1
+        examples: ["Annual Boiler Service", "Lawn Mowing", "Gutter Cleaning"]
+      kind:
+        type: string
+        title: "Maintenance Kind"
+        description: "High-level domain classification. Used to group tasks in reports and PDF generators."
+        enum:
+          - "garden"
+          - "building"
+          - "infrastructure"
+        examples: ["garden"]
+      task_type:
+        type: string
+        title: "Task Type"
+        description: "Classification of the maintenance activity."
+        enum:
+          - "inspection"
+          - "cleaning"
+          - "servicing"
+          - "replacement"
+          - "seasonal-prep"
+          - "treatment"
+          - "pruning"
+          - "mowing"
+          - "watering"
+          - "fertilizing"
+          - "testing"
+          - "calibration"
+          - "lubrication"
+          - "painting"
+          - "sealing"
+          - "mulching"
+          - "soil-amendment"
+          - "pest-protection"
+          - "winter-protection"
+          - "spring-uncovering"
+          - "transplanting"
+        examples: ["servicing"]
+      target_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/maintainable_element_ref"
+        title: "Target Element"
+        description: "The element this task maintains (system, component, building, zone, plant, etc.)."
+      schedule:
+        $ref: "../metamodel.schema.yaml#/$defs/rrule_schedule"
+        title: "Schedule"
+        description: "When and how often this task recurs."
+      estimated_duration_minutes:
+        type: integer
+        title: "Estimated Duration (min)"
+        description: "How long the task typically takes."
+        minimum: 1
+        examples: [60, 30, 120]
+      priority:
+        type: string
+        title: "Priority"
+        description: "Importance level. Critical = safety/warranty risk if missed."
+        enum: ["critical", "high", "medium", "low"]
+        examples: ["high"]
+      season:
+        type: string
+        title: "Season"
+        description: "Season when this task is most relevant."
+        enum: ["spring", "summer", "autumn", "winter", "year-round"]
+      instructions:
+        type: string
+        title: "Instructions"
+        description: "Step-by-step procedure or notes for performing this task."
+        examples: ["1. Turn off boiler\n2. Clean condensate trap\n3. Check flue\n4. Test safety valves"]
+      tools_required:
+        type: array
+        title: "Tools Required"
+        description: "List of tools or supplies needed."
+        items:
+          type: string
+        examples: [["screwdriver", "pressure gauge", "replacement filter"]]
+      # ── Relationships ──
+      warranty_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/warranty_ref"
+        title: "Required by Warranty"
+        description: "Warranty that requires this task to remain valid. Answers CQ14."
+      regulatory_requirement_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/regulatory_requirement_ref"
+        title: "Required by Regulation"
+        description: "Regulatory requirement that mandates this task. Answers CQ15."
+      notification_rule_refs:
+        type: array
+        title: "Notification Rules"
+        description: "Notifications to trigger for this task."
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/notification_rule_ref"
+        uniqueItems: true
+      cost_category_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/cost_category_ref"
+        title: "Cost Category"
+        description: "Budget category for this task's costs."
+      # ── Care Profile Link (v1.6) ──
+      care_profile_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/care_profile_ref"
+        title: "Care Profile"
+        description: >
+          Species care profile this task originates from. Links operational
+          task to species-level protocol. Answers CQ36 (supplies needed).
+          Used by T10 (care calendar) and T11 (shopping list).
+      estimated_cost:
+        type: number
+        title: "Estimated Cost per Occurrence"
+        minimum: 0
+        examples: [250, 0, 50]
+      currency:
+        type: string
+        title: "Currency"
+        pattern: "^[A-Z]{3}$"
+        examples: ["EUR"]
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Notification Rule — NR###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  notification_rule:
+    type: object
+    title: "Notification Rule"
+    description: >
+      Defines how and when to alert about upcoming maintenance tasks or
+      compliance deadlines. Answers CQ17 (channel, lead time). Used by T1.
+    required: [id, name, lead_time_days, channel]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "NR### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?NR\\d{3,}$"
+        examples: ["NR001"]
+      name:
+        type: string
+        title: "Rule Name"
+        minLength: 1
+        examples: ["30-Day Email Reminder", "7-Day Push Alert"]
+      lead_time_days:
+        type: integer
+        title: "Lead Time (days)"
+        description: "How many days before the due date to trigger the notification."
+        minimum: 0
+        examples: [30, 7, 1]
+      channel:
+        $ref: "../metamodel.schema.yaml#/$defs/notification_channel"
+        title: "Delivery Channel"
+      recipient:
+        type: string
+        title: "Recipient"
+        description: "Email address, phone number, or webhook URL."
+        examples: ["owner@example.com"]
+      message_template:
+        type: string
+        title: "Message Template"
+        description: "Template with {task_name}, {due_date}, {target} placeholders."
+        examples: ["{task_name} is due on {due_date} for {target}"]
+      repeat_if_unacknowledged:
+        type: boolean
+        title: "Repeat if Unacknowledged"
+        description: "Whether to resend if the notification is not acknowledged."
+      repeat_interval_days:
+        type: integer
+        title: "Repeat Interval (days)"
+        description: "Days between repeated notifications."
+        minimum: 1
+        examples: [3]
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Cost Category — CC###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  cost_category:
+    type: object
+    title: "Cost Category"
+    description: >
+      A budget classification for grouping costs. Detailed cost records
+      are stored in the external data store keyed by cost_category_ref.
+      Answers CQ16 (annual costs by category). Used by T9.
+    required: [id, name, category_type]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "CC### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?CC\\d{3,}$"
+        examples: ["CC001"]
+      name:
+        type: string
+        title: "Category Name"
+        minLength: 1
+        examples: ["Electricity", "Garden Maintenance", "Heating Fuel"]
+      category_type:
+        type: string
+        title: "Category Type"
+        description: "High-level cost classification."
+        enum:
+          - "energy-electricity"
+          - "energy-gas"
+          - "energy-heating-oil"
+          - "energy-wood"
+          - "energy-pellet"
+          - "water"
+          - "sewage"
+          - "internet"
+          - "telephone"
+          - "heating-maintenance"
+          - "garden-maintenance"
+          - "building-maintenance"
+          - "waste-management"
+          - "insurance"
+          - "property-tax"
+          - "chimney-sweep"
+          - "pest-control"
+          - "security"
+          - "other"
+        examples: ["energy-electricity"]
+      annual_budget_estimate:
+        type: number
+        title: "Annual Budget Estimate"
+        description: "Expected annual spend in this category."
+        minimum: 0
+        examples: [1200, 350]
+      currency:
+        type: string
+        title: "Currency"
+        pattern: "^[A-Z]{3}$"
+        examples: ["EUR"]
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"

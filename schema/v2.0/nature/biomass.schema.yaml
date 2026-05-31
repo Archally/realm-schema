@@ -1,0 +1,156 @@
+---
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "nature/biomass.schema.yaml"
+title: "Biomass Flows"
+description: >
+  Circular biomass flows from organic sources (tree pruning, leaf fall,
+  kitchen waste) through processing (composting, chipping, drying) to
+  productive use (garden amendment, firewood, mulch). Nature plane.
+
+x-gdsm:
+  version: "1.0.0"
+  methodology: "GDSM v1.0"
+  plane: "nature"
+  domain_slice: null
+  designed_for:
+    - id: T3
+      name: "Garden Planning Advisory"
+      mfs_target: 80
+    - id: T7
+      name: "Biomass Circular Flow Diagram"
+      mfs_target: 75
+  competency_questions:
+    - "CQ12: What biomass flows exist — from which source to which use — and what is the annual volume?"
+  fitness:
+    last_evaluated: "2026-03-08"
+    scores: {}
+  non_goals:
+    - "Chemical composition of biomass"
+    - "Detailed compost temperature/moisture tracking (external store)"
+    - "Commercial biomass trading"
+  status: draft
+  owned_by: null
+  schema_ref_prefix: "BMF"
+
+type: object
+additionalProperties: false
+properties:
+  biomass_flows:
+    type: array
+    title: "Biomass Flows"
+    description: "Circular biomass flows from source to use. Answers CQ12."
+    items:
+      $ref: "#/$defs/biomass_flow"
+
+$defs:
+  biomass_flow:
+    type: object
+    title: "Biomass Flow"
+    description: >
+      A circular flow of organic material from source through processing to
+      productive use. Models the estate's closed-loop resource cycles:
+      tree → firewood → heating, leaves → compost → garden. Answers CQ12.
+      Used by T3 (garden advisory) and T7 (flow diagram).
+    required: [id, name, source_type, process, output_type]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "BMF### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?BMF\\d{3,}$"
+        examples: ["BMF001"]
+      name:
+        type: string
+        title: "Flow Name"
+        minLength: 1
+        examples: ["Oak Pruning to Firewood", "Garden Waste to Compost"]
+      # ── Source ──
+      source_type:
+        type: string
+        title: "Source Type"
+        description: "What kind of organic material enters this flow."
+        enum:
+          - "tree-pruning"
+          - "leaf-fall"
+          - "grass-clippings"
+          - "kitchen-waste"
+          - "wood-harvest"
+          - "crop-residue"
+          - "hedge-trimmings"
+          - "fruit-drops"
+          - "weed-clearing"
+        examples: ["tree-pruning"]
+      source_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/biomass_source_ref"
+        title: "Source Element"
+        description: "Specimen or outdoor zone where this biomass originates."
+      # ── Processing ──
+      process:
+        type: string
+        title: "Processing Method"
+        description: "How the raw biomass is transformed."
+        enum:
+          - "composting"
+          - "chipping"
+          - "drying"
+          - "direct-use"
+          - "mulching"
+          - "vermicomposting"
+          - "biochar"
+          - "anaerobic-digestion"
+        examples: ["composting"]
+      processing_location_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/outdoor_zone_ref"
+        title: "Processing Location"
+        description: "Zone where processing happens (e.g., compost area, wood shed)."
+      processing_duration_days:
+        type: integer
+        title: "Processing Duration (days)"
+        description: "Typical time from input to usable output."
+        minimum: 0
+        examples: [90, 180, 0]
+      # ── Output ──
+      output_type:
+        type: string
+        title: "Output Material"
+        description: "What the flow produces after processing."
+        enum:
+          - "compost"
+          - "mulch"
+          - "firewood"
+          - "wood-chips"
+          - "biochar"
+          - "green-waste"
+          - "worm-castings"
+          - "leaf-mold"
+        examples: ["firewood"]
+      destination_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/biomass_destination_ref"
+        title: "Destination"
+        description: "Where the output is used: outdoor zone (garden amendment) or system (fuel for heating)."
+      # ── Volume ──
+      estimated_annual_volume:
+        type: number
+        title: "Annual Volume"
+        description: "Estimated annual throughput."
+        exclusiveMinimum: 0
+        examples: [2.5, 0.8]
+      volume_unit:
+        type: string
+        title: "Volume Unit"
+        enum: ["cubic-meters", "kilograms", "tonnes", "liters"]
+        examples: ["cubic-meters"]
+      seasonal_availability:
+        type: array
+        title: "Seasonal Availability"
+        description: "Months (1-12) when source material is available."
+        items:
+          type: integer
+          minimum: 1
+          maximum: 12
+        uniqueItems: true
+        examples: [[10, 11, 3, 4]]
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"

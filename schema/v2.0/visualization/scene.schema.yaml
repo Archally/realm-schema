@@ -1,0 +1,848 @@
+---
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "visualization/scene.schema.yaml"
+title: "Scene Export Contract"
+description: >
+  Data contract between the Realm model (semantic + construction layers) and
+  visualization consumers (SVG renderers, Three.js viewer, SketchUp export).
+  Defines the shape of renderer-ready data, NOT model data. Scene data is
+  generated on-the-fly (GraphQL) or exported as static JSON (CLI).
+
+  Three scene types: floor_plan_scene (one floor), site_plan_scene (whole
+  property), scene_3d (full 3D). All geometry in absolute model coordinates
+  with rotation applied — no local-to-global transforms needed by renderers.
+
+  Source: Realm model (topology, construction, nature, context, infrastructure).
+  Aligned with existing TypeScript view model types in viewers/realm/plans/src/types.ts.
+
+type: object
+additionalProperties: false
+properties:
+  floor_plan_scene:
+    $ref: "#/$defs/floor_plan_scene"
+  site_plan_scene:
+    $ref: "#/$defs/site_plan_scene"
+  scene_3d:
+    $ref: "#/$defs/scene_3d"
+
+$defs:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Shared Primitives
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  point:
+    type: object
+    title: "2D Point"
+    description: "Point in absolute model coordinates (meters)."
+    required: [x, y]
+    additionalProperties: false
+    properties:
+      x: { type: number }
+      y: { type: number }
+
+  point3d:
+    type: object
+    title: "3D Point"
+    description: "Point in absolute model coordinates with elevation (meters)."
+    required: [x, y, z]
+    additionalProperties: false
+    properties:
+      x: { type: number }
+      y: { type: number }
+      z: { type: number }
+
+  rect:
+    type: object
+    title: "Axis-Aligned Rectangle"
+    description: "Bounding rectangle in model coordinates."
+    required: [left, top, right, bottom]
+    additionalProperties: false
+    properties:
+      left: { type: number }
+      top: { type: number }
+      right: { type: number }
+      bottom: { type: number }
+
+  bounds2d:
+    type: object
+    title: "2D Bounding Box"
+    description: "Axis-aligned bounding box using nested points."
+    required: [min, max]
+    additionalProperties: false
+    properties:
+      min: { $ref: "#/$defs/point" }
+      max: { $ref: "#/$defs/point" }
+
+  bounds3d:
+    type: object
+    title: "3D Bounding Box"
+    required: [min, max]
+    additionalProperties: false
+    properties:
+      min: { $ref: "#/$defs/point3d" }
+      max: { $ref: "#/$defs/point3d" }
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Floor Plan Scene — for SVG floor plan renderer
+  # Aligned with FloorViewModel (viewers/realm/plans/src/types.ts)
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  floor_plan_scene:
+    type: object
+    title: "Floor Plan Scene"
+    description: >
+      Renderer-ready data for a single floor's SVG plan. Rooms as labeled
+      rectangles, merged wall segments, placed openings with symbols,
+      building outline. All coordinates absolute (rotation applied).
+    required: [metadata, rooms, wall_segments, openings, building_outline]
+    additionalProperties: false
+    properties:
+      metadata:
+        $ref: "#/$defs/floor_plan_metadata"
+      rooms:
+        type: array
+        title: "Rooms"
+        items:
+          $ref: "#/$defs/floor_plan_room"
+      wall_segments:
+        type: array
+        title: "Wall Segments"
+        description: "Pre-computed continuous wall segments from construction layer."
+        items:
+          $ref: "#/$defs/floor_plan_wall"
+      openings:
+        type: array
+        title: "Openings"
+        items:
+          $ref: "#/$defs/floor_plan_opening"
+      building_outline:
+        type: array
+        title: "Building Outline"
+        description: "Absolute building outline vertices (rotation applied)."
+        items: { $ref: "#/$defs/point" }
+      annotations:
+        type: array
+        title: "Annotations"
+        items:
+          $ref: "#/$defs/floor_plan_annotation"
+      sensors:
+        type: array
+        title: "Sensors"
+        items:
+          $ref: "#/$defs/floor_plan_sensor"
+
+  floor_plan_metadata:
+    type: object
+    title: "Floor Plan Metadata"
+    required: [building_id, floor_id, level, bounds]
+    additionalProperties: false
+    properties:
+      building_id:
+        type: string
+        title: "Building ID"
+        examples: ["BLD001"]
+      building_name:
+        type: string
+        title: "Building Name"
+      floor_id:
+        type: string
+        title: "Floor ID"
+        examples: ["FLR001"]
+      floor_name:
+        type: string
+        title: "Floor Name"
+        examples: ["Ground Floor"]
+      level:
+        type: integer
+        title: "Floor Level"
+        description: "Floor number (0 = ground floor)."
+        examples: [0, 1, -1]
+      bounds:
+        $ref: "#/$defs/bounds2d"
+        title: "Scene Bounds"
+      north_angle_degrees:
+        type: number
+        title: "North Angle (degrees)"
+        description: "Rotation from model +Y to true north."
+        minimum: 0
+        maximum: 360
+      unit_label:
+        type: string
+        title: "Unit Label"
+        description: "Display unit for dimensions."
+        default: "m"
+        examples: ["m"]
+
+  floor_plan_room:
+    type: object
+    title: "Floor Plan Room"
+    required: [id, name, room_type, rect]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        examples: ["RM001"]
+      name:
+        type: string
+        examples: ["Kitchen"]
+      room_type:
+        type: string
+        examples: ["kitchen", "bedroom", "bathroom"]
+      area_sqm:
+        type: number
+        exclusiveMinimum: 0
+      rect:
+        $ref: "#/$defs/rect"
+        title: "Room Bounding Rectangle"
+      is_outdoor:
+        type: boolean
+        default: false
+
+  floor_plan_wall:
+    type: object
+    title: "Continuous Wall Segment"
+    description: "Merged wall segment with thickness and adjacency."
+    required: [start, end, is_exterior]
+    additionalProperties: false
+    properties:
+      start:
+        $ref: "#/$defs/point"
+      end:
+        $ref: "#/$defs/point"
+      thickness_cm:
+        type: number
+        exclusiveMinimum: 0
+      is_exterior:
+        type: boolean
+      material:
+        type: string
+        examples: ["gazobeton", "karton-gips"]
+      room_ids:
+        type: array
+        description: "Room IDs on either side of this wall."
+        items:
+          type: string
+
+  floor_plan_opening:
+    type: object
+    title: "Placed Opening"
+    description: "Window/door positioned on a wall for SVG rendering."
+    required: [symbol, position, width_m, angle, room_id]
+    additionalProperties: false
+    properties:
+      symbol:
+        type: string
+        title: "Opening Symbol"
+        enum:
+          - "window"
+          - "door"
+          - "terrace-door"
+          - "french-door"
+          - "sliding-door"
+          - "garage-door"
+          - "skylight"
+      position:
+        $ref: "#/$defs/point"
+        description: "Absolute position of the opening's near edge on the wall."
+      width_m:
+        type: number
+        exclusiveMinimum: 0
+      angle:
+        type: number
+        title: "Wall Angle (radians)"
+        description: "Angle of the wall direction (atan2 of start→end), used for SVG rotate() transforms."
+      wall_segment_id:
+        type: string
+        description: >
+          Optional WSG entity ID this opening belongs to. May be omitted when the
+          opening is not attached to a specific wall segment or when wall-segment
+          data is unavailable. Renderers MUST NOT assume this field is present;
+          when absent, rely on position and angle for placement and transforms.
+      sill_height_cm:
+        type: number
+        description: "Distance from floor to bottom of opening."
+        minimum: 0
+      head_height_cm:
+        type: number
+        description: "Distance from floor to top of opening."
+        exclusiveMinimum: 0
+      room_id:
+        type: string
+        description: "Room this opening belongs to."
+
+  floor_plan_annotation:
+    type: object
+    title: "Floor Plan Annotation"
+    description: "Visual annotation line (ridge, divider, stairs marker)."
+    required: [type, start, end]
+    additionalProperties: false
+    properties:
+      type:
+        type: string
+        enum: ["ridge-line", "divider", "stairs-marker"]
+      start:
+        $ref: "#/$defs/point"
+      end:
+        $ref: "#/$defs/point"
+      label:
+        type: string
+
+  floor_plan_sensor:
+    type: object
+    title: "Floor Plan Sensor"
+    description: "Alarm sensor / motion detector rendered as a dot."
+    required: [id, name, position, is_active]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      position:
+        $ref: "#/$defs/point"
+      is_active:
+        type: boolean
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Site Plan Scene — for SVG site plan renderer
+  # Aligned with SiteViewModel (viewers/realm/plans/src/types.ts)
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  site_plan_scene:
+    type: object
+    title: "Site Plan Scene"
+    description: >
+      Renderer-ready data for the whole property site plan (SVG). Zones,
+      buildings, boundaries, vegetation, fence posts. All coordinates
+      absolute (rotation applied).
+    required: [metadata, parcel_boundary, zones, buildings, boundaries]
+    additionalProperties: false
+    properties:
+      metadata:
+        $ref: "#/$defs/site_plan_metadata"
+      parcel_boundary:
+        type: array
+        title: "Parcel Boundary"
+        description: "Parcel outline vertices in model coordinates."
+        items: { $ref: "#/$defs/point" }
+      zones:
+        type: array
+        title: "Outdoor Zones"
+        items:
+          $ref: "#/$defs/site_plan_zone"
+      buildings:
+        type: array
+        title: "Buildings"
+        items:
+          $ref: "#/$defs/site_plan_building"
+      boundaries:
+        type: array
+        title: "Boundary Segments"
+        items:
+          $ref: "#/$defs/site_plan_boundary"
+      specimens:
+        type: array
+        title: "Specimens"
+        items:
+          $ref: "#/$defs/site_plan_specimen"
+      plantings:
+        type: array
+        title: "Plantings"
+        items:
+          $ref: "#/$defs/site_plan_planting"
+      fence_posts:
+        type: array
+        title: "Fence Posts"
+        items:
+          $ref: "#/$defs/site_plan_fence_post"
+      roof_outlines:
+        type: array
+        title: "Roof Outlines"
+        description: "Projected 2D roof plane outlines rendered as dashed overlays."
+        items:
+          $ref: "#/$defs/site_plan_roof_outline"
+
+  site_plan_metadata:
+    type: object
+    title: "Site Plan Metadata"
+    required: [parcel_id, bounds]
+    additionalProperties: false
+    properties:
+      parcel_id:
+        type: string
+        examples: ["LP001"]
+      parcel_name:
+        type: string
+        examples: ["Main Parcel"]
+      area_sqm:
+        type: number
+        exclusiveMinimum: 0
+      bounds:
+        $ref: "#/$defs/bounds2d"
+      north_angle_degrees:
+        type: number
+        minimum: 0
+        maximum: 360
+      unit:
+        type: string
+        default: "m"
+
+  site_plan_zone:
+    type: object
+    title: "Site Plan Zone"
+    required: [id, name, zone_type, position]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        examples: ["OZ001"]
+      name:
+        type: string
+      zone_type:
+        type: string
+        examples: ["garden", "driveway", "parking"]
+      position:
+        $ref: "#/$defs/point"
+      absolute_vertices:
+        type: array
+        items: { $ref: "#/$defs/point" }
+      area_sqm:
+        type: number
+        exclusiveMinimum: 0
+      is_proposed:
+        type: boolean
+        default: false
+
+  site_plan_wing:
+    type: object
+    title: "Site Plan Wing"
+    description: "Wing footprint polygon in absolute model coordinates."
+    required: [id, name, absolute_vertices]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        examples: ["WNG001"]
+      name:
+        type: string
+      absolute_vertices:
+        type: array
+        items: { $ref: "#/$defs/point" }
+
+  site_plan_roof_outline:
+    type: object
+    title: "Site Plan Roof Outline"
+    description: "Projected 2D roof plane outline (dashed overlay)."
+    required: [id, building_id, absolute_vertices, surface_type]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        examples: ["RFP001"]
+      building_id:
+        type: string
+      absolute_vertices:
+        type: array
+        items: { $ref: "#/$defs/point" }
+      surface_type:
+        type: string
+        examples: ["tile-concrete", "metal-standing-seam"]
+      facing_direction:
+        type: string
+        examples: ["N", "S", "E", "W"]
+
+  site_plan_building:
+    type: object
+    title: "Site Plan Building"
+    description: "Building as semantic container with wing geometry."
+    required: [id, name, wings]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        examples: ["BLD001"]
+      name:
+        type: string
+      wings:
+        type: array
+        title: "Wing Footprints"
+        description: "Renderable wing polygons (geometry is per-wing, not per-building)."
+        items: { $ref: "#/$defs/site_plan_wing" }
+      is_neighbor:
+        type: boolean
+        description: "True for neighbor property massing blocks."
+        default: false
+      height_m:
+        type: number
+        description: "Building height for neighbor massing shading."
+        exclusiveMinimum: 0
+      direction:
+        type: string
+        description: "Cardinal direction relative to parcel (neighbor properties)."
+        examples: ["N", "NE", "E"]
+
+  site_plan_boundary:
+    type: object
+    title: "Site Plan Boundary"
+    required: [id, name, boundary_type, points]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        examples: ["BS001"]
+      name:
+        type: string
+      boundary_type:
+        type: string
+        examples: ["fence-panel", "hedge", "wall", "open"]
+      points:
+        type: array
+        items: { $ref: "#/$defs/point" }
+      length_m:
+        type: number
+        exclusiveMinimum: 0
+      height_m:
+        type: number
+        exclusiveMinimum: 0
+
+  site_plan_specimen:
+    type: object
+    title: "Site Plan Specimen"
+    required: [id, name, specimen_type, position]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        examples: ["SPM001"]
+      name:
+        type: string
+      species:
+        type: string
+      specimen_type:
+        type: string
+        examples: ["tree-deciduous", "tree-evergreen", "shrub-deciduous"]
+      position:
+        $ref: "#/$defs/point"
+      canopy_radius_m:
+        type: number
+        exclusiveMinimum: 0
+      height_m:
+        type: number
+        exclusiveMinimum: 0
+
+  site_plan_planting:
+    type: object
+    title: "Site Plan Planting"
+    required: [id, name, planting_type]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        examples: ["PTG001"]
+      name:
+        type: string
+      planting_type:
+        type: string
+        examples: ["hedge", "flower-bed", "lawn"]
+      position:
+        $ref: "#/$defs/point"
+      absolute_vertices:
+        type: array
+        items: { $ref: "#/$defs/point" }
+      is_proposed:
+        type: boolean
+        default: false
+      plant_positions:
+        type: array
+        description: "Individual plant positions (e.g., 6 shrubs along a walkway)."
+        items: { $ref: "#/$defs/point" }
+
+  site_plan_fence_post:
+    type: object
+    title: "Fence Post"
+    required: [seq, position, type]
+    additionalProperties: false
+    properties:
+      seq:
+        type: integer
+        minimum: 1
+      position:
+        $ref: "#/$defs/point"
+      type:
+        type: string
+        enum: ["standard", "end", "reinforced"]
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # 3D Scene — for Three.js / SketchUp export
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  scene_3d:
+    type: object
+    title: "3D Scene"
+    description: >
+      Complete 3D scene data for browser-based visualization (Three.js) or
+      CAD export (SketchUp). All geometry in absolute model coordinates.
+      Supports LOD degradation: shell-only (LOD1) when construction layer
+      is unavailable, detailed walls+roofs (LOD2) when available.
+    required: [metadata, ground_plane, buildings]
+    additionalProperties: false
+    properties:
+      metadata:
+        $ref: "#/$defs/scene_3d_metadata"
+      ground_plane:
+        $ref: "#/$defs/scene_3d_ground"
+      buildings:
+        type: array
+        title: "Buildings"
+        description: "Building geometry at available LOD."
+        items:
+          $ref: "#/$defs/scene_3d_building"
+      boundaries:
+        type: array
+        title: "Boundaries"
+        items:
+          $ref: "#/$defs/scene_3d_boundary"
+      vegetation:
+        type: array
+        title: "Vegetation"
+        items:
+          $ref: "#/$defs/scene_3d_vegetation"
+      neighbors:
+        type: array
+        title: "Neighbor Massing"
+        description: "Neighbor building massing (gray blocks for context)."
+        items:
+          $ref: "#/$defs/scene_3d_neighbor"
+
+  scene_3d_metadata:
+    type: object
+    title: "3D Scene Metadata"
+    required: [realm_name, coordinate_system]
+    additionalProperties: false
+    properties:
+      realm_name:
+        type: string
+      coordinate_system:
+        type: object
+        additionalProperties: false
+        properties:
+          unit:
+            type: string
+            default: "m"
+          north_angle_degrees:
+            type: number
+            minimum: 0
+            maximum: 360
+          vertical_datum:
+            type: string
+            examples: ["ground-floor-surface"]
+      bounds_3d:
+        $ref: "#/$defs/bounds3d"
+
+  scene_3d_ground:
+    type: object
+    title: "Ground Plane"
+    description: "Flat ground plane (terrain mesh out of scope for v2)."
+    additionalProperties: false
+    properties:
+      boundary_vertices:
+        type: array
+        items: { $ref: "#/$defs/point" }
+      elevation_m:
+        type: number
+        default: 0
+
+  scene_3d_building:
+    type: object
+    title: "3D Building"
+    description: >
+      Building geometry. wings (per-wing shells) are always present (LOD1).
+      wall_segments, roof_planes, and slabs are optional (LOD2 — requires
+      construction layer).
+    required: [id, name, wings]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        examples: ["BLD001"]
+      name:
+        type: string
+      wings:
+        type: array
+        title: "Wing Shells (LOD1)"
+        description: "Per-wing extruded blocks. Each wing has its own footprint and heights."
+        items:
+          $ref: "#/$defs/scene_3d_wing"
+      wall_segments:
+        type: array
+        title: "Wall Geometry (LOD2)"
+        description: "Detailed wall geometry from construction layer."
+        items:
+          type: object
+          required: [id, vertices_3d, is_exterior]
+          additionalProperties: false
+          properties:
+            id:
+              type: string
+              examples: ["WSG001"]
+            vertices_3d:
+              type: array
+              description: "3D vertices defining the wall face polygon."
+              items: { $ref: "#/$defs/point3d" }
+            is_exterior:
+              type: boolean
+            openings:
+              type: array
+              items:
+                type: object
+                required: [type, position_3d, width_m, height_m]
+                additionalProperties: false
+                properties:
+                  type:
+                    type: string
+                    examples: ["window", "door"]
+                  position_3d:
+                    $ref: "#/$defs/point3d"
+                    description: "Bottom-left corner of opening in 3D."
+                  width_m:
+                    type: number
+                    exclusiveMinimum: 0
+                  height_m:
+                    type: number
+                    exclusiveMinimum: 0
+      roof_planes:
+        type: array
+        title: "Roof Planes (LOD2)"
+        items:
+          type: object
+          required: [id, vertices_3d]
+          additionalProperties: false
+          properties:
+            id:
+              type: string
+              examples: ["RFP001"]
+            vertices_3d:
+              type: array
+              items: { $ref: "#/$defs/point3d" }
+            facing_direction:
+              type: string
+              examples: ["N", "S", "E", "W"]
+            material:
+              type: string
+              examples: ["tile-concrete", "metal-standing-seam"]
+      slabs:
+        type: array
+        title: "Floor Slabs (LOD2)"
+        items:
+          type: object
+          required: [id, outline_vertices, elevation_m]
+          additionalProperties: false
+          properties:
+            id:
+              type: string
+              examples: ["SLB001"]
+            outline_vertices:
+              type: array
+              items: { $ref: "#/$defs/point" }
+            elevation_m:
+              type: number
+            thickness_m:
+              type: number
+              exclusiveMinimum: 0
+
+  scene_3d_wing:
+    type: object
+    title: "3D Wing Shell"
+    description: "Per-wing extruded block for LOD0/LOD1 rendering."
+    required: [id, name, footprint_vertices]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        examples: ["WNG001"]
+      name:
+        type: string
+      footprint_vertices:
+        type: array
+        description: "Absolute 2D footprint vertices (building position applied)."
+        items: { $ref: "#/$defs/point" }
+      ground_elevation_m:
+        type: number
+      eave_elevation_m:
+        type: number
+      ridge_elevation_m:
+        type: number
+
+  scene_3d_boundary:
+    type: object
+    title: "3D Boundary"
+    required: [id, boundary_type, vertices]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+      boundary_type:
+        type: string
+      vertices:
+        type: array
+        items: { $ref: "#/$defs/point" }
+      height_m:
+        type: number
+        exclusiveMinimum: 0
+
+  scene_3d_vegetation:
+    type: object
+    title: "3D Vegetation"
+    required: [id, entity_type, position]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+      entity_type:
+        type: string
+        enum: ["specimen", "planting"]
+      position:
+        $ref: "#/$defs/point3d"
+      canopy_shape:
+        type: string
+        examples: ["sphere", "cone", "column"]
+      canopy_radius_m:
+        type: number
+        exclusiveMinimum: 0
+      height_m:
+        type: number
+        exclusiveMinimum: 0
+      crown_bottom_height_m:
+        type: number
+        minimum: 0
+      render_as:
+        type: string
+        description: "Planting render style (only for entity_type: planting)."
+        examples: ["extruded-polygon", "ground-cover"]
+      footprint_vertices:
+        type: array
+        items: { $ref: "#/$defs/point" }
+
+  scene_3d_neighbor:
+    type: object
+    title: "3D Neighbor Massing"
+    required: [id, footprint_vertices, building_height_m]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+      footprint_vertices:
+        type: array
+        items: { $ref: "#/$defs/point" }
+      ground_elevation_m:
+        type: number
+        default: 0
+      building_height_m:
+        type: number
+        exclusiveMinimum: 0
+      roof_type:
+        type: string
+        examples: ["gable", "hip", "flat"]
+      ridge_height_m:
+        type: number
+        exclusiveMinimum: 0

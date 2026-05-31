@@ -1,0 +1,116 @@
+{
+  "workbench.iconTheme": "material-icon-theme",
+
+  "yaml.schemas": {
+    "schema/v2.0/realm.schema.yaml": [
+      "**/.realm/**/realm.yaml"
+    ],
+    "schema/v2.0/realm-config.schema.yaml": [
+      "**/.realm/**/realm-config.yaml"
+    ],
+    "schema/v2.0/migration.schema.yaml": [
+      "**/.realm/**/migrations.yaml",
+      "**/.realm/**/*.migration.yaml"
+    ],
+    "schema/v2.0/risks.schema.yaml": [
+      "**/.realm/**/risks.yaml"
+    ],
+    "schema/v2.0/events.schema.yaml": [
+      "**/.realm/**/events.yaml"
+    ],
+    "schema/v2.0/topology/estate.schema.yaml": [
+      "**/.realm/**/topology/estate.yaml"
+    ],
+    "schema/v2.0/topology/construction.schema.yaml": [
+      "**/.realm/**/topology/construction.yaml"
+    ],
+    "schema/v2.0/topology/boundary.schema.yaml": [
+      "**/.realm/**/topology/boundary.yaml"
+    ],
+    "schema/v2.0/topology/spatial.schema.yaml": [
+      "**/.realm/**/topology/spatial.yaml"
+    ],
+    "schema/v2.0/topology/equipment.schema.yaml": [
+      "**/.realm/**/topology/equipment.yaml"
+    ],
+    "schema/v2.0/topology/tools.schema.yaml": [
+      "**/.realm/**/topology/tools.yaml"
+    ],
+    "schema/v2.0/infrastructure/systems.schema.yaml": [
+      "**/.realm/**/infrastructure/systems.yaml"
+    ],
+    "schema/v2.0/infrastructure/network.schema.yaml": [
+      "**/.realm/**/infrastructure/network.yaml"
+    ],
+    "schema/v2.0/nature/vegetation.schema.yaml": [
+      "**/.realm/**/nature/vegetation.yaml"
+    ],
+    "schema/v2.0/nature/biomass.schema.yaml": [
+      "**/.realm/**/nature/biomass.yaml"
+    ],
+    "schema/v2.0/nature/care.schema.yaml": [
+      "**/.realm/**/nature/care.yaml"
+    ],
+    "schema/v2.0/nature/soil.schema.yaml": [
+      "**/.realm/**/nature/soil.yaml"
+    ],
+    "schema/v2.0/nature/recommendations.schema.yaml": [
+      "**/.realm/**/nature/recommendations.yaml"
+    ],
+    "schema/v2.0/operations/maintenance.schema.yaml": [
+      "**/.realm/**/operations/maintenance.yaml"
+    ],
+    "schema/v2.0/operations/compliance.schema.yaml": [
+      "**/.realm/**/operations/compliance.yaml"
+    ],
+    "schema/v2.0/context/surroundings.schema.yaml": [
+      "**/.realm/**/context/surroundings.yaml"
+    ],
+    "schema/v2.0/context/persons.schema.yaml": [
+      "**/.realm/**/context/persons.yaml"
+    ],
+    "schema/v2.0/visualization/scene.schema.yaml": [
+      "**/.realm/**/visualization/*.scene.yaml",
+      "**/.realm/**/visualization/scene.yaml"
+    ]
+  },
+
+  "material-icon-theme.files.associations": {
+    "realm.yaml": "settings",
+    "realm-config.yaml": "settings",
+    "estate.yaml": "3d",
+    "construction.yaml": "cmake",
+    "boundary.yaml": "verilog",
+    "spatial.yaml": "3d",
+    "equipment.yaml": "robots",
+    "tools.yaml": "robots",
+    "systems.yaml": "circuit",
+    "network.yaml": "circuit",
+    "vegetation.yaml": "leaf",
+    "biomass.yaml": "leaf",
+    "care.yaml": "leaf",
+    "soil.yaml": "leaf",
+    "recommendations.yaml": "todo",
+    "maintenance.yaml": "todo",
+    "compliance.yaml": "lock",
+    "surroundings.yaml": "map",
+    "persons.yaml": "tree",
+    "migrations.yaml": "diff",
+    "*.migration.yaml": "diff",
+    "risks.yaml": "error",
+    "events.yaml": "log",
+    "*.scene.yaml": "image",
+    "*.schema.yaml": "3d"
+  },
+
+  "material-icon-theme.folders.associations": {
+    ".realm": "sandbox",
+    "topology": "class",
+    "infrastructure": "connection",
+    "nature": "public",
+    "operations": "tools",
+    "context": "context"
+  },
+
+  "workbench.colorTheme": "One Dark Flatland Monokai"
+}

@@ -1,0 +1,520 @@
+---
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "nature/care.schema.yaml"
+title: "Species Care Profiles"
+description: >
+  Species-level care protocols: annual care calendars with monthly activities,
+  supplies/product recommendations, pest/disease protection protocols, pruning
+  guides, and soil requirements. One profile per species serves all specimens
+  and plantings of that species (DRY). Nature plane.
+
+x-gdsm:
+  version: "1.6.0"
+  methodology: "GDSM v1.0"
+  plane: "nature"
+  domain_slice: null
+  designed_for:
+    - id: T3
+      name: "Garden Planning Advisory"
+      mfs_target: 80
+    - id: T10
+      name: "Seasonal Garden Care Calendar"
+      mfs_target: 85
+    - id: T11
+      name: "Shopping List Generator"
+      mfs_target: 75
+  competency_questions:
+    - "CQ35: What care activities are needed for each plant species in each month?"
+    - "CQ36: What products/supplies are needed for garden maintenance in a given period and what do they cost?"
+    - "CQ38: What pest/disease threats affect each species and what is the protection protocol?"
+    - "CQ39: When and how should each species be pruned, and with what technique?"
+    - "CQ40: What purchases should be made for a given month/season?"
+  fitness:
+    last_evaluated: "2026-03-15"
+    scores: {}
+  non_goals:
+    - "Current health state tracking per individual plant (external store)"
+    - "Harvest yield tracking and forecasting"
+    - "Commercial product catalog or price history (prices are estimates)"
+    - "Botanical taxonomy beyond species name and common name"
+  status: draft
+  owned_by: null
+  schema_ref_prefix: "SCP"
+
+type: object
+additionalProperties: false
+properties:
+  care_profiles:
+    type: array
+    title: "Species Care Profiles"
+    description: "Species-level care protocols. Answers CQ35, CQ36, CQ38, CQ39, CQ40."
+    items:
+      $ref: "#/$defs/species_care_profile"
+
+$defs:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Species Care Profile — SCP###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  species_care_profile:
+    type: object
+    title: "Species Care Profile"
+    description: >
+      Annual care protocol for a plant species: monthly activity calendar,
+      supplies with dosage and pricing, pest/disease threats with prevention
+      and treatment, pruning guide, and soil requirements. One SCP serves
+      all specimens (SPM) and plantings (PTG) of that species via
+      care_profile_ref. Answers CQ35 (monthly care), CQ36 (supplies/costs),
+      CQ38 (threats), CQ39 (pruning). Used by T10 (care calendar), T11
+      (shopping list generator).
+    required: [id, name, species]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "SCP### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?SCP\\d{3,}$"
+        examples: ["SCP001"]
+      name:
+        type: string
+        title: "Profile Name"
+        minLength: 1
+        examples: ["Tuja zachodnia 'Smaragd' — profil pielęgnacji"]
+      species:
+        type: string
+        title: "Species (Latin)"
+        description: "Botanical species name this profile applies to."
+        minLength: 1
+        examples: ["Thuja occidentalis 'Smaragd'", "Betula pendula"]
+      common_name:
+        type: string
+        title: "Common Name"
+        examples: ["Tuja zachodnia szmaragd", "Brzoza brodawkowata"]
+
+      # ── Applicability ──
+      applicable_specimen_types:
+        type: array
+        title: "Applicable Specimen Types"
+        description: "Which specimen_type values this profile covers."
+        items:
+          type: string
+          enum:
+            - "tree-deciduous"
+            - "tree-evergreen"
+            - "tree-fruit"
+            - "shrub-deciduous"
+            - "shrub-evergreen"
+            - "shrub-fruit"
+            - "perennial"
+            - "climber"
+            - "bamboo"
+            - "palm"
+        uniqueItems: true
+      applicable_planting_types:
+        type: array
+        title: "Applicable Planting Types"
+        description: "Which planting_type values this profile covers."
+        items:
+          type: string
+          enum:
+            - "hedge"
+            - "flower-bed"
+            - "vegetable-bed"
+            - "herb-garden"
+            - "ground-cover"
+            - "lawn"
+            - "meadow-section"
+            - "mixed-border"
+            - "raised-bed"
+            - "container-group"
+            - "climbing-wall"
+            - "green-roof"
+        uniqueItems: true
+
+      # ── Annual Care Calendar ──
+      care_calendar:
+        type: array
+        title: "Annual Care Calendar"
+        description: >
+          Monthly care activities for this species. Each entry covers one
+          month (1-12) with a list of activities to perform. Answers CQ35
+          (what to do when). Used by T10 (calendar generation).
+        items:
+          $ref: "#/$defs/care_month"
+        maxItems: 12
+
+      # ── Soil Requirements ──
+      soil_requirements:
+        $ref: "#/$defs/soil_requirement"
+        title: "Soil Requirements"
+        description: "Preferred soil conditions for this species. Answers CQ37 indirectly."
+
+      # ── Pest/Disease Protection Protocol ──
+      known_threats:
+        type: array
+        title: "Known Threats"
+        description: >
+          Pests, diseases, and environmental threats this species is
+          susceptible to, with prevention and treatment protocols.
+          This is a PROTOCOL (what to do), not STATE (is it currently
+          affected). Current health state is tracked externally.
+          Answers CQ38. Used by T10 (seasonal protection schedule).
+        items:
+          $ref: "#/$defs/known_threat"
+
+      # ── Pruning Guide ──
+      pruning_guide:
+        $ref: "#/$defs/pruning_guide"
+        title: "Pruning Guide"
+        description: "Pruning types, timing, and techniques. Answers CQ39."
+
+      # ── General ──
+      hardiness_zone_min:
+        type: string
+        title: "Minimum Hardiness Zone"
+        description: "Coldest USDA zone this species tolerates."
+        pattern: "^\\d{1,2}[ab]$"
+        examples: ["5a", "6b"]
+      growth_rate:
+        type: string
+        title: "Growth Rate"
+        description: "General growth speed classification."
+        enum: ["very-slow", "slow", "moderate", "fast", "very-fast"]
+      lifespan_years:
+        type: integer
+        title: "Expected Lifespan (years)"
+        minimum: 1
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Care Month — one month in the annual calendar
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  care_month:
+    type: object
+    title: "Care Month"
+    description: "Care activities for a specific month (1-12)."
+    required: [month]
+    additionalProperties: false
+    properties:
+      month:
+        type: integer
+        title: "Month"
+        description: "Calendar month (1=January, 12=December)."
+        minimum: 1
+        maximum: 12
+      activities:
+        type: array
+        title: "Activities"
+        description: "Care activities to perform this month."
+        items:
+          $ref: "#/$defs/care_activity"
+      notes:
+        type: string
+        title: "Notes"
+        description: "General notes for this month (weather considerations, etc.)."
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Care Activity — a single care action within a month
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  care_activity:
+    type: object
+    title: "Care Activity"
+    description: "A single care action: fertilizing, spraying, pruning, etc."
+    required: [activity_type, description]
+    additionalProperties: false
+    properties:
+      activity_type:
+        type: string
+        title: "Activity Type"
+        description: "Classification of the care activity."
+        enum:
+          - "fertilizing"
+          - "watering"
+          - "pruning"
+          - "hedge-trim"
+          - "treatment"
+          - "pest-protection"
+          - "mulching"
+          - "soil-amendment"
+          - "planting"
+          - "transplanting"
+          - "winter-protection"
+          - "spring-uncovering"
+          - "deadheading"
+          - "weeding"
+          - "inspection"
+          - "harvesting"
+          - "training"
+          - "staking"
+        examples: ["fertilizing"]
+      description:
+        type: string
+        title: "Description"
+        description: "What exactly to do."
+        minLength: 1
+      priority:
+        type: string
+        title: "Priority"
+        description: "Importance of this activity."
+        enum: ["critical", "high", "medium", "low"]
+      condition:
+        type: string
+        title: "Condition"
+        description: "When to perform: always, or only if a condition is met."
+        examples: ["jeśli temperatura > 5°C", "po ostatnim przymrozku", "przy braku opadów > 7 dni"]
+      supplies:
+        type: array
+        title: "Supplies Needed"
+        description: >
+          Products, materials, and supplies needed for this activity.
+          Includes dosage, estimated pricing, and store recommendations.
+          Answers CQ36 (what to buy) and CQ40 (shopping list).
+        items:
+          $ref: "#/$defs/supply_item"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Supply Item — product/material sub-object (not a separate entity)
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  supply_item:
+    type: object
+    title: "Supply Item"
+    description: >
+      A product or material needed for a care activity. Contains dosage,
+      estimated pricing, and store info. NOT a separate entity — lives
+      as sub-object on care activities and soil amendments. Prices are
+      estimates and may change.
+    required: [name]
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+        title: "Product Name"
+        description: "Commercial product name or generic material name."
+        minLength: 1
+        examples: ["Substral nawóz do tuj 350g", "Topsin M 500 SC 100ml"]
+      dosage:
+        type: string
+        title: "Dosage"
+        description: "Application rate per unit area or per plant."
+        examples: ["30g/m²", "5ml/l wody", "1 opakowanie/10 roślin", "200g/drzewo"]
+      quantity_per_application:
+        type: string
+        title: "Quantity per Application"
+        description: "How much product is needed for one application cycle."
+        examples: ["1 opakowanie 350g", "2 worki 25kg", "50ml roztworu"]
+      estimated_price_pln:
+        type: number
+        title: "Estimated Price (PLN)"
+        description: "Approximate retail price in Polish Zloty. May change over time."
+        minimum: 0
+        examples: [25, 35, 15]
+      store_name:
+        type: string
+        title: "Store Name"
+        description: "Recommended store or retailer."
+        examples: ["Leroy Merlin", "Castorama", "Allegro", "sklep ogrodniczy"]
+      product_url:
+        type: string
+        title: "Product URL"
+        description: "Link to product page (may become outdated)."
+        format: uri
+      alternative_products:
+        type: array
+        title: "Alternative Products"
+        description: "Alternative products that can be used instead."
+        items:
+          type: string
+        examples: [["Target nawóz do iglaków 1kg", "Agrecol nawóz do tuj 1.2kg"]]
+      notes:
+        type: string
+        title: "Notes"
+        description: "Usage notes, warnings, or tips."
+        examples: ["Nie stosować w pełnym słońcu", "Przechowywać w temp. 5-25°C"]
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Known Threat — pest, disease, or environmental threat protocol
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  known_threat:
+    type: object
+    title: "Known Threat"
+    description: >
+      A pest, disease, or environmental threat this species is susceptible
+      to. Models the PROTECTION PROTOCOL, not the current state. Includes
+      risk season, symptoms to watch for, and prevention/treatment methods
+      with supplies. Answers CQ38.
+    required: [threat_type, name]
+    additionalProperties: false
+    properties:
+      threat_type:
+        type: string
+        title: "Threat Type"
+        description: "Category of threat."
+        enum:
+          - "pest"
+          - "disease-fungal"
+          - "disease-bacterial"
+          - "disease-viral"
+          - "animal"
+          - "environmental"
+        examples: ["disease-fungal"]
+      name:
+        type: string
+        title: "Threat Name"
+        description: "Common name of the pest, disease, or threat."
+        minLength: 1
+        examples: ["Fytoftora (Phytophthora)", "Mszyce (Aphididae)", "Przędziorki"]
+      risk_months:
+        type: array
+        title: "Risk Months"
+        description: "Months (1-12) when this threat is most dangerous."
+        items:
+          type: integer
+          minimum: 1
+          maximum: 12
+        uniqueItems: true
+        examples: [[5, 6, 7, 8]]
+      symptoms:
+        type: string
+        title: "Symptoms"
+        description: "Visual signs to watch for in early detection."
+        examples: ["Brązowienie igieł od dołu, czarne przebarwienia na pędach"]
+      prevention_method:
+        type: string
+        title: "Prevention Method"
+        description: "Proactive measures to prevent this threat."
+      treatment_method:
+        type: string
+        title: "Treatment Method"
+        description: "Reactive measures if threat is detected."
+      supplies:
+        type: array
+        title: "Supplies for Protection"
+        description: "Products needed for prevention and/or treatment."
+        items:
+          $ref: "#/$defs/supply_item"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Pruning Guide — pruning protocol for the species
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  pruning_guide:
+    type: object
+    title: "Pruning Guide"
+    description: >
+      Pruning protocol: types of pruning applicable, optimal timing,
+      technique description, and tools. Answers CQ39.
+    additionalProperties: false
+    properties:
+      pruning_types:
+        type: array
+        title: "Pruning Types"
+        description: "Types of pruning applicable to this species."
+        items:
+          type: string
+          enum:
+            - "formative"
+            - "sanitary"
+            - "rejuvenation"
+            - "thinning"
+            - "topiary"
+            - "hedge-trim"
+            - "deadheading"
+            - "pollarding"
+            - "coppicing"
+            - "espalier"
+            - "crown-reduction"
+            - "root-pruning"
+        uniqueItems: true
+      best_months:
+        type: array
+        title: "Best Months"
+        description: "Optimal months (1-12) for pruning."
+        items:
+          type: integer
+          minimum: 1
+          maximum: 12
+        uniqueItems: true
+        examples: [[2, 3]]
+      technique:
+        type: string
+        title: "Technique"
+        description: "Detailed pruning technique description."
+      frequency_description:
+        type: string
+        title: "Frequency"
+        description: "How often to prune."
+        examples: ["2× w roku: czerwiec i wrzesień", "Co roku w marcu"]
+      tools_required:
+        type: array
+        title: "Tools Required"
+        description: "Tools needed for pruning."
+        items:
+          type: string
+        examples: [["sekator", "nożyce do żywopłotu", "piła ogrodowa"]]
+      warnings:
+        type: string
+        title: "Warnings"
+        description: "What NOT to do when pruning this species."
+        examples: ["Nie przycinać po 15 września — nowe pędy nie zdążą zdrewnieć przed zimą"]
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Soil Requirement — preferred soil conditions
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  soil_requirement:
+    type: object
+    title: "Soil Requirement"
+    description: "Preferred soil conditions for this species."
+    additionalProperties: false
+    properties:
+      ph_min:
+        type: number
+        title: "Minimum pH"
+        description: "Lowest acceptable soil pH."
+        minimum: 0
+        maximum: 14
+        examples: [5.5]
+      ph_max:
+        type: number
+        title: "Maximum pH"
+        description: "Highest acceptable soil pH."
+        minimum: 0
+        maximum: 14
+        examples: [7.0]
+      preferred_soil_types:
+        type: array
+        title: "Preferred Soil Types"
+        description: "Soil types where this species thrives."
+        items:
+          type: string
+          enum:
+            - "clay"
+            - "sandy"
+            - "loam"
+            - "silt"
+            - "peat"
+            - "chalky"
+            - "clay-loam"
+            - "sandy-loam"
+            - "forest-humus"
+        uniqueItems: true
+      drainage_preference:
+        type: string
+        title: "Drainage Preference"
+        enum: ["poor", "moderate", "good", "excessive"]
+      moisture_preference:
+        type: string
+        title: "Moisture Preference"
+        enum: ["dry", "slightly-moist", "moist", "wet"]
+      notes:
+        type: string
+        title: "Notes"
+        description: "Additional soil requirements or tips."
+        examples: ["Unikać gleb wapiennych — preferuje lekko kwaśne"]

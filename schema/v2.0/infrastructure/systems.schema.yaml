@@ -1,0 +1,385 @@
+---
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "infrastructure/systems.schema.yaml"
+title: "Infrastructure Systems"
+description: >
+  Infrastructure systems (energy, heating, water, electrical), their physical
+  components, and utility grid connections. Covers all built systems from
+  solar panels to sewage. Infrastructure plane.
+
+x-gdsm:
+  version: "1.3.0"
+  methodology: "GDSM v1.0"
+  plane: "infrastructure"
+  domain_slice: null
+  designed_for:
+    - id: T1
+      name: "Maintenance Calendar Generation"
+      mfs_target: 90
+    - id: T2
+      name: "Property Inventory Report"
+      mfs_target: 85
+    - id: T6
+      name: "Infrastructure Topology Map"
+      mfs_target: 75
+  competency_questions:
+    - "CQ04: What energy systems serve this property, what type are they, and what is their rated capacity?"
+    - "CQ05: What is the heating system configuration — type, fuel source, capacity, installation date, warranty?"
+    - "CQ08: What utility connections exist (grid, gas, water, fiber) and who are the providers?"
+  fitness:
+    last_evaluated: "2026-03-08"
+    scores: {}
+  non_goals:
+    - "Real-time telemetry values (delegated to external store)"
+    - "Detailed electrical circuit diagrams"
+    - "Plumbing pipe-level schematics"
+  status: draft
+  owned_by: null
+  schema_ref_prefix: "SYS, CMP, UC"
+
+type: object
+additionalProperties: false
+properties:
+  systems:
+    type: array
+    title: "Infrastructure Systems"
+    description: "All infrastructure systems. Answers CQ04, CQ05."
+    items:
+      $ref: "#/$defs/system"
+  components:
+    type: array
+    title: "System Components"
+    description: "Physical components across all systems. Answers CQ05."
+    items:
+      $ref: "#/$defs/component"
+  utility_connections:
+    type: array
+    title: "Utility Connections"
+    description: "External grid connections. Answers CQ08."
+    items:
+      $ref: "#/$defs/utility_connection"
+
+$defs:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # System — SYS###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  system:
+    type: object
+    title: "Infrastructure System"
+    description: >
+      A major infrastructure system serving the property. Typed by function
+      (heating, solar, irrigation, etc.) with capacity, fuel source, and
+      installation details. Answers CQ04, CQ05. Used by T1 (maintenance),
+      T2 (inventory), T6 (topology map).
+    required: [id, name, system_type]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "SYS### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?SYS\\d{3,}$"
+        examples: ["SYS001", "heating.SYS001"]
+      name:
+        type: string
+        title: "System Name"
+        minLength: 1
+        examples: ["Central Heating", "Rooftop Solar Array", "Garden Irrigation"]
+      system_type:
+        type: string
+        title: "System Type"
+        description: "Functional classification of this infrastructure system."
+        enum:
+          - "heating"
+          - "cooling"
+          - "ventilation"
+          - "hot-water"
+          - "solar-electric"
+          - "solar-thermal"
+          - "battery-storage"
+          - "ev-charging"
+          - "electrical-distribution"
+          - "irrigation"
+          - "drainage"
+          - "sewage"
+          - "rainwater-collection"
+          - "gas-distribution"
+          - "fire-safety"
+          - "security"
+          - "lighting-outdoor"
+        examples: ["heating"]
+      fuel_source:
+        type: string
+        title: "Fuel / Energy Source"
+        description: "Primary energy input for this system. Answers CQ04."
+        enum:
+          - "electricity"
+          - "natural-gas"
+          - "propane"
+          - "heating-oil"
+          - "wood"
+          - "pellet"
+          - "biomass"
+          - "solar"
+          - "ground-heat"
+          - "air-heat"
+          - "water-heat"
+          - "diesel"
+          - "none"
+        examples: ["natural-gas"]
+      rated_capacity:
+        type: number
+        title: "Rated Capacity"
+        description: "Nominal capacity in the capacity_unit. E.g., 25 kW, 10 kWp, 500 L."
+        exclusiveMinimum: 0
+        examples: [25, 10]
+      capacity_unit:
+        type: string
+        title: "Capacity Unit"
+        description: "Unit for rated_capacity."
+        examples: ["kW", "kWp", "kWh", "L", "m³/h", "A"]
+      efficiency_rating:
+        type: string
+        title: "Efficiency Rating"
+        description: "Energy efficiency label or COP/SCOP value."
+        examples: ["A++", "COP 4.2", "92% AFUE"]
+      installed_date:
+        $ref: "../metamodel.schema.yaml#/$defs/iso_date"
+        title: "Installation Date"
+        description: "Date the system was installed or commissioned."
+      manufacturer:
+        type: string
+        title: "Manufacturer"
+        examples: ["Viessmann", "SMA", "Grundfos"]
+      model_name:
+        type: string
+        title: "Model Name"
+        examples: ["Vitodens 200-W", "Sunny Tripower 10.0"]
+      serial_number:
+        type: string
+        title: "Serial Number"
+        examples: ["VB2W-2026-0042"]
+      # ── Location ──
+      building_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/building_ref"
+        title: "Located in Building"
+        description: "Building where this system's main unit is installed."
+      room_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/room_ref"
+        title: "Located in Room"
+        description: "Specific room (e.g., boiler room, utility room)."
+      outdoor_zone_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/outdoor_zone_ref"
+        title: "Located in Outdoor Zone"
+        description: "For outdoor systems (solar panels, irrigation, heat pump outdoor unit)."
+      position:
+        $ref: "../metamodel.schema.yaml#/$defs/position"
+        title: "Position"
+        description: "Position on property grid (for outdoor-mounted systems)."
+      # ── Relationships ──
+      utility_connection_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/utility_connection_ref"
+        title: "Fed by Utility Connection"
+        description: "Grid connection that supplies this system."
+      warranty_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/warranty_ref"
+        title: "Active Warranty"
+        description: "Warranty covering this system. Answers CQ05."
+      component_refs:
+        type: array
+        title: "Components"
+        description: "Components that make up this system."
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/component_ref"
+        uniqueItems: true
+      feeds_system_refs:
+        type: array
+        title: "Feeds Systems"
+        description: "Other systems this one feeds energy/fluid to. Used by T6."
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/system_ref"
+        uniqueItems: true
+      # ── Distribution (v1.3) ──
+      distribution_zones:
+        type: array
+        title: "Distribution Zones"
+        description: >
+          Rooms and outdoor zones served by this system with their functional
+          roles. Captures the system's coverage topology. Used by T6.
+        items:
+          type: object
+          title: "Distribution Zone"
+          required: [zone_ref]
+          additionalProperties: false
+          properties:
+            zone_ref:
+              $ref: "../metamodel.schema.yaml#/$defs/room_or_zone_ref"
+              title: "Served Room or Zone"
+              description: "Room or outdoor zone served by this system."
+            role:
+              type: string
+              title: "Role"
+              description: "Function of this zone in the system distribution."
+              examples: ["underfloor-heating", "radiator", "tap", "solenoid-valve", "circuit"]
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Component — CMP###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  component:
+    type: object
+    title: "System Component"
+    description: >
+      A physical part within an infrastructure system: boiler, radiator,
+      pump, inverter, valve, tank, filter, etc. Granular enough for
+      maintenance targeting. Answers CQ05 (configuration detail).
+      Used by T1 (maintenance), T2 (inventory).
+    required: [id, name, system_ref]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "CMP### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?CMP\\d{3,}$"
+        examples: ["CMP001", "boiler.CMP003"]
+      name:
+        type: string
+        title: "Component Name"
+        minLength: 1
+        examples: ["Condensing Boiler Unit", "Circulation Pump", "Solar Inverter"]
+      component_type:
+        type: string
+        title: "Component Type"
+        description: "Functional type of this component."
+        examples: ["boiler", "radiator", "pump", "inverter", "battery-pack", "valve", "tank", "filter", "thermostat", "expansion-vessel", "flue"]
+      system_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/system_ref"
+        title: "Parent System"
+        description: "Infrastructure system this component belongs to."
+      manufacturer:
+        type: string
+        title: "Manufacturer"
+        examples: ["Viessmann", "Grundfos"]
+      model_name:
+        type: string
+        title: "Model Name"
+        examples: ["Vitodens 200-W B2HF-25"]
+      serial_number:
+        type: string
+        title: "Serial Number"
+      installed_date:
+        $ref: "../metamodel.schema.yaml#/$defs/iso_date"
+        title: "Installation Date"
+      expected_lifespan_years:
+        type: integer
+        title: "Expected Lifespan (years)"
+        description: "Manufacturer's expected service life. Used by T1 for replacement planning."
+        minimum: 1
+        examples: [15, 25]
+      room_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/room_ref"
+        title: "Located in Room"
+      position:
+        $ref: "../metamodel.schema.yaml#/$defs/position"
+        title: "Position"
+      warranty_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/warranty_ref"
+        title: "Active Warranty"
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Utility Connection — UC###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  utility_connection:
+    type: object
+    title: "Utility Connection"
+    description: >
+      An external utility grid connection bringing a service to the property:
+      electricity, gas, water supply, sewage, internet. Answers CQ08 (what
+      connections exist, who provides them). Used by T2 (inventory), T9 (costs).
+    required: [id, name, connection_type, provider]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "UC### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?UC\\d{3,}$"
+        examples: ["UC001"]
+      name:
+        type: string
+        title: "Connection Name"
+        minLength: 1
+        examples: ["Grid Electricity", "Municipal Water", "Fiber Internet"]
+      connection_type:
+        type: string
+        title: "Connection Type"
+        description: "Type of utility service."
+        enum:
+          - "electricity"
+          - "natural-gas"
+          - "propane-delivery"
+          - "heating-oil-delivery"
+          - "water-supply"
+          - "sewage"
+          - "fiber-internet"
+          - "cable-internet"
+          - "dsl"
+          - "telephone"
+          - "district-heating"
+        examples: ["electricity"]
+      provider:
+        type: string
+        title: "Provider / Utility Company"
+        description: "Name of the service provider."
+        examples: ["Stadtwerke München", "Deutsche Telekom"]
+      contract_id:
+        type: string
+        title: "Contract ID"
+        description: "Customer or contract number with the provider."
+        examples: ["KD-2026-12345"]
+      meter_id:
+        type: string
+        title: "Meter ID"
+        description: "Utility meter identifier for readings."
+        examples: ["1-EMH-00123456"]
+      capacity:
+        type: number
+        title: "Connection Capacity"
+        description: "Maximum capacity of this connection."
+        exclusiveMinimum: 0
+        examples: [63, 1000, 25]
+      capacity_unit:
+        type: string
+        title: "Capacity Unit"
+        examples: ["A", "Mbps", "m³/h", "kW"]
+      monthly_cost_estimate:
+        type: number
+        title: "Estimated Monthly Cost"
+        description: "Average monthly cost in the specified currency."
+        minimum: 0
+        examples: [85, 45]
+      currency:
+        type: string
+        title: "Currency"
+        pattern: "^[A-Z]{3}$"
+        examples: ["EUR"]
+      entry_point_position:
+        $ref: "../metamodel.schema.yaml#/$defs/position"
+        title: "Entry Point"
+        description: "Where the utility enters the property (for spatial layout)."
+      cost_category_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/cost_category_ref"
+        title: "Cost Category"
+        description: "Budget category for this connection's costs."
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"

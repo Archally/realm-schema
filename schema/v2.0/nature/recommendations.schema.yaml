@@ -1,0 +1,319 @@
+---
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "nature/recommendations.schema.yaml"
+title: "Planting Recommendations"
+description: >
+  Analytically-derived planting recommendations for privacy screening, noise
+  reduction, shade canopy, windbreak, fruit production, and ornamental value.
+  Each recommendation identifies a specific species, position, and rationale.
+  Accepted recommendations become migrations (MIG###) and, upon completion,
+  create new specimens (SPM###) or plantings (PTG###). Nature plane.
+
+x-gdsm:
+  version: "1.7.0"
+  methodology: "GDSM v1.0"
+  plane: "nature"
+  domain_slice: null
+  designed_for:
+    - id: T3
+      name: "Garden Planning Advisory"
+      mfs_target: 85
+    - id: T4
+      name: "Boundary & Privacy Assessment"
+      mfs_target: 85
+    - id: T5
+      name: "2D Spatial Layout Visualization"
+      mfs_target: 80
+  competency_questions:
+    - "CQ41: What trees or shrubs are recommended for privacy screening along each boundary?"
+    - "CQ42: What is the expected timeline for a recommendation to become effective?"
+    - "CQ43: What are the foundation safety constraints for each recommended position?"
+    - "CQ44: What shade impact will a recommended planting have on existing zones?"
+  fitness:
+    last_evaluated: "2026-03-16"
+    scores: {}
+  non_goals:
+    - "Automated species selection (recommendations are human-authored analytical artifacts)"
+    - "Real-time growth simulation"
+  status: released
+  owned_by: null
+  schema_ref_prefix: "REC"
+
+type: object
+additionalProperties: false
+properties:
+  planting_recommendations:
+    type: array
+    title: "Planting Recommendations"
+    description: "Analytically-derived planting recommendations. Answers CQ41–CQ44."
+    items:
+      $ref: "#/$defs/planting_recommendation"
+
+$defs:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Planting Recommendation — REC###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  planting_recommendation:
+    type: object
+    title: "Planting Recommendation"
+    description: >
+      A specific, positioned recommendation to plant a tree or shrub.
+      Includes species, growth form, screening function, foundation safety
+      analysis, shade impact assessment, and maintenance expectations.
+      Answers CQ41 (screening), CQ42 (timeline), CQ43 (safety), CQ44 (shade).
+    required: [id, name, species, recommendation_type, growth_form, outdoor_zone_ref, priority, status]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "REC### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?REC\\d{3,}$"
+        examples: ["REC001"]
+      name:
+        type: string
+        title: "Recommendation Name"
+        minLength: 1
+        examples: ["Świerk serbski — ekran prywatności naprzeciwko salonu"]
+      # ── Species ──
+      species:
+        type: string
+        title: "Species (Latin)"
+        description: "Botanical species name (including cultivar if relevant)."
+        examples: ["Picea omorika", "Carpinus betulus 'Fastigiata'"]
+      common_name:
+        type: string
+        title: "Common Name"
+        examples: ["Świerk serbski", "Grab pospolity kolumnowy"]
+      specimen_type:
+        type: string
+        title: "Growth Form Category"
+        description: "Same enum as specimen.specimen_type."
+        enum:
+          - "tree-deciduous"
+          - "tree-evergreen"
+          - "tree-fruit"
+          - "shrub-deciduous"
+          - "shrub-evergreen"
+          - "shrub-fruit"
+          - "perennial"
+          - "climber"
+      # ── Classification ──
+      recommendation_type:
+        type: string
+        title: "Recommendation Type"
+        description: "Primary function this planting serves."
+        enum:
+          - "privacy-screen"
+          - "noise-barrier"
+          - "shade-canopy"
+          - "windbreak"
+          - "ornamental"
+          - "fruit"
+          - "ground-cover"
+          - "combined"
+        examples: ["privacy-screen"]
+      growth_form:
+        type: string
+        title: "Growth Form"
+        description: "How the tree will be trained or allowed to grow."
+        enum:
+          - "free-growing"
+          - "pleached"
+          - "espalier"
+          - "columnar"
+          - "multi-stem"
+          - "standard"
+          - "topiary"
+        examples: ["free-growing", "pleached"]
+      # ── Dimensions ──
+      target_height_m:
+        type: number
+        title: "Target Height (m)"
+        description: "Expected height at maturity or management target."
+        exclusiveMinimum: 0
+        examples: [10, 6]
+      target_width_m:
+        type: number
+        title: "Target Width (m)"
+        description: "Expected canopy width at maturity."
+        exclusiveMinimum: 0
+        examples: [3, 0.4]
+      growth_rate_cm_per_year:
+        type: number
+        title: "Growth Rate (cm/year)"
+        exclusiveMinimum: 0
+        examples: [30, 50]
+      planting_height_cm:
+        type: number
+        title: "Planting Height (cm)"
+        description: "Expected height of nursery stock at purchase."
+        exclusiveMinimum: 0
+        examples: [200, 150]
+      # ── Botanical Properties ──
+      leaf_retention:
+        type: string
+        title: "Leaf Retention"
+        description: "Foliage behavior through seasons. Marcescent = retains dead leaves through winter."
+        enum: ["deciduous", "evergreen", "semi-evergreen", "marcescent"]
+      sun_requirement:
+        type: string
+        title: "Sun Requirement"
+        enum: ["full-sun", "partial-sun", "partial-shade", "full-shade"]
+      water_requirement:
+        type: string
+        title: "Water Requirement"
+        enum: ["drought-tolerant", "low", "moderate", "high"]
+      hardiness_zone_min:
+        type: string
+        title: "Minimum Hardiness Zone"
+        pattern: "^\\d{1,2}[ab]$"
+        examples: ["4a", "6b"]
+      bloom_months:
+        type: array
+        title: "Bloom Months"
+        items:
+          type: integer
+          minimum: 1
+          maximum: 12
+        uniqueItems: true
+      # ── Spatial ──
+      outdoor_zone_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/outdoor_zone_ref"
+        title: "Target Zone"
+        description: "Outdoor zone where the tree will be planted."
+      boundary_segment_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/boundary_segment_ref"
+        title: "Screened Boundary"
+        description: "Boundary segment this recommendation screens (if privacy/noise function)."
+      position:
+        $ref: "../metamodel.schema.yaml#/$defs/position"
+        title: "Proposed Position"
+        description: "Proposed planting position on the property grid."
+      # ── Screening Function ──
+      screening_function:
+        type: object
+        title: "Screening Function"
+        description: "How this planting provides screening (privacy, noise, wind)."
+        additionalProperties: false
+        properties:
+          screens_from_direction:
+            $ref: "../metamodel.schema.yaml#/$defs/compass_direction"
+            title: "Screens From Direction"
+          addresses_concern_refs:
+            type: array
+            title: "Addresses Concerns"
+            description: "Shared concerns (SC###) this recommendation mitigates."
+            items:
+              $ref: "../metamodel.schema.yaml#/$defs/shared_concern_ref"
+            uniqueItems: true
+          effective_height_range_min_m:
+            type: number
+            title: "Effective Screening Start (m)"
+            description: "Height at which screening begins (above ground). For pleached: stem height."
+            minimum: 0
+          effective_height_range_max_m:
+            type: number
+            title: "Effective Screening End (m)"
+            description: "Height at which screening ends (top of canopy/crown)."
+            exclusiveMinimum: 0
+          year_round_coverage_percent:
+            type: integer
+            title: "Year-Round Coverage (%)"
+            description: "Screening effectiveness in winter: 100=evergreen, ~70=marcescent, ~40=deciduous skeleton."
+            minimum: 0
+            maximum: 100
+          years_to_effectiveness:
+            type: number
+            title: "Years to Effectiveness"
+            description: "Estimated years until this planting provides meaningful screening."
+            minimum: 0
+      # ── Foundation Safety ──
+      foundation_safety:
+        type: object
+        title: "Foundation Safety Assessment"
+        description: "Root system risk analysis relative to nearby structures."
+        additionalProperties: false
+        properties:
+          root_type:
+            type: string
+            title: "Root System Type"
+            enum: ["deep-taproot", "deep-spreading", "shallow-spreading", "compact", "non-aggressive"]
+          distance_to_nearest_foundation_m:
+            type: number
+            title: "Distance to Nearest Foundation (m)"
+            description: "Distance from proposed position to nearest building foundation."
+            minimum: 0
+          nearest_structure_ref:
+            $ref: "../metamodel.schema.yaml#/$defs/building_ref"
+            title: "Nearest Structure"
+          risk_level:
+            type: string
+            title: "Root Risk Level"
+            enum: ["none", "low", "moderate", "high"]
+          notes:
+            type: string
+            title: "Safety Notes"
+      # ── Shade Impact ──
+      shade_impact:
+        type: object
+        title: "Shade Impact Assessment"
+        description: "Predicted shading effect on own property zones."
+        additionalProperties: false
+        properties:
+          shadow_direction:
+            $ref: "../metamodel.schema.yaml#/$defs/compass_direction"
+            title: "Shadow Direction"
+            description: "Primary direction shadow falls (afternoon = E for W-boundary trees)."
+          affected_zone_refs:
+            type: array
+            title: "Affected Zones"
+            items:
+              $ref: "../metamodel.schema.yaml#/$defs/outdoor_zone_ref"
+            uniqueItems: true
+          description:
+            type: string
+            title: "Impact Description"
+      # ── Maintenance & Economics ──
+      maintenance_level:
+        type: string
+        title: "Maintenance Level"
+        description: "Expected annual maintenance effort."
+        enum: ["zero", "minimal", "low", "moderate", "high"]
+      maintenance_description:
+        type: string
+        title: "Maintenance Description"
+        examples: ["Cięcie formujące 2× w roku (VII + II), ~30 min na sesję"]
+      estimated_cost_pln:
+        type: number
+        title: "Estimated Cost (PLN)"
+        description: "Estimated purchase cost for nursery stock."
+        minimum: 0
+      # ── Lifecycle ──
+      priority:
+        type: string
+        title: "Priority"
+        enum: ["critical", "high", "medium", "low"]
+      status:
+        type: string
+        title: "Status"
+        description: "Lifecycle status of this recommendation."
+        enum: ["proposed", "accepted", "rejected", "planted"]
+      planting_season:
+        type: string
+        title: "Recommended Planting Season"
+        description: "Best time to plant this species."
+        examples: ["X–XI 2026", "III–IV 2027"]
+      linked_migration_ref:
+        type: string
+        title: "Linked Migration"
+        description: "Migration entity created when this recommendation is accepted."
+        pattern: "^([a-z][a-z0-9-]*\\.)?MIG\\d{3,}$"
+      rationale:
+        type: string
+        title: "Rationale"
+        description: "Analytical justification for this recommendation."
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"

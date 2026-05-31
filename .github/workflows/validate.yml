@@ -1,0 +1,14 @@
+name: Validate & Test
+on: [push, pull_request]
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      # Step 1 ships the schema only — install-only smoke check.
+      # Upgraded to build / validate:examples / check:examples / test
+      # as the validator (Step 2), example (Step 3), and tools (Steps 5–6) land.
+      - run: npm install
