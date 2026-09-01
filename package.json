@@ -35,7 +35,7 @@
   "scripts": {
     "validate": "node tools/validator/src/cli.mjs",
     "validate:examples": "node tools/validator/src/cli.mjs --model examples/willow-cottage/.realm/v2.2 --schemas schema/v2.2",
-    "doc-snippets": "node tools/doc-snippet-validate/cli.mjs docs/file-conventions.md --schemas schema/v2.2 --validator \"node tools/validator/src/cli.mjs --model {model} --schemas {schemas}\""
+    "doc-snippets": "node tools/doc-snippet-validate/cli.mjs docs/file-conventions.md docs/modeling-guide.md --schemas schema/v2.2 --validator \"node tools/validator/src/cli.mjs --model {model} --schemas {schemas}\""
   },
   "bin": {
     "realm-validate": "tools/validator/src/cli.mjs"
