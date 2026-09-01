@@ -1,16 +1,16 @@
 # Archally Realm Schema
 
-YAML-based schema for modeling **private real estate** — a dual-layer spatial format covering physical topology, infrastructure systems, vegetation and garden care, maintenance operations, and surrounding context in a single machine-readable model.
+YAML-based schema for modeling **private real estate**: a dual-layer spatial format covering physical topology, infrastructure systems, vegetation and garden care, maintenance operations, and surrounding context in a single machine-readable model.
 
 [![npm version](https://img.shields.io/npm/v/@archally/realm-schema)](https://www.npmjs.com/package/@archally/realm-schema)
 [![license](https://img.shields.io/npm/l/@archally/realm-schema)](./LICENSE)
 [![CI](https://github.com/archally/realm-schema/actions/workflows/validate.yml/badge.svg)](https://github.com/archally/realm-schema/actions)
 
-> **Status: the schema, the validator and a worked example ship; the rest is still
-> coming.** What you get today is the complete v2.2 schema under
-> [`schema/v2.2/`](./schema/v2.2/), the reference validator, and Willow Cottage. The
-> remaining tools (semantic checker, model builder, renderer) and the full documentation
-> arrive in subsequent releases.
+> **Status: the schema, the validator, the documentation and a worked example ship; the
+> tooling is still arriving.** What you get today is the complete v2.2 schema under
+> [`schema/v2.2/`](./schema/v2.2/), the reference validator, three guides under
+> [`docs/`](./docs/), and Willow Cottage. The remaining tools (semantic checker, model
+> builder, renderer) arrive in subsequent releases.
 
 ## Validating a model
 
@@ -53,9 +53,23 @@ Two conventions are worth reading the example for, because both are easy to inve
 position and so carries absolute vertices; and a wall segment is a directed line whose
 `left_space_ref` and `right_space_ref` are read from that direction.
 
+## Documentation
+
+Three guides, and they answer different questions:
+
+| Guide | Read it for |
+|---|---|
+| [File conventions](./docs/file-conventions.md) | Where a model's files go, which filenames the validator maps to a schema, and how the typed identifiers are formed |
+| [Modeling guide](./docs/modeling-guide.md) | How to author a model: what to write first, the coordinate conventions and where they invert, the two spatial layers, and what a passing validation run does and does not claim |
+| [Schema reference](./docs/schema-reference.md) | Every entity and every field. Generated from the schema itself, so it states what the validator enforces |
+
+Every YAML example in the guides that names a file is validated against the shipped schema
+in CI, as a real model rather than as a fragment. So an example you copy loads, and one that
+would not fails the build before it reaches you.
+
 ## What is a Realm model?
 
-A **realm** is a single formal model of a property — what physically exists, what systems serve it, what grows there, how it is maintained, and what surrounds it. It is expressed as plain YAML files organized into five planes plus cross-cutting concerns.
+A **realm** is a single formal model of a property - what physically exists, what systems serve it, what grows there, how it is maintained, and what surrounds it. It is expressed as plain YAML files organized into five planes plus cross-cutting concerns.
 
 | Plane | Question | Key entities |
 |-------|----------|--------------|
@@ -67,13 +81,13 @@ A **realm** is a single formal model of a property — what physically exists, w
 
 Cross-cutting: estate changes, risks/issues, and a chronological event log.
 
-**Dual-layer spatial model:** a *semantic layer* (human-authored rooms, walls, openings) and a *construction layer* (deterministic wall segments, floor slabs, roof planes) — so a model rich enough to draw an accurate plan is also rich enough for spatial reasoning.
+**Dual-layer spatial model:** a *semantic layer* (human-authored rooms, walls, openings) and a *construction layer* (deterministic wall segments, floor slabs, roof planes) - so a model rich enough to draw an accurate plan is also rich enough for spatial reasoning.
 
 ## Schema
 
 - **Version:** 2.2.0 (JSON Schema draft 2020-12, expressed in YAML)
 - **Methodology:** GDSM v1.0 (Goal-Driven Schema Modeling)
-- **Location:** [`schema/v2.2/`](./schema/v2.2/) — root composition + `metamodel`, `estate-change`, `risks`, `events`, `realm-config`, and per-plane subfolders (`topology/`, `infrastructure/`, `nature/`, `operations/`, `context/`, `visualization/`).
+- **Location:** [`schema/v2.2/`](./schema/v2.2/) - root composition + `metamodel`, `estate-change`, `risks`, `events`, `realm-config`, and per-plane subfolders (`topology/`, `infrastructure/`, `nature/`, `operations/`, `context/`, `visualization/`).
 
 Each plane's data files are validated independently against their own schema; cross-cutting files validate against `estate-change`, `risks`, and `events`.
 
@@ -81,4 +95,4 @@ v2.2 is the only published line. Models written against 2.1 need the `migration`
 
 ## License
 
-[Apache-2.0](./LICENSE) — © 2026 Adam Walkowski. Part of the [Archally](https://archally.pro) family of modeling schemas (alongside [blueprint-schema](https://github.com/archally/blueprint-schema) and [brandvoice-schema](https://github.com/archally/brandvoice-schema)).
+[Apache-2.0](./LICENSE) - © 2026 Adam Walkowski. Part of the [Archally](https://archally.pro) family of modeling schemas (alongside [blueprint-schema](https://github.com/archally/blueprint-schema) and [brandvoice-schema](https://github.com/archally/brandvoice-schema)).

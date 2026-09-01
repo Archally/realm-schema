@@ -3,6 +3,23 @@
 All notable changes to `@archally/realm-schema`. Versions follow the schema version:
 a model declaring `schemaVersion: "2.2.0"` validates against `schema/v2.2/`.
 
+## 2.2.2 - 2026-09-01
+
+### Added
+
+- Documentation, under [`docs/`](./docs/). [File
+  conventions](./docs/file-conventions.md) covers where a model's files go, the twenty one
+  filenames the validator maps to a schema, the thirty nine typed identifier prefixes, and
+  what happens to a file the map does not know. The [modeling
+  guide](./docs/modeling-guide.md) covers authoring: what to write first, why `position` is
+  absolute while `footprint` is relative and the two places that inverts, how the
+  construction layer is derived from the semantic one, and what each of the five validation
+  layers asserts. The [schema reference](./docs/schema-reference.md) lists every entity and
+  field, and is generated from the schema's own descriptions.
+- Every YAML example in the guides is validated as a real model in CI, against the shipped
+  schema and by the shipped validator, together with a seeded bad example proving the check
+  can still fail.
+
 ## 2.2.1 - 2026-09-01
 
 ### Added
