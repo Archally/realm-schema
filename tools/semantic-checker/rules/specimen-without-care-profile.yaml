@@ -1,0 +1,19 @@
+engineVersion: "0.1"
+rules:
+  - id: specimen-without-care-profile
+    severity: warn
+    description: >-
+      A specimen is an individual plant or tree, and the care it needs is held once per
+      species in a care profile rather than repeated on every specimen. Without the link
+      the specimen is present on the plan and absent from every calendar the model can
+      produce: nothing knows when to prune it, feed it or check it. `care_profile_ref` is
+      optional in the schema because a specimen can legitimately be recorded before its
+      species profile exists, which makes this a gap to close rather than an error.
+    find:
+      entity_type: specimen
+    check:
+      has_relation:
+        direction: out
+        type: care-profile
+        exists: true
+    message: 'Specimen "{id}" ({name|''unnamed''}) has no care profile - it will appear on no maintenance calendar.'

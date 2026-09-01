@@ -15,6 +15,8 @@
 # job example-willow-cottage examples/willow-cottage/.realm/v2.2
 # job docs docs
 # job doc-snippet-validate tools/doc-snippet-validate extras-ok
+# job semantic-checker tools/semantic-checker extras-ok
+# job semantic-rules tools/semantic-checker/rules
 
 8288415d2bf8f3f6c474f2c5c479a40b6d4699278e0b493855f6e4e24139ba28  validator/cli.mjs
 4d4a337cc52fd24fd80ea976ff74bf405ef7688f3ecc772691b26b35157c1728  validator/core/cross-layer.mjs
@@ -52,3 +54,12 @@ cb0a74bd05dc0ce1e023254a205a930d3fc2d6257230029214dd8f4784234d91  example-willow
 902b8eb29d526b72180c1c189393ca492b7d3b2601d136f9a1f270cb37bcabb0  docs/schema-reference.md
 0f841384f43fd9a517b9945d1fcfd04a1f88815c7ccbe0633becd0c0f6febc1d  doc-snippet-validate/cli.mjs
 45c58a8df27c6d69c29c764a8ed32163f626cad50b7cb8b03e03a71ae6755cc9  doc-snippet-validate/extract.mjs
+e1d3f141827965c39a0808fa9be78e15e4f8d895100e9fd154fec0d27a23b383  semantic-checker/adapter.mjs
+76c10705b55746ff394820dd950efdb87fa28e7accb405e6ae4f8559408a84d0  semantic-checker/cli.mjs
+7fbff4500aee6f750e29a9894ed821a3bf7f99b9e4517aa819ec8e021f60cf1f  semantic-rules/boundary-segment-without-parcel.yaml
+c637f965d4b8bb2caa5e7f1a7e1e3a9b75722dc420d037db3e46101f3b5b203d  semantic-rules/estate-change-without-cost.yaml
+f1797c8adfa92e9c6f7b4b91aacdd43f80fa5de27d05824a17199572dca68dd1  semantic-rules/planting-without-care-profile.yaml
+39bbb557240f8e8454fd4afaeca806de4285b97d8dd84cf2fed08754fab5716c  semantic-rules/risk-without-mitigation.yaml
+cd2d2c756f0c6130c257ac3c011023346f0d95f9599f5d624094f01fdc60e255  semantic-rules/specimen-without-care-profile.yaml
+2d83d5601e9f8ea551eacaac3cd338afd1f841a2c6a64a033c238a97adc22894  semantic-rules/system-without-components.yaml
+8816896cea54d0cd7c5c5abd7504769c55429f00f1dc28b42755e09b4d128303  semantic-rules/undescribed-authored-entity.yaml

@@ -1,0 +1,14 @@
+engineVersion: "0.1"
+rules:
+  - id: estate-change-without-cost
+    severity: info
+    description: >-
+      Planned work without an estimate cannot be sequenced against a budget, which is one
+      of the two things an estate-change register exists for. Info rather than warn
+      because an early-stage change legitimately has no number yet, and because a change
+      already applied has a real cost recorded elsewhere.
+    find:
+      entity_type: estate_change
+    check:
+      any_non_empty: [data.estimated_cost]
+    message: 'Estate change "{id}" ({name|''unnamed''}) carries no cost estimate - it cannot be sequenced against a budget.'

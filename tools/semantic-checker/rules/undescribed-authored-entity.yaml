@@ -1,0 +1,29 @@
+engineVersion: "0.1"
+rules:
+  - id: undescribed-authored-entity
+    severity: info
+    description: >-
+      A name says what something is called; a description says what it is, and it is the
+      only place the reasoning behind a value survives. An undescribed entity is valid
+      YAML and becomes a bare row in every report and viewer the model produces.
+
+      The construction layer is EXCLUDED, and that exclusion is the whole of what makes
+      this rule usable. Measured on the worked example: of 51 entities carrying no
+      description, all 51 were construction geometry - 43 wall segments, 5 roof planes,
+      3 slabs. Every one is derived from the rooms above it rather than authored, so
+      prose there would be noise generated to satisfy a rule. Without the exclusion this
+      rule reports 51 findings of which zero are actionable, which is how a checker
+      teaches people to ignore it.
+
+      Companion to, not a replacement for, a coverage measure: this asks only whether
+      prose exists at all, so it stays silent on a description that is a restatement of
+      the name.
+    find:
+      all: true
+    filter:
+      type_not_in: [wall_segment, roof_plane, floor_slab, ceiling_slab]
+    check:
+      any_non_empty:
+        - data.description
+        - data.notes
+    message: '{type} "{id}" ({name|''unnamed''}) has no description - a reader gets the name and nothing else.'

@@ -1,0 +1,17 @@
+engineVersion: "0.1"
+rules:
+  - id: risk-without-mitigation
+    severity: info
+    description: >-
+      A recorded risk with no mitigation and no planned change addressing it is a worry
+      written down rather than a decision taken. Info rather than warn: accepting a risk
+      is a legitimate answer, and a register whose purpose is partly to hold the accepted
+      ones would go permanently yellow if this were louder. State the acceptance in
+      `mitigation` and the finding goes away.
+    find:
+      entity_type: risk
+    check:
+      any_of:
+        - any_non_empty: [data.mitigation]
+        - has_relation: { direction: out, type: estate-change, exists: true }
+    message: 'Risk "{id}" ({name|''unnamed''}) records no mitigation and no planned change addressing it.'

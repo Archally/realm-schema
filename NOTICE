@@ -1,0 +1,16 @@
+Archally Realm Schema
+Copyright 2026 Adam Walkowski
+
+This product includes software developed for the Archally project
+(https://archally.pro).
+
+This repository is dual-licensed. See LICENSE for the authoritative map:
+  - The schema, examples, docs, reference validator and doc-snippet validator
+    are under the Apache License, Version 2.0 (LICENSE-APACHE).
+  - The semantic checker is under the Functional Source License, Version 1.1,
+    ALv2 Future License (LICENSE-FSL).
+
+The rule engine the semantic checker runs on, @archally/semantic-checker, is a
+separate Apache-2.0 package and is not covered by the FSL section.
+
+"Archally" and "Realm" are trademarks of Adam Walkowski / Archally.

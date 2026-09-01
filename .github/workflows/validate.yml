@@ -27,6 +27,14 @@ jobs:
       - name: The example model validates
         run: npm run validate:examples
 
+      - name: The model-quality rules run on the example
+        # Reports rather than gates: these rules gather findings about what the schema
+        # deliberately leaves optional, so a finding is a judgement about a model and not
+        # a defect in it. What CI asserts here is that the checker RUNS and that its rule
+        # pack loads - a pack that failed to load would otherwise report zero findings and
+        # read exactly like a clean model.
+        run: npm run check:examples
+
       - name: The YAML in the guides validates
         # A worked example in a guide is the shape a reader copies. When the schema moves and
         # the guide does not, the documentation starts teaching a model the validator rejects,

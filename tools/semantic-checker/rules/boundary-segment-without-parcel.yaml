@@ -1,0 +1,18 @@
+engineVersion: "0.1"
+rules:
+  - id: boundary-segment-without-parcel
+    severity: warn
+    description: >-
+      A boundary run states which parcels it borders, and a segment between two parcels
+      names both. Without any, the run has no place in the estate: it cannot be assigned
+      to a site plan, and a question about which fences belong to this property cannot be
+      answered from the model. `parcel_refs` is optional because a boundary can be
+      surveyed before the parcels it divides are recorded.
+    find:
+      entity_type: boundary_segment
+    check:
+      has_relation:
+        direction: out
+        type: parcel
+        exists: true
+    message: 'Boundary segment "{id}" ({name|''unnamed''}) borders no parcel - it belongs to no site plan.'

@@ -1,0 +1,17 @@
+engineVersion: "0.1"
+rules:
+  - id: planting-without-care-profile
+    severity: warn
+    description: >-
+      The same gap as `specimen-without-care-profile`, one level up: a planting is a
+      categorical group rather than an individual, and it carries the care needs of
+      everything in it. An unlinked planting silently removes a whole bed or hedge from
+      the maintenance calendar rather than one plant.
+    find:
+      entity_type: planting
+    check:
+      has_relation:
+        direction: out
+        type: care-profile
+        exists: true
+    message: 'Planting "{id}" ({name|''unnamed''}) has no care profile - the whole group appears on no maintenance calendar.'
