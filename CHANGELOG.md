@@ -3,6 +3,34 @@
 All notable changes to `@archally/realm-schema`. Versions follow the schema version:
 a model declaring `schemaVersion: "2.2.0"` validates against `schema/v2.2/`.
 
+## 2.2.6 - 2026-09-02
+
+### Added
+
+- A renderer: `npm run render -- <dir> --document all -o <directory>`, or `realm-render`.
+  Two markdown documents with embedded Mermaid diagrams - **`property.md`**, what the
+  property is and what has to be done to it, and **`garden-care.md`**, what grows there and
+  what it needs in which month, including a twelve-month calendar collating every care
+  activity, soil amendment and seasonal threat the model schedules.
+- `--check`, which compares a document against the model instead of writing it and exits
+  non-zero when the two have parted. Rendering reads no clock, so an unchanged model
+  produces the same bytes and a committed document can be gated in CI.
+- A **render kit** under `tools/render-kit`, holding the projections both documents are
+  built from: the containment tree, maintenance grouped by kind, planned work grouped by
+  status, the care calendar, vegetation per zone and systems with their parts. Available to
+  anything building its own view of a model.
+- The worked example now ships its two rendered documents at
+  `examples/willow-cottage/.specs/`.
+
+### Changed
+
+- A built model now carries the model's own identity from `realm.yaml` - name, description,
+  location, declared schema version - under `realm`. Previously every entity came through
+  and the thing they belong to did not, so a consumer could describe a property's rooms
+  without being able to say whose they were.
+- The model quality section of `property.md` runs the published rule pack rather than any
+  logic of its own, so a document and `realm-check` cannot disagree about one model.
+
 ## 2.2.5 - 2026-09-01
 
 ### Added

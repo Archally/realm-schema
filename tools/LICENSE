@@ -17,6 +17,9 @@ Functional Source License 1.1 (ALv2 Future License) - see ../LICENSE-FSL
 
   - model-builder/          the model graph, and the relation vocabulary typing it
   - semantic-checker/       model-quality rules, and the adapter feeding them
+  - render-kit/             the projections a property document is made of - what
+                            contains what, what is due when, what grows where
+  - renderer/               the two documents built from them
 
   Free for any Permitted Purpose (internal use, non-commercial education and
   research, and professional services you provide to others). NOT for a

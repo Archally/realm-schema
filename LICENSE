@@ -39,6 +39,8 @@ with an Apache 2.0 future grant (full text: ./LICENSE-FSL, SPDX: FSL-1.1-ALv2):
   - tools/model-builder/           the model graph, and the relation vocabulary that
                                    says what each edge means
   - tools/semantic-checker/        model-quality rules and the adapter that feeds them
+  - tools/render-kit/              the projections a property document is made of
+  - tools/renderer/                the two documents built from them
 
 You may use, modify, and redistribute this code for any Permitted Purpose -
 which includes internal use, non-commercial education and research, and

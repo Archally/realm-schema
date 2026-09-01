@@ -107,6 +107,48 @@ unconnected.
 Point it at a model directory or at the project folder above it; both build the same
 model.
 
+## Rendering a model as documents
+
+```bash
+npm run render -- path/to/.realm/v2.2 --document all -o ./docs
+```
+
+Two markdown documents, because a property model has two readers.
+
+**`property.md`** is what the property is and what has to be done to it: a containment
+diagram of parcel, buildings, wings, floors, rooms and zones; rooms per building with their
+areas and services; the grounds, the boundary and who is on the other side of it; the
+installed systems with their parts and supply; the maintenance schedule grouped the way the
+work is carried out; planned work grouped by status, with the risks and open issues; and the
+people, obligations and warranties around it.
+
+**`garden-care.md`** is what grows there and what it needs in which month: zones per parcel,
+specimens and plantings with their species and condition, the soil profiles, and a
+twelve-month calendar collating every care activity, soil amendment and seasonal threat the
+model schedules.
+
+Both carry a **model coverage** section built by running the quality rules, so a document
+never offers a second opinion about a model the checker has already judged.
+
+| Option | Effect |
+|---|---|
+| `--document property\|garden-care\|all` | which document to render; `all` needs `-o <directory>` |
+| `--output`, `-o` | a file, or a directory when rendering both; stdout when omitted |
+| `--title`, `-t` | document title; the model's own name by default |
+| `--check` | compare against the output instead of writing, and exit non-zero if it differs |
+| `--geometry` | enumerate the derived construction layer rather than summarising it |
+| `--relations` | append the full relation table |
+| `--no-coverage` | omit the model coverage section |
+
+**A rendered document carries no timestamp**, so re-rendering an unchanged model produces
+the same bytes. That is what makes `--check` worth wiring into CI: a document committed
+beside its model either still describes it or fails the build.
+
+The derived construction layer - wall segments, roof planes, slabs - is summarised rather
+than listed. It is a third of the worked example's entities and is computed from the rooms
+and wings above it, so listing it first would bury the property in its own scaffolding.
+`--geometry` prints it when you are auditing that layer.
+
 ## What is a Realm model?
 
 A **realm** is a single formal model of a property - what physically exists, what systems serve it, what grows there, how it is maintained, and what surrounds it. It is expressed as plain YAML files organized into five planes plus cross-cutting concerns.
