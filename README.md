@@ -6,12 +6,25 @@ YAML-based schema for modeling **private real estate** — a dual-layer spatial 
 [![license](https://img.shields.io/npm/l/@archally/realm-schema)](./LICENSE)
 [![CI](https://github.com/archally/realm-schema/actions/workflows/validate.yml/badge.svg)](https://github.com/archally/realm-schema/actions)
 
-> **Status: the schema is published; the tooling is not yet.** What ships today is the
-> complete v2.2 schema under [`schema/v2.2/`](./schema/v2.2/) — enough to author and
-> editor-validate a model. A worked example, the bundled tools (validator, semantic
-> checker, model builder, renderer) and the full documentation arrive in subsequent
-> releases. Until then, validate through your editor: [`.vscode/settings.json`](./.vscode/settings.json)
-> maps each plane's files to its schema, and any JSON-Schema-aware editor can do the same.
+> **Status: the schema and the validator ship; the rest is still coming.** What you get
+> today is the complete v2.2 schema under [`schema/v2.2/`](./schema/v2.2/) and the
+> reference validator. A worked example, the remaining tools (semantic checker, model
+> builder, renderer) and the full documentation arrive in subsequent releases.
+
+## Validating a model
+
+```bash
+npm install
+npm run validate -- --model path/to/.realm/v2.2
+```
+
+Five layers run: each file against its schema, then reference integrity and id
+uniqueness, then spatial invariants, semantic-to-construction consistency, and the domain
+rules. Exit code 0 means valid (warnings may still be printed), 1 means errors, 2 means
+the run itself failed.
+
+Your editor can validate as you type, too: [`.vscode/settings.json`](./.vscode/settings.json)
+maps each plane's files to its schema, and any JSON-Schema-aware editor can do the same.
 
 ## What is a Realm model?
 

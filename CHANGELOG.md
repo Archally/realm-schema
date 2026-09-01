@@ -8,6 +8,11 @@ a model declaring `schemaVersion: "2.2.0"` validates against `schema/v2.2/`.
 Published schema line moves to v2.2. `schema/v2.0/` is removed - v2.2 is the only
 published line.
 
+The reference validator ships as `npm run validate` / `realm-validate`, covering all five
+layers: schema conformance per file, reference integrity and id uniqueness, spatial
+invariants, semantic-to-construction consistency, and the domain rules. Apache-2.0, and
+its only dependencies are ajv, ajv-formats and yaml.
+
 ### Breaking
 
 - The `migration` entity is now `estate_change`: id prefix `MIG` -> `ECH`, root key

@@ -32,7 +32,15 @@
     "CHANGELOG.md",
     "README.md"
   ],
-  "devDependencies": {
+  "scripts": {
+    "validate": "node tools/validator/src/cli.mjs"
+  },
+  "bin": {
+    "realm-validate": "tools/validator/src/cli.mjs"
+  },
+  "dependencies": {
+    "ajv": "^8.17.0",
+    "ajv-formats": "^3.0.1",
     "yaml": "^2.7.0"
   },
   "engines": {

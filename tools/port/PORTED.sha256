@@ -1,0 +1,23 @@
+# PORTED.sha256 - port parity manifest for the realm tooling axis.
+# SHA-256 over LF-NORMALIZED content, so it holds on Windows and Linux alike.
+# Canonical source: schemas/realm/.shared/ in the Archally monorepo.
+# Regenerate with: node scripts/port-realm.mjs --emit
+#
+# The `job` lines below tell the public side where each manifest prefix lives,
+# relative to the repo root. They are DATA, not decoration: without them a verifier
+# would need a hand-maintained copy of this list, and the two would drift.
+#
+# `extras-ok` marks a unit that may legitimately hold a file this manifest does not
+# name, because something was excluded from the port. One flag covers all three
+# exclusion mechanisms: from the verifying side they mean the same thing, and
+# re-encoding the rules here would put a second implementation of them in another repo.
+# job validator tools/validator/src extras-ok
+
+8288415d2bf8f3f6c474f2c5c479a40b6d4699278e0b493855f6e4e24139ba28  validator/cli.mjs
+4d4a337cc52fd24fd80ea976ff74bf405ef7688f3ecc772691b26b35157c1728  validator/core/cross-layer.mjs
+099b1953f2a0960ebbcf44afa2b297839ea23c004eac299b233a1a3013fbc5b0  validator/core/estate-change-rules.mjs
+3a9336f1a2ab9c045217eeafac93ef95345d30b588544a7db4644368f57f83d4  validator/core/geometric.mjs
+2531ee33a330faf57d9fc457a2720925d8d685849b4016359df8120be6ecb30d  validator/core/helpers.mjs
+0e753c6782b971907db2c9a5998c1de11d7a93f130944bc5b3fcf3127334ded4  validator/core/referential.mjs
+4c0450bab6879cb7b3dd7442fc71e72a23a72339644aa921c5fae2b0330ab223  validator/core/semantic.mjs
+0fd6bb782fef0f870556010007cb707cb495a53b5e2b39e932123254bc52333a  validator/core/structural.mjs
