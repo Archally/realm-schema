@@ -26,6 +26,30 @@ jobs:
           "
       - name: The example model validates
         run: npm run validate:examples
+
+      - name: The YAML in the guides validates
+        # A worked example in a guide is the shape a reader copies. When the schema moves and
+        # the guide does not, the documentation starts teaching a model the validator rejects,
+        # and nothing notices, because no validator has ever been pointed at a markdown file.
+        run: npm run doc-snippets
+
+      - name: A guide with a seeded bad example is rejected
+        # Same reasoning as the seeded model above. This gate reports OK both when every
+        # example is valid and when it found no example to check, so the run has to prove
+        # it can still say no.
+        run: |
+          cp docs/file-conventions.md /tmp/seeded-guide.md
+          node --input-type=module -e "
+          import {readFileSync, writeFileSync} from 'node:fs';
+          const text = readFileSync('/tmp/seeded-guide.md', 'utf8').replace('area_sqm:', 'area_sqm_typo:');
+          writeFileSync('/tmp/seeded-guide.md', text);
+          "
+          if node tools/doc-snippet-validate/cli.mjs /tmp/seeded-guide.md --schemas schema/v2.2 \
+               --validator "node tools/validator/src/cli.mjs --model {model} --schemas {schemas}"; then
+            echo "FAIL: the guide gate accepted a block with an undefined field"
+            exit 1
+          fi
+          echo "OK: the seeded bad example was rejected"
       - name: A model with a seeded fault is rejected
         # Without this, the step above proves only that the validator exits 0 - which it
         # would also do if it had stopped checking anything. Breaking a reference the
