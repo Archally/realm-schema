@@ -3,15 +3,20 @@ rules:
   - id: risk-without-mitigation
     severity: info
     description: >-
-      A recorded risk with no mitigation and no planned change addressing it is a worry
-      written down rather than a decision taken. Info rather than warn: accepting a risk
-      is a legitimate answer, and a register whose purpose is partly to hold the accepted
-      ones would go permanently yellow if this were louder. State the acceptance in
-      `mitigation` and the finding goes away.
+      A recorded risk with no mitigation is a worry written down rather than a decision
+      taken. Info rather than warn: accepting a risk is a legitimate answer, and a
+      register whose purpose is partly to hold the accepted ones would go permanently
+      yellow if this were louder. State the acceptance in `mitigation` and the finding
+      goes away.
+
+      `mitigation` is the whole of what is checked, because it is the whole of what the
+      schema offers. A risk's only reference field points at the entities it threatens;
+      there is no field, in either direction, that records a planned change as addressing
+      a risk. So "a change is already dealing with this" cannot be expressed in the model
+      and cannot be read by a rule - write it in `mitigation` in prose.
     find:
       entity_type: risk
     check:
-      any_of:
-        - any_non_empty: [data.mitigation]
-        - has_relation: { direction: out, type: estate-change, exists: true }
-    message: 'Risk "{id}" ({name|''unnamed''}) records no mitigation and no planned change addressing it.'
+      all_non_empty:
+        - data.mitigation
+    message: 'Risk "{id}" ({name|''unnamed''}) records no mitigation - nothing says whether it was addressed or accepted.'

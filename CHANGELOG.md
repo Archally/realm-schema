@@ -3,6 +3,43 @@
 All notable changes to `@archally/realm-schema`. Versions follow the schema version:
 a model declaring `schemaVersion: "2.2.0"` validates against `schema/v2.2/`.
 
+## 2.2.5 - 2026-09-01
+
+### Added
+
+- A model builder: `npm run model -- <dir>`, or `realm-model`. One JSON document holding
+  every entity with its type, plane and data, and every reference resolved into a typed
+  edge - the same graph the quality checker reads, so a report built on it and a finding
+  the checker reports describe the same model.
+- The **relation vocabulary** that types those edges, keyed by the entity type declaring
+  the field. An edge says what the relationship IS rather than what the target is called:
+  a component is `part-of` a system, a thermostat `controls` one, a task `maintains` it.
+  A reference the vocabulary does not know still becomes an edge, typed from its name and
+  reported under `warnings`.
+
+### Changed
+
+- The quality rules now select on those relation names, so a rule reads as a statement
+  about the domain: the system rule asks whether anything is `part-of` a system rather
+  than whether an edge called `system` exists.
+- `boundary-segment-without-parcel` checks `parcel_refs` directly. A boundary segment
+  borders parcels and it borders neighbouring properties, and both are `borders` - so an
+  edge test would have been satisfied by a segment naming only a neighbour, which is the
+  case the rule exists to report.
+- `risk-without-mitigation` reports what it checks. It described itself as also looking
+  for a planned change addressing the risk; a risk's only reference field points at what
+  it threatens, and no field in either direction records a change as addressing one, so
+  that half could never have matched. State the acceptance in `mitigation`.
+
+### Fixed
+
+- A model opened at the project folder rather than at the `.realm/v<N>` directory built a
+  silently smaller model - file paths one segment longer than the schema mapping expects,
+  so files whose collection key is singular stopped being recognised and their entities
+  were dropped. Both now build the same model.
+- Entity planes are read from the nearest plane directory rather than the first path
+  segment, so they no longer depend on which directory the model was opened at.
+
 ## 2.2.4 - 2026-09-01
 
 ### Added

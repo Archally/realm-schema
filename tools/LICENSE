@@ -15,6 +15,7 @@ Apache License, Version 2.0 - see ../LICENSE-APACHE
 
 Functional Source License 1.1 (ALv2 Future License) - see ../LICENSE-FSL
 
+  - model-builder/          the model graph, and the relation vocabulary typing it
   - semantic-checker/       model-quality rules, and the adapter feeding them
 
   Free for any Permitted Purpose (internal use, non-commercial education and

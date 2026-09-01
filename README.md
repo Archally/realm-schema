@@ -85,6 +85,28 @@ the one record nobody can reconstruct later. Findings are reported rather than e
 each rule states an opinion about what makes a model useful, so nothing fails until you
 pass `--strict`. The full list is in [the rule reference](./docs/model-quality.md).
 
+## Reading a model as a graph
+
+```bash
+npm run model -- path/to/.realm/v2.2 --pretty
+```
+
+One JSON document: every entity with its type, plane and data, and every reference
+resolved into a typed edge. This is the same graph the validator's rule layer and the
+quality checker read, so a report you build on it and a finding the checker reports are
+describing the same model rather than two YAML walks that agree until they do not.
+
+Edge types say what the relationship IS, not what the target is called. A component is
+`part-of` a system, a thermostat `controls` one, a maintenance task `maintains` it, a
+boundary segment `borders` a parcel. The vocabulary is keyed by the entity type that
+declares the field, which is what separates predicates that happen to share a spelling -
+and a reference the vocabulary does not know still becomes an edge, typed from its name
+and listed under `warnings`, because a missing edge reads as an entity that is simply
+unconnected.
+
+Point it at a model directory or at the project folder above it; both build the same
+model.
+
 ## What is a Realm model?
 
 A **realm** is a single formal model of a property - what physically exists, what systems serve it, what grows there, how it is maintained, and what surrounds it. It is expressed as plain YAML files organized into five planes plus cross-cutting concerns.

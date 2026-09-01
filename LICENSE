@@ -36,6 +36,8 @@ as the schema it answers for.
 The following are licensed under the Functional Source License, Version 1.1,
 with an Apache 2.0 future grant (full text: ./LICENSE-FSL, SPDX: FSL-1.1-ALv2):
 
+  - tools/model-builder/           the model graph, and the relation vocabulary that
+                                   says what each edge means
   - tools/semantic-checker/        model-quality rules and the adapter that feeds them
 
 You may use, modify, and redistribute this code for any Permitted Purpose -

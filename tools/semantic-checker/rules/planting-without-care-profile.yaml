@@ -12,6 +12,6 @@ rules:
     check:
       has_relation:
         direction: out
-        type: care-profile
+        type: follows-protocol
         exists: true
     message: 'Planting "{id}" ({name|''unnamed''}) has no care profile - the whole group appears on no maintenance calendar.'

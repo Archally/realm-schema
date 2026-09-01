@@ -44,5 +44,5 @@ rules:
           - security
           - lighting-outdoor
     check:
-      has_relation: { direction: in, type: target, exists: true }
+      has_relation: { direction: in, type: maintains, exists: true }
     message: 'System "{id}" ({name|''unnamed''}) is the target of no maintenance task - it appears on no calendar and in no schedule.'

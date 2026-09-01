@@ -14,6 +14,6 @@ rules:
     check:
       has_relation:
         direction: out
-        type: care-profile
+        type: follows-protocol
         exists: true
     message: 'Specimen "{id}" ({name|''unnamed''}) has no care profile - it will appear on no maintenance calendar.'

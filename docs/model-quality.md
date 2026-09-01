@@ -44,6 +44,7 @@ Boundary segment "{id}" ({name|'unnamed'}) borders no parcel - it belongs to no 
 ```
 
 A boundary run states which parcels it borders, and a segment between two parcels names both. Without any, the run has no place in the estate: it cannot be assigned to a site plan, and a question about which fences belong to this property cannot be answered from the model. `parcel_refs` is optional because a boundary can be surveyed before the parcels it divides are recorded.
+Checked on the field rather than on the graph. A boundary segment borders parcels and it borders neighbouring properties, and the relation vocabulary calls both of those `borders` - correctly, because both ARE bordering. An edge test would therefore be satisfied by a segment that names only a neighbour, which is the case this rule exists to report.
 
 ### care-profile-without-calendar
 
@@ -155,10 +156,11 @@ Regulatory requirement "{id}" ({name|'unnamed'}) has neither a last inspection d
 What you will see:
 
 ```
-Risk "{id}" ({name|'unnamed'}) records no mitigation and no planned change addressing it.
+Risk "{id}" ({name|'unnamed'}) records no mitigation - nothing says whether it was addressed or accepted.
 ```
 
-A recorded risk with no mitigation and no planned change addressing it is a worry written down rather than a decision taken. Info rather than warn: accepting a risk is a legitimate answer, and a register whose purpose is partly to hold the accepted ones would go permanently yellow if this were louder. State the acceptance in `mitigation` and the finding goes away.
+A recorded risk with no mitigation is a worry written down rather than a decision taken. Info rather than warn: accepting a risk is a legitimate answer, and a register whose purpose is partly to hold the accepted ones would go permanently yellow if this were louder. State the acceptance in `mitigation` and the finding goes away.
+`mitigation` is the whole of what is checked, because it is the whole of what the schema offers. A risk's only reference field points at the entities it threatens; there is no field, in either direction, that records a planned change as addressing a risk. So "a change is already dealing with this" cannot be expressed in the model and cannot be read by a rule - write it in `mitigation` in prose.
 
 ### specimen-without-care-profile
 

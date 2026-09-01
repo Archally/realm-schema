@@ -8,11 +8,15 @@ rules:
       to a site plan, and a question about which fences belong to this property cannot be
       answered from the model. `parcel_refs` is optional because a boundary can be
       surveyed before the parcels it divides are recorded.
+
+      Checked on the field rather than on the graph. A boundary segment borders parcels
+      and it borders neighbouring properties, and the relation vocabulary calls both of
+      those `borders` - correctly, because both ARE bordering. An edge test would
+      therefore be satisfied by a segment that names only a neighbour, which is the case
+      this rule exists to report.
     find:
       entity_type: boundary_segment
     check:
-      has_relation:
-        direction: out
-        type: parcel
-        exists: true
+      all_non_empty:
+        - data.parcel_refs
     message: 'Boundary segment "{id}" ({name|''unnamed''}) borders no parcel - it belongs to no site plan.'

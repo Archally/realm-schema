@@ -22,6 +22,6 @@ rules:
       entity_type: system
     check:
       any_of:
-        - has_relation: { direction: in, type: system, exists: true }
-        - has_relation: { direction: out, type: component, exists: true }
+        - has_relation: { direction: in, type: part-of, exists: true }
+        - has_relation: { direction: out, type: contains, exists: true }
     message: 'System "{id}" ({name|''unnamed''}) has no parts recorded - nothing says what it is made of.'
