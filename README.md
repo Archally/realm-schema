@@ -6,11 +6,11 @@ YAML-based schema for modeling **private real estate**: a dual-layer spatial for
 [![license](https://img.shields.io/npm/l/@archally/realm-schema)](./LICENSE)
 [![CI](https://github.com/archally/realm-schema/actions/workflows/validate.yml/badge.svg)](https://github.com/archally/realm-schema/actions)
 
-> **Status: the schema, the validator, the documentation and a worked example ship; the
-> tooling is still arriving.** What you get today is the complete v2.2 schema under
-> [`schema/v2.2/`](./schema/v2.2/), the reference validator, three guides under
-> [`docs/`](./docs/), and Willow Cottage. The remaining tools (semantic checker, model
-> builder, renderer) arrive in subsequent releases.
+> **Status: the schema, the validator, the model-quality checker, the documentation and a
+> worked example ship; two tools are still arriving.** What you get today is the complete
+> v2.2 schema under [`schema/v2.2/`](./schema/v2.2/), the reference validator, the quality
+> checker, four guides under [`docs/`](./docs/), and Willow Cottage. The model builder and
+> renderer arrive in subsequent releases.
 
 ## Validating a model
 
@@ -62,10 +62,27 @@ Three guides, and they answer different questions:
 | [File conventions](./docs/file-conventions.md) | Where a model's files go, which filenames the validator maps to a schema, and how the typed identifiers are formed |
 | [Modeling guide](./docs/modeling-guide.md) | How to author a model: what to write first, the coordinate conventions and where they invert, the two spatial layers, and what a passing validation run does and does not claim |
 | [Schema reference](./docs/schema-reference.md) | Every entity and every field. Generated from the schema itself, so it states what the validator enforces |
+| [Model quality rules](./docs/model-quality.md) | What the quality checker reports and why each rule is worth acting on |
 
 Every YAML example in the guides that names a file is validated against the shipped schema
 in CI, as a real model rather than as a fragment. So an example you copy loads, and one that
 would not fails the build before it reaches you.
+
+## Checking a model's quality
+
+Validation asks whether a model is legal and whether it holds together. A third question
+is left over, and the schema cannot ask it: does the model actually say anything, in the
+places the schema deliberately leaves optional?
+
+```bash
+npm run check -- --model path/to/.realm/v2.2
+```
+
+Seven rules today - a specimen with no care profile appears on no maintenance calendar, a
+system with no components is a name with nothing behind it, a boundary run belonging to no
+parcel appears on no site plan. Findings are reported rather than enforced: each rule
+states an opinion about what makes a model useful, so nothing fails until you pass
+`--strict`. The full list is in [the rule reference](./docs/model-quality.md).
 
 ## What is a Realm model?
 
@@ -95,4 +112,14 @@ v2.2 is the only published line. Models written against 2.1 need the `migration`
 
 ## License
 
-[Apache-2.0](./LICENSE) - © 2026 Adam Walkowski. Part of the [Archally](https://archally.pro) family of modeling schemas (alongside [blueprint-schema](https://github.com/archally/blueprint-schema) and [brandvoice-schema](https://github.com/archally/brandvoice-schema)).
+**Dual-licensed** - [LICENSE](./LICENSE) is the authoritative map. The schema, the
+examples, the documentation and both validators are [Apache-2.0](./LICENSE-APACHE); the
+model-quality checker and its rules are [FSL-1.1-ALv2](./LICENSE-FSL), converting to
+Apache-2.0 two years after each release.
+
+The line is between conformance and judgement. Whether a model is *valid* is a property
+of the format and must be freely checkable by anyone, which is why the validator sits with
+the schema. Whether a model is *good* is a set of modeling opinions, and those are the
+product.
+
+© 2026 Adam Walkowski. Part of the [Archally](https://archally.pro) family of modeling schemas (alongside [blueprint-schema](https://github.com/archally/blueprint-schema) and [brandvoice-schema](https://github.com/archally/brandvoice-schema)).

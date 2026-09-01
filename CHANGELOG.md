@@ -3,6 +3,33 @@
 All notable changes to `@archally/realm-schema`. Versions follow the schema version:
 a model declaring `schemaVersion: "2.2.0"` validates against `schema/v2.2/`.
 
+## 2.2.3 - 2026-09-01
+
+### Added
+
+- A model-quality checker: `npm run check -- --model <dir>`, or `realm-check`. Seven rules
+  asking what neither the schema nor the validator asks - does the model say anything, in
+  the places the schema deliberately leaves optional. A specimen with no care profile
+  appears on no maintenance calendar; a system with no components is a name with nothing
+  behind it; a boundary run belonging to no parcel appears on no site plan. Findings are
+  reported rather than enforced, and `--strict` turns them into a gate.
+- [`docs/model-quality.md`](./docs/model-quality.md) documents every rule: what it selects,
+  what you will see, and why it is worth acting on.
+
+### Changed
+
+- **The repository is now dual-licensed**, and [`LICENSE`](./LICENSE) is the authoritative
+  map. The schema, the examples, the documentation, the reference validator and the
+  doc-snippet validator remain **Apache-2.0** (now in
+  [`LICENSE-APACHE`](./LICENSE-APACHE)). The model-quality checker and its rule pack are
+  **FSL-1.1-ALv2** ([`LICENSE-FSL`](./LICENSE-FSL)), each version converting to Apache-2.0
+  two years after release. Nothing that was Apache-2.0 has changed licence.
+
+  The line is between conformance and judgement: whether a model is valid is a property of
+  the format and must be freely checkable by anyone, while whether a model is good is a set
+  of modeling opinions. The rule engine the checker runs on is the separate Apache-2.0
+  package `@archally/semantic-checker` and is not covered by the FSL section.
+
 ## 2.2.2 - 2026-09-01
 
 ### Added
