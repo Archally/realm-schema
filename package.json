@@ -1,7 +1,7 @@
 {
   "name": "@archally/realm-schema",
-  "version": "2.2.5",
-  "description": "YAML-based schema for private real estate modeling \u2014 dual-layer spatial topology, infrastructure systems, nature, maintenance operations, and surrounding context",
+  "version": "2.2.6",
+  "description": "YAML-based schema for private real estate modeling — dual-layer spatial topology, infrastructure systems, nature, maintenance operations, and surrounding context",
   "license": "SEE LICENSE IN LICENSE",
   "author": "Adam Walkowski <adam.walkowski@inperceptic.com>",
   "repository": {
@@ -42,12 +42,16 @@
     "check": "node tools/semantic-checker/cli.mjs",
     "model": "node tools/model-builder/cli.mjs",
     "model:example": "node tools/model-builder/cli.mjs examples/willow-cottage --pretty --warnings",
+    "render": "node tools/renderer/cli.mjs",
+    "render:example": "node tools/renderer/cli.mjs examples/willow-cottage --document all -o examples/willow-cottage/.specs",
+    "render:check": "node tools/renderer/cli.mjs examples/willow-cottage --document all -o examples/willow-cottage/.specs --check",
     "check:examples": "node tools/semantic-checker/cli.mjs --model examples/willow-cottage/.realm/v2.2"
   },
   "bin": {
     "realm-validate": "tools/validator/src/cli.mjs",
     "realm-check": "tools/semantic-checker/cli.mjs",
-    "realm-model": "tools/model-builder/cli.mjs"
+    "realm-model": "tools/model-builder/cli.mjs",
+    "realm-render": "tools/renderer/cli.mjs"
   },
   "dependencies": {
     "@archally/semantic-checker": "github:archally/semantic-checker#v0.1.1",
