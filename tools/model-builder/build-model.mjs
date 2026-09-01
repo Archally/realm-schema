@@ -151,6 +151,25 @@ export async function loadRealmModel(modelDir) {
 }
 
 /**
+ * Read the model's own `realm.yaml` - name, description, location, climate, schema version.
+ *
+ * Separate from `loadRealmModel` because discovery deliberately treats `realm.yaml` as a
+ * metadata file rather than a source of entities, so the extraction never sees its scalars.
+ * Returns `{}` when the file is absent or unreadable: a model with no name is still a model,
+ * and a renderer that cannot read the header should still render the body.
+ *
+ * @param {string} modelDir
+ * @returns {Promise<Record<string, unknown>>}
+ */
+export async function loadRealmMeta(modelDir) {
+  const file = path.join(resolveModelDir(modelDir), "realm.yaml");
+  if (!fs.existsSync(file)) return {};
+  const { parse } = await import("yaml");
+  const parsed = parse(fs.readFileSync(file, "utf8"));
+  return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+}
+
+/**
  * Walk one entity's data for reference fields, emitting a typed relation per resolved
  * target.
  *
@@ -209,8 +228,11 @@ function collectRelations(node, sourceId, sourceType, ids, out, seen, warnings) 
  * which is what keeps the path resolution above confined to one function.
  *
  * @param {Map<string, {type: string, data: Record<string, unknown>, file: string}>} extracted
+ * @param {Record<string, unknown>} [meta] the model's own `realm.yaml` - name, location,
+ *   schema version. Optional, because a caller holding only an extraction (the checker's
+ *   tests) has no file to read it from, and no rule asks about it.
  */
-export function toRealmModel(extracted) {
+export function toRealmModel(extracted, meta = {}) {
   const ids = new Set(extracted.keys());
   const entities = [];
   const relations = [];
@@ -241,6 +263,12 @@ export function toRealmModel(extracted) {
 
   return {
     schema: "realm",
+    // The model's own identity, from `realm.yaml`: what the property is called, where it is,
+    // which schema version it declares. Every entity carried through and the thing they all
+    // belong to did not, so a consumer could describe 145 rooms and walls without being able
+    // to say whose they were. `realm.yaml` holds metadata only - no entity collection lives
+    // there - so it is carried whole rather than field by field.
+    realm: meta,
     planes: [...planesPresent].sort(),
     entities,
     relations,
@@ -259,7 +287,11 @@ export function toRealmModel(extracted) {
  * @param {string} modelDir
  */
 export async function buildRealmModel(modelDir) {
-  return toRealmModel(await loadRealmModel(modelDir));
+  const [extracted, meta] = await Promise.all([
+    loadRealmModel(modelDir),
+    loadRealmMeta(modelDir),
+  ]);
+  return toRealmModel(extracted, meta);
 }
 
 function countBy(items, key) {

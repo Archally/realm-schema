@@ -26,26 +26,12 @@
 
 import path from "node:path";
 import fs from "node:fs";
-import { fileURLToPath } from "node:url";
 
-import { loadRules, runChecker } from "@archally/semantic-checker";
-import { loadRealmModel, toCheckableModel } from "./adapter.mjs";
+import { buildRealmModel } from "../model-builder/build-model.mjs";
+import { checkRealmModel } from "./check.mjs";
 
-const HERE = path.dirname(fileURLToPath(import.meta.url));
 const USAGE =
   "usage: realm-check --model <dir> [--rules <dir>] [--json] [--strict] [--rule <id>]";
-
-/**
- * Where the rule pack lives, tried in order.
- *
- * In this repository the pack is a sibling directory; in the published copy the two sit
- * under one tool folder. Both are checked rather than one being configured, so neither
- * side carries a path that is wrong in the other.
- */
-const RULE_DIR_CANDIDATES = [
-  path.resolve(HERE, "../semantic-rules"),
-  path.resolve(HERE, "rules"),
-];
 
 function fail(message) {
   console.error(`realm-check: ${message}\n${USAGE}`);
@@ -67,16 +53,6 @@ function parseArgs(argv) {
     else fail(`unexpected argument: ${token}`);
   }
   return args;
-}
-
-function resolveRuleDir(explicit) {
-  if (explicit) {
-    if (!fs.existsSync(explicit)) fail(`rule directory not found: ${explicit}`);
-    return explicit;
-  }
-  const found = RULE_DIR_CANDIDATES.find((candidate) => fs.existsSync(candidate));
-  if (!found) fail(`no rule pack found. Looked in:\n  ${RULE_DIR_CANDIDATES.join("\n  ")}`);
-  return found;
 }
 
 const SEVERITY_MARK = { error: "✗", warning: "⚠", warn: "⚠", info: "ℹ" };
@@ -115,13 +91,20 @@ async function main() {
   if (!args.model) fail("--model is required");
   if (!fs.existsSync(args.model)) fail(`model directory not found: ${args.model}`);
 
-  const ruleDir = resolveRuleDir(args.rules);
-  const rules = await loadRules(ruleDir);
-  const selected = args.rule ? rules.filter((rule) => rule.id === args.rule) : rules;
-  if (args.rule && selected.length === 0) fail(`no rule with id "${args.rule}" in ${ruleDir}`);
-
-  const model = toCheckableModel(await loadRealmModel(args.model));
-  const issues = runChecker(model, selected);
+  // Finding the pack and running it live in `check.mjs`, so this CLI and the renderer's
+  // coverage section cannot end up describing different sets of rules on the same model.
+  const model = await buildRealmModel(args.model);
+  let ruleDir;
+  let selected;
+  let issues;
+  try {
+    ({ ruleDir, rules: selected, issues } = await checkRealmModel(model, {
+      ruleDir: args.rules,
+      rule: args.rule,
+    }));
+  } catch (error) {
+    fail(error?.message ?? String(error));
+  }
 
   if (args.json) {
     console.log(JSON.stringify({
