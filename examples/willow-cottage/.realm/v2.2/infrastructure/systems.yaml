@@ -1,0 +1,199 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# Infrastructure: Systems - what serves the estate, and where it comes from
+#
+# Schema: infrastructure/systems.schema.yaml
+#
+# GENERATED from a layout specification. Areas, elevations, wall segments and
+# opening offsets are computed rather than typed, which is why they agree with
+# one another. An edit made here is replaced the next time the model is
+# generated - copy it before adapting it.
+#
+# A system is the function; a component is a thing you can replace. The heat
+# pump is one system with two components, and the warranty covers the
+# components while the maintenance task targets the system - which is why both
+# kinds of reference exist and neither is a shortcut for the other.
+#
+# A utility connection is where the estate meets somebody else's network. Its
+# `entry_point_position` is a model coordinate, so a meter box or a stopcock
+# chamber can be found on the site plan rather than described in prose.
+# ═════════════════════════════════════════════════════════════════════════════
+
+systems:
+  - id: SYS001
+    name: Air-source heat pump
+    system_type: heating
+    fuel_source: air-heat
+    rated_capacity: 11
+    capacity_unit: kW
+    efficiency_rating: A++
+    installed_date: "2023-03-14"
+    manufacturer: Northwind
+    model_name: Aria 11
+    building_ref: BLD001
+    position: {x: 25.8, y: 22.4}
+    utility_connection_ref: UC001
+    warranty_ref: WRT001
+    component_refs: [CMP001, CMP002]
+    feeds_system_refs: [SYS002]
+    description: >
+      Outdoor unit on a plinth against the cottage's east gable, sheltered
+      from the prevailing south-westerlies. Feeds underfloor heating on the
+      ground floor and radiators above.
+    tags: [primary-heating, electric]
+  - id: SYS002
+    name: Domestic hot water
+    system_type: hot-water
+    fuel_source: air-heat
+    rated_capacity: 210
+    capacity_unit: litres
+    installed_date: "2023-03-14"
+    building_ref: BLD001
+    room_ref: RM007
+    warranty_ref: WRT001
+    component_refs: [CMP002]
+    description: >
+      Unvented cylinder in the utility room, heated by the heat pump with an
+      immersion backup.
+    tags: [hot-water]
+  - id: SYS003
+    name: Electrical distribution
+    system_type: electrical-distribution
+    fuel_source: electricity
+    rated_capacity: 80
+    capacity_unit: A
+    building_ref: BLD001
+    room_ref: RM007
+    utility_connection_ref: UC001
+    component_refs: [CMP003]
+    description: >
+      Consumer unit in the utility room, with a submain running to the barn.
+    tags: [electrical]
+  - id: SYS004
+    name: Rainwater harvesting
+    system_type: rainwater-collection
+    rated_capacity: 3000
+    capacity_unit: litres
+    installed_date: "2024-05-02"
+    outdoor_zone_ref: OZ008
+    position: {x: 12.4, y: 26.4}
+    feeds_system_refs: [SYS005]
+    description: >
+      Underground tank taking the north roof slope, gravity-fed to the
+      vegetable garden. The south slope drains to the soakaway instead, so the
+      tank never overflows into the terrace.
+    tags: [water, garden]
+  - id: SYS005
+    name: Garden irrigation
+    system_type: irrigation
+    outdoor_zone_ref: OZ005
+    position: {x: 15.5, y: 31}
+    description: >
+      Soaker hose across the four raised beds, on a tap timer from the
+      rainwater tank.
+    tags: [water, garden, seasonal]
+
+# ── Components - the replaceable parts ────────────────────────────────────
+components:
+  - id: CMP001
+    name: Heat pump outdoor unit
+    system_ref: SYS001
+    component_type: heat-exchanger
+    manufacturer: Northwind
+    model_name: Aria 11 ODU
+    installed_date: "2023-03-14"
+    expected_lifespan_years: 15
+    building_ref: BLD001
+    warranty_ref: WRT001
+    specs:
+    - key: refrigerant
+      value: R290
+    - key: sound_power
+      value: "54"
+      unit: dB(A)
+    description: >
+      Monobloc outdoor unit. Needs 30 cm clearance on the intake face.
+    tags: [heating]
+  - id: CMP002
+    name: Hot water cylinder
+    system_ref: SYS002
+    component_type: cylinder
+    manufacturer: Northwind
+    model_name: Store 210
+    installed_date: "2023-03-14"
+    expected_lifespan_years: 20
+    building_ref: BLD001
+    room_ref: RM007
+    warranty_ref: WRT001
+    specs:
+    - key: capacity
+      value: "210"
+      unit: litres
+    - key: coil_area
+      value: "3.1"
+      unit: m2
+    description: >
+      Unvented, 210 litres, with a 3 kW immersion element for backup.
+    tags: [hot-water]
+  - id: CMP003
+    name: Consumer unit
+    system_ref: SYS003
+    component_type: distribution-board
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM007
+    specs:
+    - key: ways
+      value: "16"
+    - key: main_switch
+      value: "100"
+      unit: A
+    description: >
+      Sixteen-way board with RCBOs throughout. Last inspected under REG001.
+    tags: [electrical, inspected]
+
+# ── Utility connections - where the estate meets someone else's network ────
+utility_connections:
+  - id: UC001
+    name: Mains electricity
+    connection_type: electricity
+    provider: Westcombe Power
+    meter_id: MTR-88214
+    capacity: 80
+    capacity_unit: A
+    monthly_cost_estimate: 145
+    currency: GBP
+    cost_category_ref: CC001
+    entry_point_position: {x: 13.6, y: 16.4}
+    description: >
+      Overhead supply from the lane, terminating in a meter box on the
+      cottage's west gable.
+    tags: [electricity]
+  - id: UC002
+    name: Mains water
+    connection_type: water-supply
+    provider: Brackwater Water
+    meter_id: WM-4471
+    monthly_cost_estimate: 42
+    currency: GBP
+    cost_category_ref: CC002
+    entry_point_position: {x: 8.2, y: 3.4}
+    description: >
+      Stopcock in a chamber just inside the gate; the run to the cottage is
+      buried under the drive.
+    tags: [water]
+  - id: UC003
+    name: Fibre broadband
+    connection_type: fiber-internet
+    provider: Combe Fibre
+    contract_id: CF-2026-3318
+    capacity: 500
+    capacity_unit: Mbps
+    monthly_cost_estimate: 38
+    currency: GBP
+    cost_category_ref: CC003
+    entry_point_position: {x: 21.4, y: 16.3}
+    description: >
+      Fibre to the premises, entering at the study and terminating on the
+      router.
+    tags: [network]

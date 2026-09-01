@@ -1,0 +1,113 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# Topology: Boundary - what encloses the plot, run by run
+#
+# Schema: topology/boundary.schema.yaml
+#
+# GENERATED from a layout specification. Areas, elevations, wall segments and
+# opening offsets are computed rather than typed, which is why they agree with
+# one another. An edit made here is replaced the next time the model is
+# generated - copy it before adapting it.
+#
+# Boundary vertices are ABSOLUTE model coordinates. Everything else in the
+# topology plane places itself with a `position` and then describes its shape
+# relative to that; a boundary has no centre worth naming, so it does not.
+#
+# Each run here spans two parcel corners, so the five segments close the
+# hexagon exactly and their vertices are the corners themselves.
+# ═════════════════════════════════════════════════════════════════════════════
+
+boundary_segments:
+  - id: BS001
+    name: Roadside hedge
+    boundary_type: hedge-mixed
+    direction: N
+    length_m: 34.09
+    height_m: 1.8
+    mature_height_m: 2.5
+    condition: good
+    screening_opacity: semi-transparent
+    year_round_screening: false
+    vertices:
+      - {x: 0, y: 0}   # N corner
+      - {x: 34, y: 2.5}   # NE corner
+    base_elevation_m: 2.8
+    parcel_refs: [LP001]
+    description: >
+      Mixed native hedge along the lane - hawthorn, hazel and field maple.
+      Laid every eighth winter.
+    tags: [native, laid-hedge]
+  - id: BS002
+    name: North-east post and rail
+    boundary_type: fence-wood
+    direction: NE
+    length_m: 22.5
+    height_m: 1.2
+    condition: fair
+    installed_year: 2009
+    screening_opacity: transparent
+    vertices:
+      - {x: 34, y: 2.5}   # NE corner
+      - {x: 52, y: 16}   # E corner
+    base_elevation_m: 1.3
+    parcel_refs: [LP001]
+    neighbor_property_ref: NP001
+    description: >
+      Three-rail chestnut fence against Hollybank's paddock. The lower rail is
+      rotting at the east end.
+    tags: [chestnut, stock-fence]
+  - id: BS003
+    name: East stone wall
+    boundary_type: wall-stone
+    direction: E
+    length_m: 25.71
+    height_m: 1.5
+    condition: fair
+    screening_opacity: solid
+    vertices:
+      - {x: 52, y: 16}   # E corner
+      - {x: 46, y: 41}   # SE corner
+    base_elevation_m: -1.8
+    parcel_refs: [LP001]
+    neighbor_property_ref: NP002
+    description: >
+      Dry stone wall of the same rubble as the barn. Bulging over a six-metre
+      length near the south end.
+    tags: [dry-stone, needs-rebuilding]
+  - id: BS004
+    name: South treeline
+    boundary_type: natural-treeline
+    direction: S
+    length_m: 28.64
+    height_m: 9
+    mature_height_m: 14
+    condition: good
+    screening_opacity: semi-transparent
+    year_round_screening: false
+    vertices:
+      - {x: 46, y: 41}   # SE corner
+      - {x: 18, y: 47}   # S corner
+    base_elevation_m: -3
+    parcel_refs: [LP001]
+    neighbor_property_ref: NP003
+    description: >
+      Alder and willow along the stream that marks the southern edge.
+    tags: [stream, wet-woodland]
+  - id: BS005
+    name: West retaining wall
+    boundary_type: wall-stone
+    direction: W
+    length_m: 50.33
+    height_m: 1.1
+    condition: good
+    installed_year: 1994
+    screening_opacity: solid
+    vertices:
+      - {x: 18, y: 47}   # S corner
+      - {x: 0, y: 0}   # N corner
+    base_elevation_m: -3
+    parcel_refs: [LP001]
+    neighbor_property_ref: NP004
+    description: >
+      Low retaining wall holding the west bank back off the drive, stepping up
+      with the slope.
+    tags: [retaining, dry-stone]

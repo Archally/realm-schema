@@ -15,11 +15,9 @@ type: object
 additionalProperties: false
 properties:
   schema_version:
-    type: string
+    $ref: "metamodel.schema.yaml#/$defs/schema_version"
     title: "Schema Version"
     description: "Realm schema version this configuration targets."
-    enum: ["2.0.0"]
-    examples: ["2.0.0"]
 
   inference:
     $ref: "#/$defs/inference_config"

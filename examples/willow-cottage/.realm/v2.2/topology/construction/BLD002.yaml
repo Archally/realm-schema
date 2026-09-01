@@ -1,0 +1,72 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# Construction geometry - Stone barn roof
+#
+# Schema: topology/construction.schema.yaml
+#
+# GENERATED from a layout specification. Areas, elevations, wall segments and
+# opening offsets are computed rather than typed, which is why they agree with
+# one another. An edit made here is replaced the next time the model is
+# generated - copy it before adapting it.
+#
+# One plane per roof slope, derived from its wing's pitch, eave and ridge
+# heights plus the overhang. Vertices are 3D and model-absolute: z is metres
+# above the vertical datum, so this building's eaves sit at 1.7 m and its
+# ridge at 3.8 m - its ground is -1.2 m, and the heights are measured from
+# there.
+#
+# Each plane is a parallelogram between two horizontal lines at different
+# heights, so it is planar by construction rather than by rounding luck.
+# ═════════════════════════════════════════════════════════════════════════════
+
+building_ref: BLD002
+
+generated_from:
+  semantic_source_refs:
+    - "topology/estate.yaml"
+  schema_version: "2.2.0"
+  generated_at: "2026-09-01T00:00:00Z"
+  generator: gen-willow-cottage
+  human_edited: false
+
+building_shell:
+  footprint_absolute:
+    shape: polygon
+    vertices:
+      - {x: 30, y: 18}
+      - {x: 37, y: 18}
+      - {x: 37, y: 24}
+      - {x: 30, y: 24}
+  ground_elevation_m: -1.2
+  eave_elevation_m: 1.7
+  ridge_elevation_m: 3.8
+
+# ── Roof planes (2) ───────────────────────────────────────────────────────
+roof_planes:
+  - id: RFP004
+    building_ref: BLD002
+    wing_ref: WNG003
+    vertices_3d:
+      - {x: 29.7, y: 21, z: 3.8}
+      - {x: 37.3, y: 21, z: 3.8}
+      - {x: 37.3, y: 17.7, z: 1.7}
+      - {x: 29.7, y: 17.7, z: 1.7}
+    surface_type: slope
+    pitch_degrees: 35
+    facing_direction: N
+    material: natural slate
+    overhang_cm: 30
+    derived_from: WNG003 (gable, north slope)
+  - id: RFP005
+    building_ref: BLD002
+    wing_ref: WNG003
+    vertices_3d:
+      - {x: 29.7, y: 21, z: 3.8}
+      - {x: 37.3, y: 21, z: 3.8}
+      - {x: 37.3, y: 24.3, z: 1.7}
+      - {x: 29.7, y: 24.3, z: 1.7}
+    surface_type: slope
+    pitch_degrees: 35
+    facing_direction: S
+    material: natural slate
+    overhang_cm: 30
+    derived_from: WNG003 (gable, south slope)

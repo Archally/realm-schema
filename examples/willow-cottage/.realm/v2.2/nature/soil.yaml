@@ -1,0 +1,55 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# Nature: Soil - what each cultivated zone is growing in
+#
+# Schema: nature/soil.schema.yaml
+#
+# GENERATED from a layout specification. Areas, elevations, wall segments and
+# opening offsets are computed rather than typed, which is why they agree with
+# one another. An edit made here is replaced the next time the model is
+# generated - copy it before adapting it.
+# ═════════════════════════════════════════════════════════════════════════════
+
+soil_profiles:
+  - id: SOIL001
+    name: Upper slope loam
+    outdoor_zone_ref: OZ005
+    soil_type: loam
+    ph_level: 6.4
+    ph_measured_date: "2026-03-10"
+    organic_matter_percent: 6.2
+    moisture_retention: moderate
+    drainage: good
+    texture_description: >
+      Friable loam over shillet, about 40 cm deep before it meets shattered
+      rock.
+    amendments:
+    - amendment_type: compost
+      name: Garden compost
+      purpose: Feed and structure
+      application_months: [10, 11]
+      frequency_description: >
+        Every autumn, once the beds are cleared
+    - amendment_type: bark-mulch
+      name: Leaf mould
+      purpose: Surface mulch, moisture retention
+      application_months: [3, 4]
+      frequency_description: >
+        Every spring, from the leaf cage
+    description: >
+      The vegetable garden's soil, improved over a decade of composting.
+    tags: [cultivated]
+  - id: SOIL002
+    name: Lower meadow silt
+    outdoor_zone_ref: OZ006
+    soil_type: silt
+    ph_level: 6.9
+    ph_measured_date: "2026-03-10"
+    organic_matter_percent: 9.1
+    moisture_retention: very-high
+    drainage: poor
+    texture_description: >
+      Silty alluvium beside the stream, waterlogged from November to March.
+    description: >
+      Wet ground at the bottom of the fall. Not cultivated; cut once a year
+      for hay.
+    tags: [wet, uncultivated]

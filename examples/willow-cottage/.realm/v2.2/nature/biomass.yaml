@@ -1,0 +1,32 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# Nature: Biomass - what the estate produces and what becomes of it
+#
+# Schema: nature/biomass.schema.yaml
+#
+# GENERATED from a layout specification. Areas, elevations, wall segments and
+# opening offsets are computed rather than typed, which is why they agree with
+# one another. An edit made here is replaced the next time the model is
+# generated - copy it before adapting it.
+#
+# A flow names a source, a process and an output, and points at where each
+# happens. It is what turns two unrelated facts - a tree drops leaves, a bed
+# needs mulch - into one loop that can be scheduled.
+# ═════════════════════════════════════════════════════════════════════════════
+
+biomass_flows:
+  - id: BMF001
+    name: Autumn leaf fall to leaf mould
+    source_type: leaf-fall
+    process: composting
+    output_type: leaf-mold
+    source_ref: SPM002
+    processing_location_ref: OZ008
+    destination_ref: OZ005
+    processing_duration_days: 540
+    estimated_annual_volume: 3
+    volume_unit: cubic-meters
+    seasonal_availability: [10, 11, 12]
+    description: >
+      Leaf from the oak and the beech hedge, caged for eighteen months and
+      then dug into the raised beds.
+    tags: [composting, closed-loop]

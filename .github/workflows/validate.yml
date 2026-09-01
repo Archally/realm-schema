@@ -1,16 +1,13 @@
 name: Validate & Test
 on: [push, pull_request]
 jobs:
-  install:
+  validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      # The repo currently publishes the schema only, so this is an install-only
-      # smoke check. It gains validate / check / test steps when the example and
-      # the bundled tools land.
       - run: npm install
       - name: Every schema file parses as YAML
         run: |
@@ -27,3 +24,22 @@ jobs:
           console.log(files.length - failed + '/' + files.length + ' schema file(s) parse');
           process.exit(failed === 0 ? 0 : 1);
           "
+      - name: The example model validates
+        run: npm run validate:examples
+      - name: A model with a seeded fault is rejected
+        # Without this, the step above proves only that the validator exits 0 - which it
+        # would also do if it had stopped checking anything. Breaking a reference the
+        # schema requires must produce a non-zero exit.
+        run: |
+          cp -r examples/willow-cottage/.realm/v2.2 /tmp/seeded
+          node --input-type=module -e "
+          import {readFileSync, writeFileSync} from 'node:fs';
+          const path = '/tmp/seeded/topology/estate.yaml';
+          const text = readFileSync(path, 'utf8').replace('room_type: kitchen', 'room_type: dungeon');
+          writeFileSync(path, text);
+          "
+          if node tools/validator/src/cli.mjs --model /tmp/seeded --schemas schema/v2.2; then
+            echo "FAIL: the validator accepted a model with an invalid room_type"
+            exit 1
+          fi
+          echo "OK: the seeded fault was rejected"

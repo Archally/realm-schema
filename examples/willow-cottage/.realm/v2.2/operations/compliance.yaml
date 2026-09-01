@@ -1,0 +1,60 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# Operations: Compliance - warranties and statutory inspections
+#
+# Schema: operations/compliance.schema.yaml
+#
+# GENERATED from a layout specification. Areas, elevations, wall segments and
+# opening offsets are computed rather than typed, which is why they agree with
+# one another. An edit made here is replaced the next time the model is
+# generated - copy it before adapting it.
+#
+# A warranty states its own void conditions, and a maintenance task points at
+# it. That is the whole mechanism: the reason the heat pump gets serviced
+# every September is written down, not remembered.
+# ═════════════════════════════════════════════════════════════════════════════
+
+warranties:
+  - id: WRT001
+    name: Heat pump installation warranty
+    manufacturer: Northwind
+    warranty_type: manufacturer-extended
+    start_date: "2023-03-14"
+    end_date: "2030-03-13"
+    covered_system_refs: [SYS001, SYS002]
+    covered_component_refs: [CMP001, CMP002]
+    service_conditions:
+    - description: >
+        Annual service by an accredited installer, recorded and receipted.
+      frequency:
+        rrule: RRULE:FREQ=YEARLY;BYMONTH=9
+        summary: Once a year, in September
+      evidence_required: >
+        Dated service record naming the installer's accreditation number
+      must_use_certified_technician: true
+      last_performed: "2025-09-08"
+    void_conditions:
+      - A missed annual service
+      - Refrigerant work by an unaccredited fitter
+      - Replacement parts that are not manufacturer-approved
+    description: >
+      Seven-year cover on the heat pump and cylinder, conditional on MT001
+      being kept up.
+    tags: [heating]
+
+# ── Regulatory requirements ───────────────────────────────────────────────
+regulatory_requirements:
+  - id: REG001
+    name: Fixed electrical installation inspection
+    requirement_type: electrical-safety
+    inspection_schedule:
+      rrule: RRULE:FREQ=YEARLY;INTERVAL=5;BYMONTH=11
+      summary: Every five years, in November
+    jurisdiction: England and Wales
+    target_system_refs: [SYS003]
+    target_building_refs: [BLD001, BLD002]
+    last_inspection_date: "2024-11-12"
+    next_due_date: "2029-11-12"
+    certified_inspector_required: true
+    description: >
+      Periodic inspection and report on the fixed wiring, cottage and barn.
+    tags: [electrical, statutory]

@@ -1,0 +1,87 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# Construction geometry - Willow Cottage roof
+#
+# Schema: topology/construction.schema.yaml
+#
+# GENERATED from a layout specification. Areas, elevations, wall segments and
+# opening offsets are computed rather than typed, which is why they agree with
+# one another. An edit made here is replaced the next time the model is
+# generated - copy it before adapting it.
+#
+# One plane per roof slope, derived from its wing's pitch, eave and ridge
+# heights plus the overhang. Vertices are 3D and model-absolute: z is metres
+# above the vertical datum, so this building's eaves sit at 4.6 m and its
+# ridge at 8.2 m - the datum is its own ground level.
+#
+# Each plane is a parallelogram between two horizontal lines at different
+# heights, so it is planar by construction rather than by rounding luck.
+# ═════════════════════════════════════════════════════════════════════════════
+
+building_ref: BLD001
+
+generated_from:
+  semantic_source_refs:
+    - "topology/estate.yaml"
+  schema_version: "2.2.0"
+  generated_at: "2026-09-01T00:00:00Z"
+  generator: gen-willow-cottage
+  human_edited: false
+
+building_shell:
+  footprint_absolute:
+    shape: polygon
+    vertices:
+      - {x: 14, y: 16}
+      - {x: 25, y: 16}
+      - {x: 25, y: 24}
+      - {x: 21.6, y: 24}
+      - {x: 21.6, y: 27.5}
+      - {x: 14, y: 27.5}
+  ground_elevation_m: 0
+  eave_elevation_m: 4.6
+  ridge_elevation_m: 8.2
+
+# ── Roof planes (3) ───────────────────────────────────────────────────────
+roof_planes:
+  - id: RFP001
+    building_ref: BLD001
+    wing_ref: WNG001
+    vertices_3d:
+      - {x: 13.6, y: 20, z: 8.2}
+      - {x: 25.4, y: 20, z: 8.2}
+      - {x: 25.4, y: 15.6, z: 4.6}
+      - {x: 13.6, y: 15.6, z: 4.6}
+    surface_type: slope
+    pitch_degrees: 42
+    facing_direction: N
+    material: natural slate
+    overhang_cm: 40
+    derived_from: WNG001 (gable, north slope)
+  - id: RFP002
+    building_ref: BLD001
+    wing_ref: WNG001
+    vertices_3d:
+      - {x: 13.6, y: 20, z: 8.2}
+      - {x: 25.4, y: 20, z: 8.2}
+      - {x: 25.4, y: 24.4, z: 4.6}
+      - {x: 13.6, y: 24.4, z: 4.6}
+    surface_type: slope
+    pitch_degrees: 42
+    facing_direction: S
+    material: natural slate
+    overhang_cm: 40
+    derived_from: WNG001 (gable, south slope)
+  - id: RFP003
+    building_ref: BLD001
+    wing_ref: WNG002
+    vertices_3d:
+      - {x: 13.75, y: 24, z: 3.9}
+      - {x: 21.85, y: 24, z: 3.9}
+      - {x: 21.85, y: 27.75, z: 2.7}
+      - {x: 13.75, y: 27.75, z: 2.7}
+    surface_type: slope
+    pitch_degrees: 15
+    facing_direction: S
+    material: natural slate
+    overhang_cm: 25
+    derived_from: WNG002 (mono-pitch, falling south)

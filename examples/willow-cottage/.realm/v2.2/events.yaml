@@ -1,0 +1,43 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# Events - what has happened, in order
+#
+# Schema: events.schema.yaml
+#
+# GENERATED from a layout specification. Areas, elevations, wall segments and
+# opening offsets are computed rather than typed, which is why they agree with
+# one another. An edit made here is replaced the next time the model is
+# generated - copy it before adapting it.
+#
+# The log the rest of the model is silent about. A maintenance task says the
+# work recurs and its `executions[]` say it was done; an event is for the
+# occasions that mean something on their own - a system replaced, a storm, an
+# inspection passed.
+# ═════════════════════════════════════════════════════════════════════════════
+
+events:
+  - id: EVT001
+    name: Heat pump commissioned
+    event_type: milestone
+    occurred_at: "2023-03-14"
+    status: resolved
+    entity_refs: [SYS001, SYS002, CMP001, CMP002]
+    initiated_by_ref: PRS002
+    outcome: >
+      Oil boiler removed, heat pump and cylinder commissioned, warranty WRT001
+      issued.
+    description: >
+      Changeover from oil to an air-source heat pump.
+    tags: [heating, milestone]
+  - id: EVT002
+    name: Storm brought down an orchard branch
+    event_type: weather
+    occurred_at: "2026-01-22"
+    status: resolved
+    entity_refs: [SPM003, OZ004, EF001]
+    outcome: >
+      Branch cleared and chipped; the wound was left to callus rather than
+      sealed.
+    description: >
+      South-westerly gale took a limb off the apple. No damage to the wall
+      below it.
+    tags: [weather, orchard]

@@ -27,9 +27,11 @@ export function entityPrefix(id) {
 /**
  * Maps model data file (relative path) → schema file (relative to schema/).
  *
- * No longer consulted: Ajv validation moved to @archally/realm-core (2026-06-12), and
- * the resolver there is generic rather than table-driven. Kept correct rather than
- * deleted so it cannot be read as a live mapping that disagrees with the loader.
+ * This IS the standalone backend's resolver - `structural.mjs` reads it for every
+ * file it validates. When layers 1-2 are served by realm-core instead, core's own
+ * generic resolver answers the same question, and the two must agree about which
+ * files are governed at all: a file one side validates and the other never opens is
+ * a difference in verdict that no count of errors reveals.
  */
 export const DATA_FILE_TO_SCHEMA = {
   "realm.yaml":                   "realm.schema.yaml",
@@ -52,6 +54,11 @@ export const DATA_FILE_TO_SCHEMA = {
   "estate-changes.yaml":          "estate-change.schema.yaml",
   "risk-register.yaml":           "risks.schema.yaml",
   "events.yaml":                  "events.schema.yaml",
+  // The config is a sibling of the model rather than part of it, but it has a
+  // schema and realm-core validates it, so this side does too. Leaving it out
+  // meant the published validator reported a clean model where the MCP server
+  // reported an invalid config - the same model, two verdicts.
+  "realm-config.yaml":            "realm-config.schema.yaml",
 };
 
 export const CONSTRUCTION_SCHEMA = "topology/construction.schema.yaml";
@@ -235,8 +242,17 @@ export function boundingBox(vertices) {
 
 // ─── Model discovery (input for rule layers 3-5) ─────────────────────────────
 
-/** Files to exclude from validation (config, manifests, non-model). */
-const EXCLUDE_PATTERNS = ["config", "manifest", "schedule-planner", "garden-care"];
+/**
+ * Files to skip when walking a model: generator inputs and asset manifests, which
+ * describe how a model is USED rather than what it contains.
+ *
+ * `realm-config` is deliberately absent. This list used to begin with a bare
+ * "config", which swallowed it, and the published validator therefore reported a
+ * clean model where realm-core reported an invalid config - the same model, two
+ * verdicts, and no count of errors would have shown which file the difference was
+ * in. The config has a schema, so it is validated (see DATA_FILE_TO_SCHEMA).
+ */
+const EXCLUDE_PATTERNS = ["manifest", "schedule-planner", "garden-care"];
 
 /**
  * Collect the model's YAML files for the rule layers, keyed by project-relative
@@ -248,9 +264,15 @@ const EXCLUDE_PATTERNS = ["config", "manifest", "schedule-planner", "garden-care
  * stopped seeing part of the model.
  */
 export function discoverModelFiles(modelDir) {
-  const yamlFiles = walkFiles(modelDir, f =>
-    /\.(yaml|yml)$/i.test(f) && !EXCLUDE_PATTERNS.some(p => f.includes(p)),
-  );
+  // Matched against the MODEL-RELATIVE path, not the absolute one: a consumer whose
+  // model happens to sit under a directory named `manifest` or `garden-care` would
+  // otherwise have every file in it skipped, and a model that validates because
+  // nothing read it looks exactly like a model that validates.
+  const yamlFiles = walkFiles(modelDir, f => {
+    if (!/\.(yaml|yml)$/i.test(f)) return false;
+    const relPath = toPosix(path.relative(modelDir, f));
+    return !EXCLUDE_PATTERNS.some(pattern => relPath.includes(pattern));
+  });
 
   const modelFiles = new Map();
   const constructionFiles = new Map();

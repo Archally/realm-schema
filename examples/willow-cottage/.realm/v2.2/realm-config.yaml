@@ -1,0 +1,43 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# Willow Cottage - validation and inference tolerances
+#
+# Schema: realm-config.schema.yaml
+#
+# GENERATED from a layout specification. Areas, elevations, wall segments and
+# opening offsets are computed rather than typed, which is why they agree with
+# one another. An edit made here is replaced the next time the model is
+# generated - copy it before adapting it.
+#
+# Config, not model: the validator skips files matching *-config.yaml when it
+# walks the model, and reads this one by name for its tolerances.
+# ═════════════════════════════════════════════════════════════════════════════
+
+schema_version: "2.2.0"
+
+inference:
+  # Defaults for deriving construction geometry from the semantic layer.
+  # The cottage's own walls are declared explicitly and do not use these.
+  wall_alignment_tolerance_cm: 5
+  room_overlap_tolerance_sqm: 0.1
+  default_exterior_wall_thickness_cm: 30
+  default_interior_wall_thickness_cm: 12
+  default_slab_thickness_cm: 25
+  default_ceiling_height_cm: 245
+
+validation:
+  # Every one of these is the schema default. They are written out anyway so
+  # the example shows where a tolerance is set when a model needs to move one.
+  slab_area_tolerance_percent: 10
+  wall_coverage_tolerance_percent: 5
+  opening_fit_tolerance_cm: 2
+  wall_thickness_tolerance_cm: 2
+  opening_width_tolerance_cm: 1
+  head_height_tolerance_cm: 5
+  elevation_tolerance_m: 0.01
+  coplanarity_tolerance_cm: 1
+  roof_coverage_tolerance_percent: 15
+
+rendering:
+  default_lod: lod2
+  show_construction_layer: true
+  show_neighbor_massing: true

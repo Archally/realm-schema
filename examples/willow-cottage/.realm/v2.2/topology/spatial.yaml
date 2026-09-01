@@ -1,0 +1,82 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# Topology: Spatial - how elements stand in relation to one another
+#
+# Schema: topology/spatial.schema.yaml
+#
+# GENERATED from a layout specification. Areas, elevations, wall segments and
+# opening offsets are computed rather than typed, which is why they agree with
+# one another. An edit made here is replaced the next time the model is
+# generated - copy it before adapting it.
+#
+# This file holds relations only. The schema also allows a `coordinate_system`
+# here, and this model deliberately does not use it: the realm root already
+# declares one, and two declarations of the same frame drift apart silently -
+# consumers that read the root keep working while consumers that read the
+# plane quietly use the older numbers.
+# ═════════════════════════════════════════════════════════════════════════════
+
+spatial_relations:
+  - from_ref: BLD001
+    to_ref: OZ003
+    relation_type: enables-access
+    distance_m: 8.2
+    notes: >
+      French doors from the dining room and the back door from the utility
+      room both open onto the terrace.
+  - from_ref: BLD001
+    to_ref: OZ002
+    relation_type: enables-access
+    distance_m: 17.9
+    notes: >
+      The front door opens onto the path across the front garden to the gate.
+  - from_ref: BLD001
+    to_ref: OZ004
+    relation_type: faces
+    distance_m: 19.1
+    notes: >
+      The east gable looks down the orchard slope.
+  - from_ref: BLD002
+    to_ref: OZ007
+    relation_type: enables-access
+    distance_m: 5.8
+    notes: >
+      The barn door opens directly onto the forecourt.
+  - from_ref: OZ001
+    to_ref: OZ007
+    relation_type: enables-access
+    distance_m: 15.9
+    notes: >
+      The drive runs from the gate down to the forecourt.
+  - from_ref: NP001
+    to_ref: LP001
+    relation_type: overlooks
+    distance_m: 34.4
+    notes: >
+      Hollybank stands 3.1 m above the cottage terrace and looks down across
+      its paddock.
+  - from_ref: NP004
+    to_ref: OZ001
+    relation_type: shades
+    distance_m: 40.3
+    notes: >
+      The coppice on the west bank keeps the drive in shade until mid-morning.
+  - from_ref: BS004
+    to_ref: OZ004
+    relation_type: blocks-wind
+    distance_m: 14.3
+    notes: >
+      The alder and willow along the stream take the worst of the
+      south-westerlies off the orchard.
+  - from_ref: BS001
+    to_ref: OZ002
+    relation_type: shares-boundary
+    distance_m: 13.6
+    notes: >
+      The roadside hedge is the northern edge of the front garden as well as
+      of the plot.
+  - from_ref: OZ006
+    to_ref: NP003
+    relation_type: drains-to
+    distance_m: 20.3
+    notes: >
+      Surface water off the lower meadow crosses the boundary into the stream.

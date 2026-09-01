@@ -1,0 +1,72 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# Estate changes - work that is planned but not yet part of the model
+#
+# Schema: estate-change.schema.yaml
+#
+# GENERATED from a layout specification. Areas, elevations, wall segments and
+# opening offsets are computed rather than typed, which is why they agree with
+# one another. An edit made here is replaced the next time the model is
+# generated - copy it before adapting it.
+#
+# A change is the TO-BE beside the AS-IS. Each `changes[]` entry names the
+# action, the entity and the two states, so a plan can be read against the
+# model it will alter rather than as prose about intentions.
+#
+# The entity was called `migration` until 2.2.0; a model written against 2.1
+# needs the rename before it validates here.
+# ═════════════════════════════════════════════════════════════════════════════
+
+estate_changes:
+  - id: ECH001
+    name: Rebuild the bulging section of the east wall
+    status: approved
+    priority: high
+    proposed_date: "2026-02-20"
+    planned_start_date: "2026-10-05"
+    planned_end_date: "2026-10-16"
+    affected_entity_refs: [BS003]
+    affected_zone_refs: [OZ004]
+    coordinator_ref: PRS001
+    estimated_cost: 2400
+    currency: GBP
+    changes:
+    - action: replace
+      entity_type: boundary_segment
+      entity_ref: BS003
+      description: >
+        Take down and rebuild the six metres nearest the south end.
+      from_state: >
+        Dry stone wall leaning about 120 mm over 1.5 m of height
+      to_state: >
+        Rebuilt on the original line, reusing the stone
+    description: >
+      Take down and rebuild the six metres nearest the south end, which has
+      moved since the wet winter. The stone is reusable; the wall is the
+      boundary with The Old Forge, so the neighbour is told before work
+      starts.
+    tags: [structural, boundary]
+  - id: ECH002
+    name: Extend rainwater harvesting to the barn roof
+    status: proposed
+    priority: low
+    proposed_date: "2026-06-11"
+    affected_entity_refs: [SYS004, BLD002]
+    affected_zone_refs: [OZ007]
+    depends_on_estate_change_refs: [ECH001]
+    estimated_cost: 900
+    currency: GBP
+    changes:
+    - action: modify
+      entity_type: system
+      entity_ref: SYS004
+      description: >
+        Add a second tank on the barn's south slope, cross-linked to the first.
+      from_state: >
+        3000 litres, cottage north slope only
+      to_state: >
+        5000 litres across two linked tanks
+    description: >
+      Second tank taking the barn's south slope, cross-linked to the existing
+      one. Deferred behind the wall rebuild, which needs the same access along
+      the orchard edge.
+    tags: [water, garden]

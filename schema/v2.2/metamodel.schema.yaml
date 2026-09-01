@@ -397,8 +397,12 @@ $defs:
   schema_version:
     type: string
     title: "Schema Version"
-    description: "Version of the Realm schema this model conforms to."
-    enum: ["2.0.0", "2.1.0", "2.2.0"]
+    description: >
+      Realm schema version this document targets. The v2.2 schemas accept
+      documents declaring 2.1.0 and 2.0.0; 2.2.0 renamed the migration entity to
+      estate_change, so an older document that uses that construct needs the
+      rename before it will validate.
+    enum: ["2.2.0", "2.1.0", "2.0.0"]
 
   # ═══════════════════════════════════════════════════════════════════════════
   # Common

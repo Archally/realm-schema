@@ -1,0 +1,80 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# Nature: Care - what a species needs, month by month
+#
+# Schema: nature/care.schema.yaml
+#
+# GENERATED from a layout specification. Areas, elevations, wall segments and
+# opening offsets are computed rather than typed, which is why they agree with
+# one another. An edit made here is replaced the next time the model is
+# generated - copy it before adapting it.
+#
+# A care profile belongs to a SPECIES, not to a plant. Several specimens and
+# plantings point at one profile, so the knowledge is written once and the
+# individuals carry only what is true of them - their size, their condition,
+# where they stand.
+#
+# `known_threats` is a protocol, not a diagnosis: it records what this species
+# is susceptible to, never whether a particular plant currently has it.
+# ═════════════════════════════════════════════════════════════════════════════
+
+care_profiles:
+  - id: SCP001
+    name: Apple - standard, cooking
+    species: Malus domestica
+    common_name: Apple
+    applicable_specimen_types: [tree-fruit]
+    growth_rate: moderate
+    lifespan_years: 60
+    hardiness_zone_min: 4a
+    care_calendar:
+    - month: 2
+      activities:
+      - activity_type: pruning
+        description: >
+          Winter prune while fully dormant - open the centre.
+    - month: 5
+      activities:
+      - activity_type: fertilizing
+        description: >
+          Top dress with compost once blossom has set.
+    - month: 9
+      notes: >
+        Pick when the stalk parts with a lift and a twist.
+    known_threats:
+    - threat_type: disease-fungal
+      name: Apple scab
+    - threat_type: pest
+      name: Codling moth
+    - threat_type: disease-fungal
+      name: European canker
+    description: >
+      Care pattern shared by the orchard's cooking apples.
+    tags: [fruit]
+  - id: SCP002
+    name: Deciduous hedge and willow
+    species: Fagus sylvatica
+    common_name: Beech
+    applicable_specimen_types: [tree-deciduous]
+    applicable_planting_types: [hedge]
+    growth_rate: moderate
+    lifespan_years: 150
+    hardiness_zone_min: 5a
+    care_calendar:
+    - month: 8
+      activities:
+      - activity_type: hedge-trim
+        description: >
+          Trim after the birds have finished nesting.
+    - month: 11
+      activities:
+      - activity_type: mulching
+        description: >
+          Mulch the base once the leaf has dropped.
+    known_threats:
+    - threat_type: pest
+      name: Beech aphid
+    - threat_type: environmental
+      name: Drought stress on thin soil
+    description: >
+      Shared profile for the beech hedge and the deciduous specimens.
+    tags: [hedge, deciduous]

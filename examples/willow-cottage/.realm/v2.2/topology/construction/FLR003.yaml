@@ -1,0 +1,154 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# Construction geometry - Stone barn, Barn floor (FLR003)
+#
+# Schema: topology/construction.schema.yaml
+#
+# GENERATED from a layout specification. Areas, elevations, wall segments and
+# opening offsets are computed rather than typed, which is why they agree with
+# one another. An edit made here is replaced the next time the model is
+# generated - copy it before adapting it.
+#
+# A wall segment is a DIRECTED line: facing start -> end, with +X east and +Y
+# south, the room is always on the right. That is what makes the four walls of
+# a room a clockwise circuit - N west-to-east, E north-to-south, S
+# east-to-west, W south-to-north - and it is the same circuit the semantic
+# layer measures `wall_offset_cm` along, so an opening's offset carries over
+# unchanged.
+#
+# An interior wall is declared by both rooms it divides but exists ONCE here.
+# The room on the right owns it; the room on the far side is `left_space_ref`.
+# A door in it is one opening carrying both `source_room_ref` and
+# `connects_to_ref` - not two doors in one wall.
+#
+# All coordinates are model-absolute. Elevations are metres above the vertical
+# datum, so this floor's slab sits at -1.2 m and its walls rise 2.8 m from
+# there.
+# ═════════════════════════════════════════════════════════════════════════════
+
+floor_ref: FLR003
+building_ref: BLD002
+
+generated_from:
+  semantic_source_refs:
+    - "topology/estate.yaml"
+  schema_version: "2.2.0"
+  generated_at: "2026-09-01T00:00:00Z"
+  generator: gen-willow-cottage
+  human_edited: false
+  inference_log:
+    rooms_processed: 1
+    walls_generated: 4
+    openings_mapped: 3
+
+building_shell:
+  footprint_absolute:
+    shape: polygon
+    vertices:
+      - {x: 30, y: 18}
+      - {x: 37, y: 18}
+      - {x: 37, y: 24}
+      - {x: 30, y: 24}
+  ground_elevation_m: -1.2
+  eave_elevation_m: 1.7
+  ridge_elevation_m: 3.8
+
+# ── Slabs ─────────────────────────────────────────────────────────────────
+floor_slab:
+  id: SLB003
+  floor_ref: FLR003
+  outline:
+    shape: polygon
+    vertices:
+      - {x: 30, y: 18}
+      - {x: 37, y: 18}
+      - {x: 37, y: 24}
+      - {x: 30, y: 24}
+  elevation_m: -1.2
+  thickness_cm: 15
+  slab_type: ground-floor
+  material: reinforced-concrete
+  derived_from: FLR003 + BLD002.footprint
+
+# ── Wall segments (4) ─────────────────────────────────────────────────────
+wall_segments:
+  - id: WSG040
+    start: {x: 30, y: 18}
+    end: {x: 37, y: 18}
+    thickness_cm: 25
+    is_exterior: true
+    wall_type: exterior
+    base_elevation_m: -1.2
+    height_m: 2.8
+    material: rubble-stone
+    right_space_ref: RM015
+    floor_ref: FLR003
+    wing_ref: WNG003
+    derived_from: RM015.walls.N
+  - id: WSG041
+    start: {x: 37, y: 18}
+    end: {x: 37, y: 24}
+    thickness_cm: 25
+    is_exterior: true
+    wall_type: exterior
+    base_elevation_m: -1.2
+    height_m: 2.8
+    material: rubble-stone
+    right_space_ref: RM015
+    floor_ref: FLR003
+    wing_ref: WNG003
+    derived_from: RM015.walls.E
+  - id: WSG042
+    start: {x: 37, y: 24}
+    end: {x: 30, y: 24}
+    thickness_cm: 25
+    is_exterior: true
+    wall_type: exterior
+    base_elevation_m: -1.2
+    height_m: 2.8
+    material: rubble-stone
+    right_space_ref: RM015
+    floor_ref: FLR003
+    wing_ref: WNG003
+    derived_from: RM015.walls.S
+    openings:
+      - opening_type: door
+        offset_from_start_cm: 80
+        width_cm: 90
+        height_cm: 200
+        sill_height_cm: 0
+        head_height_cm: 200
+        depth_cm: 25
+        source_room_ref: RM015
+        connects_to_ref: OZ004
+      - opening_type: window
+        offset_from_start_cm: 400
+        width_cm: 100
+        height_cm: 80
+        sill_height_cm: 150
+        head_height_cm: 230
+        depth_cm: 25
+        glazing: single
+        source_room_ref: RM015
+  - id: WSG043
+    start: {x: 30, y: 24}
+    end: {x: 30, y: 18}
+    thickness_cm: 25
+    is_exterior: true
+    wall_type: exterior
+    base_elevation_m: -1.2
+    height_m: 2.8
+    material: rubble-stone
+    right_space_ref: RM015
+    floor_ref: FLR003
+    wing_ref: WNG003
+    derived_from: RM015.walls.W
+    openings:
+      - opening_type: garage-door
+        offset_from_start_cm: 130
+        width_cm: 260
+        height_cm: 220
+        sill_height_cm: 0
+        head_height_cm: 220
+        depth_cm: 25
+        source_room_ref: RM015
+        connects_to_ref: OZ007

@@ -1,0 +1,83 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# Infrastructure: Network - nodes, links and devices
+#
+# Schema: infrastructure/network.schema.yaml
+#
+# GENERATED from a layout specification. Areas, elevations, wall segments and
+# opening offsets are computed rather than typed, which is why they agree with
+# one another. An edit made here is replaced the next time the model is
+# generated - copy it before adapting it.
+#
+# A device says what it watches and what it drives with two separate fields:
+# `monitored_system_ref` and `controlled_system_ref`. A sensor that only reads
+# and a thermostat that also acts are different things, and collapsing them
+# into one reference would lose which is which.
+# ═════════════════════════════════════════════════════════════════════════════
+
+network_nodes:
+  - id: NN001
+    name: Study router
+    node_type: router
+    manufacturer: Combe Fibre
+    model_name: CF-ONT-500
+    ip_address: "192.168.1.1"
+    wifi_bands: [2.4GHz, 5GHz]
+    room_ref: RM006
+    position: {x: 23.4, y: 21.4}
+    description: >
+      Fibre terminal and router in the study, where the service enters.
+    tags: [network, core]
+  - id: NN002
+    name: Barn access point
+    node_type: access-point
+    manufacturer: Combe Fibre
+    model_name: CF-AP2
+    ip_address: "192.168.1.12"
+    wifi_bands: [2.4GHz]
+    poe_powered: true
+    room_ref: RM015
+    position: {x: 33, y: 19.2}
+    description: >
+      Access point in the barn, reached by the buried cable that follows the
+      electrical submain.
+    tags: [network, outbuilding]
+
+# ── IoT devices ───────────────────────────────────────────────────────────
+iot_devices:
+  - id: IOT001
+    name: Hall thermostat
+    device_type: thermostat
+    protocol: wifi
+    controlled_system_ref: SYS001
+    network_node_ref: NN001
+    room_ref: RM002
+    position: {x: 19.4, y: 17}
+    description: >
+      Controls the heat pump's weather compensation curve and the ground-floor
+      zone.
+    tags: [heating, control]
+  - id: IOT002
+    name: Vegetable bed moisture sensor
+    device_type: soil-moisture-sensor
+    protocol: zigbee
+    monitored_system_ref: SYS005
+    network_node_ref: NN002
+    outdoor_zone_ref: OZ005
+    position: {x: 14, y: 32.5}
+    description: >
+      Battery sensor in the second raised bed; the irrigation timer reads it
+      before running.
+    tags: [garden, sensor]
+
+# ── Links ─────────────────────────────────────────────────────────────────
+network_links:
+  - id: NL001
+    name: Cottage to barn
+    from_node_ref: NN001
+    to_node_ref: NN002
+    link_type: ethernet-cat6
+    speed_mbps: 1000
+    poe_delivery: true
+    description: >
+      Buried Cat6 in the same trench as the electrical submain, about 14 m.
+    tags: [wired]

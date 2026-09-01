@@ -1,0 +1,570 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# Construction geometry - Willow Cottage, Ground floor (FLR001)
+#
+# Schema: topology/construction.schema.yaml
+#
+# GENERATED from a layout specification. Areas, elevations, wall segments and
+# opening offsets are computed rather than typed, which is why they agree with
+# one another. An edit made here is replaced the next time the model is
+# generated - copy it before adapting it.
+#
+# A wall segment is a DIRECTED line: facing start -> end, with +X east and +Y
+# south, the room is always on the right. That is what makes the four walls of
+# a room a clockwise circuit - N west-to-east, E north-to-south, S
+# east-to-west, W south-to-north - and it is the same circuit the semantic
+# layer measures `wall_offset_cm` along, so an opening's offset carries over
+# unchanged.
+#
+# An interior wall is declared by both rooms it divides but exists ONCE here.
+# The room on the right owns it; the room on the far side is `left_space_ref`.
+# A door in it is one opening carrying both `source_room_ref` and
+# `connects_to_ref` - not two doors in one wall.
+#
+# All coordinates are model-absolute. Elevations are metres above the vertical
+# datum, so this floor's slab sits at 0 m and its walls rise 2.45 m from
+# there.
+# ═════════════════════════════════════════════════════════════════════════════
+
+floor_ref: FLR001
+building_ref: BLD001
+
+generated_from:
+  semantic_source_refs:
+    - "topology/estate.yaml"
+  schema_version: "2.2.0"
+  generated_at: "2026-09-01T00:00:00Z"
+  generator: gen-willow-cottage
+  human_edited: false
+  inference_log:
+    rooms_processed: 8
+    walls_generated: 22
+    openings_mapped: 18
+
+building_shell:
+  footprint_absolute:
+    shape: polygon
+    vertices:
+      - {x: 14, y: 16}
+      - {x: 25, y: 16}
+      - {x: 25, y: 24}
+      - {x: 21.6, y: 24}
+      - {x: 21.6, y: 27.5}
+      - {x: 14, y: 27.5}
+  ground_elevation_m: 0
+  eave_elevation_m: 4.6
+  ridge_elevation_m: 8.2
+
+# ── Slabs ─────────────────────────────────────────────────────────────────
+floor_slab:
+  id: SLB001
+  floor_ref: FLR001
+  outline:
+    shape: polygon
+    vertices:
+      - {x: 14, y: 16}
+      - {x: 25, y: 16}
+      - {x: 25, y: 24}
+      - {x: 21.6, y: 24}
+      - {x: 21.6, y: 27.5}
+      - {x: 14, y: 27.5}
+  elevation_m: 0
+  thickness_cm: 25
+  slab_type: ground-floor
+  material: reinforced-concrete
+  derived_from: FLR001 + BLD001.footprint
+
+ceiling_slab:
+  id: SLB002
+  floor_ref: FLR001
+  outline:
+    shape: polygon
+    vertices:
+      - {x: 14, y: 16}
+      - {x: 25, y: 16}
+      - {x: 25, y: 24}
+      - {x: 14, y: 24}
+  elevation_m: 2.85
+  thickness_cm: 20
+  slab_type: intermediate
+  material: timber-joist
+  derived_from: FLR001 ceiling / FLR002 floor
+
+# ── Wall segments (22) ────────────────────────────────────────────────────
+wall_segments:
+  - id: WSG001
+    start: {x: 14, y: 16}
+    end: {x: 18.2, y: 16}
+    thickness_cm: 30
+    is_exterior: true
+    wall_type: exterior
+    base_elevation_m: 0
+    height_m: 2.45
+    material: rubble-stone
+    right_space_ref: RM001
+    floor_ref: FLR001
+    wing_ref: WNG001
+    derived_from: RM001.walls.N
+    openings:
+      - opening_type: window
+        offset_from_start_cm: 130
+        width_cm: 160
+        height_cm: 110
+        sill_height_cm: 95
+        head_height_cm: 205
+        depth_cm: 30
+        glazing: double
+        source_room_ref: RM001
+  - id: WSG002
+    start: {x: 18.2, y: 16}
+    end: {x: 18.2, y: 20.4}
+    thickness_cm: 12
+    is_exterior: false
+    wall_type: interior-partition
+    base_elevation_m: 0
+    height_m: 2.45
+    material: timber-stud
+    right_space_ref: RM001
+    left_space_ref: RM002
+    floor_ref: FLR001
+    wing_ref: WNG001
+    derived_from: RM001.walls.E
+    openings:
+      - opening_type: door
+        offset_from_start_cm: 90
+        width_cm: 84
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        source_room_ref: RM001
+        connects_to_ref: RM002
+  - id: WSG003
+    start: {x: 18.2, y: 20.4}
+    end: {x: 14, y: 20.4}
+    thickness_cm: 12
+    is_exterior: false
+    wall_type: interior-partition
+    base_elevation_m: 0
+    height_m: 2.45
+    material: timber-stud
+    right_space_ref: RM001
+    left_space_ref: RM004
+    floor_ref: FLR001
+    wing_ref: WNG001
+    derived_from: RM001.walls.S
+    openings:
+      - opening_type: door
+        offset_from_start_cm: 60
+        width_cm: 84
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        source_room_ref: RM001
+        connects_to_ref: RM004
+  - id: WSG004
+    start: {x: 14, y: 20.4}
+    end: {x: 14, y: 16}
+    thickness_cm: 30
+    is_exterior: true
+    wall_type: exterior
+    base_elevation_m: 0
+    height_m: 2.45
+    material: rubble-stone
+    right_space_ref: RM001
+    floor_ref: FLR001
+    wing_ref: WNG001
+    derived_from: RM001.walls.W
+    openings:
+      - opening_type: window
+        offset_from_start_cm: 150
+        width_cm: 90
+        height_cm: 110
+        sill_height_cm: 95
+        head_height_cm: 205
+        depth_cm: 30
+        glazing: double
+        source_room_ref: RM001
+  - id: WSG005
+    start: {x: 18.2, y: 16}
+    end: {x: 21.6, y: 16}
+    thickness_cm: 30
+    is_exterior: true
+    wall_type: exterior
+    base_elevation_m: 0
+    height_m: 2.45
+    material: rubble-stone
+    right_space_ref: RM002
+    floor_ref: FLR001
+    wing_ref: WNG001
+    derived_from: RM002.walls.N
+    openings:
+      - opening_type: door
+        offset_from_start_cm: 120
+        width_cm: 96
+        height_cm: 205
+        sill_height_cm: 0
+        head_height_cm: 205
+        depth_cm: 30
+        source_room_ref: RM002
+        connects_to_ref: OZ002
+  - id: WSG006
+    start: {x: 21.6, y: 16}
+    end: {x: 21.6, y: 20.4}
+    thickness_cm: 12
+    is_exterior: false
+    wall_type: interior-partition
+    base_elevation_m: 0
+    height_m: 2.45
+    material: timber-stud
+    right_space_ref: RM002
+    left_space_ref: RM003
+    floor_ref: FLR001
+    wing_ref: WNG001
+    derived_from: RM002.walls.E
+    openings:
+      - opening_type: door
+        offset_from_start_cm: 130
+        width_cm: 84
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        source_room_ref: RM002
+        connects_to_ref: RM003
+  - id: WSG007
+    start: {x: 21.6, y: 20.4}
+    end: {x: 18.2, y: 20.4}
+    thickness_cm: 12
+    is_exterior: false
+    wall_type: interior-partition
+    base_elevation_m: 0
+    height_m: 2.45
+    material: timber-stud
+    right_space_ref: RM002
+    left_space_ref: RM005
+    floor_ref: FLR001
+    wing_ref: WNG001
+    derived_from: RM002.walls.S
+    openings:
+      - opening_type: door
+        offset_from_start_cm: 120
+        width_cm: 84
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        source_room_ref: RM002
+        connects_to_ref: RM005
+  - id: WSG008
+    start: {x: 21.6, y: 16}
+    end: {x: 25, y: 16}
+    thickness_cm: 30
+    is_exterior: true
+    wall_type: exterior
+    base_elevation_m: 0
+    height_m: 2.45
+    material: rubble-stone
+    right_space_ref: RM003
+    floor_ref: FLR001
+    wing_ref: WNG001
+    derived_from: RM003.walls.N
+    openings:
+      - opening_type: window
+        offset_from_start_cm: 110
+        width_cm: 110
+        height_cm: 125
+        sill_height_cm: 80
+        head_height_cm: 205
+        depth_cm: 30
+        glazing: double
+        source_room_ref: RM003
+  - id: WSG009
+    start: {x: 25, y: 16}
+    end: {x: 25, y: 20.4}
+    thickness_cm: 30
+    is_exterior: true
+    wall_type: exterior
+    base_elevation_m: 0
+    height_m: 2.45
+    material: rubble-stone
+    right_space_ref: RM003
+    floor_ref: FLR001
+    wing_ref: WNG001
+    derived_from: RM003.walls.E
+    openings:
+      - opening_type: window
+        offset_from_start_cm: 80
+        width_cm: 110
+        height_cm: 125
+        sill_height_cm: 80
+        head_height_cm: 205
+        depth_cm: 30
+        glazing: double
+        source_room_ref: RM003
+  - id: WSG010
+    start: {x: 25, y: 20.4}
+    end: {x: 21.6, y: 20.4}
+    thickness_cm: 12
+    is_exterior: false
+    wall_type: interior-partition
+    base_elevation_m: 0
+    height_m: 2.45
+    material: timber-stud
+    right_space_ref: RM003
+    left_space_ref: RM006
+    floor_ref: FLR001
+    wing_ref: WNG001
+    derived_from: RM003.walls.S
+  - id: WSG011
+    start: {x: 18.2, y: 20.4}
+    end: {x: 18.2, y: 24}
+    thickness_cm: 12
+    is_exterior: false
+    wall_type: interior-partition
+    base_elevation_m: 0
+    height_m: 2.45
+    material: timber-stud
+    right_space_ref: RM004
+    left_space_ref: RM005
+    floor_ref: FLR001
+    wing_ref: WNG001
+    derived_from: RM004.walls.E
+  - id: WSG012
+    start: {x: 18.2, y: 24}
+    end: {x: 14, y: 24}
+    thickness_cm: 30
+    is_exterior: false
+    wall_type: interior-load-bearing
+    base_elevation_m: 0
+    height_m: 2.45
+    material: rubble-stone
+    right_space_ref: RM004
+    left_space_ref: RM007
+    floor_ref: FLR001
+    wing_ref: WNG001
+    derived_from: RM004.walls.S
+    openings:
+      - opening_type: door
+        offset_from_start_cm: 80
+        width_cm: 84
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 30
+        source_room_ref: RM004
+        connects_to_ref: RM007
+  - id: WSG013
+    start: {x: 14, y: 24}
+    end: {x: 14, y: 20.4}
+    thickness_cm: 30
+    is_exterior: true
+    wall_type: exterior
+    base_elevation_m: 0
+    height_m: 2.45
+    material: rubble-stone
+    right_space_ref: RM004
+    floor_ref: FLR001
+    wing_ref: WNG001
+    derived_from: RM004.walls.W
+    openings:
+      - opening_type: french-door
+        offset_from_start_cm: 110
+        width_cm: 150
+        height_cm: 210
+        sill_height_cm: 0
+        head_height_cm: 210
+        depth_cm: 30
+        glazing: double
+        source_room_ref: RM004
+        connects_to_ref: OZ003
+  - id: WSG014
+    start: {x: 21.6, y: 20.4}
+    end: {x: 21.6, y: 24}
+    thickness_cm: 12
+    is_exterior: false
+    wall_type: interior-partition
+    base_elevation_m: 0
+    height_m: 2.45
+    material: timber-stud
+    right_space_ref: RM005
+    left_space_ref: RM006
+    floor_ref: FLR001
+    wing_ref: WNG001
+    derived_from: RM005.walls.E
+    openings:
+      - opening_type: door
+        offset_from_start_cm: 100
+        width_cm: 84
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        source_room_ref: RM005
+        connects_to_ref: RM006
+  - id: WSG015
+    start: {x: 21.6, y: 24}
+    end: {x: 18.2, y: 24}
+    thickness_cm: 30
+    is_exterior: false
+    wall_type: interior-load-bearing
+    base_elevation_m: 0
+    height_m: 2.45
+    material: rubble-stone
+    right_space_ref: RM005
+    left_space_ref: RM008
+    floor_ref: FLR001
+    wing_ref: WNG001
+    derived_from: RM005.walls.S
+    openings:
+      - opening_type: door
+        offset_from_start_cm: 95
+        width_cm: 76
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 30
+        source_room_ref: RM005
+        connects_to_ref: RM008
+  - id: WSG016
+    start: {x: 25, y: 20.4}
+    end: {x: 25, y: 24}
+    thickness_cm: 30
+    is_exterior: true
+    wall_type: exterior
+    base_elevation_m: 0
+    height_m: 2.45
+    material: rubble-stone
+    right_space_ref: RM006
+    floor_ref: FLR001
+    wing_ref: WNG001
+    derived_from: RM006.walls.E
+    openings:
+      - opening_type: window
+        offset_from_start_cm: 120
+        width_cm: 90
+        height_cm: 120
+        sill_height_cm: 85
+        head_height_cm: 205
+        depth_cm: 30
+        glazing: double
+        source_room_ref: RM006
+  - id: WSG017
+    start: {x: 25, y: 24}
+    end: {x: 21.6, y: 24}
+    thickness_cm: 30
+    is_exterior: true
+    wall_type: exterior
+    base_elevation_m: 0
+    height_m: 2.45
+    material: rubble-stone
+    right_space_ref: RM006
+    floor_ref: FLR001
+    wing_ref: WNG001
+    derived_from: RM006.walls.S
+    openings:
+      - opening_type: window
+        offset_from_start_cm: 100
+        width_cm: 140
+        height_cm: 120
+        sill_height_cm: 85
+        head_height_cm: 205
+        depth_cm: 30
+        glazing: double
+        source_room_ref: RM006
+  - id: WSG018
+    start: {x: 18.2, y: 24}
+    end: {x: 18.2, y: 27.5}
+    thickness_cm: 12
+    is_exterior: false
+    wall_type: interior-partition
+    base_elevation_m: 0
+    height_m: 2.45
+    material: timber-stud
+    right_space_ref: RM007
+    left_space_ref: RM008
+    floor_ref: FLR001
+    wing_ref: WNG002
+    derived_from: RM007.walls.E
+  - id: WSG019
+    start: {x: 18.2, y: 27.5}
+    end: {x: 14, y: 27.5}
+    thickness_cm: 22
+    is_exterior: true
+    wall_type: exterior
+    base_elevation_m: 0
+    height_m: 2.45
+    material: brick
+    right_space_ref: RM007
+    floor_ref: FLR001
+    wing_ref: WNG002
+    derived_from: RM007.walls.S
+    openings:
+      - opening_type: door
+        offset_from_start_cm: 90
+        width_cm: 90
+        height_cm: 200
+        sill_height_cm: 0
+        head_height_cm: 200
+        depth_cm: 22
+        source_room_ref: RM007
+        connects_to_ref: OZ003
+  - id: WSG020
+    start: {x: 14, y: 27.5}
+    end: {x: 14, y: 24}
+    thickness_cm: 22
+    is_exterior: true
+    wall_type: exterior
+    base_elevation_m: 0
+    height_m: 2.45
+    material: brick
+    right_space_ref: RM007
+    floor_ref: FLR001
+    wing_ref: WNG002
+    derived_from: RM007.walls.W
+    openings:
+      - opening_type: window
+        offset_from_start_cm: 120
+        width_cm: 80
+        height_cm: 90
+        sill_height_cm: 130
+        head_height_cm: 220
+        depth_cm: 22
+        glazing: double
+        source_room_ref: RM007
+  - id: WSG021
+    start: {x: 21.6, y: 24}
+    end: {x: 21.6, y: 27.5}
+    thickness_cm: 22
+    is_exterior: true
+    wall_type: exterior
+    base_elevation_m: 0
+    height_m: 2.45
+    material: brick
+    right_space_ref: RM008
+    floor_ref: FLR001
+    wing_ref: WNG002
+    derived_from: RM008.walls.E
+  - id: WSG022
+    start: {x: 21.6, y: 27.5}
+    end: {x: 18.2, y: 27.5}
+    thickness_cm: 22
+    is_exterior: true
+    wall_type: exterior
+    base_elevation_m: 0
+    height_m: 2.45
+    material: brick
+    right_space_ref: RM008
+    floor_ref: FLR001
+    wing_ref: WNG002
+    derived_from: RM008.walls.S
+    openings:
+      - opening_type: window
+        offset_from_start_cm: 140
+        width_cm: 60
+        height_cm: 60
+        sill_height_cm: 150
+        head_height_cm: 210
+        depth_cm: 22
+        glazing: double
+        source_room_ref: RM008

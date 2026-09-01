@@ -1,0 +1,84 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# Realm Model - Willow Cottage
+#
+# GENERATED from a layout specification. Areas, elevations, wall segments and
+# opening offsets are computed rather than typed, which is why they agree with
+# one another. An edit made here is replaced the next time the model is
+# generated - copy it before adapting it.
+#
+# Willow Cottage is FICTIONAL. It is the worked example for the Realm schema:
+# a smallholding on a hillside, with a two-storey stone cottage, a detached
+# barn, eight outdoor zones and four neighbouring parcels. No part of it
+# describes a real property, which is why it carries no latitude or longitude
+# - a made-up address with real coordinates would put it somewhere that
+# exists.
+#
+# Model files:
+#   topology/estate.yaml       parcel, buildings, wings, floors, rooms, zones
+#   topology/boundary.yaml     the five boundary runs, as absolute polylines
+#   topology/spatial.yaml      relations between elements (no coordinates)
+#   topology/construction/     wall segments, slabs and roof planes, derived
+#   infrastructure/            systems, components, connections, network
+#   nature/                    specimens, plantings, care, soil, biomass
+#   operations/                maintenance, costs, warranties, regulations
+#   context/                   neighbours, roads, environment, people
+#   estate-changes.yaml        planned work
+#   risk-register.yaml         risks and open issues
+#   events.yaml                what has happened
+#
+# The land falls 6.4 m from the lane at the north corner to the stream at the
+# south. That fall is why the vertical datum sits at the cottage rather than
+# at the highest corner: elevations are read against the datum, so a datum on
+# the hilltop would make every building here look mislocated.
+# ═════════════════════════════════════════════════════════════════════════════
+
+version: "1.0.0"
+schemaVersion: "2.2.0"
+name: Willow Cottage
+description: >
+  Fictional smallholding of about 1927 m² on a south-facing hillside. A
+  two-storey rubble-stone cottage of 1868 with a later rear lean-to, a
+  detached stone barn on a lower platform, an orchard and a terraced
+  vegetable garden. Heated by an air-source heat pump; water from the
+  mains, drainage to a septic tank. Used here as the reference example for
+  the Realm schema.
+
+location:
+  address: Willow Cottage, Brackwater Lane
+  city: Nether Hollowby
+  region: South West England
+  country: England
+
+# No latitude/longitude: the estate is fictional. A real model records both,
+# and anchors the local grid to a national one - see `coordinate_system`.
+
+climate:
+  hardiness_zone: 9a
+  koppen_classification: Cfb
+  avg_annual_rainfall_mm: 900
+  frost_free_days: 250
+  first_frost_date: 11-20
+  last_frost_date: 04-05
+  prevailing_wind_direction: SW
+
+coordinate_system:
+  unit: meters
+  origin_description: >
+    The north corner of the parcel, where the drive meets Brackwater Lane.
+    All XY coordinates in this model are metres from that point: +X runs
+    east along the lane, +Y runs south into the plot.
+  north_angle_degrees: 180
+  vertical_datum_type: local-ground
+  vertical_datum_description: >
+    Z = 0 is ground level at the cottage's front threshold, 96 m above mean
+    sea level. Every elevation in the model is relative to it. The parcel
+    corners run from 3.4 m at the lane down to -3 m at the stream, a fall of
+    6.4 m; the centre of the plot sits at 0.5 m.
+  description: >
+    The +Y axis is true south and the +X axis true east - exactly, because
+    the estate is fictional and its grid was chosen rather than surveyed. A
+    real model almost never gets a whole number here: it records the
+    measured azimuth of its own axes, and `north_angle_degrees` is the angle
+    from +Y round to geographic north.
+
+tags: [fictional, example, hillside, stone-cottage, smallholding, temperate-maritime]

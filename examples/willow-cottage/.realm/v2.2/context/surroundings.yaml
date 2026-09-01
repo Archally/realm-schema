@@ -1,0 +1,255 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# Context: Surroundings - neighbours, roads, environment, shared concerns
+#
+# Schema: context/surroundings.schema.yaml
+#
+# GENERATED from a layout specification. Areas, elevations, wall segments and
+# opening offsets are computed rather than typed, which is why they agree with
+# one another. An edit made here is replaced the next time the model is
+# generated - copy it before adapting it.
+#
+# A neighbour is modelled as land first and a building second.
+# `parcel_footprint` and `parcel_vertex_elevations` describe the ground -
+# which is what decides whether they look down on you, where their water goes,
+# and what they shade - while `footprint` plus the roof fields are only enough
+# massing to cast a shadow. Neighbouring land is drawn flat here because its
+# level is known and its shape is not; the estate's own parcel gets six real
+# corner elevations.
+#
+# Everything is stated in THIS model's frame: a neighbour's
+# `ground_elevation_offset_m` is metres above the cottage threshold, not above
+# sea level and not relative to their own ground.
+# ═════════════════════════════════════════════════════════════════════════════
+
+neighbor_properties:
+  - id: NP001
+    name: Hollybank (north-east)
+    direction: NE
+    cadastral_id: NH-2183
+    property_type: residential-single
+    distance_from_boundary_m: 9.5
+    occupancy: permanent
+    noise_level: quiet
+    household_count: 1
+    position: {x: 49, y: -1}
+
+    # The neighbour's land: 988 m², relative to the position above.
+    parcel_footprint:
+      shape: polygon
+      vertices:
+        - {x: -19, y: -13}
+        - {x: 19, y: -13}
+        - {x: 19, y: 13}
+        - {x: -19, y: 13}
+    parcel_vertex_elevations: [3.1, 3.1, 3.1, 3.1]
+    ground_elevation_offset_m: 3.1
+
+    # Building massing - enough to cast a shadow, not a model of their house.
+    footprint:
+      shape: polygon
+      vertices:
+        - {x: -9, y: -7}
+        - {x: 1, y: -7}
+        - {x: 1, y: 1}
+        - {x: -9, y: 1}
+    building_stories: 2
+    building_height_m: 7.6
+    eave_height_m: 4.4
+    roof_type: gable
+    roof_ridge_height_m: 7.6
+    has_pv_panels: true
+    pv_panel_roof_side: S
+    boundary_segment_refs: [BS002]
+    resident_refs: [PRS003]
+    description: >
+      Stone farmhouse uphill to the north-east. Its south roof slope carries
+      panels that face the cottage across the paddock.
+    tags: [uphill, pv]
+  - id: NP002
+    name: The Old Forge (east)
+    direction: E
+    cadastral_id: NH-2186
+    property_type: residential-single
+    distance_from_boundary_m: 6
+    occupancy: weekend
+    noise_level: quiet
+    household_count: 1
+    position: {x: 66, y: 24}
+
+    # The neighbour's land: 768 m², relative to the position above.
+    parcel_footprint:
+      shape: polygon
+      vertices:
+        - {x: -12, y: -16}
+        - {x: 12, y: -16}
+        - {x: 12, y: 16}
+        - {x: -12, y: 16}
+    parcel_vertex_elevations: [1, 1, 1, 1]
+    ground_elevation_offset_m: 1
+
+    # Building massing - enough to cast a shadow, not a model of their house.
+    footprint:
+      shape: polygon
+      vertices:
+        - {x: -8, y: -8}
+        - {x: 0, y: -8}
+        - {x: 0, y: -1}
+        - {x: -8, y: -1}
+    building_stories: 1
+    building_height_m: 6.2
+    eave_height_m: 3.1
+    roof_type: hip
+    roof_ridge_height_m: 6.2
+    has_pv_panels: false
+    boundary_segment_refs: [BS003]
+    description: >
+      Single-storey conversion of the village forge, occupied at weekends.
+    tags: [conversion, weekend]
+  - id: NP003
+    name: Mill Farm meadow (south)
+    direction: S
+    cadastral_id: NH-2201
+    property_type: agricultural
+    distance_from_boundary_m: 0
+    occupancy: vacant
+    noise_level: quiet
+    position: {x: 31, y: 61.5}
+
+    # The neighbour's land: 1050 m², relative to the position above.
+    parcel_footprint:
+      shape: polygon
+      vertices:
+        - {x: -21, y: -12.5}
+        - {x: 21, y: -12.5}
+        - {x: 21, y: 12.5}
+        - {x: -21, y: 12.5}
+    parcel_vertex_elevations: [-3.6, -3.6, -3.6, -3.6]
+    ground_elevation_offset_m: -3.6
+    has_pv_panels: false
+    boundary_segment_refs: [BS004]
+    description: >
+      Grazing meadow across the stream, in the same ownership as Mill Farm. No
+      buildings within sight of the cottage.
+    tags: [grazing, downhill]
+  - id: NP004
+    name: Brackwater coppice (west)
+    direction: W
+    cadastral_id: NH-2179
+    property_type: forest
+    distance_from_boundary_m: 0
+    occupancy: vacant
+    noise_level: quiet
+    position: {x: -20, y: 23}
+
+    # The neighbour's land: 1064 m², relative to the position above.
+    parcel_footprint:
+      shape: polygon
+      vertices:
+        - {x: -14, y: -19}
+        - {x: 14, y: -19}
+        - {x: 14, y: 19}
+        - {x: -14, y: 19}
+    parcel_vertex_elevations: [0.8, 0.8, 0.8, 0.8]
+    ground_elevation_offset_m: 0.8
+    has_pv_panels: false
+    boundary_segment_refs: [BS005]
+    description: >
+      Hazel coppice on the west bank, cut on a seven-year rotation. Its edge
+      trees overhang the drive.
+    tags: [coppice, overhang]
+
+# ── Roads ─────────────────────────────────────────────────────────────────
+roads:
+  - id: RD001  # public-docs-scan:allow - RD is the Road Corridor prefix, not a decision id
+    name: Brackwater Lane
+    surface_type: asphalt
+    width_m: 4
+    is_public: true
+    direction: E
+
+    # A road is a 3D polyline: the z of each vertex is ground level along the
+    # road against this model's datum, so a lane above the plot reads as above it.
+    centerline:
+      vertices:
+        - {x: -12, y: -3.6, z: 4.3}
+        - {x: 0, y: -2.6, z: 3.6}
+        - {x: 34, y: -0.2, z: 3}
+        - {x: 58, y: 1.6, z: 2.5}
+    borders_neighbor_refs: [NP001]
+    description: >
+      Single-track lane with passing places, running along the top of the
+      plot. The gate opens onto it 4 m east of the north corner.
+    tags: [single-track, public]
+  - id: RD002  # public-docs-scan:allow - RD is the Road Corridor prefix, not a decision id
+    name: Mill Farm track
+    surface_type: gravel
+    width_m: 3
+    is_public: false
+    direction: S
+
+    # A road is a 3D polyline: the z of each vertex is ground level along the
+    # road against this model's datum, so a lane above the plot reads as above it.
+    centerline:
+      vertices:
+        - {x: 55, y: 1.2, z: 2.6}
+        - {x: 56.5, y: 20, z: 0.9}
+        - {x: 54, y: 44, z: -2.4}
+    borders_neighbor_refs: [NP002, NP003]
+    description: >
+      Private farm track east of the stone wall, carrying occasional tractor
+      traffic to the meadow.
+    tags: [private, agricultural]
+
+# ── Environmental factors - what the site does to itself ──────────────────
+environmental_factors:
+  - id: EF001
+    name: South-westerly prevailing wind
+    factor_type: prevailing-wind
+    direction: SW
+    intensity: moderate
+    seasonal_variation: >
+      Strongest between October and February.
+    affected_zone_refs: [OZ005, OZ006]
+    description: >
+      Open fetch across the meadow, so the vegetable garden needs the hedge on
+      its south-west corner.
+    tags: [wind]
+  - id: EF002
+    name: Frost pocket in the lower meadow
+    factor_type: frost-pocket
+    direction: S
+    intensity: high
+    seasonal_variation: >
+      Late frosts persist here two to three weeks past the rest of the plot.
+    affected_zone_refs: [OZ006, OZ004]
+    description: >
+      Cold air drains down the 6.4 m fall and settles at the stream, which is
+      why the orchard stops short of the meadow.
+    tags: [cold-air-drainage, slope]
+  - id: EF003
+    name: Erosion on the south-west bank
+    factor_type: erosion-risk
+    direction: SW
+    intensity: moderate
+    seasonal_variation: >
+      Worst after heavy rain from November to March.
+    affected_zone_refs: [OZ005]
+    description: >
+      The steepest part of the fall crosses the vegetable garden; the terrace
+      risers wash out where they are not planted.
+    tags: [erosion, slope]
+
+# ── Shared concerns ───────────────────────────────────────────────────────
+shared_concerns:
+  - id: SC001
+    name: Coppice overhanging the drive
+    concern_type: overhanging-branches
+    neighbor_property_ref: NP004
+    severity: moderate
+    status: discussed
+    affected_boundary_segment_ref: BS005
+    affected_zone_ref: OZ001
+    description: >
+      Hazel from the coppice reaches over the drive and drips onto parked
+      cars. The owner has agreed to cut back at the next rotation.
+    tags: [vegetation]

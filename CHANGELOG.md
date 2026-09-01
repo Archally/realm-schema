@@ -3,6 +3,27 @@
 All notable changes to `@archally/realm-schema`. Versions follow the schema version:
 a model declaring `schemaVersion: "2.2.0"` validates against `schema/v2.2/`.
 
+## 2.2.1 - 2026-09-01
+
+### Added
+
+- A worked example: [`examples/willow-cottage/`](./examples/willow-cottage/), a
+  fictional English smallholding on a hillside. 145 entities across every plane - an
+  irregular six-cornered parcel carrying an elevation per corner, a two-storey stone
+  cottage with a rear lean-to, a detached barn on a lower platform, fifteen rooms over
+  three floors, eight outdoor zones, five boundary runs, two roads and four
+  neighbouring parcels - together with the construction layer derived from it, so the
+  spatial and cross-layer checks have something to check. Validate it with
+  `npm run validate:examples`.
+
+### Fixed
+
+- `realm-config.schema.yaml` accepts every version the schema line accepts. Its
+  `schema_version` shares the metamodel definition rather than carrying a list of its
+  own, so a configuration targeting 2.2.0 validates.
+- The reference validator checks `realm-config.yaml` against its schema, so a fault in
+  the configuration is reported alongside the rest of the model.
+
 ## 2.2.0 - 2026-09-01
 
 Published schema line moves to v2.2. `schema/v2.0/` is removed - v2.2 is the only

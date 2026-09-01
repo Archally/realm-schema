@@ -1,0 +1,160 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# Operations: Maintenance - recurring work and what it costs
+#
+# Schema: operations/maintenance.schema.yaml
+#
+# GENERATED from a layout specification. Areas, elevations, wall segments and
+# opening offsets are computed rather than typed, which is why they agree with
+# one another. An edit made here is replaced the next time the model is
+# generated - copy it before adapting it.
+#
+# A schedule is an RFC 5545 recurrence rule, so the pattern is stored and the
+# dates are computed. `executions[]` records the occasions the work was
+# actually done, in place on the task - so the last date, the count and the
+# cost total are read from that list rather than stored beside it and left to
+# disagree with it.
+# ═════════════════════════════════════════════════════════════════════════════
+
+maintenance_tasks:
+  - id: MT001
+    name: Heat pump annual service
+    task_type: servicing
+    kind: infrastructure
+    target_ref: SYS001
+    schedule:
+      rrule: RRULE:FREQ=YEARLY;BYMONTH=9;BYDAY=2MO
+      summary: Second Monday in September, every year
+    priority: high
+    season: autumn
+    estimated_duration_minutes: 90
+    instructions: >
+      Refrigerant check, filter clean, flow temperature verified against the
+      compensation curve.
+    warranty_ref: WRT001
+    cost_category_ref: CC001
+    estimated_cost: 180
+    currency: GBP
+    executions:
+    - date: "2025-09-08"
+      note: >
+        First service. Flow temperature reduced to 42 C.
+    - date: "2024-09-09"
+      note: >
+        Commissioning service.
+    description: >
+      Required annually to keep the installation warranty valid.
+    tags: [heating, warranty-critical]
+  - id: MT002
+    name: Hedge trim
+    task_type: pruning
+    kind: garden
+    target_ref: PTG001
+    schedule:
+      rrule: RRULE:FREQ=YEARLY;BYMONTH=8;BYDAY=3SA
+      summary: Third Saturday in August, every year
+    priority: medium
+    season: summer
+    estimated_duration_minutes: 240
+    instructions: >
+      Cut after nesting has finished. Keep the roadside face vertical for
+      sightlines at the gate.
+    tools_required: [hedge trimmer, tripod ladder]
+    care_profile_ref: SCP002
+    cost_category_ref: CC002
+    executions:
+    - date: "2025-08-16"
+      note: >
+        Cut back hard on the lane side.
+    description: >
+      Keeps the beech run at about two metres and clear of the lane.
+    tags: [garden, seasonal]
+  - id: MT003
+    name: Orchard winter prune
+    task_type: pruning
+    kind: garden
+    target_ref: SPM003
+    schedule:
+      rrule: RRULE:FREQ=YEARLY;BYMONTH=2;BYDAY=1SA
+      summary: First Saturday in February, every year
+    priority: medium
+    season: winter
+    estimated_duration_minutes: 180
+    instructions: >
+      Open the centre, take out crossing wood, cut back a third of last year's
+      growth.
+    care_profile_ref: SCP001
+    executions:
+    - date: "2026-02-07"
+      note: >
+        Pear left mostly alone while it is still stressed.
+    description: >
+      Formative and maintenance pruning for the apple and pear.
+    tags: [orchard, seasonal]
+  - id: MT004
+    name: Gutter and downpipe clear
+    task_type: cleaning
+    kind: building
+    target_ref: BLD001
+    schedule:
+      rrule: RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SA
+      summary: First Saturday in November, every year
+    priority: high
+    season: autumn
+    estimated_duration_minutes: 120
+    instructions: >
+      Clear both slopes, then flush the rainwater filter before the tank
+      refills over winter.
+    tools_required: [ladder, gutter scoop]
+    executions:
+    - date: "2025-11-01"
+      note: >
+        Heavy leaf from the oak on the north slope.
+    description: >
+      The north slope fills with oak leaf every autumn and feeds the rainwater
+      tank.
+    tags: [building, seasonal, water]
+  - id: MT005
+    name: Retaining wall inspection
+    task_type: inspection
+    kind: building
+    target_ref: BS005
+    schedule:
+      rrule: RRULE:FREQ=YEARLY;BYMONTH=4
+      summary: Every April
+    priority: medium
+    season: spring
+    estimated_duration_minutes: 45
+    instructions: >
+      Look for bulging, fresh spalling and blocked weep holes after the winter
+      wet.
+    description: >
+      The west wall holds back the bank above the drive; the east wall is
+      already bulging.
+    tags: [structural, slope]
+
+# ── Cost categories ───────────────────────────────────────────────────────
+cost_categories:
+  - id: CC001
+    name: Electricity
+    category_type: energy-electricity
+    annual_budget_estimate: 1740
+    currency: GBP
+    description: >
+      All electricity, including the heat pump.
+    tags: [energy]
+  - id: CC002
+    name: Water and drainage
+    category_type: water
+    annual_budget_estimate: 504
+    currency: GBP
+    description: >
+      Metered mains water; drainage is to a private septic tank.
+    tags: [utilities]
+  - id: CC003
+    name: Broadband
+    category_type: internet
+    annual_budget_estimate: 456
+    currency: GBP
+    description: >
+      Fibre service to the study.
+    tags: [utilities]

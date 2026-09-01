@@ -6,10 +6,11 @@ YAML-based schema for modeling **private real estate** — a dual-layer spatial 
 [![license](https://img.shields.io/npm/l/@archally/realm-schema)](./LICENSE)
 [![CI](https://github.com/archally/realm-schema/actions/workflows/validate.yml/badge.svg)](https://github.com/archally/realm-schema/actions)
 
-> **Status: the schema and the validator ship; the rest is still coming.** What you get
-> today is the complete v2.2 schema under [`schema/v2.2/`](./schema/v2.2/) and the
-> reference validator. A worked example, the remaining tools (semantic checker, model
-> builder, renderer) and the full documentation arrive in subsequent releases.
+> **Status: the schema, the validator and a worked example ship; the rest is still
+> coming.** What you get today is the complete v2.2 schema under
+> [`schema/v2.2/`](./schema/v2.2/), the reference validator, and Willow Cottage. The
+> remaining tools (semantic checker, model builder, renderer) and the full documentation
+> arrive in subsequent releases.
 
 ## Validating a model
 
@@ -25,6 +26,32 @@ the run itself failed.
 
 Your editor can validate as you type, too: [`.vscode/settings.json`](./.vscode/settings.json)
 maps each plane's files to its schema, and any JSON-Schema-aware editor can do the same.
+
+## The worked example
+
+[`examples/willow-cottage/`](./examples/willow-cottage/) is a fictional English
+smallholding on a hillside, and the shortest route into the schema: 145 entities across
+every plane, heavily commented, and valid.
+
+```bash
+npm run validate:examples
+```
+
+It is built to exercise the parts of the format that are easy to get wrong. The parcel is
+an irregular hexagon with an elevation on each corner, so the ground genuinely falls -
+6.4 m from the lane to the stream - and the vertical datum sits at the cottage rather than
+at the highest corner, which is the choice that keeps every building's elevation readable.
+A two-storey stone cottage with a rear lean-to shows how a building is the union of its
+wings and why the roof belongs on the wing. Fifteen rooms carry walls and openings, and
+the construction layer beneath them - wall segments, slabs and roof planes - is derived
+from those rooms rather than drawn separately, which is what the cross-layer checks are
+for. Four neighbouring parcels, two roads and five boundary runs put the plot in its
+surroundings.
+
+Two conventions are worth reading the example for, because both are easy to invert:
+`position` is absolute and `footprint` is relative to it, while a boundary segment has no
+position and so carries absolute vertices; and a wall segment is a directed line whose
+`left_space_ref` and `right_space_ref` are read from that direction.
 
 ## What is a Realm model?
 

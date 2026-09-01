@@ -1,0 +1,1174 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# Topology: Estate - parcel, buildings, wings, floors, rooms, outdoor zones
+#
+# Schema: topology/estate.schema.yaml
+#
+# GENERATED from a layout specification. Areas, elevations, wall segments and
+# opening offsets are computed rather than typed, which is why they agree with
+# one another. An edit made here is replaced the next time the model is
+# generated - copy it before adapting it.
+#
+# Two coordinate conventions live in this file, and telling them apart is the
+# single most useful thing to learn from it:
+#
+#   position   ABSOLUTE - metres from the model origin.
+#   footprint  RELATIVE - metres from that element's own position.
+#
+# So a building's footprint vertices are small numbers around zero, and moving
+# the building means changing one `position`, not every vertex. Boundary
+# segments break the pattern deliberately: they have no position of their own,
+# so their vertices are absolute (see topology/boundary.yaml).
+# ═════════════════════════════════════════════════════════════════════════════
+
+parcels:
+  - id: LP001
+    name: Willow Cottage smallholding
+    cadastral_id: NH-2184
+    area_sqm: 1927
+    # Shoelace area of the six corners below. Edge lengths, walked from the north:
+    #   N->NE: 34.09 m
+    #   NE->E: 22.5 m
+    #   E->SE: 25.71 m
+    #   SE->S: 28.64 m
+    #   S->W: 31.83 m
+    #   W->N: 24.33 m
+    position: {x: 23.55, y: 22.19}
+    footprint:
+      shape: polygon
+      vertices:
+        - {x: -23.55, y: -22.19}   # N (abs 0, 0) ground +3.4 m
+        - {x: 10.45, y: -19.69}   # NE (abs 34, 2.5) ground +2.8 m
+        - {x: 28.45, y: -6.19}   # E (abs 52, 16) ground +1.3 m
+        - {x: 22.45, y: 18.81}   # SE (abs 46, 41) ground -1.8 m
+        - {x: -5.55, y: 24.81}   # S (abs 18, 47) ground -3 m
+        - {x: -27.55, y: 1.81}   # W (abs -4, 24) ground +0.3 m
+
+    # One elevation per footprint vertex, in the same order. A viewer fans the
+    # polygon from its centroid and tilts each triangle, so these six numbers are
+    # the whole terrain model - there is no separate height grid.
+    vertex_elevations: [3.4, 2.8, 1.3, -1.8, -3, 0.3]
+    elevation_m: 0.5
+    description: >
+      Irregular six-sided plot of 1927 m², falling from the lane on the north
+      side to the stream at the south. The cottage and barn stand on two cut
+      platforms in the upper third; below them the ground steepens through the
+      orchard and the terraced vegetable garden before flattening into wet
+      meadow.
+    tags: [hillside, irregular-plot, stream-boundary]
+
+# ── Buildings ─────────────────────────────────────────────────────────────
+buildings:
+  - id: BLD001
+    name: Willow Cottage
+    building_type: house
+    parcel_ref: LP001
+    wing_refs: [WNG001, WNG002]
+    floors_count: 2
+    built_year: 1868
+    total_area_sqm: 114.6
+    position: {x: 19.11, y: 21.33}
+    footprint:
+      shape: polygon
+      vertices:
+        - {x: -5.11, y: -5.33}   # abs 14, 16
+        - {x: 5.89, y: -5.33}   # abs 25, 16
+        - {x: 5.89, y: 2.67}   # abs 25, 24
+        - {x: 2.49, y: 2.67}   # abs 21.6, 24
+        - {x: 2.49, y: 6.17}   # abs 21.6, 27.5
+        - {x: -5.11, y: 6.17}   # abs 14, 27.5
+    rotation_degrees: 0
+    ground_elevation_m: 0
+    exterior_wall_thickness_cm: 30
+
+    # eave and ridge are the MAXIMA over this building's wings, not separate
+    # measurements - a building that disagreed with its own wings would be
+    # reporting two different roofs.
+    eave_height_m: 4.6
+    ridge_height_m: 8.2
+    description: >
+      Two-storey stone cottage with a single-storey rear lean-to, set on a
+      levelled terrace cut into the hillside. The terrace is the model's Z
+      datum.
+    tags: [stone, listed-locally, terraced-platform]
+  - id: BLD002
+    name: Stone barn
+    building_type: garage
+    parcel_ref: LP001
+    wing_refs: [WNG003]
+    floors_count: 1
+    built_year: 1890
+    total_area_sqm: 42
+    position: {x: 33.5, y: 21}
+    footprint:
+      shape: polygon
+      vertices:
+        - {x: -3.5, y: -3}   # abs 30, 18
+        - {x: 3.5, y: -3}   # abs 37, 18
+        - {x: 3.5, y: 3}   # abs 37, 24
+        - {x: -3.5, y: 3}   # abs 30, 24
+    rotation_degrees: 0
+    ground_elevation_m: -1.2
+    exterior_wall_thickness_cm: 25
+
+    # eave and ridge are the MAXIMA over this building's wings, not separate
+    # measurements - a building that disagreed with its own wings would be
+    # reporting two different roofs.
+    eave_height_m: 2.9
+    ridge_height_m: 5
+    description: >
+      Detached barn east of the cottage, on its own platform 1.2 m lower.
+      Reached from the drive; no internal connection to the house.
+    tags: [stone, detached, workshop]
+
+# ── Wings - the shape of a building, and where its roof lives ─────────────
+wings:
+  - id: WNG001
+    name: Cottage main range
+    building_ref: BLD001
+    footprint:
+      shape: polygon
+      vertices:
+        - {x: -5.11, y: -5.33}   # abs 14, 16
+        - {x: 5.89, y: -5.33}   # abs 25, 16
+        - {x: 5.89, y: 2.67}   # abs 25, 24
+        - {x: -5.11, y: 2.67}   # abs 14, 24
+    # Wing vertices are relative to the BUILDING's position, not the wing's own
+    # centre - the wings of one building share a frame so their areas can be
+    # summed against the building footprint (114.6 m²).
+    roof_type: gable
+    roof_pitch_degrees: 42
+    ridge_direction: E
+    eave_height_m: 4.6
+    ridge_height_m: 8.2
+    roof_overhang_cm: 40
+    description: >
+      The original two-storey range, 11.0 m along the ridge by 8.0 m deep.
+      Gable roof at 42 degrees, ridge running east-west, stone walls 30 cm
+      thick.
+  - id: WNG002
+    name: Rear scullery lean-to
+    building_ref: BLD001
+    footprint:
+      shape: polygon
+      vertices:
+        - {x: -5.11, y: 2.67}   # abs 14, 24
+        - {x: 2.49, y: 2.67}   # abs 21.6, 24
+        - {x: 2.49, y: 6.17}   # abs 21.6, 27.5
+        - {x: -5.11, y: 6.17}   # abs 14, 27.5
+    # Wing vertices are relative to the BUILDING's position, not the wing's own
+    # centre - the wings of one building share a frame so their areas can be
+    # summed against the building footprint (114.6 m²).
+    roof_type: mono-pitch
+    roof_pitch_degrees: 15
+    eave_height_m: 2.7
+    ridge_height_m: 3.9
+    roof_overhang_cm: 25
+    description: >
+      Single-storey lean-to added across the rear elevation, 7.6 m by 3.5 m.
+      Mono-pitch roof falling south at 15 degrees. Brick, not stone - later
+      work.
+  - id: WNG003
+    name: Stone barn
+    building_ref: BLD002
+    footprint:
+      shape: polygon
+      vertices:
+        - {x: -3.5, y: -3}   # abs 30, 18
+        - {x: 3.5, y: -3}   # abs 37, 18
+        - {x: 3.5, y: 3}   # abs 37, 24
+        - {x: -3.5, y: 3}   # abs 30, 24
+    # Wing vertices are relative to the BUILDING's position, not the wing's own
+    # centre - the wings of one building share a frame so their areas can be
+    # summed against the building footprint (42 m²).
+    roof_type: gable
+    roof_pitch_degrees: 35
+    ridge_direction: E
+    eave_height_m: 2.9
+    ridge_height_m: 5
+    roof_overhang_cm: 30
+    description: >
+      Detached barn, 7.0 m by 6.0 m, standing 1.2 m below the cottage terrace
+      on the natural fall of the ground. One open bay, used as garaging and
+      workshop.
+
+# ── Floors ────────────────────────────────────────────────────────────────
+floors:
+  - id: FLR001
+    name: Ground floor
+    level: 0
+    building_ref: BLD001
+    area_sqm: 114.6
+    ceiling_height_m: 2.45
+    base_elevation_m: 0
+    finished_floor_elevation_m: 0.15
+    slab_thickness_cm: 25
+    description: >
+      Six rooms in the main range plus two in the lean-to. Floors are 15 cm
+      above the terrace; the lean-to shares the level rather than stepping
+      down.
+  - id: FLR002
+    name: First floor
+    level: 1
+    building_ref: BLD001
+    wing_ref: WNG001
+    area_sqm: 88
+    ceiling_height_m: 2.35
+    base_elevation_m: 2.85
+    finished_floor_elevation_m: 2.95
+    slab_thickness_cm: 20
+    description: >
+      Three bedrooms, a bathroom, a box room and the landing - the main range
+      only. The lean-to is single-storey, so nothing sits above it.
+  - id: FLR003
+    name: Barn floor
+    level: 0
+    building_ref: BLD002
+    wing_ref: WNG003
+    area_sqm: 42
+    ceiling_height_m: 2.8
+    base_elevation_m: -1.2
+    finished_floor_elevation_m: -1.1
+    slab_thickness_cm: 15
+    description: >
+      A single undivided bay. Concrete slab laid over the original earth
+      floor.
+
+# ── Rooms ─────────────────────────────────────────────────────────────────
+rooms:
+  # ── Ground floor (FLR001) ──────────────────────────────────────
+  - id: RM001
+    name: Kitchen
+    room_type: kitchen
+    floor_ref: FLR001
+    wing_ref: WNG001
+    position: {x: 16.1, y: 18.2}
+    area_sqm: 18.5
+    width_cm: 420
+    length_cm: 440
+    ceiling_height_cm: 245
+    has_water: true
+    has_heating: true
+    window_orientation: N
+    walls:
+      N: {thickness_cm: 30, is_exterior: true, material: rubble-stone}
+      E: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM002, material: timber-stud}
+      S: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM004, material: timber-stud}
+      W: {thickness_cm: 30, is_exterior: true, material: rubble-stone}
+    openings:
+      - opening_type: window
+        wall: N
+        wall_offset_cm: 130
+        width_cm: 160
+        height_cm: 110
+        sill_height_cm: 95
+        head_height_cm: 205
+        depth_cm: 30
+        glazing: double
+        panes: 2
+      - opening_type: window
+        wall: W
+        wall_offset_cm: 150
+        width_cm: 90
+        height_cm: 110
+        sill_height_cm: 95
+        head_height_cm: 205
+        depth_cm: 30
+        glazing: double
+      - opening_type: door
+        wall: E
+        wall_offset_cm: 90
+        width_cm: 84
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        opens_to_room_ref: RM002
+      - opening_type: door
+        wall: S
+        wall_offset_cm: 60
+        width_cm: 84
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        opens_to_room_ref: RM004
+    description: >
+      Range cooker against the north wall, butler sink under the window.
+    tags: [ground-floor, wet-room]
+  - id: RM002
+    name: Entrance hall
+    room_type: hallway
+    floor_ref: FLR001
+    wing_ref: WNG001
+    position: {x: 19.9, y: 18.2}
+    area_sqm: 15
+    width_cm: 340
+    length_cm: 440
+    ceiling_height_cm: 245
+    has_water: false
+    has_heating: true
+    window_orientation: N
+    walls:
+      N: {thickness_cm: 30, is_exterior: true, material: rubble-stone}
+      E: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM003, material: timber-stud}
+      S: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM005, material: timber-stud}
+      W: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM001, material: timber-stud}
+    openings:
+      - opening_type: door
+        wall: W
+        wall_offset_cm: 266
+        width_cm: 84
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        opens_to_room_ref: RM001
+      - opening_type: door
+        wall: N
+        wall_offset_cm: 120
+        width_cm: 96
+        height_cm: 205
+        sill_height_cm: 0
+        head_height_cm: 205
+        depth_cm: 30
+        opens_to_zone_ref: OZ002
+      - opening_type: door
+        wall: E
+        wall_offset_cm: 130
+        width_cm: 84
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        opens_to_room_ref: RM003
+      - opening_type: door
+        wall: S
+        wall_offset_cm: 120
+        width_cm: 84
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        opens_to_room_ref: RM005
+    description: >
+      Front door on the north elevation, opening onto the path across the
+      front garden.
+    tags: [ground-floor, circulation]
+  - id: RM003
+    name: Sitting room
+    room_type: living-room
+    floor_ref: FLR001
+    wing_ref: WNG001
+    position: {x: 23.3, y: 18.2}
+    area_sqm: 15
+    width_cm: 340
+    length_cm: 440
+    ceiling_height_cm: 245
+    has_water: false
+    has_heating: true
+    window_orientation: E
+    walls:
+      N: {thickness_cm: 30, is_exterior: true, material: rubble-stone}
+      E: {thickness_cm: 30, is_exterior: true, material: rubble-stone}
+      S: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM006, material: timber-stud}
+      W: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM002, material: timber-stud}
+    openings:
+      - opening_type: door
+        wall: W
+        wall_offset_cm: 226
+        width_cm: 84
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        opens_to_room_ref: RM002
+      - opening_type: window
+        wall: E
+        wall_offset_cm: 80
+        width_cm: 110
+        height_cm: 125
+        sill_height_cm: 80
+        head_height_cm: 205
+        depth_cm: 30
+        glazing: double
+        panes: 2
+      - opening_type: window
+        wall: N
+        wall_offset_cm: 110
+        width_cm: 110
+        height_cm: 125
+        sill_height_cm: 80
+        head_height_cm: 205
+        depth_cm: 30
+        glazing: double
+        panes: 2
+    description: >
+      Wood-burning stove in the east gable; two windows on the east wall.
+    tags: [ground-floor, wood-stove]
+  - id: RM004
+    name: Dining room
+    room_type: dining-room
+    floor_ref: FLR001
+    wing_ref: WNG001
+    position: {x: 16.1, y: 22.2}
+    area_sqm: 15.1
+    width_cm: 420
+    length_cm: 360
+    ceiling_height_cm: 245
+    has_water: false
+    has_heating: true
+    window_orientation: W
+    walls:
+      N: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM001, material: timber-stud}
+      E: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM005, material: timber-stud}
+      S: {thickness_cm: 30, is_exterior: false, adjacent_ref: RM007, material: rubble-stone}
+      W: {thickness_cm: 30, is_exterior: true, material: rubble-stone}
+    openings:
+      - opening_type: door
+        wall: N
+        wall_offset_cm: 276
+        width_cm: 84
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        opens_to_room_ref: RM001
+      - opening_type: french-door
+        wall: W
+        wall_offset_cm: 110
+        width_cm: 150
+        height_cm: 210
+        sill_height_cm: 0
+        head_height_cm: 210
+        depth_cm: 30
+        glazing: double
+        opens_to_zone_ref: OZ003
+      - opening_type: door
+        wall: S
+        wall_offset_cm: 80
+        width_cm: 84
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 30
+        opens_to_room_ref: RM007
+    description: >
+      Open to the kitchen through a wide doorway; french doors to the terrace.
+    tags: [ground-floor]
+  - id: RM005
+    name: Stair hall
+    room_type: staircase
+    floor_ref: FLR001
+    wing_ref: WNG001
+    position: {x: 19.9, y: 22.2}
+    area_sqm: 12.2
+    width_cm: 340
+    length_cm: 360
+    ceiling_height_cm: 245
+    has_water: false
+    has_heating: false
+    walls:
+      N: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM002, material: timber-stud}
+      E: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM006, material: timber-stud}
+      S: {thickness_cm: 30, is_exterior: false, adjacent_ref: RM008, material: rubble-stone}
+      W: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM004, material: timber-stud}
+    openings:
+      - opening_type: door
+        wall: N
+        wall_offset_cm: 136
+        width_cm: 84
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        opens_to_room_ref: RM002
+      - opening_type: door
+        wall: E
+        wall_offset_cm: 100
+        width_cm: 84
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        opens_to_room_ref: RM006
+      - opening_type: door
+        wall: S
+        wall_offset_cm: 95
+        width_cm: 76
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 30
+        opens_to_room_ref: RM008
+    description: >
+      Winder stair to the first floor, with the understair cupboard beneath.
+    tags: [ground-floor, circulation]
+  - id: RM006
+    name: Study
+    room_type: office
+    floor_ref: FLR001
+    wing_ref: WNG001
+    position: {x: 23.3, y: 22.2}
+    area_sqm: 12.2
+    width_cm: 340
+    length_cm: 360
+    ceiling_height_cm: 245
+    has_water: false
+    has_heating: true
+    window_orientation: S
+    walls:
+      N: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM003, material: timber-stud}
+      E: {thickness_cm: 30, is_exterior: true, material: rubble-stone}
+      S: {thickness_cm: 30, is_exterior: true, material: rubble-stone}
+      W: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM005, material: timber-stud}
+    openings:
+      - opening_type: door
+        wall: W
+        wall_offset_cm: 176
+        width_cm: 84
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        opens_to_room_ref: RM005
+      - opening_type: window
+        wall: S
+        wall_offset_cm: 100
+        width_cm: 140
+        height_cm: 120
+        sill_height_cm: 85
+        head_height_cm: 205
+        depth_cm: 30
+        glazing: double
+        panes: 2
+      - opening_type: window
+        wall: E
+        wall_offset_cm: 120
+        width_cm: 90
+        height_cm: 120
+        sill_height_cm: 85
+        head_height_cm: 205
+        depth_cm: 30
+        glazing: double
+    description: >
+      South-facing, over the terrace. Wired for the network cabinet.
+    tags: [ground-floor, workspace]
+  - id: RM007
+    name: Utility room
+    room_type: utility
+    floor_ref: FLR001
+    wing_ref: WNG002
+    position: {x: 16.1, y: 25.75}
+    area_sqm: 14.7
+    width_cm: 420
+    length_cm: 350
+    ceiling_height_cm: 245
+    has_water: true
+    has_heating: true
+    walls:
+      N: {thickness_cm: 22, is_exterior: false, adjacent_ref: RM004, material: brick}
+      E: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM008, material: timber-stud}
+      S: {thickness_cm: 22, is_exterior: true, material: brick}
+      W: {thickness_cm: 22, is_exterior: true, material: brick}
+    openings:
+      - opening_type: door
+        wall: N
+        wall_offset_cm: 256
+        width_cm: 84
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 22
+        opens_to_room_ref: RM004
+      - opening_type: door
+        wall: S
+        wall_offset_cm: 90
+        width_cm: 90
+        height_cm: 200
+        sill_height_cm: 0
+        head_height_cm: 200
+        depth_cm: 22
+        opens_to_zone_ref: OZ003
+      - opening_type: window
+        wall: W
+        wall_offset_cm: 120
+        width_cm: 80
+        height_cm: 90
+        sill_height_cm: 130
+        head_height_cm: 220
+        depth_cm: 22
+        glazing: double
+    description: >
+      Hot-water cylinder, washing machine, and the back door to the yard.
+    tags: [ground-floor, wet-room, plant]
+  - id: RM008
+    name: Cloakroom
+    room_type: bathroom
+    floor_ref: FLR001
+    wing_ref: WNG002
+    position: {x: 19.9, y: 25.75}
+    area_sqm: 11.9
+    width_cm: 340
+    length_cm: 350
+    ceiling_height_cm: 245
+    has_water: true
+    has_heating: true
+    walls:
+      N: {thickness_cm: 22, is_exterior: false, adjacent_ref: RM005, material: brick}
+      E: {thickness_cm: 22, is_exterior: true, material: brick}
+      S: {thickness_cm: 22, is_exterior: true, material: brick}
+      W: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM007, material: timber-stud}
+    openings:
+      - opening_type: door
+        wall: N
+        wall_offset_cm: 169
+        width_cm: 76
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 22
+        opens_to_room_ref: RM005
+      - opening_type: window
+        wall: S
+        wall_offset_cm: 140
+        width_cm: 60
+        height_cm: 60
+        sill_height_cm: 150
+        head_height_cm: 210
+        depth_cm: 22
+        glazing: double
+        openable: true
+    description: >
+      WC and basin, boot storage along the east wall.
+    tags: [ground-floor, wet-room]
+
+  # ── First floor (FLR002) ───────────────────────────────────────
+  - id: RM009
+    name: Principal bedroom
+    room_type: bedroom
+    floor_ref: FLR002
+    wing_ref: WNG001
+    position: {x: 16.1, y: 18.2}
+    area_sqm: 18.5
+    width_cm: 420
+    length_cm: 440
+    ceiling_height_cm: 235
+    has_water: false
+    has_heating: true
+    window_orientation: N
+    walls:
+      N: {thickness_cm: 30, is_exterior: true, material: rubble-stone}
+      E: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM010, material: timber-stud}
+      S: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM012, material: timber-stud}
+      W: {thickness_cm: 30, is_exterior: true, material: rubble-stone}
+    openings:
+      - opening_type: window
+        wall: N
+        wall_offset_cm: 140
+        width_cm: 120
+        height_cm: 115
+        sill_height_cm: 85
+        head_height_cm: 200
+        depth_cm: 30
+        glazing: double
+        panes: 2
+      - opening_type: window
+        wall: W
+        wall_offset_cm: 160
+        width_cm: 90
+        height_cm: 115
+        sill_height_cm: 85
+        head_height_cm: 200
+        depth_cm: 30
+        glazing: double
+      - opening_type: door
+        wall: E
+        wall_offset_cm: 100
+        width_cm: 80
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        opens_to_room_ref: RM010
+    description: >
+      Over the kitchen; two windows, north and west.
+    tags: [first-floor]
+  - id: RM010
+    name: Landing
+    room_type: hallway
+    floor_ref: FLR002
+    wing_ref: WNG001
+    position: {x: 19.9, y: 18.2}
+    area_sqm: 15
+    width_cm: 340
+    length_cm: 440
+    ceiling_height_cm: 235
+    has_water: false
+    has_heating: false
+    walls:
+      N: {thickness_cm: 30, is_exterior: true, material: rubble-stone}
+      E: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM011, material: timber-stud}
+      S: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM013, material: timber-stud}
+      W: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM009, material: timber-stud}
+    openings:
+      - opening_type: door
+        wall: W
+        wall_offset_cm: 260
+        width_cm: 80
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        opens_to_room_ref: RM009
+      - opening_type: door
+        wall: E
+        wall_offset_cm: 120
+        width_cm: 80
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        opens_to_room_ref: RM011
+      - opening_type: door
+        wall: S
+        wall_offset_cm: 110
+        width_cm: 80
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        opens_to_room_ref: RM013
+      - opening_type: window
+        wall: N
+        wall_offset_cm: 140
+        width_cm: 70
+        height_cm: 100
+        sill_height_cm: 100
+        head_height_cm: 200
+        depth_cm: 30
+        glazing: double
+    description: >
+      Head of the stair; hatch to the roof space in the ceiling.
+    tags: [first-floor, circulation]
+  - id: RM011
+    name: Bedroom two
+    room_type: bedroom
+    floor_ref: FLR002
+    wing_ref: WNG001
+    position: {x: 23.3, y: 18.2}
+    area_sqm: 15
+    width_cm: 340
+    length_cm: 440
+    ceiling_height_cm: 235
+    has_water: false
+    has_heating: true
+    window_orientation: E
+    walls:
+      N: {thickness_cm: 30, is_exterior: true, material: rubble-stone}
+      E: {thickness_cm: 30, is_exterior: true, material: rubble-stone}
+      S: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM014, material: timber-stud}
+      W: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM010, material: timber-stud}
+    openings:
+      - opening_type: door
+        wall: W
+        wall_offset_cm: 240
+        width_cm: 80
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        opens_to_room_ref: RM010
+      - opening_type: window
+        wall: E
+        wall_offset_cm: 100
+        width_cm: 110
+        height_cm: 115
+        sill_height_cm: 85
+        head_height_cm: 200
+        depth_cm: 30
+        glazing: double
+        panes: 2
+    description: >
+      East gable room, over the sitting room.
+    tags: [first-floor]
+  - id: RM012
+    name: Bathroom
+    room_type: bathroom
+    floor_ref: FLR002
+    wing_ref: WNG001
+    position: {x: 16.1, y: 22.2}
+    area_sqm: 15.1
+    width_cm: 420
+    length_cm: 360
+    ceiling_height_cm: 235
+    has_water: true
+    has_heating: true
+    window_orientation: W
+    walls:
+      N: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM009, material: timber-stud}
+      E: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM013, material: timber-stud}
+      S: {thickness_cm: 30, is_exterior: true, material: rubble-stone}
+      W: {thickness_cm: 30, is_exterior: true, material: rubble-stone}
+    openings:
+      - opening_type: window
+        wall: W
+        wall_offset_cm: 130
+        width_cm: 80
+        height_cm: 90
+        sill_height_cm: 130
+        head_height_cm: 220
+        depth_cm: 30
+        glazing: double
+        openable: true
+      - opening_type: door
+        wall: E
+        wall_offset_cm: 90
+        width_cm: 76
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        opens_to_room_ref: RM013
+    description: >
+      Cast-iron bath under the west window; airing cupboard on the north wall.
+    tags: [first-floor, wet-room]
+  - id: RM013
+    name: Bedroom three
+    room_type: bedroom
+    floor_ref: FLR002
+    wing_ref: WNG001
+    position: {x: 19.9, y: 22.2}
+    area_sqm: 12.2
+    width_cm: 340
+    length_cm: 360
+    ceiling_height_cm: 235
+    has_water: false
+    has_heating: true
+    window_orientation: S
+    walls:
+      N: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM010, material: timber-stud}
+      E: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM014, material: timber-stud}
+      S: {thickness_cm: 30, is_exterior: true, material: rubble-stone}
+      W: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM012, material: timber-stud}
+    openings:
+      - opening_type: door
+        wall: N
+        wall_offset_cm: 150
+        width_cm: 80
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        opens_to_room_ref: RM010
+      - opening_type: door
+        wall: W
+        wall_offset_cm: 194
+        width_cm: 76
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        opens_to_room_ref: RM012
+      - opening_type: window
+        wall: S
+        wall_offset_cm: 110
+        width_cm: 110
+        height_cm: 115
+        sill_height_cm: 85
+        head_height_cm: 200
+        depth_cm: 30
+        glazing: double
+        panes: 2
+      - opening_type: door
+        wall: E
+        wall_offset_cm: 105
+        width_cm: 76
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        opens_to_room_ref: RM014
+    description: >
+      Small double, south-facing over the terrace.
+    tags: [first-floor]
+  - id: RM014
+    name: Box room
+    room_type: storage
+    floor_ref: FLR002
+    wing_ref: WNG001
+    position: {x: 23.3, y: 22.2}
+    area_sqm: 12.2
+    width_cm: 340
+    length_cm: 360
+    ceiling_height_cm: 235
+    has_water: false
+    has_heating: false
+    window_orientation: S
+    walls:
+      N: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM011, material: timber-stud}
+      E: {thickness_cm: 30, is_exterior: true, material: rubble-stone}
+      S: {thickness_cm: 30, is_exterior: true, material: rubble-stone}
+      W: {thickness_cm: 12, is_exterior: false, adjacent_ref: RM013, material: timber-stud}
+    openings:
+      - opening_type: door
+        wall: W
+        wall_offset_cm: 179
+        width_cm: 76
+        height_cm: 198
+        sill_height_cm: 0
+        head_height_cm: 198
+        depth_cm: 12
+        opens_to_room_ref: RM013
+      - opening_type: window
+        wall: S
+        wall_offset_cm: 120
+        width_cm: 70
+        height_cm: 90
+        sill_height_cm: 120
+        head_height_cm: 210
+        depth_cm: 30
+        glazing: single
+    description: >
+      Unheated store over the study; the water tank stands here.
+    tags: [first-floor, storage]
+
+  # ── Barn floor (FLR003) ────────────────────────────────────────
+  - id: RM015
+    name: Barn bay
+    room_type: garage-bay
+    floor_ref: FLR003
+    wing_ref: WNG003
+    position: {x: 33.5, y: 21}
+    area_sqm: 42
+    width_cm: 700
+    length_cm: 600
+    ceiling_height_cm: 280
+    has_water: false
+    has_heating: false
+    window_orientation: S
+    walls:
+      N: {thickness_cm: 25, is_exterior: true, material: rubble-stone}
+      E: {thickness_cm: 25, is_exterior: true, material: rubble-stone}
+      S: {thickness_cm: 25, is_exterior: true, material: rubble-stone}
+      W: {thickness_cm: 25, is_exterior: true, material: rubble-stone}
+    openings:
+      - opening_type: garage-door
+        wall: W
+        wall_offset_cm: 130
+        width_cm: 260
+        height_cm: 220
+        sill_height_cm: 0
+        head_height_cm: 220
+        depth_cm: 25
+        opens_to_zone_ref: OZ007
+      - opening_type: door
+        wall: S
+        wall_offset_cm: 80
+        width_cm: 90
+        height_cm: 200
+        sill_height_cm: 0
+        head_height_cm: 200
+        depth_cm: 25
+        opens_to_zone_ref: OZ004
+      - opening_type: window
+        wall: S
+        wall_offset_cm: 400
+        width_cm: 100
+        height_cm: 80
+        sill_height_cm: 150
+        head_height_cm: 230
+        depth_cm: 25
+        glazing: single
+    description: >
+      One undivided bay: a car at the west end, workbench and tools at the
+      east.
+    tags: [barn, workshop, unheated]
+
+# ── Outdoor zones ─────────────────────────────────────────────────────────
+outdoor_zones:
+  - id: OZ001
+    name: Drive
+    zone_type: driveway
+    parcel_ref: LP001
+    area_sqm: 69.9
+    position: {x: 17.49, y: 8.12}
+    footprint:
+      shape: polygon
+      vertices:
+        - {x: -13.49, y: -7.62}   # abs 4, 0.5
+        - {x: -8.49, y: -7.12}   # abs 9, 1
+        - {x: 12.01, y: 6.08}   # abs 29.5, 14.2
+        - {x: 8.11, y: 7.28}   # abs 25.6, 15.4
+    sun_exposure: full-sun
+    # Slope read off the terrain triangle under this zone's centroid, which sits
+    # at 2.26 m relative to the datum.
+    slope_direction: S
+    slope_percent: 12.2
+    description: >
+      Gravel drive from the gate on the lane down to the barn forecourt.
+    tags: [gravel, access]
+  - id: OZ002
+    name: Front garden
+    zone_type: lawn
+    parcel_ref: LP001
+    area_sqm: 210
+    position: {x: 5.98, y: 9.18}
+    footprint:
+      shape: polygon
+      vertices:
+        - {x: -6.32, y: -7.18}   # abs -0.33, 2
+        - {x: 7.52, y: -7.18}   # abs 13.5, 2
+        - {x: 7.52, y: 6.82}   # abs 13.5, 16
+        - {x: -8.65, y: 6.82}   # abs -2.67, 16
+    sun_exposure: full-sun
+    soil_type: loam
+    # Slope read off the terrain triangle under this zone's centroid, which sits
+    # at 2.2 m relative to the datum.
+    slope_direction: S
+    slope_percent: 12.9
+    description: >
+      Lawn between the lane and the cottage, falling gently to the west.
+    tags: [lawn, front]
+  - id: OZ003
+    name: South terrace
+    zone_type: terrace
+    parcel_ref: LP001
+    area_sqm: 44
+    position: {x: 19.5, y: 29.5}
+    footprint:
+      shape: polygon
+      vertices:
+        - {x: -5.5, y: -2}   # abs 14, 27.5
+        - {x: 5.5, y: -2}   # abs 25, 27.5
+        - {x: 5.5, y: 2}   # abs 25, 31.5
+        - {x: -5.5, y: 2}   # abs 14, 31.5
+    sun_exposure: full-sun
+    # Slope read off the terrain triangle under this zone's centroid, which sits
+    # at -0.53 m relative to the datum.
+    slope_direction: S
+    slope_percent: 14.2
+    description: >
+      Paved terrace on the retained platform behind the cottage. The retaining
+      wall along its south edge holds back 1.4 m of hillside.
+    tags: [paved, retained, outdoor-living]
+  - id: OZ004
+    name: Orchard
+    zone_type: orchard
+    parcel_ref: LP001
+    area_sqm: 230
+    position: {x: 36, y: 30.25}
+    footprint:
+      shape: polygon
+      vertices:
+        - {x: -10, y: -5.75}   # abs 26, 24.5
+        - {x: 10, y: -5.75}   # abs 46, 24.5
+        - {x: 10, y: 5.75}   # abs 46, 36
+        - {x: -10, y: 5.75}   # abs 26, 36
+    sun_exposure: full-sun
+    soil_type: clay
+    # Slope read off the terrain triangle under this zone's centroid, which sits
+    # at -0.48 m relative to the datum.
+    slope_direction: S
+    slope_percent: 12.4
+    description: >
+      Six standard fruit trees on the east slope, grazed under by the
+      neighbour's sheep in autumn.
+    tags: [fruit, slope]
+  - id: OZ005
+    name: Vegetable garden
+    zone_type: vegetable-garden
+    parcel_ref: LP001
+    area_sqm: 159
+    position: {x: 16.05, y: 32.97}
+    footprint:
+      shape: polygon
+      vertices:
+        - {x: -8.05, y: 3.57}   # abs 8, 36.55
+        - {x: -8.05, y: -4.97}   # abs 8, 28
+        - {x: 7.95, y: -4.97}   # abs 24, 28
+        - {x: 7.95, y: 5.03}   # abs 24, 38
+        - {x: -6.66, y: 5.03}   # abs 9.39, 38
+    # Trimmed to the parcel outline: the zone was laid out as a rectangle and
+    # the boundary cuts across it, so it has more vertices than corners.
+    sun_exposure: full-sun
+    soil_type: loam
+    soil_profile_refs: [SOIL001]
+    # Slope read off the terrain triangle under this zone's centroid, which sits
+    # at -1.01 m relative to the datum.
+    slope_direction: S
+    slope_percent: 14.2
+    description: >
+      Four raised beds cut into the slope as shallow terraces, with a herb
+      strip along the north edge.
+    tags: [terraced, productive]
+  - id: OZ006
+    name: Lower meadow
+    zone_type: meadow
+    parcel_ref: LP001
+    area_sqm: 177.5
+    position: {x: 27.98, y: 41.38}
+    footprint:
+      shape: polygon
+      vertices:
+        - {x: -9.98, y: 5.62}   # abs 18, 47
+        - {x: -11.98, y: 3.53}   # abs 16, 44.91
+        - {x: -11.98, y: -3.38}   # abs 16, 38
+        - {x: 16.02, y: -3.38}   # abs 44, 38
+        - {x: 16.02, y: 0.05}   # abs 44, 41.43
+    # Trimmed to the parcel outline: the zone was laid out as a rectangle and
+    # the boundary cuts across it, so it has more vertices than corners.
+    sun_exposure: partial-sun
+    soil_type: silt
+    soil_profile_refs: [SOIL002]
+    # Slope read off the terrain triangle under this zone's centroid, which sits
+    # at -2.09 m relative to the datum.
+    slope_direction: S
+    slope_percent: 13.9
+    description: >
+      Rough grass at the bottom of the fall, wet in winter and the first place
+      to catch frost.
+    tags: [wet, frost-pocket, unmown]
+  - id: OZ007
+    name: Barn forecourt
+    zone_type: gravel-area
+    parcel_ref: LP001
+    area_sqm: 38.3
+    position: {x: 27.75, y: 20.25}
+    footprint:
+      shape: polygon
+      vertices:
+        - {x: -2.25, y: -4.25}   # abs 25.5, 16
+        - {x: 2.25, y: -4.25}   # abs 30, 16
+        - {x: 2.25, y: 4.25}   # abs 30, 24.5
+        - {x: -2.25, y: 4.25}   # abs 25.5, 24.5
+    sun_exposure: partial-sun
+    # Slope read off the terrain triangle under this zone's centroid, which sits
+    # at 0.74 m relative to the datum.
+    slope_direction: S
+    slope_percent: 11.5
+    description: >
+      Turning and standing space in front of the barn door.
+    tags: [gravel, access]
+  - id: OZ008
+    name: Compost corner
+    zone_type: compost-area
+    parcel_ref: LP001
+    area_sqm: 36
+    position: {x: 11, y: 25}
+    footprint:
+      shape: polygon
+      vertices:
+        - {x: -3, y: -3}   # abs 8, 22
+        - {x: 3, y: -3}   # abs 14, 22
+        - {x: 3, y: 3}   # abs 14, 28
+        - {x: -3, y: 3}   # abs 8, 28
+    sun_exposure: partial-shade
+    soil_type: loam
+    # Slope read off the terrain triangle under this zone's centroid, which sits
+    # at 0.13 m relative to the datum.
+    slope_direction: S
+    slope_percent: 14.2
+    description: >
+      Three timber bays and a leaf-mould cage on the west bank, in the shade
+      of the coppice and a short barrow-push above the vegetable beds.
+    tags: [composting, shaded]

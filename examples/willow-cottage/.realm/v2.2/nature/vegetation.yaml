@@ -1,0 +1,175 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# Nature: Vegetation - individual specimens and grouped plantings
+#
+# Schema: nature/vegetation.schema.yaml
+#
+# GENERATED from a layout specification. Areas, elevations, wall segments and
+# opening offsets are computed rather than typed, which is why they agree with
+# one another. An edit made here is replaced the next time the model is
+# generated - copy it before adapting it.
+#
+# A specimen is one plant worth naming; a planting is a group treated as one.
+# The willow and the lane oak are specimens because their size, protection and
+# position matter individually. The beech hedge is a planting because nobody
+# cares which of its thirty-four plants is which.
+#
+# Every position here has been checked to fall inside the zone its entity
+# names - a reference that resolves is not the same as a plant in the right
+# field, and only one of the two is visible in the YAML.
+# ═════════════════════════════════════════════════════════════════════════════
+
+specimens:
+  - id: SPM001
+    name: The willow
+    specimen_type: tree-deciduous
+    species: Salix alba
+    common_name: White willow
+    outdoor_zone_ref: OZ006
+    position: {x: 24, y: 43}
+    height_m: 14
+    canopy_radius_m: 6.5
+    trunk_diameter_cm: 62
+    crown_bottom_height_m: 3.2
+    canopy_shape: irregular
+    growth_rate_cm_per_year: 60
+    mature_height_m: 20
+    height_measured_date: "2026-03-12"
+    condition: healthy
+    estimated_age_years: 70
+    is_protected: true
+    sun_requirement: full-sun
+    water_requirement: high
+    leaf_retention: deciduous
+    care_profile_ref: SCP002
+    description: >
+      The tree the property is named for, standing where the ground flattens
+      into the meadow. Covered by a preservation order, so any work on it
+      needs consent.
+    tags: [landmark, protected, wet-ground]
+  - id: SPM002
+    name: Lane oak
+    specimen_type: tree-deciduous
+    species: Quercus robur
+    common_name: English oak
+    outdoor_zone_ref: OZ002
+    position: {x: 4, y: 9}
+    height_m: 17.5
+    canopy_radius_m: 8
+    trunk_diameter_cm: 88
+    crown_bottom_height_m: 4
+    canopy_shape: ellipsoid-wide
+    mature_height_m: 24
+    height_measured_date: "2026-03-12"
+    condition: healthy
+    estimated_age_years: 140
+    is_protected: true
+    sun_requirement: full-sun
+    water_requirement: moderate
+    leaf_retention: deciduous
+    description: >
+      Boundary oak by the gate; its canopy reaches over the lane and the front
+      lawn.
+    tags: [landmark, protected, boundary]
+  - id: SPM003
+    name: Bramley apple
+    specimen_type: tree-fruit
+    species: Malus domestica
+    common_name: Apple
+    outdoor_zone_ref: OZ004
+    position: {x: 31, y: 28}
+    height_m: 5.2
+    canopy_radius_m: 3.4
+    trunk_diameter_cm: 24
+    crown_bottom_height_m: 1.4
+    canopy_shape: sphere
+    mature_height_m: 7
+    height_measured_date: "2026-03-12"
+    condition: healthy
+    planted_date: "2009-11-20"
+    sun_requirement: full-sun
+    water_requirement: moderate
+    leaf_retention: deciduous
+    bloom_months: [4, 5]
+    care_profile_ref: SCP001
+    description: >
+      Standard cooker on MM111 rootstock, the oldest of the six orchard trees.
+    tags: [orchard, fruit]
+  - id: SPM004
+    name: Conference pear
+    specimen_type: tree-fruit
+    species: Pyrus communis
+    common_name: Pear
+    outdoor_zone_ref: OZ004
+    position: {x: 38, y: 31}
+    height_m: 4.1
+    canopy_radius_m: 2.2
+    trunk_diameter_cm: 16
+    crown_bottom_height_m: 1.2
+    canopy_shape: ellipsoid-tall
+    mature_height_m: 6
+    height_measured_date: "2026-03-12"
+    condition: stressed
+    planted_date: "2016-03-05"
+    sun_requirement: full-sun
+    water_requirement: moderate
+    leaf_retention: deciduous
+    bloom_months: [4]
+    description: >
+      Slow to establish on the heavier clay at the east end of the orchard.
+      Cropping lightly; the ground was mulched in 2025 to hold moisture.
+    tags: [orchard, fruit, watch]
+
+# ── Plantings ─────────────────────────────────────────────────────────────
+plantings:
+  - id: PTG001
+    name: Beech hedge
+    planting_type: hedge
+    species: Fagus sylvatica
+    common_name: Common beech
+    outdoor_zone_ref: OZ002
+    position: {x: 2, y: 5.5}
+    count: 34
+    spacing_cm: 40
+    current_height_min_cm: 150
+    current_height_max_cm: 185
+    target_height_m: 2
+    age_years: 12
+    species_confirmed: true
+    sun_requirement: full-sun
+    water_requirement: moderate
+    leaf_retention: semi-evergreen
+    care_profile_ref: SCP002
+    description: >
+      Beech run inside the roadside hedge, holding its brown leaf through
+      winter.
+    tags: [screening, front]
+  - id: PTG002
+    name: Raised vegetable beds
+    planting_type: raised-bed
+    outdoor_zone_ref: OZ005
+    position: {x: 15, y: 32}
+    count: 4
+    area_sqm: 22
+    season: spring
+    sun_requirement: full-sun
+    water_requirement: high
+    watering_schedule:
+      rrule: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=WE,SA;BYMONTH=6,7,8
+      summary: Twice a week through the summer
+    description: >
+      Four timber beds cut into the slope as shallow terraces, rotated on a
+      four-year cycle.
+    tags: [productive, terraced]
+  - id: PTG003
+    name: Herb strip
+    planting_type: herb-garden
+    outdoor_zone_ref: OZ005
+    position: {x: 21, y: 29.5}
+    area_sqm: 6
+    season: year-round
+    sun_requirement: full-sun
+    water_requirement: low
+    description: >
+      Thyme, sage and rosemary along the warm north edge of the vegetable
+      garden.
+    tags: [productive, perennial]

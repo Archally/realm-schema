@@ -26,8 +26,15 @@ import YAML from "yaml";
 
 import { DATA_FILE_TO_SCHEMA, CONSTRUCTION_SCHEMA, SCHEMA_BASE_URI, toPosix } from "./helpers.mjs";
 
-/** Files that are configuration or generator input, not model content. */
-const NOT_MODEL_CONTENT = /(^|\/)(realm-config|[a-z-]+-config)\.yaml$/;
+/**
+ * Generator inputs - a view config for one renderer, not model content and with no
+ * schema of their own, so being unmapped is their normal state rather than an
+ * omission worth reporting.
+ *
+ * `realm-config.yaml` is NOT one of these: it has a schema and is resolved through
+ * DATA_FILE_TO_SCHEMA, so it never reaches this test.
+ */
+const NOT_MODEL_CONTENT = /(^|\/)[a-z][a-z0-9-]*-config\.yaml$/;
 
 /**
  * Which schema governs a model file, or null when nothing does.
