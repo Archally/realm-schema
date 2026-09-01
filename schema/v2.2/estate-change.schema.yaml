@@ -1,0 +1,333 @@
+---
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "estate-change.schema.yaml"
+title: "Realm Estate Change"
+description: >
+  Tracks planned changes and undertakings concerning the estate as AS-IS to
+  TO-BE transitions. Each estate change is a discrete undertaking (add solar
+  panels, replace fence, plant new hedge, apply to a listing platform) with
+  timeline, status, dependencies, impact on existing entities, required
+  resources, and a record of what was actually carried out.
+
+x-gdsm:
+  version: "2.2.0"
+  methodology: "GDSM v1.0"
+  plane: null
+  domain_slice: null
+  designed_for:
+    - id: T8
+      name: "Estate Change Planning Report"
+      mfs_target: 80
+  competency_questions:
+    - "CQ23: What changes are planned for the property, what is their timeline, and what is their current status?"
+    - "CQ31: What tools, materials, and equipment are required for each estate change, what quantities are needed, and what is their availability?"
+    - "CQ34: When was each change actually carried out, what did it cost, and what state did it leave behind?"
+  fitness:
+    last_evaluated: "2026-03-14"
+    scores: {}
+  non_goals:
+    - "Detailed resource scheduling (who uses what tool when) - only preparatory checklists"
+    - "Contractor bidding and selection"
+    - "Permit application tracking"
+  status: draft
+  owned_by: null
+  schema_ref_prefix: "ECH"
+
+type: object
+additionalProperties: false
+properties:
+  estate_changes:
+    type: array
+    title: "Estate Changes"
+    description: "Planned changes to the estate, tracking AS-IS to TO-BE transitions. Answers CQ23."
+    items:
+      $ref: "#/$defs/estate_change"
+
+$defs:
+  estate_change:
+    type: object
+    title: "Estate Change"
+    description: >
+      A planned change or undertaking concerning the estate, with lifecycle
+      tracking. Moves through statuses from proposed to approved to
+      in-progress to completed or cancelled. A change may belong to a family
+      of related changes, and a family may be one branch of a set of mutually
+      exclusive scenarios. Answers CQ23, CQ31, CQ34.
+    required: [id, name, status]
+    additionalProperties: false
+    patternProperties:
+      "^x-":
+        description: "Extension fields for domain-specific scheduling metadata (seasonal windows, risk/issue linkage)."
+    properties:
+      id:
+        $ref: "metamodel.schema.yaml#/$defs/estate_change_ref"
+        title: "ECH### Identifier"
+      name:
+        type: string
+        title: "Estate Change Name"
+        minLength: 1
+        examples: ["Install Rooftop Solar Array", "Replace North Fence", "Plant Privacy Hedge"]
+      summary:
+        type: string
+        title: "Summary"
+        description: "One-paragraph description of the planned change."
+        examples: ["Install 10kWp solar PV system on south-facing roof of main house with battery storage"]
+      status:
+        type: string
+        title: "Status"
+        description: >
+          Current lifecycle state of this estate change. A family parent
+          carries a status of its own; a rule reports when it disagrees with
+          the rollup of its members.
+        enum:
+          - "proposed"
+          - "approved"
+          - "scheduled"
+          - "in-progress"
+          - "completed"
+          - "cancelled"
+          - "deferred"
+        examples: ["proposed"]
+      priority:
+        type: string
+        title: "Priority"
+        enum: ["critical", "high", "medium", "low"]
+        examples: ["high"]
+      # ── Timeline ──
+      proposed_date:
+        $ref: "metamodel.schema.yaml#/$defs/iso_date"
+        title: "Date Proposed"
+      planned_start_date:
+        $ref: "metamodel.schema.yaml#/$defs/iso_date"
+        title: "Planned Start"
+      planned_end_date:
+        $ref: "metamodel.schema.yaml#/$defs/iso_date"
+        title: "Planned Completion"
+      actual_start_date:
+        $ref: "metamodel.schema.yaml#/$defs/iso_date"
+        title: "Actual Start"
+      actual_end_date:
+        $ref: "metamodel.schema.yaml#/$defs/iso_date"
+        title: "Actual Completion"
+      completed_date:
+        $ref: "metamodel.schema.yaml#/$defs/iso_date"
+        title: "Completed Date"
+      affected_entity_refs:
+        type: array
+        title: "Affected Entity References"
+        items:
+          type: string
+        uniqueItems: true
+      # ── Changes ──
+      changes:
+        type: array
+        title: "Entity Changes"
+        description: >
+          Specific changes to realm entities: add, modify, replace, or
+          remove systems, zones, plantings, boundaries, etc.
+        items:
+          type: object
+          title: "Change"
+          required: [action, entity_type]
+          additionalProperties: false
+          properties:
+            action:
+              type: string
+              title: "Action"
+              enum: ["add", "modify", "replace", "remove", "relocate"]
+              examples: ["add"]
+            entity_type:
+              type: string
+              title: "Entity Type"
+              description: "Type of entity being changed."
+              examples: ["system", "boundary_segment", "planting", "building", "outdoor_zone"]
+            entity_ref:
+              type: string
+              title: "Entity Reference"
+              description: "ID of the existing entity being modified/replaced/removed."
+              examples: ["SYS001", "BS003"]
+            description:
+              type: string
+              title: "Change Description"
+              examples: ["Add 10kWp solar PV system on main house roof"]
+            from_state:
+              type: string
+              title: "From State (AS-IS)"
+              description: "Current state before the change."
+              examples: ["No solar generation"]
+            to_state:
+              type: string
+              title: "To State (TO-BE)"
+              description: "Desired state after the change."
+              examples: ["10kWp solar PV with 13.5kWh battery"]
+            actual_state:
+              type: string
+              title: "Actual State (AS-BUILT)"
+              description: >
+                What the change actually left behind, when that differs from
+                the intended state or when the closure is worth recording in
+                its own words. Work carried out in a different way than
+                planned is the normal case rather than a fault, and a closed
+                change that never records one is an unverified closure.
+              examples: ["Mesh sewn onto three wires; no panels and no cable ties were used"]
+      # ── Required Resources (v1.4) ──
+      required_resources:
+        type: array
+        title: "Required Resources"
+        description: >
+          Tools, materials, and equipment needed to execute this estate change.
+          Drives preparatory checklist generation (PDF) and purchase
+          planning. Answers CQ31.
+        items:
+          $ref: "#/$defs/required_resource"
+      # ── Impact ──
+      affected_system_refs:
+        type: array
+        title: "Affected Systems"
+        description: "Existing systems impacted by this estate change."
+        items:
+          $ref: "metamodel.schema.yaml#/$defs/system_ref"
+        uniqueItems: true
+      affected_zone_refs:
+        type: array
+        title: "Affected Zones"
+        items:
+          $ref: "metamodel.schema.yaml#/$defs/outdoor_zone_ref"
+        uniqueItems: true
+      # ── Dependencies ──
+      depends_on_estate_change_refs:
+        type: array
+        title: "Dependencies"
+        description: "Estate changes that must be completed before this one can start."
+        items:
+          $ref: "metamodel.schema.yaml#/$defs/estate_change_ref"
+        uniqueItems: true
+        examples: [["ECH001"]]
+      # ── Family and scenario grouping (v2.2) ──
+      part_of_change_ref:
+        $ref: "metamodel.schema.yaml#/$defs/estate_change_ref"
+        title: "Parent Estate Change"
+        description: >
+          The family this change belongs to. A family parent carries the
+          shared budget, goal and condition its members work towards, and
+          lets a risk or an issue address the whole family rather than
+          guessing at one member. The edge is held by the member, so the
+          parent needs no list; membership must not form a cycle.
+        examples: ["ECH009"]
+      variant_group:
+        type: string
+        title: "Variant Group"
+        description: >
+          Names a set of mutually exclusive scenarios, declared on the parent
+          of each competing branch. Exactly one branch is ever carried out,
+          so members of one group are alternatives rather than dependencies
+          and their statuses are not rolled up together.
+        minLength: 1
+        examples: ["property-exit"]
+      # ── Execution history (v2.2) ──
+      executions:
+        type: array
+        title: "Executions"
+        description: >
+          What was actually carried out, and when. A change closed without
+          one records no evidence that anything happened. Counts, totals and
+          the most recent date are read from this list rather than stored
+          beside it. Answers CQ34.
+        items:
+          $ref: "metamodel.schema.yaml#/$defs/execution"
+      # ── Coordinator (v1.4) ──
+      coordinator_ref:
+        $ref: "metamodel.schema.yaml#/$defs/person_ref"
+        title: "Coordinator"
+        description: "Person responsible for coordinating this estate change. Answers CQ32."
+      # ── Cost ──
+      estimated_cost:
+        type: number
+        title: "Estimated Cost"
+        minimum: 0
+        examples: [15000, 2500]
+      currency:
+        type: string
+        title: "Currency"
+        pattern: "^[A-Z]{3}$"
+        examples: ["EUR"]
+      description:
+        type: string
+      tags:
+        $ref: "metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Required Resource (v1.4) - checklist item for estate change preparation
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  required_resource:
+    type: object
+    title: "Required Resource"
+    description: >
+      A tool, material, or piece of equipment needed to execute an estate change.
+      Supports optional references to existing TL or EQP entities for
+      inventory cross-checking. Used for deterministic PDF checklist
+      generation and purchase planning. Answers CQ31.
+    required: [name, category, availability]
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+        title: "Resource Name"
+        description: "Human-readable name of the required resource."
+        minLength: 1
+        examples: ["Spawarka MIG/MAG", "Beton B20", "Taczka"]
+      category:
+        type: string
+        title: "Resource Category"
+        description: "Classification for checklist grouping."
+        enum:
+          - "tool"
+          - "material"
+          - "equipment"
+      availability:
+        type: string
+        title: "Availability Status"
+        description: "Whether this resource is available on-site or needs to be acquired."
+        enum:
+          - "on-site"
+          - "to-purchase"
+          - "to-check"
+          - "to-borrow"
+          - "to-rent"
+      quantity:
+        type: number
+        title: "Quantity"
+        description: "Amount needed. Omit for items where quantity is implicit (e.g., 1 ladder)."
+        exclusiveMinimum: 0
+        examples: [17, 650, 2000]
+      unit:
+        type: string
+        title: "Unit"
+        description: "Unit of measurement for quantity (e.g., szt., kg, l, m, m²)."
+        minLength: 1
+        examples: ["szt.", "kg", "l", "m", "m²"]
+      tool_ref:
+        $ref: "metamodel.schema.yaml#/$defs/tool_ref"
+        title: "Tool Reference"
+        description: "Reference to an existing TL### entity in the tool inventory."
+      equipment_ref:
+        $ref: "metamodel.schema.yaml#/$defs/equipment_ref"
+        title: "Equipment Reference"
+        description: "Reference to an existing EQP### entity in the equipment inventory."
+      estimated_cost:
+        type: number
+        title: "Estimated Cost"
+        description: "Estimated acquisition cost for items that need purchasing."
+        minimum: 0
+        examples: [250, 50]
+      currency:
+        type: string
+        title: "Currency"
+        pattern: "^[A-Z]{3}$"
+        examples: ["PLN"]
+      notes:
+        type: string
+        title: "Notes"
+        description: "Where to buy, specifications, alternatives, or other preparation notes."
+        examples: ["Leroy Merlin, 2× big bag", "W garażu RM012"]

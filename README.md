@@ -6,7 +6,12 @@ YAML-based schema for modeling **private real estate** — a dual-layer spatial 
 [![license](https://img.shields.io/npm/l/@archally/realm-schema)](./LICENSE)
 [![CI](https://github.com/archally/realm-schema/actions/workflows/validate.yml/badge.svg)](https://github.com/archally/realm-schema/actions)
 
-> **Status: scaffolding in progress.** This commit ships the schema only. The validator, a worked example, the bundled tools, and the full documentation arrive in subsequent commits. See the schema under [`schema/v2.0/`](./schema/v2.0/).
+> **Status: the schema is published; the tooling is not yet.** What ships today is the
+> complete v2.2 schema under [`schema/v2.2/`](./schema/v2.2/) — enough to author and
+> editor-validate a model. A worked example, the bundled tools (validator, semantic
+> checker, model builder, renderer) and the full documentation arrive in subsequent
+> releases. Until then, validate through your editor: [`.vscode/settings.json`](./.vscode/settings.json)
+> maps each plane's files to its schema, and any JSON-Schema-aware editor can do the same.
 
 ## What is a Realm model?
 
@@ -20,17 +25,19 @@ A **realm** is a single formal model of a property — what physically exists, w
 | **Operations** | How is it maintained? | maintenance tasks, cost categories, warranties, regulations |
 | **Context** | What surrounds it? | neighbours, surroundings, environmental factors, persons |
 
-Cross-cutting: migrations, risks/issues, and a chronological event log.
+Cross-cutting: estate changes, risks/issues, and a chronological event log.
 
 **Dual-layer spatial model:** a *semantic layer* (human-authored rooms, walls, openings) and a *construction layer* (deterministic wall segments, floor slabs, roof planes) — so a model rich enough to draw an accurate plan is also rich enough for spatial reasoning.
 
 ## Schema
 
-- **Version:** 2.0.0 (JSON Schema draft 2020-12, expressed in YAML)
+- **Version:** 2.2.0 (JSON Schema draft 2020-12, expressed in YAML)
 - **Methodology:** GDSM v1.0 (Goal-Driven Schema Modeling)
-- **Location:** [`schema/v2.0/`](./schema/v2.0/) — root composition + `metamodel`, `migration`, `risks`, `events`, `realm-config`, and per-plane subfolders (`topology/`, `infrastructure/`, `nature/`, `operations/`, `context/`, `visualization/`).
+- **Location:** [`schema/v2.2/`](./schema/v2.2/) — root composition + `metamodel`, `estate-change`, `risks`, `events`, `realm-config`, and per-plane subfolders (`topology/`, `infrastructure/`, `nature/`, `operations/`, `context/`, `visualization/`).
 
-Each plane's data files are validated independently against their own schema; cross-cutting files validate against `migration`, `risks`, and `events`.
+Each plane's data files are validated independently against their own schema; cross-cutting files validate against `estate-change`, `risks`, and `events`.
+
+v2.2 is the only published line. Models written against 2.1 need the `migration` → `estate_change` rename; see the [changelog](./CHANGELOG.md).
 
 ## License
 

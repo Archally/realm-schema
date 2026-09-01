@@ -1,0 +1,338 @@
+---
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "topology/equipment.schema.yaml"
+title: "Room Equipment & Furniture"
+description: >
+  Movable and installed items within rooms: furniture pieces and
+  equipment/appliances. Each item is a first-class entity with typed ID,
+  room placement, and optional link to infrastructure systems. Topology plane.
+
+x-gdsm:
+  version: "2.1.0"
+  methodology: "GDSM v1.0"
+  plane: "topology"
+  domain_slice: null
+  designed_for:
+    - id: T2
+      name: "Property Inventory Report"
+      mfs_target: 85
+    - id: T5
+      name: "2D Spatial Layout Visualization"
+      mfs_target: 80
+  competency_questions:
+    - "CQ24: What furniture is in each room, and what are its dimensions?"
+    - "CQ25: What equipment and appliances are installed in each room, and which infrastructure systems do they belong to?"
+    - "CQ30: What technical specifications does equipment have beyond power rating?"
+  fitness:
+    last_evaluated: "2026-03-09"
+    scores: {}
+  non_goals:
+    - "Equipment purchase history and pricing"
+    - "Appliance energy consumption tracking (external data store)"
+    - "Furniture style and aesthetics"
+  status: draft
+  owned_by: null
+  schema_ref_prefix: "FRN, EQP"
+
+type: object
+additionalProperties: false
+properties:
+  furnitures:
+    type: array
+    title: "Furniture"
+    description: "Furniture pieces placed in rooms. Answers CQ24."
+    items:
+      $ref: "#/$defs/furniture"
+  equipments:
+    type: array
+    title: "Equipment"
+    description: "Equipment and appliances installed in rooms. Answers CQ25."
+    items:
+      $ref: "#/$defs/equipment"
+
+$defs:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Furniture — FRN###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  furniture:
+    type: object
+    title: "Furniture"
+    description: >
+      A furniture piece placed in a room or building (shed, gazebo): sofa,
+      table, wardrobe, desk, bed, shelf unit, planter, outdoor storage, etc.
+      Tracks placement (room + wall or building) and dimensions.
+      Answers CQ24. Used by T2 (inventory) and T5 (layout rendering).
+    required: [id, name, furniture_type]
+    additionalProperties: false
+    oneOf:
+      - required: [room_ref]
+      - required: [building_ref]
+    properties:
+      id:
+        type: string
+        title: "FRN### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?FRN\\d{3,}$"
+        examples: ["FRN001"]
+      name:
+        type: string
+        title: "Furniture Name"
+        minLength: 1
+        examples: ["Kanapa narożna", "Stół jadalniany", "Szafa 4-drzwiowa"]
+      furniture_type:
+        type: string
+        title: "Furniture Type"
+        description: "Primary classification of this furniture piece."
+        enum:
+          - "sofa"
+          - "armchair"
+          - "table"
+          - "desk"
+          - "chair"
+          - "bed"
+          - "wardrobe"
+          - "shelf"
+          - "cabinet"
+          - "dresser"
+          - "bench"
+          - "mirror"
+          - "rug"
+          - "curtain"
+          - "shoe-rack"
+          - "coat-rack"
+          - "tv-stand"
+          - "kitchen-island"
+          - "bar"
+          - "planter"
+          - "outdoor-storage"
+          - "outdoor-seating"
+          - "outdoor-shade"
+          - "other"
+        examples: ["sofa"]
+      room_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/room_ref"
+        title: "Room"
+        description: "Room this furniture is placed in. Required if building_ref is not set."
+      building_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/building_ref"
+        title: "Building"
+        description: >
+          Building (shed, gazebo) this furniture is placed in. Use when the
+          item is in a structure without formal rooms. Mutually exclusive with room_ref.
+      wall:
+        $ref: "../metamodel.schema.yaml#/$defs/compass_direction"
+        title: "Wall / Side"
+        description: "Wall or side of the room where this furniture is positioned."
+      # ── Dimensions (optional, to be populated later) ──
+      width_cm:
+        type: number
+        title: "Width (cm)"
+        exclusiveMinimum: 0
+        examples: [200, 127]
+      depth_cm:
+        type: number
+        title: "Depth (cm)"
+        exclusiveMinimum: 0
+        examples: [90, 104]
+      height_cm:
+        type: number
+        title: "Height (cm)"
+        exclusiveMinimum: 0
+        examples: [210, 75]
+      brand:
+        type: string
+        title: "Brand"
+        examples: ["IKEA", "BRW"]
+      model:
+        type: string
+        title: "Model"
+        examples: ["KALLAX", "MALM"]
+      position:
+        $ref: "../metamodel.schema.yaml#/$defs/position"
+        title: "Position"
+        description: "Position on the room layout for 2D rendering."
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Equipment — EQP###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  equipment:
+    type: object
+    title: "Equipment"
+    description: >
+      An appliance or piece of equipment installed in a room or building
+      (shed, gazebo): kitchen appliances, washing machines, grill, outdoor
+      heater, etc. Can optionally link to an infrastructure system.
+      Answers CQ25. Used by T2 (inventory).
+    required: [id, name, equipment_type]
+    additionalProperties: false
+    patternProperties:
+      "^x-": true
+    oneOf:
+      - required: [room_ref]
+      - required: [building_ref]
+      - required: [boundary_segment_ref]
+      - required: [outdoor_zone_ref]
+    properties:
+      id:
+        type: string
+        title: "EQP### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?EQP\\d{3,}$"
+        examples: ["EQP001"]
+      name:
+        type: string
+        title: "Equipment Name"
+        minLength: 1
+        examples: ["Piekarnik IKEA KULINARISK", "Pralka Bosch Maxx7", "Ekspres Saeco GranAroma"]
+      equipment_type:
+        type: string
+        title: "Equipment Type"
+        description: "Primary classification of this equipment."
+        enum:
+          - "oven"
+          - "microwave"
+          - "dishwasher"
+          - "refrigerator"
+          - "freezer"
+          - "induction-hob"
+          - "gas-hob"
+          - "range-hood"
+          - "coffee-machine"
+          - "washing-machine"
+          - "dryer"
+          - "water-filter"
+          - "water-softener"
+          - "air-conditioner"
+          - "dehumidifier"
+          - "humidifier"
+          - "vacuum-robot"
+          - "computer-workstation"
+          - "audio-system"
+          - "television"
+          - "projector"
+          - "printer"
+          - "garage-door-opener"
+          - "intercom"
+          - "alarm-panel"
+          - "sink"
+          - "toilet"
+          - "bidet"
+          - "shower"
+          - "bathtub"
+          - "grill"
+          - "outdoor-heater"
+          - "sliding-gate"
+          - "swing-gate"
+          - "pedestrian-gate"
+          - "gate-motor"
+          - "gate-remote"
+          - "snow-guard"
+          - "alarm-keypad"
+          - "heat-pump-indoor"
+          - "heat-pump-outdoor"
+          - "lawn-mower"
+          - "multi-tool"
+          - "scarifier"
+          - "vacuum-cleaner"
+          - "wheelbarrow"
+          - "garden-supplies"
+          - "power-drill"
+          - "portable-ac"
+          - "fire-pit"
+          - "cooking-accessory"
+          - "garden-hose"
+          - "soaker-hose"
+          - "drip-hose"
+          - "sprinkler"
+          - "other"
+        examples: ["oven"]
+      room_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/room_ref"
+        title: "Room"
+        description: "Room this equipment is installed in. Required if building_ref is not set."
+      building_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/building_ref"
+        title: "Building"
+        description: >
+          Building (shed, gazebo) this equipment is installed in. Use when the
+          item is in a structure without formal rooms. Mutually exclusive with room_ref.
+      wall:
+        $ref: "../metamodel.schema.yaml#/$defs/compass_direction"
+        title: "Wall / Side"
+        description: "Wall or side of the room where this equipment is positioned."
+      boundary_segment_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/boundary_segment_ref"
+        title: "Boundary Segment"
+        description: >
+          Boundary segment this equipment is installed on (for gates).
+          Mutually exclusive with room_ref and building_ref.
+      outdoor_zone_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/outdoor_zone_ref"
+        title: "Outdoor Zone"
+        description: >
+          Outdoor zone where this equipment is placed (e.g., garden equipment).
+          Mutually exclusive with room_ref, building_ref, and boundary_segment_ref.
+      manufacturer:
+        type: string
+        title: "Manufacturer"
+        description: "Manufacturer name."
+      model_name:
+        type: string
+        title: "Model Name"
+        description: "Manufacturer model name."
+      width_cm:
+        type: number
+        title: "Width (cm)"
+        description: "Width of the equipment in centimeters."
+        exclusiveMinimum: 0
+      length_cm:
+        type: number
+        title: "Length (cm)"
+        description: "Length of the equipment in centimeters."
+        exclusiveMinimum: 0
+      brand:
+        type: string
+        title: "Brand"
+        examples: ["IKEA", "Bosch", "Saeco"]
+      model:
+        type: string
+        title: "Model"
+        examples: ["KULINARISK", "Maxx7", "GranAroma"]
+      power_watts:
+        type: number
+        title: "Power Rating (W)"
+        description: "Nominal power consumption in watts."
+        exclusiveMinimum: 0
+        examples: [2000, 1200]
+      # ── Infrastructure link ──
+      system_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/system_ref"
+        title: "Infrastructure System"
+        description: "Infrastructure system this equipment belongs to or feeds into."
+      component_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/component_ref"
+        title: "System Component"
+        description: "Specific infrastructure component this equipment is part of."
+      warranty_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/warranty_ref"
+        title: "Warranty"
+        description: "Warranty covering this equipment."
+      installed_date:
+        $ref: "../metamodel.schema.yaml#/$defs/iso_date"
+        title: "Installation Date"
+      specs:
+        $ref: "../metamodel.schema.yaml#/$defs/specs"
+        title: "Technical Specifications"
+        description: "Key-value technical specs beyond power_watts (capacity, dimensions, etc.). Answers CQ30."
+      position:
+        $ref: "../metamodel.schema.yaml#/$defs/position"
+        title: "Position"
+        description: "Position on the room layout for 2D rendering."
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"

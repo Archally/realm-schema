@@ -8,7 +8,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      # Step 1 ships the schema only — install-only smoke check.
-      # Upgraded to build / validate:examples / check:examples / test
-      # as the validator (Step 2), example (Step 3), and tools (Steps 5–6) land.
+      # The repo currently publishes the schema only, so this is an install-only
+      # smoke check. It gains validate / check / test steps when the example and
+      # the bundled tools land.
       - run: npm install
+      - name: Every schema file parses as YAML
+        run: |
+          node --input-type=module -e "
+          import {readFileSync, globSync} from 'node:fs';
+          import {parse} from 'yaml';
+          const files = globSync('schema/*/**/*.yaml');
+          if (files.length === 0) { console.error('no schema files found'); process.exit(1); }
+          let failed = 0;
+          for (const file of files) {
+            try { parse(readFileSync(file, 'utf8')); }
+            catch (error) { console.error('PARSE FAIL ' + file + ': ' + error.message); failed++; }
+          }
+          console.log(files.length - failed + '/' + files.length + ' schema file(s) parse');
+          process.exit(failed === 0 ? 0 : 1);
+          "

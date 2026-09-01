@@ -1,0 +1,240 @@
+---
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "risks.schema.yaml"
+title: "Realm Risk & Issues Register"
+description: >
+  Cross-cutting risk and issue tracking. Risks are potential adverse events
+  with mitigation plans; issues are identified current problems with
+  existing measures. Both reference entities across all planes (REG, MT,
+  WRT, SYS, NP, SC, OZ, etc.). Not part of any plane - governance overlay.
+
+x-gdsm:
+  version: "2.2.0"
+  methodology: "GDSM v1.0"
+  plane: null
+  domain_slice: null
+  designed_for:
+    - id: T1
+      name: "Maintenance Calendar Generation"
+      mfs_target: 90
+    - id: T4
+      name: "Boundary & Privacy Assessment"
+      mfs_target: 85
+    - id: T8
+      name: "Estate Change Planning Report"
+      mfs_target: 80
+  competency_questions:
+    - "What risks threaten the property, what is their mitigation status?"
+    - "What issues affect comfort, compliance, or operations?"
+  fitness:
+    last_evaluated: "2026-03-09"
+    scores: {}
+  non_goals:
+    - "Insurance claim tracking"
+    - "Legal dispute records"
+    - "Quantitative risk scoring (probability × impact)"
+  status: draft
+  owned_by: null
+  schema_ref_prefix: "RSK, ISS"
+
+type: object
+additionalProperties: false
+properties:
+  risks:
+    type: array
+    title: "Risks"
+    description: >
+      Potential adverse events with mitigation plans. Risks reference
+      entities (REG, MT, WRT, SYS, NP, SC, ECH, etc.) they relate to.
+    items:
+      $ref: "#/$defs/risk"
+  issues:
+    type: array
+    title: "Issues"
+    description: >
+      Identified current problems or concerns. Unlike risks, issues
+      describe existing conditions (e.g. noise, privacy, operational
+      friction) with current_measures rather than mitigation plans.
+    items:
+      $ref: "#/$defs/issue"
+
+$defs:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Risk — RSK###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  risk:
+    type: object
+    title: "Risk"
+    description: >
+      A potential adverse event with negative consequences. Has a mitigation
+      plan (what to do to reduce or avoid the risk). References entities
+      across all planes that the risk relates to.
+    required: [id, name, category, severity, status]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "RSK### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?RSK\\d{3,}$"
+        examples: ["RSK001"]
+      name:
+        type: string
+        title: "Risk Name"
+        minLength: 1
+        examples: ["Electrical inspection overdue", "Warranty void if service missed"]
+      category:
+        type: string
+        title: "Category"
+        description: "Domain of the risk."
+        enum:
+          - "compliance"
+          - "safety"
+          - "privacy"
+          - "structural"
+          - "financial"
+          - "operational"
+      severity:
+        type: string
+        title: "Severity"
+        description: "Impact level if the risk materializes."
+        enum:
+          - "critical"
+          - "high"
+          - "moderate"
+          - "low"
+      status:
+        type: string
+        title: "Status"
+        description: "Current handling state."
+        enum:
+          - "open"
+          - "mitigated"
+          - "monitoring"
+          - "resolved"
+          - "accepted"
+      entity_refs:
+        type: array
+        title: "Entity References"
+        description: "IDs of entities this risk relates to (REG, MT, WRT, SYS, NP, SC, ECH, etc.)."
+        items:
+          $ref: "metamodel.schema.yaml#/$defs/any_entity_ref"
+        examples: [["REG001", "MT002"]]
+      # ── Design Parameters (v1.3) ──
+      design_parameters:
+        type: array
+        title: "Design Parameters"
+        description: >
+          Quantitative design parameters from risk analysis: load capacities,
+          safety factors, material thresholds. Machine-queryable engineering data.
+        items:
+          type: object
+          title: "Design Parameter"
+          required: [parameter, value]
+          additionalProperties: false
+          properties:
+            parameter:
+              type: string
+              title: "Parameter Name"
+              description: "Name of the design parameter."
+              minLength: 1
+              examples: ["wind_load_capacity_kmh", "snow_load_kn_per_sqm", "safety_factor"]
+            value:
+              type: string
+              title: "Value"
+              minLength: 1
+              examples: ["85", "0.9", "4"]
+            unit:
+              type: string
+              title: "Unit"
+              description: "Unit of measurement (omit for dimensionless)."
+              examples: ["km/h", "kN/m²"]
+            context:
+              type: string
+              title: "Context"
+              description: "Where or when this parameter applies."
+              examples: ["Post-mitigation with top+bottom rail", "Zone II snow load region"]
+      description:
+        type: string
+        title: "Description"
+        description: "Detailed description of the risk and its consequences."
+      mitigation:
+        type: string
+        title: "Mitigation"
+        description: "Plan or actions to reduce or avoid the risk."
+      tags:
+        $ref: "metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Issue — ISS###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  issue:
+    type: object
+    title: "Issue"
+    description: >
+      An identified current problem or concern (e.g. noise, privacy,
+      operational friction). Unlike risks, issues describe existing
+      conditions. Uses current_measures for what is already being done.
+    required: [id, name, category, severity, status]
+    additionalProperties: false
+    patternProperties:
+      "^x-": true
+    properties:
+      id:
+        type: string
+        title: "ISS### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?ISS\\d{3,}$"
+        examples: ["ISS001"]
+      name:
+        type: string
+        title: "Issue Name"
+        minLength: 1
+        examples: ["Noise from western neighbors", "Visual privacy from elevated terraces"]
+      category:
+        type: string
+        title: "Category"
+        description: "Domain of the issue."
+        enum:
+          - "compliance"
+          - "safety"
+          - "privacy"
+          - "structural"
+          - "financial"
+          - "operational"
+      severity:
+        type: string
+        title: "Severity"
+        description: "Impact level of the issue."
+        enum:
+          - "critical"
+          - "high"
+          - "moderate"
+          - "low"
+      status:
+        type: string
+        title: "Status"
+        description: "Current handling state."
+        enum:
+          - "open"
+          - "mitigated"
+          - "monitoring"
+          - "resolved"
+          - "accepted"
+      entity_refs:
+        type: array
+        title: "Entity References"
+        description: "IDs of entities this issue relates to (NP, SC, OZ, RM, BS, PTG, etc.)."
+        items:
+          $ref: "metamodel.schema.yaml#/$defs/any_entity_ref"
+        examples: [["SC001", "NP001", "OZ003"]]
+      description:
+        type: string
+        title: "Description"
+        description: "Detailed description of the issue."
+      current_measures:
+        type: string
+        title: "Current Measures"
+        description: "What is already being done to address the issue (hedge, screening, acceptance)."
+      tags:
+        $ref: "metamodel.schema.yaml#/$defs/tags"

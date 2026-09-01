@@ -1,0 +1,290 @@
+---
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "operations/compliance.schema.yaml"
+title: "Compliance & Warranties"
+description: >
+  Warranty tracking with service conditions that must be met to keep
+  coverage valid, and regulatory requirements for legally mandated
+  inspections and certifications. Operations plane.
+
+x-gdsm:
+  version: "2.2.0"
+  methodology: "GDSM v1.0"
+  plane: "operations"
+  domain_slice: null
+  designed_for:
+    - id: T1
+      name: "Maintenance Calendar Generation"
+      mfs_target: 90
+    - id: T8
+      name: "Estate Change Planning Report"
+      mfs_target: 80
+  competency_questions:
+    - "CQ14: Which warranties expire soon, and what servicing is required to keep them valid?"
+    - "CQ15: What regulatory inspections are overdue or upcoming, and what is the legal penalty?"
+  fitness:
+    last_evaluated: "2026-03-08"
+    scores: {}
+  non_goals:
+    - "Insurance policy details"
+    - "Legal dispute tracking"
+    - "Inspection report storage (external document store)"
+  status: draft
+  owned_by: null
+  schema_ref_prefix: "WRT, REG"
+
+type: object
+additionalProperties: false
+properties:
+  warranties:
+    type: array
+    title: "Warranties"
+    description: "Manufacturer and installer warranties. Answers CQ14."
+    items:
+      $ref: "#/$defs/warranty"
+  regulatory_requirements:
+    type: array
+    title: "Regulatory Requirements"
+    description: "Legally mandated inspections and certifications. Answers CQ15."
+    items:
+      $ref: "#/$defs/regulatory_requirement"
+
+$defs:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Warranty — WRT###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  warranty:
+    type: object
+    title: "Warranty"
+    description: >
+      A manufacturer or installer warranty covering a system or component.
+      Critically tracks service_conditions - the maintenance actions required
+      to keep the warranty valid. Missing a required service voids coverage.
+      Answers CQ14 (expiry, required servicing). Used by T1 (calendar
+      generation - warranty-driven tasks have critical priority).
+    required: [id, name, start_date, end_date]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "WRT### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?WRT\\d{3,}$"
+        examples: ["WRT001"]
+      name:
+        type: string
+        title: "Warranty Name"
+        minLength: 1
+        examples: ["Viessmann Boiler 5-Year Warranty", "Solar Inverter Warranty"]
+      # ── Coverage ──
+      manufacturer:
+        type: string
+        title: "Manufacturer / Warrantor"
+        examples: ["Viessmann", "SMA Solar"]
+      warranty_type:
+        type: string
+        title: "Warranty Type"
+        description: "Kind of warranty coverage."
+        enum:
+          - "manufacturer-standard"
+          - "manufacturer-extended"
+          - "installer"
+          - "third-party"
+        examples: ["manufacturer-standard"]
+      start_date:
+        $ref: "../metamodel.schema.yaml#/$defs/iso_date"
+        title: "Start Date"
+        description: "When warranty coverage begins."
+      end_date:
+        $ref: "../metamodel.schema.yaml#/$defs/iso_date"
+        title: "End Date"
+        description: "When warranty coverage expires. This is the critical deadline."
+      # ── Covered Elements ──
+      covered_system_refs:
+        type: array
+        title: "Covered Systems"
+        description: "Systems protected by this warranty."
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/system_ref"
+        uniqueItems: true
+      covered_component_refs:
+        type: array
+        title: "Covered Components"
+        description: "Individual components protected by this warranty."
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/component_ref"
+        uniqueItems: true
+      # ── Service Conditions ──
+      service_conditions:
+        type: array
+        title: "Service Conditions"
+        description: >
+          Mandatory maintenance actions required to keep the warranty valid.
+          Each condition specifies what must be done, how often, and what
+          evidence is required. THIS IS THE MOST IMPORTANT WARRANTY FIELD -
+          missing a condition voids coverage. Answers CQ14.
+        items:
+          type: object
+          title: "Service Condition"
+          required: [description, frequency]
+          additionalProperties: false
+          properties:
+            description:
+              type: string
+              title: "Condition Description"
+              description: "What must be done to satisfy this condition."
+              examples: ["Annual service by certified technician"]
+            frequency:
+              $ref: "../metamodel.schema.yaml#/$defs/rrule_schedule"
+              title: "Required Frequency"
+              description: "How often this service must be performed."
+            evidence_required:
+              type: string
+              title: "Evidence Required"
+              description: "Documentation needed to prove compliance (receipt, stamp, etc.)."
+              examples: ["Service receipt with technician certification number"]
+            must_use_certified_technician:
+              type: boolean
+              title: "Certified Technician Required"
+              description: "Whether only manufacturer-certified technicians qualify."
+            last_performed:
+              $ref: "../metamodel.schema.yaml#/$defs/iso_date"
+              title: "Last Performed"
+              description: "Date of most recent compliant service (snapshot in model; history in external store)."
+      # ── Void Conditions ──
+      void_conditions:
+        type: array
+        title: "Void Conditions"
+        description: "Actions or conditions that void the warranty."
+        items:
+          type: string
+        examples: [["Unauthorized modification", "Use of non-approved replacement parts", "Failure to perform annual service"]]
+      documentation_url:
+        type: string
+        title: "Documentation URL"
+        description: "Link to warranty terms document."
+        format: uri
+        examples: ["https://www.viessmann.com/warranty/terms"]
+      contact_info:
+        type: string
+        title: "Warranty Contact"
+        description: "Phone number or email for warranty claims."
+        examples: ["+49 6452 70-0", "warranty@viessmann.com"]
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Regulatory Requirement — REG###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  regulatory_requirement:
+    type: object
+    title: "Regulatory Requirement"
+    description: >
+      A legally mandated inspection, certification, or safety check.
+      Non-compliance may result in fines, insurance voiding, or safety
+      hazards. Answers CQ15 (deadlines, penalties). Used by T1 (calendar).
+    required: [id, name, requirement_type, inspection_schedule]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "REG### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?REG\\d{3,}$"
+        examples: ["REG001"]
+      name:
+        type: string
+        title: "Requirement Name"
+        minLength: 1
+        examples: ["Annual Gas Safety Inspection", "Chimney Sweep", "Electrical Installation Check"]
+      requirement_type:
+        type: string
+        title: "Requirement Type"
+        description: "Category of regulatory mandate."
+        enum:
+          - "gas-safety"
+          - "electrical-safety"
+          - "chimney-sweep"
+          - "fire-safety"
+          - "elevator-inspection"
+          - "tree-inspection"
+          - "septic-inspection"
+          - "water-quality"
+          - "energy-audit"
+          - "radon-testing"
+          - "asbestos-check"
+          - "lightning-protection"
+          - "pressure-vessel"
+          - "other"
+        examples: ["gas-safety"]
+      jurisdiction:
+        type: string
+        title: "Jurisdiction"
+        description: "Country, state, or municipality that mandates this requirement."
+        examples: ["Germany", "Bavaria", "City of Munich"]
+      legal_basis:
+        type: string
+        title: "Legal Basis"
+        description: "Law, regulation, or standard that requires this inspection."
+        examples: ["Schornsteinfeger-Handwerksgesetz (SchfHwG)", "DIN VDE 0100-600"]
+      inspection_schedule:
+        $ref: "../metamodel.schema.yaml#/$defs/rrule_schedule"
+        title: "Inspection Frequency"
+        description: "How often this inspection must be performed."
+      penalty_description:
+        type: string
+        title: "Non-Compliance Penalty"
+        description: "What happens if this requirement is not met."
+        examples: ["Fine up to €5,000 and potential insurance claim denial"]
+      # ── Target ──
+      target_system_refs:
+        type: array
+        title: "Applicable Systems"
+        description: "Systems that must comply with this requirement."
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/system_ref"
+        uniqueItems: true
+      target_building_refs:
+        type: array
+        title: "Applicable Buildings"
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/building_ref"
+        uniqueItems: true
+      # ── Tracking ──
+      last_inspection_date:
+        $ref: "../metamodel.schema.yaml#/$defs/iso_date"
+        title: "Last Inspection"
+        description: "Date of most recent passing inspection (snapshot; history in external store)."
+      next_due_date:
+        $ref: "../metamodel.schema.yaml#/$defs/iso_date"
+        title: "Next Due Date"
+        description: "Calculated or manually set next inspection deadline."
+      certified_inspector_required:
+        type: boolean
+        title: "Certified Inspector Required"
+        description: "Whether only a licensed/certified inspector may perform the check."
+      notification_rule_refs:
+        type: array
+        title: "Notification Rules"
+        description: "Alerts for upcoming inspection deadlines."
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/notification_rule_ref"
+        uniqueItems: true
+      # ── Overdue Tracking (v1.3) ──
+      overdue_since:
+        $ref: "../metamodel.schema.yaml#/$defs/iso_date"
+        title: "Overdue Since"
+        description: "Date since which this requirement is overdue. Null/omitted if current."
+      consequence_description:
+        type: string
+        title: "Consequence Description"
+        description: >
+          Specific consequences of non-compliance beyond penalty_description:
+          insurance implications, mortgage conditions, safety hazards.
+        examples: ["Insurance claim denial by Nationale-Nederlanden; mortgage condition violation at Bank Millennium"]
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"

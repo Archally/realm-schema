@@ -1,0 +1,524 @@
+---
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "context/surroundings.schema.yaml"
+title: "Surroundings & Neighbors"
+description: >
+  External environment: neighbor properties as first-class entities with
+  descriptive attributes, shared concerns between properties, and
+  environmental factors affecting the estate. Context plane.
+
+x-gdsm:
+  version: "2.1.0"
+  methodology: "GDSM v1.0"
+  plane: "context"
+  domain_slice: null
+  designed_for:
+    - id: T3
+      name: "Garden Planning Advisory"
+      mfs_target: 80
+    - id: T4
+      name: "Boundary & Privacy Assessment"
+      mfs_target: 85
+    - id: T5
+      name: "2D Spatial Layout Visualization"
+      mfs_target: 80
+  competency_questions:
+    - "CQ19: What are the neighbor properties, and what shared concerns exist (noise, trees, drainage, crowd)?"
+    - "CQ22: What is the sun exposure of a zone given property orientation and surrounding structure heights?"
+    - "CQ29: What terrain/elevation differences exist with neighbors, and how do they affect privacy and drainage?"
+  fitness:
+    last_evaluated: "2026-03-08"
+    scores: {}
+  non_goals:
+    - "Neighbor personal information embedded on NP (use PRS### for person details)"
+    - "Property valuation of neighbor lots"
+    - "Neighbor dispute legal records"
+  status: draft
+  owned_by: null
+  schema_ref_prefix: "NP, SC, EF, RD"
+
+type: object
+additionalProperties: false
+properties:
+  neighbor_properties:
+    type: array
+    title: "Neighbor Properties"
+    description: "Adjacent properties. Answers CQ19."
+    items:
+      $ref: "#/$defs/neighbor_property"
+  shared_concerns:
+    type: array
+    title: "Shared Concerns"
+    description: "Issues shared with neighbors. Answers CQ19."
+    items:
+      $ref: "#/$defs/shared_concern"
+  environmental_factors:
+    type: array
+    title: "Environmental Factors"
+    description: "Environmental conditions affecting the property. Answers CQ22."
+    items:
+      $ref: "#/$defs/environmental_factor"
+  roads:
+    type: array
+    title: "Road Corridors"
+    description: >
+      Public roads or shared driveways that touch the estate, modeled as
+      polylines with width. Distinct from outdoor_zone (driveway inside the
+      estate) and from neighbor_property (adjacent parcels). Used by T5
+      (layout) and T4 (privacy/noise from traffic).
+    items:
+      $ref: "#/$defs/road_corridor"
+
+$defs:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Neighbor Property — NP###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  neighbor_property:
+    type: object
+    title: "Neighbor Property"
+    description: >
+      An adjacent property modeled as a first-class entity. Tracks physical
+      characteristics (building height, distance), usage patterns (noise,
+      occupancy), and boundary relationships. Answers CQ19 (shared concerns)
+      and CQ22 (shade from neighbor structures). Used by T4 (privacy
+      assessment), T5 (simplified rendering on layout).
+    required: [id, name, direction]
+    additionalProperties: false
+    patternProperties:
+      "^x-": true
+    properties:
+      id:
+        type: string
+        title: "NP### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?NP\\d{3,}$"
+        examples: ["NP001"]
+      name:
+        type: string
+        title: "Property Name"
+        minLength: 1
+        description: "Descriptive label (not the owner's name)."
+        examples: ["North Neighbor (Two-Story House)", "East Neighbor (Farm)"]
+      cadastral_id:
+        type: string
+        title: "Cadastral ID"
+        description: "Official land registry / cadastral identifier of the neighbor parcel."
+        examples: ["35/18", "281/2"]
+      direction:
+        $ref: "../metamodel.schema.yaml#/$defs/compass_direction"
+        title: "Direction from Estate"
+        description: "Which side of the estate this neighbor is on."
+      property_type:
+        type: string
+        title: "Property Type"
+        description: "General land use of the neighbor property."
+        enum:
+          - "residential-single"
+          - "residential-multi"
+          - "commercial"
+          - "agricultural"
+          - "industrial"
+          - "public"
+          - "recreational"
+          - "vacant"
+          - "forest"
+          - "water"
+        examples: ["residential-single"]
+      # ── Physical Descriptors ──
+      building_height_m:
+        type: number
+        title: "Building Height (m)"
+        description: "Height of the tallest structure. Used for shade analysis (CQ22)."
+        exclusiveMinimum: 0
+        examples: [8, 12]
+      eave_height_m:
+        type: number
+        title: "Eave Height (m)"
+        description: "Height of the neighbor building's eave in meters."
+      building_stories:
+        type: integer
+        title: "Number of Stories"
+        minimum: 1
+        examples: [2]
+      distance_from_boundary_m:
+        type: number
+        title: "Building Distance from Boundary (m)"
+        description: "Distance from the neighbor's nearest building to the shared boundary."
+        minimum: 0
+        examples: [3, 10]
+      has_windows_facing:
+        type: boolean
+        title: "Windows Facing Our Property"
+        description: "Whether the neighbor building has windows overlooking our property. Privacy concern."
+      # ── Elevation (v1.3) ──
+      terrain_elevation_offset_cm:
+        type: number
+        title: "Terrain Elevation Offset (cm)"
+        description: >
+          Neighbor terrain height relative to estate ground level.
+          Positive = neighbor is higher. Affects drainage (CQ19) and
+          privacy assessment (T4). Answers CQ29.
+        examples: [25, -10]
+      foundation_elevation_offset_cm:
+        type: number
+        title: "Foundation Elevation Offset (cm)"
+        description: >
+          Neighbor building foundation height relative to estate ground level.
+          Combined with terrain offset gives effective overlooking height. Answers CQ29.
+        examples: [80, 50]
+      household_count:
+        type: integer
+        title: "Household Count"
+        description: "Number of households occupying the property."
+        minimum: 1
+        examples: [2, 1]
+      # ── Usage & Impact ──
+      occupancy:
+        type: string
+        title: "Occupancy"
+        description: "How regularly the property is occupied."
+        enum: ["permanent", "seasonal", "weekend", "vacant", "unknown"]
+        examples: ["permanent"]
+      noise_level:
+        type: string
+        title: "Noise Level"
+        description: "Typical noise impact from this neighbor."
+        enum: ["quiet", "moderate", "loud", "variable"]
+        examples: ["moderate"]
+      crowd_level:
+        type: string
+        title: "Activity / Crowd Level"
+        description: "Frequency and volume of human activity (parties, gatherings, traffic)."
+        enum: ["low", "moderate", "high"]
+        examples: ["low"]
+      has_pets:
+        type: boolean
+        title: "Has Outdoor Pets"
+        description: "Whether the neighbor has outdoor pets (dogs, etc.) that impact boundary."
+      has_outdoor_lighting:
+        type: boolean
+        title: "Has Outdoor Lighting"
+        description: "Whether neighbor lighting impacts our property (light pollution)."
+      # ── Spatial ──
+      boundary_segment_refs:
+        type: array
+        title: "Shared Boundary Segments"
+        description: "Boundary segments between our property and this neighbor."
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/boundary_segment_ref"
+        uniqueItems: true
+      position:
+        $ref: "../metamodel.schema.yaml#/$defs/position"
+        title: "Approximate Position"
+        description: "Approximate center of the neighbor's nearest structure (for 2D layout)."
+      footprint:
+        $ref: "../metamodel.schema.yaml#/$defs/polygon_footprint"
+        title: "Building Footprint"
+        description: >
+          Outline of the neighbor's main building/structure (relative to position).
+          Used by 2D ContextLayer for the massing block, and by 3D NeighborLayer
+          for the building extrusion. For just the parcel boundary use parcel_footprint.
+      parcel_footprint:
+        $ref: "../metamodel.schema.yaml#/$defs/polygon_footprint"
+        title: "Parcel Footprint"
+        description: >
+          Outline of the neighbor's land parcel (cadastral polygon, relative to
+          position). Rendered as a flat ground platform in 3D scene. Distinct
+          from `footprint` which represents the building. Useful for vacant
+          plots, forests, and any case where parcel boundary matters more than
+          a single structure.
+      parcel_vertex_elevations:
+        type: array
+        title: "Parcel Vertex Elevations (m)"
+        description: >
+          Per-vertex elevation (m, relative to model vertical datum / origin)
+          for each vertex of `parcel_footprint`. Length must equal
+          `parcel_footprint.vertices.length`. When present, the 3D viewer
+          renders the parcel as a fan-triangulated tilted surface (each
+          triangle = centroid + 2 adjacent vertices). When absent, the parcel
+          is rendered flat at `terrain_elevation_offset_cm`. Same vertex order.
+        items:
+          type: number
+        examples: [[2.3, 0.1, -1.0, -0.2]]
+      # ── 3D Massing (v2.0) ──
+      roof_type:
+        type: string
+        title: "Roof Type"
+        description: "Approximate roof form for 3D massing context."
+        enum:
+          - "flat"
+          - "gable"
+          - "hip"
+          - "gambrel"
+          - "mansard"
+          - "shed"
+          - "mono-pitch"
+          - "unknown"
+        default: "unknown"
+        examples: ["gable"]
+      roof_ridge_height_m:
+        type: number
+        title: "Ridge Height (m)"
+        description: "Approximate ridge height above neighbor's ground level."
+        exclusiveMinimum: 0
+        examples: [9.5, 7.2]
+      ground_elevation_offset_m:
+        type: number
+        title: "Ground Level Offset (m)"
+        description: >
+          Neighbor's ground level relative to the model vertical datum.
+          Positive = neighbor is higher. Used for 3D massing placement.
+          May differ from terrain_elevation_offset_cm (which is an observation);
+          this is the value used for rendering.
+        default: 0
+        examples: [0.25, -0.3]
+      # ── PV Panels (for shadow analysis) ──
+      has_pv_panels:
+        type: boolean
+        title: "Has PV Panels"
+        description: "Whether the neighbor has photovoltaic panels (relevant for shadow analysis)."
+      pv_panel_roof_side:
+        $ref: "../metamodel.schema.yaml#/$defs/compass_direction"
+        title: "PV Panel Roof Side"
+        description: "Which side of the roof the PV panels are mounted on."
+      resident_refs:
+        type: array
+        title: "Residents"
+        description: "Known residents of this property (optional PRS### references)."
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/person_ref"
+        uniqueItems: true
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Shared Concern — SC###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  shared_concern:
+    type: object
+    title: "Shared Concern"
+    description: >
+      A specific issue or matter shared between this property and a neighbor:
+      overhanging branches, drainage disputes, noise complaints, shared
+      fence maintenance. Answers CQ19. Used by T4 (privacy assessment).
+    required: [id, name, concern_type, neighbor_property_ref]
+    additionalProperties: false
+    patternProperties:
+      "^x-": true
+    properties:
+      id:
+        type: string
+        title: "SC### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?SC\\d{3,}$"
+        examples: ["SC001"]
+      name:
+        type: string
+        title: "Concern Name"
+        minLength: 1
+        examples: ["Overhanging Oak Branches (North)", "Shared Fence Repair"]
+      concern_type:
+        type: string
+        title: "Concern Type"
+        description: "Category of the shared concern."
+        enum:
+          - "overhanging-branches"
+          - "root-encroachment"
+          - "drainage"
+          - "shared-fence"
+          - "noise"
+          - "visual-privacy"
+          - "shade-cast"
+          - "light-pollution"
+          - "pet-access"
+          - "parking"
+          - "access-right"
+          - "boundary-dispute"
+          - "other"
+        examples: ["overhanging-branches"]
+      neighbor_property_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/neighbor_property_ref"
+        title: "Neighbor"
+        description: "The neighbor property involved in this concern."
+      severity:
+        type: string
+        title: "Severity"
+        description: "Impact level of this concern."
+        enum: ["minor", "moderate", "significant"]
+        examples: ["moderate"]
+      status:
+        type: string
+        title: "Resolution Status"
+        description: "Current state of this concern."
+        enum: ["unresolved", "discussed", "agreed", "resolved", "recurring"]
+        examples: ["discussed"]
+      resolution_notes:
+        type: string
+        title: "Resolution Notes"
+        description: "What was agreed or how it was resolved."
+        examples: ["Agreed to split fence replacement cost 50/50 in spring 2027"]
+      affected_boundary_segment_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/boundary_segment_ref"
+        title: "Affected Boundary"
+        description: "Boundary segment where this concern manifests."
+      affected_zone_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/outdoor_zone_ref"
+        title: "Affected Zone"
+        description: "Outdoor zone most impacted by this concern."
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Environmental Factor — EF###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  environmental_factor:
+    type: object
+    title: "Environmental Factor"
+    description: >
+      An environmental condition affecting the property: prevailing wind,
+      sun path, flood risk, soil conditions, noise from roads, etc.
+      Answers CQ22 (sun exposure, wind impact). Used by T3 (garden planning),
+      T4 (privacy - wind-borne noise), T5 (annotation on layout).
+    required: [id, name, factor_type]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "EF### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?EF\\d{3,}$"
+        examples: ["EF001"]
+      name:
+        type: string
+        title: "Factor Name"
+        minLength: 1
+        examples: ["Prevailing West Wind", "Road Traffic Noise from South", "Flood Risk Zone"]
+      factor_type:
+        type: string
+        title: "Factor Type"
+        description: "Category of environmental condition."
+        enum:
+          - "prevailing-wind"
+          - "sun-path"
+          - "flood-risk"
+          - "soil-contamination"
+          - "groundwater-level"
+          - "air-quality"
+          - "light-pollution"
+          - "traffic-noise"
+          - "aircraft-noise"
+          - "wildlife-corridor"
+          - "frost-pocket"
+          - "microclimate-warm"
+          - "microclimate-cold"
+          - "erosion-risk"
+        examples: ["prevailing-wind"]
+      direction:
+        $ref: "../metamodel.schema.yaml#/$defs/compass_direction"
+        title: "Direction"
+        description: "Compass direction associated with this factor (e.g., wind from W, noise from S)."
+      intensity:
+        type: string
+        title: "Intensity"
+        description: "Strength or severity of this factor."
+        enum: ["very-low", "low", "moderate", "high", "very-high"]
+        examples: ["moderate"]
+      seasonal_variation:
+        type: string
+        title: "Seasonal Variation"
+        description: "How this factor changes with seasons."
+        examples: ["Stronger in autumn/winter", "Worst during spring melt", "Year-round"]
+      affected_zone_refs:
+        type: array
+        title: "Affected Zones"
+        description: "Outdoor zones most impacted by this factor."
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/outdoor_zone_ref"
+        uniqueItems: true
+      position:
+        $ref: "../metamodel.schema.yaml#/$defs/position"
+        title: "Position"
+        description: "Position on the layout for annotation rendering (optional)."
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Road Corridor — RD###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  road_corridor:
+    type: object
+    title: "Road Corridor"
+    description: >
+      Public road, shared driveway, or access lane that touches or borders the
+      estate. Modeled as a polyline centerline with constant width - sufficient
+      for site plan rendering and proximity / noise analysis. Distinct from
+      outdoor_zone (driveway *inside* the estate) and neighbor_property (land
+      parcels). Renderable as a flat strip in 2D and 3D scenes.
+    required: [id, name, centerline, width_m]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "RD### Identifier"
+        pattern: '^([a-z][a-z0-9-]*\.)?RD\d{3,}$'
+        examples: ["RD001"]  # public-docs-scan:allow - RD is the Road Corridor prefix here, not a decision id
+      name:
+        type: string
+        title: "Road Name"
+        minLength: 1
+        examples: ["ul. Słowicza", "Shared driveway"]
+      surface_type:
+        type: string
+        title: "Surface Type"
+        description: "Primary surface material of the road."
+        enum:
+          - "asphalt"
+          - "concrete"
+          - "paved-stone"
+          - "gravel"
+          - "dirt"
+          - "grass"
+          - "mixed"
+          - "unknown"
+        default: "unknown"
+        examples: ["asphalt", "gravel"]
+      width_m:
+        type: number
+        title: "Road Width (m)"
+        description: "Total width of the corridor (from edge to edge)."
+        exclusiveMinimum: 0
+        examples: [5, 8]
+      centerline:
+        $ref: "../metamodel.schema.yaml#/$defs/polyline3d"
+        title: "Centerline"
+        description: >
+          Sequence of 3D vertices along the road centerline (open polyline).
+          Z values represent ground elevation along the road relative to the
+          model's vertical datum. Minimum 2 vertices.
+      is_public:
+        type: boolean
+        title: "Public Road"
+        description: "Whether this is a publicly maintained road (vs. private driveway)."
+      direction:
+        $ref: "../metamodel.schema.yaml#/$defs/compass_direction"
+        title: "Primary Direction"
+        description: "Approximate compass direction of the road (for annotation)."
+      borders_neighbor_refs:
+        type: array
+        title: "Bordering Neighbor Properties"
+        description: "NeighborProperty entities the road separates this estate from."
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/neighbor_property_ref"
+        uniqueItems: true
+      description:
+        type: string
+        title: "Description"
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"

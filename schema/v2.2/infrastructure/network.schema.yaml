@@ -1,0 +1,305 @@
+---
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "infrastructure/network.schema.yaml"
+title: "Network Topology"
+description: >
+  Detailed network infrastructure: routers, switches, access points, mesh
+  nodes, IoT devices, and the links between them. Models the full network
+  topology for visualization and troubleshooting. Infrastructure plane.
+
+x-gdsm:
+  version: "2.1.0"
+  methodology: "GDSM v1.0"
+  plane: "infrastructure"
+  domain_slice: null
+  designed_for:
+    - id: T2
+      name: "Property Inventory Report"
+      mfs_target: 85
+    - id: T6
+      name: "Infrastructure Topology Map"
+      mfs_target: 75
+  competency_questions:
+    - "CQ06: What is the network topology - which devices connect through which nodes, and what are link speeds?"
+    - "CQ07: What IoT/smart-home devices exist, which systems do they monitor or control, and where are they located?"
+  fitness:
+    last_evaluated: "2026-03-08"
+    scores: {}
+  non_goals:
+    - "Network configuration (VLANs, firewall rules, DHCP)"
+    - "Smart home automation rules (scenes, triggers)"
+    - "Software/firmware inventory"
+  status: draft
+  owned_by: null
+  schema_ref_prefix: "NN, IOT, NL"
+
+type: object
+additionalProperties: false
+properties:
+  network_nodes:
+    type: array
+    title: "Network Nodes"
+    description: "Network infrastructure devices. Answers CQ06."
+    items:
+      $ref: "#/$defs/network_node"
+  iot_devices:
+    type: array
+    title: "IoT Devices"
+    description: "Smart-home sensors, actuators, controllers. Answers CQ07."
+    items:
+      $ref: "#/$defs/iot_device"
+  network_links:
+    type: array
+    title: "Network Links"
+    description: "Connections between network nodes. Answers CQ06."
+    items:
+      $ref: "#/$defs/network_link"
+
+$defs:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Network Node — NN###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  network_node:
+    type: object
+    title: "Network Node"
+    description: >
+      A network infrastructure device: router, switch, access point, mesh
+      node, modem, NAS, etc. Forms the vertices of the network topology
+      graph. Answers CQ06. Used by T6 (topology map).
+    required: [id, name, node_type]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "NN### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?NN\\d{3,}$"
+        examples: ["NN001"]
+      name:
+        type: string
+        title: "Node Name"
+        minLength: 1
+        examples: ["Main Router", "Office AP", "Living Room Mesh Node"]
+      node_type:
+        type: string
+        title: "Node Type"
+        description: "Role of this device in the network."
+        enum:
+          - "router"
+          - "switch"
+          - "access-point"
+          - "mesh-node"
+          - "modem"
+          - "firewall"
+          - "nas"
+          - "server"
+          - "bridge"
+          - "media-gateway"
+          - "repeater"
+        examples: ["router"]
+      manufacturer:
+        type: string
+        title: "Manufacturer"
+        examples: ["Ubiquiti", "TP-Link", "Synology"]
+      model_name:
+        type: string
+        title: "Model"
+        examples: ["UniFi Dream Machine Pro", "Synology DS920+"]
+      ip_address:
+        type: string
+        title: "IP Address"
+        description: "Static or reserved IP address on the local network."
+        examples: ["192.168.1.1", "10.0.0.5"]
+      mac_address:
+        type: string
+        title: "MAC Address"
+        pattern: "^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$"
+        examples: ["00:1A:2B:3C:4D:5E"]
+      wifi_bands:
+        type: array
+        title: "WiFi Bands"
+        description: "Supported WiFi frequency bands (for APs and routers)."
+        items:
+          type: string
+          enum: ["2.4GHz", "5GHz", "6GHz"]
+        uniqueItems: true
+        examples: [["2.4GHz", "5GHz"]]
+      poe_powered:
+        type: boolean
+        title: "PoE Powered"
+        description: "Whether this device is powered via Power over Ethernet."
+      room_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/room_ref"
+        title: "Located in Room"
+      outdoor_zone_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/outdoor_zone_ref"
+        title: "Located in Outdoor Zone"
+        description: "For outdoor APs and cameras."
+      position:
+        $ref: "../metamodel.schema.yaml#/$defs/position"
+        title: "Position"
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # IoT Device — IOT###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  iot_device:
+    type: object
+    title: "IoT Device"
+    description: >
+      A smart-home sensor, actuator, or controller. Connected to the network
+      and optionally monitoring or controlling an infrastructure system.
+      Answers CQ07. Used by T2 (inventory), T6 (topology).
+    required: [id, name, device_type]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "IOT### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?IOT\\d{3,}$"
+        examples: ["IOT001"]
+      name:
+        type: string
+        title: "Device Name"
+        minLength: 1
+        examples: ["Garden Soil Moisture Sensor", "Boiler Room Thermostat", "Front Door Camera"]
+      device_type:
+        type: string
+        title: "Device Type"
+        description: "Functional classification of this IoT device."
+        enum:
+          - "sensor"
+          - "actuator"
+          - "controller"
+          - "camera"
+          - "thermostat"
+          - "smart-plug"
+          - "smart-lock"
+          - "weather-station"
+          - "soil-moisture-sensor"
+          - "water-meter"
+          - "energy-meter"
+          - "smoke-detector"
+          - "motion-sensor"
+          - "door-sensor"
+          - "light-sensor"
+          - "hub"
+          - "gateway"
+        examples: ["thermostat"]
+      protocol:
+        type: string
+        title: "Communication Protocol"
+        description: "Primary wireless or wired protocol."
+        enum:
+          - "wifi"
+          - "zigbee"
+          - "z-wave"
+          - "bluetooth"
+          - "thread"
+          - "matter"
+          - "lora"
+          - "wired-ethernet"
+          - "modbus"
+          - "knx"
+        examples: ["zigbee"]
+      manufacturer:
+        type: string
+        title: "Manufacturer"
+        examples: ["Aqara", "Shelly", "Ecobee"]
+      model_name:
+        type: string
+        title: "Model"
+        examples: ["Aqara Temperature Sensor T1"]
+      # ── Relationships ──
+      monitored_system_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/system_ref"
+        title: "Monitors System"
+        description: "Infrastructure system this device monitors (e.g., heating, irrigation)."
+      controlled_system_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/system_ref"
+        title: "Controls System"
+        description: "Infrastructure system this device actuates or controls."
+      network_node_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/network_node_ref"
+        title: "Connected via Node"
+        description: "Network node this device connects through (hub, AP, bridge)."
+      room_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/room_ref"
+        title: "Located in Room"
+      outdoor_zone_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/outdoor_zone_ref"
+        title: "Located in Outdoor Zone"
+      position:
+        $ref: "../metamodel.schema.yaml#/$defs/position"
+        title: "Position"
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Network Link — NL###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  network_link:
+    type: object
+    title: "Network Link"
+    description: >
+      A physical or wireless connection between two network nodes. Forms
+      the edges of the network topology graph. Answers CQ06 (link speeds
+      and types). Used by T6 (topology map).
+    required: [id, from_node_ref, to_node_ref, link_type]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "NL### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?NL\\d{3,}$"
+        examples: ["NL001"]
+      name:
+        type: string
+        title: "Link Name"
+        examples: ["Router to Office Switch", "Mesh Backbone Link"]
+      from_node_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/network_node_ref"
+        title: "From Node"
+        description: "Source network node."
+      to_node_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/network_node_ref"
+        title: "To Node"
+        description: "Destination network node."
+      link_type:
+        type: string
+        title: "Link Type"
+        description: "Physical medium of this connection."
+        enum:
+          - "ethernet-cat5e"
+          - "ethernet-cat6"
+          - "ethernet-cat6a"
+          - "fiber-single-mode"
+          - "fiber-multi-mode"
+          - "wifi"
+          - "coax"
+          - "powerline"
+          - "mesh-wireless"
+          - "wifi-2.4ghz"
+          - "wifi-5ghz"
+        examples: ["ethernet-cat6"]
+      speed_mbps:
+        type: integer
+        title: "Speed (Mbps)"
+        description: "Negotiated or nominal link speed."
+        minimum: 1
+        examples: [1000, 2500, 300]
+      poe_delivery:
+        type: boolean
+        title: "Delivers PoE"
+        description: "Whether this link carries Power over Ethernet."
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"
