@@ -1,0 +1,27 @@
+engineVersion: "0.1"
+rules:
+  - id: system-without-parts
+    severity: warn
+    description: >-
+      A system is the abstraction over the parts that make it up: the heating system is
+      its heat pump, its cylinder and its emitters. A system with nothing recorded
+      beneath it is a name with nothing behind it, and it answers no question about
+      condition, age, warranty or replacement cost.
+
+      A part reaches its system from either side and in either vocabulary. A `component`
+      carries `system_ref`, and an `equipment` record may carry it too - the schema
+      admits both for membership, so the edge is normally INCOMING. The system's own
+      `component_refs` is optional, and a model may legitimately express membership from
+      one side only. Any of the three satisfies this rule, because each one tells a
+      reader what the system is made of: an expansion vessel recorded as equipment
+      answers the question exactly as well as one recorded as a component.
+
+      The rule therefore fires only for a system with no parts recorded in ANY form -
+      the case where the model names a system and stops.
+    find:
+      entity_type: system
+    check:
+      any_of:
+        - has_relation: { direction: in, type: system, exists: true }
+        - has_relation: { direction: out, type: component, exists: true }
+    message: 'System "{id}" ({name|''unnamed''}) has no parts recorded - nothing says what it is made of.'

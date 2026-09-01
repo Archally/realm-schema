@@ -78,11 +78,12 @@ places the schema deliberately leaves optional?
 npm run check -- --model path/to/.realm/v2.2
 ```
 
-Seven rules today - a specimen with no care profile appears on no maintenance calendar, a
-system with no components is a name with nothing behind it, a boundary run belonging to no
-parcel appears on no site plan. Findings are reported rather than enforced: each rule
-states an opinion about what makes a model useful, so nothing fails until you pass
-`--strict`. The full list is in [the rule reference](./docs/model-quality.md).
+Fourteen rules today - a specimen with no care profile appears on no maintenance calendar,
+a system with no parts recorded is a name with nothing behind it, a boundary run belonging
+to no parcel appears on no site plan, a completed change that names nothing it touched is
+the one record nobody can reconstruct later. Findings are reported rather than enforced:
+each rule states an opinion about what makes a model useful, so nothing fails until you
+pass `--strict`. The full list is in [the rule reference](./docs/model-quality.md).
 
 ## What is a Realm model?
 

@@ -1,0 +1,32 @@
+engineVersion: "0.1"
+rules:
+  - id: closed-change-without-referent
+    severity: warn
+    description: >-
+      An estate change that has started or finished, and names nothing it affected, is a
+      record of work with no subject. While a change is still a proposal that is normal -
+      nobody has decided which rooms are in scope. Once the work is under way the scope is
+      known by definition, and once it is done the only remaining record of what it touched
+      is this field.
+
+      Scoped to `in-progress` and `completed` for exactly that reason: including proposals
+      would more than double the findings with entries whose blank is correct, and a rule
+      that reports the normal state of a thing is one people learn to skip.
+
+      `warn` rather than `info` because the loss is irreversible. Every other gap in this
+      pack can be filled later by reading the model or looking at the property; this one is
+      filled by remembering, and it decays. A completed change is the one record that
+      cannot be reconstructed from the thing itself.
+    find:
+      entity_type: estate_change
+    filter:
+      field_in:
+        data.status:
+          - in-progress
+          - completed
+    check:
+      any_non_empty:
+        - data.affected_entity_refs
+        - data.affected_system_refs
+        - data.affected_zone_refs
+    message: 'Estate change "{id}" ({name|''unnamed''}) has started or completed but names no affected entity, system or zone - what it touched is recorded nowhere else.'

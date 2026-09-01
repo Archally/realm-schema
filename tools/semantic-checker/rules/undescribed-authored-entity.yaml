@@ -15,6 +15,18 @@ rules:
       rule reports 51 findings of which zero are actionable, which is how a checker
       teaches people to ignore it.
 
+      Prose is not confined to `description`. The schema gives several types a field of
+      their own for exactly this content - a maintenance task carries `instructions`, a
+      soil profile `texture_description`, a risk its `mitigation` - and an entity using
+      the field its own type provides is documented, not undescribed. The rule reads the
+      schema's whole prose vocabulary, and reading a field from a type that does not have
+      it simply yields nothing - so one list serves all 39 types without a rule per type.
+
+      What is checked is prose about the RECORD. Prose nested inside a sub-object that
+      describes one part of it - the text on an individual change item, on a shade-impact
+      assessment, in a notification's message template - does not count, because it says
+      what that part is rather than what the entity is.
+
       Companion to, not a replacement for, a coverage measure: this asks only whether
       prose exists at all, so it stays silent on a description that is a restatement of
       the name.
@@ -26,4 +38,15 @@ rules:
       any_non_empty:
         - data.description
         - data.notes
-    message: '{type} "{id}" ({name|''unnamed''}) has no description - a reader gets the name and nothing else.'
+        - data.summary                  # estate_change
+        - data.instructions             # maintenance_task
+        - data.rationale                # planting_recommendation
+        - data.maintenance_description  # planting_recommendation
+        - data.texture_description      # soil_profile
+        - data.mitigation               # risk
+        - data.current_measures         # issue
+        - data.outcome                  # event
+        - data.resolution_notes         # shared_concern
+        - data.seasonal_variation       # environmental_factor
+        - data.pruning_guide.technique  # species_care_profile
+    message: '{type} "{id}" ({name|''unnamed''}) has no description or equivalent prose field - it renders as a bare name in reports and viewers.'

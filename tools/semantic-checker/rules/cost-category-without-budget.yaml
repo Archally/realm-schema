@@ -1,0 +1,18 @@
+engineVersion: "0.1"
+rules:
+  - id: cost-category-without-budget
+    severity: info
+    description: >-
+      A cost category with no `annual_budget_estimate` can record what was spent but cannot
+      say whether that was expected. Every "are we over?" question needs a figure to be
+      over, so the category answers the retrospective question and none of the planning
+      ones - which is the half of cost tracking people actually act on.
+
+      An estimate, not a commitment: the field exists so a category can be compared against
+      something, and a rough annual figure serves that better than none.
+    find:
+      entity_type: cost_category
+    check:
+      all_non_empty:
+        - data.annual_budget_estimate
+    message: 'Cost category "{id}" ({name|''unnamed''}) has no annual budget estimate - spending against it cannot be compared to anything.'

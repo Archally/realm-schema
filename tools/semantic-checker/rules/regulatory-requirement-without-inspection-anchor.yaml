@@ -1,0 +1,22 @@
+engineVersion: "0.1"
+rules:
+  - id: regulatory-requirement-without-inspection-anchor
+    severity: warn
+    description: >-
+      `inspection_schedule` is REQUIRED, so every regulatory requirement states how often
+      it recurs. A recurrence with no anchor cannot be resolved to a date: "every five
+      years" is a rule, not a deadline, until something says five years from when. Neither
+      `last_inspection_date` nor `next_due_date` is required, so a requirement can be fully
+      valid and still name no point on the calendar.
+
+      `warn` rather than `info`, and it is the one plane where that severity is about
+      something other than model tidiness: a gas or electrical inspection that silently
+      never comes due has consequences outside the model, and unlike most gaps here nobody
+      discovers this one by reading the file.
+    find:
+      entity_type: regulatory_requirement
+    check:
+      any_non_empty:
+        - data.last_inspection_date
+        - data.next_due_date
+    message: 'Regulatory requirement "{id}" ({name|''unnamed''}) has neither a last inspection date nor a next due date - its schedule resolves to no deadline.'

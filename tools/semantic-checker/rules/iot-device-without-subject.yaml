@@ -1,0 +1,21 @@
+engineVersion: "0.1"
+rules:
+  - id: iot-device-without-subject
+    severity: info
+    description: >-
+      A sensor or actuator exists to observe or drive something. `monitored_system_ref` and
+      `controlled_system_ref` are both optional, so a device can be placed in a room,
+      connected to the network and never say what it is for - at which point it is
+      inventory rather than instrumentation, and no reading it produces can be attributed
+      to a system.
+
+      Placement is not a subject. A thermostat's `room_ref` says where it hangs; only
+      `controlled_system_ref` says which heating it drives, and a property with two heat
+      sources needs the difference.
+    find:
+      entity_type: iot_device
+    check:
+      any_non_empty:
+        - data.monitored_system_ref
+        - data.controlled_system_ref
+    message: 'IoT device "{id}" ({name|''unnamed''}) neither monitors nor controls a system - nothing says what it is for.'

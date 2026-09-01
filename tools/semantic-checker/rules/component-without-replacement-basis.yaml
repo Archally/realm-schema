@@ -1,0 +1,23 @@
+engineVersion: "0.1"
+rules:
+  - id: component-without-replacement-basis
+    severity: info
+    description: >-
+      A component wears out, and the question a property owner eventually asks is "when
+      does this need replacing, and is it still covered?". Three fields can answer it and
+      any one of them is enough: `installed_date` gives an age, `expected_lifespan_years`
+      gives a horizon, `warranty_ref` gives a claim window. A component with none of the
+      three is a part that can only be discovered as a failure.
+
+      Deliberately `any_non_empty` rather than a demand for all three. An installation date
+      alone supports a replacement estimate; a warranty alone dates the installation
+      closely enough. Requiring the full set would report thoroughly documented components
+      and teach a reader to skip the rule.
+    find:
+      entity_type: component
+    check:
+      any_non_empty:
+        - data.installed_date
+        - data.expected_lifespan_years
+        - data.warranty_ref
+    message: 'Component "{id}" ({name|''unnamed''}) has no installation date, expected lifespan or warranty - nothing supports a replacement estimate.'

@@ -1,0 +1,48 @@
+engineVersion: "0.1"
+rules:
+  - id: system-without-maintenance
+    severity: info
+    description: >-
+      A system that appears on no maintenance calendar is one nobody has decided how to
+      look after. The consequence is not abstract: the maintenance calendar, the schedule
+      planner and the compliance view are all built by walking `maintenance_task.target_ref`
+      backwards, so a system nothing targets is simply absent from every one of them - and
+      an artifact that renders a system-shaped hole looks exactly like a property that has
+      no such system.
+
+      `target_ref` is REQUIRED on a task and unconstrained on the system, which is what
+      makes this checkable at all: the schema guarantees every task names its subject and
+      says nothing about whether any subject was named.
+
+      Scoped to the system types with a serviceable element - moving parts, a consumable,
+      a filter, a pressurised or heated medium. `electrical-distribution` and `network` are
+      deliberately outside it: a consumer unit and a home network are install-and-forget in
+      maintenance terms, and where the law does require periodic inspection of the fixed
+      wiring, realm models that as a `regulatory_requirement` with its own inspection
+      schedule rather than as a recurring task. The list is positive rather than an
+      exclusion so that a system type added to the schema later joins this rule by a
+      deliberate edit instead of silently falling under it.
+    find:
+      entity_type: system
+    filter:
+      field_in:
+        data.system_type:
+          - heating
+          - cooling
+          - ventilation
+          - hot-water
+          - solar-electric
+          - solar-thermal
+          - battery-storage
+          - ev-charging
+          - irrigation
+          - drainage
+          - sewage
+          - rainwater-collection
+          - gas-distribution
+          - fire-safety
+          - security
+          - lighting-outdoor
+    check:
+      has_relation: { direction: in, type: target, exists: true }
+    message: 'System "{id}" ({name|''unnamed''}) is the target of no maintenance task - it appears on no calendar and in no schedule.'

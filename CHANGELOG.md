@@ -3,6 +3,37 @@
 All notable changes to `@archally/realm-schema`. Versions follow the schema version:
 a model declaring `schemaVersion: "2.2.0"` validates against `schema/v2.2/`.
 
+## 2.2.4 - 2026-09-01
+
+### Added
+
+- Seven more model-quality rules, taking the pack from seven to fourteen and reaching the
+  operations plane for the first time - the plane the maintenance calendar, the schedule
+  planner and the compliance view are all built from, where a gap renders as an empty
+  artifact rather than a slightly poorer one. A system that no maintenance task targets
+  appears on no calendar; a component with no installation date, expected lifespan or
+  warranty supports no replacement estimate; a regulatory requirement states how often it
+  recurs but anchors to no date, so its schedule resolves to no deadline; a cost category
+  with no budget estimate can be totalled but not compared; an IoT device that neither
+  monitors nor controls a system is inventory rather than instrumentation; a care profile
+  with no calendar leaves everything pointing at it unscheduled. And an estate change that
+  has started or finished while naming nothing it affected loses what it touched - the one
+  gap here that cannot be filled later by looking at the property.
+
+### Changed
+
+- `system-without-components` is now **`system-without-parts`**, and says so. A part
+  reaches its system as a `component` or as an `equipment` record carrying `system_ref`,
+  and the schema admits both for membership - so the rule accepted either all along while
+  its name and message promised to count components. The behaviour is unchanged; what it
+  reports is now what it checks.
+- `undescribed-authored-entity` reads prose wherever the schema puts it. Several types
+  carry authored text in a field of their own - `instructions` on a maintenance task,
+  `texture_description` on a soil profile, `mitigation` on a risk, `technique` inside a
+  care profile's pruning guide - and an entity using the field its own type provides is
+  documented, not undescribed. Its message no longer claims a reader gets nothing but the
+  name; it reports the absence of a description or an equivalent field.
+
 ## 2.2.3 - 2026-09-01
 
 ### Added

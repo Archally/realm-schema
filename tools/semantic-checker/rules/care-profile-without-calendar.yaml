@@ -1,0 +1,20 @@
+engineVersion: "0.1"
+rules:
+  - id: care-profile-without-calendar
+    severity: warn
+    description: >-
+      A care profile with no `care_calendar` names a species and prescribes nothing. It
+      closes the one hole the two care-profile rules leave open: a specimen pointing at an
+      empty profile satisfies `specimen-without-care-profile`, its planting satisfies
+      `planting-without-care-profile`, and the plant is still on no calendar - three green
+      checks and nothing to do in March.
+
+      That is why this is `warn` while its two companions describe a more visible gap. A
+      plant with no profile is an obvious hole that a reader notices; a plant with a hollow
+      one looks handled from every direction except the calendar itself.
+    find:
+      entity_type: species_care_profile
+    check:
+      all_non_empty:
+        - data.care_calendar
+    message: 'Care profile "{id}" ({name|''unnamed''}) has no care calendar - everything pointing at it is still on no schedule.'
