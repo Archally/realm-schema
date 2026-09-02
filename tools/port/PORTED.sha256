@@ -20,6 +20,7 @@
 # job model-builder tools/model-builder extras-ok
 # job render-kit tools/render-kit extras-ok
 # job renderer tools/renderer extras-ok
+# job schema-update tools/schema-update extras-ok
 # job example-willow-cottage-specs examples/willow-cottage/.specs
 # job port tools/port
 
@@ -93,6 +94,11 @@ ca78bd24d1e84ba34e5cd923860e6e08ab3e148548c8ffc9cf61e10efdca31c1  render-kit/veg
 d474d9b6cc8badef13c42f9055badf2e288ca6c92189f717ae7270ec124f9e93  renderer/cli.mjs
 543e82c537ce163b36bba439893e3a0821e476184509f73a9cd58ead6eb0e0ec  renderer/garden-care.mjs
 f83ffdee7613e6c44c01870b3d89c054480d27c8dd62800723116a438bf600ae  renderer/property.mjs
+750fb0866117d917958cba605bca6edfa353b4e7652e588086499edb68ae546c  schema-update/cli.mjs
+0763b07bafed2a6eafe9371790fc07caccc1e8cf9cd602ec4e9fc6d79f4806b3  schema-update/rewrite.mjs
+97d5aa29a2b1597b740e8ff4436fae642dcc329ebf3ace0095569d57d789ffb9  schema-update/runner.mjs
+2f8c8cb764804f9863cb0a223d16b2e7b8e8afa4fed1f3340f611309c56add3c  schema-update/updates/001-additive-2-0-to-2-1.mjs
+0587bb8c3721b6d21a1ea676688a741670aafcce31085932e67150b67ab25a3e  schema-update/updates/002-migration-to-estate-change.mjs
 7254a639e79feeca21ed619a489f0ba53d96426bc9174d1ddeae48bebe9835a1  example-willow-cottage-specs/garden-care.md
 7967e59671399887b5ce0bca741228dc2f80a6c6c557a6f7836c8bb63530d858  example-willow-cottage-specs/property.md
 f78fac92b5d75565c5ab9fa66fc0996f6eb325dc773be1d630996d30dd4cc4bb  port/verify-ported.mjs
