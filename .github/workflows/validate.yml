@@ -24,6 +24,19 @@ jobs:
           console.log(files.length - failed + '/' + files.length + ' schema file(s) parse');
           process.exit(failed === 0 ? 0 : 1);
           "
+      - name: The shipped files still match the manifest published with them
+        # tools/validator/, tools/model-builder/, tools/render-kit/, tools/renderer/,
+        # tools/semantic-checker/ and tools/port/ itself are maintained upstream and copied
+        # here. This is the half of that check which needs no access to the upstream repo,
+        # so a local edit is caught here rather than diverging quietly. Hashes cover
+        # LF-normalised content, which is what keeps a Windows checkout from failing.
+        run: node tools/port/verify-ported.mjs
+
+      - name: The ported-file verifier still discriminates
+        # Its own adversarial tests. A hash check that stopped comparing would report
+        # exactly what a clean tree reports.
+        run: node --test "tools/port/*.test.mjs"
+
       - name: The example model validates
         run: npm run validate:examples
 

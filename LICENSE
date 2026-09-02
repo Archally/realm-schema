@@ -19,6 +19,9 @@ The following are licensed under the Apache License, Version 2.0
   - docs/                          the documentation
   - tools/validator/               the reference conformance validator
   - tools/doc-snippet-validate/    validates the YAML examples inside the docs
+  - tools/port/                    verifies the shipped files against the manifest
+                                   published with them; it describes no realm and
+                                   reads no model
 
 The format is meant to be adopted freely. You may use, modify, and redistribute
 these parts - including in commercial and proprietary products - under the terms
@@ -27,7 +30,15 @@ of the Apache License, Version 2.0.
 Conformance is the reason the validator sits here rather than below. A format
 whose only complete definition is a tool you cannot freely run is not an open
 format, so the thing that answers "is this model valid?" carries the same license
-as the schema it answers for.
+as the schema it answers for. The same reasoning puts the port verifier here: it
+is what a RECIPIENT runs to confirm they received what was published.
+
+Where the line falls, for a tool added later: Apache-2.0 covers the format and
+what is needed to establish conformance with it, plus the integrity of this
+distribution. FSL covers everything that reads a model for a purpose other than
+validating it - building its graph, naming what its edges mean, judging whether
+it says enough, turning it into documents. Those are positions about what a good
+model is, not properties of the format.
 
 
 2. The tooling - Functional Source License 1.1 (ALv2 Future License)

@@ -1,7 +1,7 @@
 {
   "name": "@archally/realm-schema",
-  "version": "2.2.6",
-  "description": "YAML-based schema for private real estate modeling — dual-layer spatial topology, infrastructure systems, nature, maintenance operations, and surrounding context",
+  "version": "2.2.7",
+  "description": "YAML-based schema for private real estate modeling \u2014 dual-layer spatial topology, infrastructure systems, nature, maintenance operations, and surrounding context",
   "license": "SEE LICENSE IN LICENSE",
   "author": "Adam Walkowski <adam.walkowski@inperceptic.com>",
   "repository": {

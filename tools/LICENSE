@@ -2,12 +2,16 @@ Licensing for tools/
 =====================
 
 The tools in this directory are NOT all under the same license. See the
-repository-root LICENSE for the authoritative map.
+repository-root LICENSE for the authoritative map. Every directory here is named
+below; a tool that appears in neither list is an omission, not a permission.
 
 Apache License, Version 2.0 - see ../LICENSE-APACHE
 
   - validator/              the reference conformance validator
   - doc-snippet-validate/   validates the YAML examples inside the docs
+  - port/                   verifies the shipped files against the manifest
+                            published with them; it describes no realm and
+                            reads no model
 
   Free to use, modify and redistribute, including in commercial and proprietary
   products. Conformance belongs with the format: a schema whose only complete

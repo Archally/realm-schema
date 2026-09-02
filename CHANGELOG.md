@@ -3,6 +3,27 @@
 All notable changes to `@archally/realm-schema`. Versions follow the schema version:
 a model declaring `schemaVersion: "2.2.0"` validates against `schema/v2.2/`.
 
+## 2.2.7 - 2026-09-02
+
+### Added
+
+- `tools/port/verify-ported.mjs` and its tests. The repository has shipped a
+  `PORTED.sha256` manifest for some time with nothing on this side that could read it:
+  the half of the integrity check that is supposed to run without reaching the upstream
+  repository did not exist here. It does now, and CI runs it along with the verifier's
+  own adversarial tests.
+
+### Changed
+
+- **The licence map names every tool directory.** `tools/port/` is Apache-2.0, with the
+  validator rather than with the tooling: it describes no realm and reads no model, and
+  it is what a recipient runs to confirm they received what was published.
+- Both licence files now state **where the line falls**, so a tool added later has
+  something to classify itself against: Apache-2.0 covers the format and what is needed
+  to establish conformance with it, plus this distribution's integrity; FSL covers
+  everything that reads a model for a purpose other than validating it. `tools/LICENSE`
+  says outright that a directory in neither list is an omission, not a permission.
+
 ## 2.2.6 - 2026-09-02
 
 ### Added
