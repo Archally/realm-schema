@@ -30,10 +30,38 @@ jobs:
       - name: The model-quality rules run on the example
         # Reports rather than gates: these rules gather findings about what the schema
         # deliberately leaves optional, so a finding is a judgement about a model and not
-        # a defect in it. What CI asserts here is that the checker RUNS and that its rule
-        # pack loads - a pack that failed to load would otherwise report zero findings and
-        # read exactly like a clean model.
+        # a defect in it. What this step asserts is only that the checker RUNS.
         run: npm run check:examples
+
+      - name: The rule pack actually loaded, and the graph under it is not empty
+        # The step above exits 0 both when every rule passed and when NO RULE WAS LOADED:
+        # an empty pack prints "No findings." and exits 0, which is byte for byte what a
+        # flawless model produces. So the COUNTS are asserted rather than the verdict -
+        # how many rules ran, and how many entities they ran over.
+        run: |
+          node tools/semantic-checker/cli.mjs --model examples/willow-cottage/.realm/v2.2 --json > /tmp/quality.json || true
+          node --input-type=module -e "
+          import {readFileSync} from 'node:fs';
+          const report = JSON.parse(readFileSync('/tmp/quality.json', 'utf8'));
+          if (!(report.rules > 0)) { console.error('FAIL: the rule pack loaded 0 rules'); process.exit(1); }
+          if (!(report.entities > 0)) { console.error('FAIL: the model has 0 entities'); process.exit(1); }
+          console.log(report.rules + ' rule(s) ran over ' + report.entities + ' entities and ' + report.relations + ' relations');
+          "
+
+      - name: The model builder emits a graph, not an empty document
+        # Every other tool reads this graph, so its failures are silent by nature - a
+        # dropped entity or an unplaced plane produces a smaller model rather than an error.
+        run: |
+          node tools/model-builder/cli.mjs examples/willow-cottage --output /tmp/model.json
+          node --input-type=module -e "
+          import {readFileSync} from 'node:fs';
+          const model = JSON.parse(readFileSync('/tmp/model.json', 'utf8'));
+          for (const [name, value] of [['entities', model.entities.length], ['relations', model.relations.length], ['planes', model.planes.length]]) {
+            if (!(value > 0)) { console.error('FAIL: the built model has 0 ' + name); process.exit(1); }
+          }
+          if (!model.realm?.name) { console.error('FAIL: the built model does not name the property'); process.exit(1); }
+          console.log(model.entities.length + ' entities, ' + model.relations.length + ' relations, ' + model.planes.length + ' planes, for ' + model.realm.name);
+          "
 
       - name: The YAML in the guides validates
         # A worked example in a guide is the shape a reader copies. When the schema moves and
@@ -75,3 +103,26 @@ jobs:
             exit 1
           fi
           echo "OK: the seeded fault was rejected"
+
+      - name: The rendered documents still describe the model beside them
+        # Two documents are committed under examples/willow-cottage/.specs/, and a document
+        # that has stopped describing its model is worse than none because it is read as
+        # current. Rendering reads no clock, so re-rendering an unchanged model produces the
+        # same bytes and a difference is always drift.
+        run: npm run render:check
+
+      - name: A document that stopped describing its model is rejected
+        # Without this, the step above proves only that the renderer exits 0 - which it
+        # would also do if --check had stopped comparing anything.
+        run: |
+          cp -r examples/willow-cottage /tmp/seeded-render
+          node --input-type=module -e "
+          import {readFileSync, writeFileSync} from 'node:fs';
+          const path = '/tmp/seeded-render/.specs/property.md';
+          writeFileSync(path, readFileSync(path, 'utf8').replace('## Grounds', '## Grounds, allegedly'));
+          "
+          if node tools/renderer/cli.mjs /tmp/seeded-render --document all -o /tmp/seeded-render/.specs --check; then
+            echo "FAIL: --check accepted a document the model does not produce"
+            exit 1
+          fi
+          echo "OK: the stale document was rejected"
