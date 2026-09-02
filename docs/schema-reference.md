@@ -655,6 +655,8 @@ Accepts `x-` extension fields.
 
 A physical part within an infrastructure system: boiler, radiator, pump, inverter, valve, tank, filter, etc. Granular enough for maintenance targeting. Answers CQ05 (configuration detail). Used by T1 (maintenance), T2 (inventory).
 
+Accepts `x-` extension fields.
+
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | `id` | string | yes |  |

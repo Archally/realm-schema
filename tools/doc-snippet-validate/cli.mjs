@@ -32,8 +32,9 @@
 //   node cli.mjs <markdown...> --schemas <dir> [--validator "<template>"] [--keep] [--json]
 //
 // `--validator` is a command template; `{model}` and `{schemas}` are substituted. It defaults to
-// the public repo's zero-build validator. Pass the monorepo's shim explicitly — there are two
-// validator stacks and this tool must never guess which one is authoritative.
+// the zero-build validator at `tools/validator/src/cli.mjs`; pass the path a checkout actually
+// uses. Named explicitly rather than discovered: this tool must never guess which validator is
+// authoritative for a checkout it did not lay out.
 //
 // Exit codes: 0 all documents valid · 1 a document failed · 2 usage/IO error
 // ═══════════════════════════════════════════════════════════════════════════════
