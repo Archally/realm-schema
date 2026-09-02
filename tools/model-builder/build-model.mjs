@@ -181,6 +181,14 @@ export async function loadRealmMeta(modelDir) {
  * References to ids the model does not contain are SKIPPED rather than emitted as edges to
  * nowhere. The validator's referential layer already reports those, and a dangling
  * reference must not let an entity pass a rule asking whether it is connected.
+ *
+ * @param {unknown} node
+ * @param {string} sourceId
+ * @param {string} sourceType
+ * @param {Set<string>} ids
+ * @param {{id: string, source: string, target: string, type: string, refField: string}[]} out
+ * @param {Set<string>} seen
+ * @param {string[]} warnings
  */
 function collectRelations(node, sourceId, sourceType, ids, out, seen, warnings) {
   if (!node || typeof node !== "object") return;
@@ -203,6 +211,10 @@ function collectRelations(node, sourceId, sourceType, ids, out, seen, warnings) 
     }
   }
 
+  /**
+   * @param {string} refField
+   * @param {string} target
+   */
   function add(refField, target) {
     if (!ids.has(target)) return;
     const id = `REL-${sourceId}-${refField}-${target}`;
@@ -234,10 +246,15 @@ function collectRelations(node, sourceId, sourceType, ids, out, seen, warnings) 
  */
 export function toRealmModel(extracted, meta = {}) {
   const ids = new Set(extracted.keys());
+  /** @type {{id: string, name?: string, type: string, plane?: string, data: Record<string, unknown>, file?: string}[]} */
   const entities = [];
+  /** @type {{id: string, source: string, target: string, type: string, refField: string}[]} */
   const relations = [];
+  /** @type {Set<string>} */
   const seen = new Set();
+  /** @type {string[]} */
   const warnings = [];
+  /** @type {Set<string>} */
   const planesPresent = new Set();
 
   for (const [id, entity] of extracted) {
@@ -246,7 +263,7 @@ export function toRealmModel(extracted, meta = {}) {
     // An unmapped collection falls back to its raw key rather than being dropped. A new
     // entity type should arrive as an odd-looking plural, not as an absence - the first is
     // noticed, the second reads as a model with fewer entities.
-    const type = TYPE_OF_COLLECTION[entity.type] ?? entity.type;
+    const type = /** @type {Record<string, string>} */ (TYPE_OF_COLLECTION)[entity.type] ?? entity.type;
     entities.push({
       id,
       name: typeof entity.data?.name === "string" ? entity.data.name : undefined,
@@ -294,7 +311,14 @@ export async function buildRealmModel(modelDir) {
   return toRealmModel(extracted, meta);
 }
 
+/**
+ * @template T
+ * @param {T[]} items
+ * @param {(item: T) => string} key
+ * @returns {Record<string, number>}
+ */
 function countBy(items, key) {
+  /** @type {Record<string, number>} */
   const counts = {};
   for (const item of items) counts[key(item)] = (counts[key(item)] ?? 0) + 1;
   return Object.fromEntries(Object.entries(counts).sort(([a], [b]) => a.localeCompare(b)));
