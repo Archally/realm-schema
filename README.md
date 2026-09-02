@@ -149,6 +149,48 @@ than listed. It is a third of the worked example's entities and is computed from
 and wings above it, so listing it first would bury the property in its own scaffolding.
 `--geometry` prints it when you are auditing that layer.
 
+## Moving a model to a newer schema version
+
+```bash
+npm run schema-update -- path/to/.realm/v2.1 --dry-run   # preview
+npm run schema-update -- path/to/.realm/v2.1             # apply
+npm run schema-update:list                               # every available update
+```
+
+This repository publishes **one** schema version at a time - a superseded line is not kept
+alongside the current one - so a model written against an earlier release has no directory
+left to validate against. This tool is the route forward.
+
+| Update | What it does to a model |
+|---|---|
+| 2.0 to 2.1 | Nothing. 2.1 added enum values, optional fields and `x-` extension keys and removed nothing, so a valid 2.0 document is a valid 2.1 document. Only the declared version moves |
+| 2.1 to 2.2 | Renames the migration entity to `estate_change`: `MIG###` ids become `ECH###`, `migrations.yaml` becomes `estate-changes.yaml`, `migrations:` becomes `estate_changes:`, and every `*migration_ref*` field takes the new name |
+
+A model two versions behind receives both in one run, in order.
+
+**The version comes from `realm.yaml`, not from the directory name.** A realm model directory
+is named for the model's own line rather than for the schema's, so a current model can
+legitimately sit in `v1/`. When the two disagree, the tool says so and follows the file.
+
+**Ids are rewritten in descriptions and tags as well as in reference fields.** An identifier
+appears wherever somebody wrote about the work, and migrating only the reference fields
+would leave the prose pointing at entities the model no longer contains. The two are counted
+separately and both are shown before anything is written:
+
+```
+101 rewrite(s) in reference fields, 183 in descriptions, notes and tags
+```
+
+The id pattern requires three digits, so text that merely begins the same way is left alone -
+a `MIG/MAG` welder keeps its name. Anything holding `MIG` without a complete id is reported
+with the line it sits on, for you to judge.
+
+Preview with `--dry-run` first, and validate afterwards:
+
+```bash
+npm run validate -- --model path/to/.realm/v2.2 --schemas schema/v2.2
+```
+
 ## What is a Realm model?
 
 A **realm** is a single formal model of a property - what physically exists, what systems serve it, what grows there, how it is maintained, and what surrounds it. It is expressed as plain YAML files organized into five planes plus cross-cutting concerns.
@@ -177,14 +219,19 @@ v2.2 is the only published line. Models written against 2.1 need the `migration`
 
 ## License
 
-**Dual-licensed** - [LICENSE](./LICENSE) is the authoritative map. The schema, the
-examples, the documentation and both validators are [Apache-2.0](./LICENSE-APACHE); the
-model-quality checker and its rules are [FSL-1.1-ALv2](./LICENSE-FSL), converting to
-Apache-2.0 two years after each release.
+**Dual-licensed** - [LICENSE](./LICENSE) is the authoritative map, and
+[tools/LICENSE](./tools/LICENSE) names every tool directory. The schema, the examples and
+the documentation are [Apache-2.0](./LICENSE-APACHE), and so is every tool that establishes
+conformance or protects this distribution: the validator, the documentation-snippet
+validator, the port verifier and the schema updater. The tools that read a model for some
+other purpose - the model builder, the quality checker and its rules, the render kit and the
+renderer - are [FSL-1.1-ALv2](./LICENSE-FSL), converting to Apache-2.0 two years after each
+release.
 
-The line is between conformance and judgement. Whether a model is *valid* is a property
-of the format and must be freely checkable by anyone, which is why the validator sits with
-the schema. Whether a model is *good* is a set of modeling opinions, and those are the
-product.
+The line is between conformance and judgement. Whether a model is *valid*, whether it is
+the model that was published, and how it crosses from one published version to the next are
+all properties of the format and must be freely exercisable by anyone. Whether a model is
+*good*, what its edges mean and what a document about it should say are modeling opinions,
+and those are the product. A directory in neither list is an omission, not a permission.
 
 © 2026 Adam Walkowski. Part of the [Archally](https://archally.pro) family of modeling schemas (alongside [blueprint-schema](https://github.com/archally/blueprint-schema) and [brandvoice-schema](https://github.com/archally/brandvoice-schema)).

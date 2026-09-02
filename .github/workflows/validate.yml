@@ -139,3 +139,88 @@ jobs:
             exit 1
           fi
           echo "OK: the stale document was rejected"
+
+      - name: A model on the previous schema version migrates to this one
+        # The worked example is on 2.2. Reversing the 2.2 rename produces a real 2.1 model
+        # of the shape the updater exists for, and migrating it forward must land exactly
+        # on the tree that was committed - then validate, so the output is judged by a tool
+        # that knows nothing about how it was produced.
+        run: |
+          rm -rf /tmp/roundtrip && cp -r examples/willow-cottage/.realm/v2.2 /tmp/roundtrip
+          mv /tmp/roundtrip/estate-changes.yaml /tmp/roundtrip/migrations.yaml
+          node --input-type=module -e "
+          import {readFileSync, writeFileSync, globSync} from 'node:fs';
+          let reversed = 0;
+          for (const file of globSync('/tmp/roundtrip/**/*.yaml')) {
+            const before = readFileSync(file, 'utf8');
+            const after = before
+              .replace(/\bECH(\d{3,}[a-z]?)\b/g, 'MIG\$1')
+              .replace(/\bdepends_on_estate_change_refs\b/g, 'depends_on_migration_refs')
+              .replace(/\blinked_estate_change_ref\b/g, 'linked_migration_ref')
+              .replace(/\bestate_change_ref(s?)\b/g, 'migration_ref\$1')
+              .replace(/^estate_changes:/m, 'migrations:')
+              .replace(/\bestate_change_schema\b/g, 'migration_schema')
+              .replace(/\bestate-change-applied\b/g, 'migration-applied')
+              .replace(/\bestate-changes\.yaml\b/g, 'migrations.yaml')
+              .replace(/\bestate-change\.schema\.yaml\b/g, 'migration.schema.yaml')
+              .replace(/^(schemaVersion:\s*)\"2\.2\.0\"/m, '\$1\"2.1.0\"');
+            if (after !== before) { reversed++; writeFileSync(file, after, 'utf8'); }
+          }
+          // A reversal that touched nothing would make the migration below a no-op that
+          // passes. The fixture has to actually be on the older version.
+          if (reversed === 0) { console.error('FAIL: the reversal changed no file'); process.exit(1); }
+          console.log('reversed ' + reversed + ' file(s) to 2.1');
+          "
+          node tools/schema-update/cli.mjs /tmp/roundtrip
+          diff -r /tmp/roundtrip examples/willow-cottage/.realm/v2.2
+          echo "OK: the migrated model is byte-identical to the committed one"
+          node tools/validator/src/cli.mjs --model /tmp/roundtrip --schemas schema/v2.2
+
+      - name: An incomplete migration is rejected
+        # Without this, the diff above proves only that two directories can be equal - which
+        # they would also be if the comparison had stopped comparing.
+        run: |
+          rm -rf /tmp/seeded-update && cp -r /tmp/roundtrip /tmp/seeded-update
+          node --input-type=module -e "
+          import {readFileSync, writeFileSync} from 'node:fs';
+          const path = '/tmp/seeded-update/estate-changes.yaml';
+          const text = readFileSync(path, 'utf8');
+          const seeded = text.replace(/ECH(\d{3})/, 'MIG\$1');
+          if (seeded === text) { console.error('FAIL: seed anchor missing'); process.exit(1); }
+          writeFileSync(path, seeded, 'utf8');
+          "
+          if diff -r /tmp/seeded-update examples/willow-cottage/.realm/v2.2 > /dev/null; then
+            echo "FAIL: the comparison accepted a model with an unmigrated id"
+            exit 1
+          fi
+          echo "OK: the unmigrated id was detected"
+
+      - name: Every rename the update declares is exercised
+        # The worked example uses four of the nine substitutions - it simply never declared a
+        # linked_estate_change_ref or an estate-change-applied event. A rule nothing runs
+        # reports exactly what a working rule reports, so the rest are exercised here.
+        run: |
+          rm -rf /tmp/all-rules && mkdir -p /tmp/all-rules
+          printf '%s\n' 'schemaVersion: "2.1.0"' 'name: "Fixture"' > /tmp/all-rules/realm.yaml
+          printf '%s\n' \
+            'migrations:' \
+            '  - id: MIG001' \
+            '    depends_on_migration_refs: [MIG002]' \
+            '    linked_migration_ref: MIG003' \
+            '    migration_ref: MIG004' \
+            '    event_type: migration-applied' \
+            '    migration_schema: migration.schema.yaml' \
+            '    name: "Spawarka MIG/MAG"' \
+            '    description: "defined in migrations.yaml, depends on MIG005"' \
+            > /tmp/all-rules/migrations.yaml
+          node tools/schema-update/cli.mjs /tmp/all-rules
+          test ! -e /tmp/all-rules/migrations.yaml
+          if grep -rniE 'migration|MIG[0-9]' /tmp/all-rules/estate-changes.yaml; then
+            echo "FAIL: an old name survived the update"
+            exit 1
+          fi
+          # The welder is the reason the id pattern demands three digits. A substitution
+          # loose enough to catch a truncated reference renames a piece of equipment.
+          grep -q 'Spawarka MIG/MAG' /tmp/all-rules/estate-changes.yaml
+          grep -q 'ECH005' /tmp/all-rules/estate-changes.yaml
+          echo "OK: every rename fired, and the welder kept its name"

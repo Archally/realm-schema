@@ -3,15 +3,45 @@
 All notable changes to `@archally/realm-schema`. Versions follow the schema version:
 a model declaring `schemaVersion: "2.2.0"` validates against `schema/v2.2/`.
 
+## 2.2.8 - 2026-09-02
+
+### Added
+
+- **`tools/schema-update/` and the `realm-schema-update` binary** - moves a model from one
+  published schema version to the next. This repository publishes one schema version at a
+  time, so a model written against an earlier release has no directory left to validate
+  against and no route forward but a rename carried out by hand.
+
+  Two updates ship: **2.0 to 2.1**, which changes nothing in a model because 2.1 was purely
+  additive, and **2.1 to 2.2**, which renames the migration entity to `estate_change`
+  throughout. A model two versions behind receives both in one run.
+
+  Identifiers are rewritten in descriptions and tags as well as in reference fields, because
+  an id appears wherever somebody wrote about the work; the two classes are counted
+  separately and both are reported before anything is written. The id pattern requires three
+  digits, so a `MIG/MAG` welder keeps its name, and anything holding `MIG` without a
+  complete id is reported with the line it sits on rather than rewritten.
+
+  The version is read from `realm.yaml` rather than from the directory name, because a realm
+  model directory is named for the model's own line and a current model can legitimately sit
+  in `v1/`. When the two disagree the tool says so and follows the file.
+
+  **Apache-2.0**, with the validator and the port verifier: crossing between two published
+  versions of a format is a property of the format.
+
+### Changed
+
+- The README's licence summary named a tool list that had fallen three tools behind the
+  licence map. It now states the criterion and points at the map.
+
 ## 2.2.7 - 2026-09-02
 
 ### Added
 
-- `tools/port/verify-ported.mjs` and its tests. The repository has shipped a
-  `PORTED.sha256` manifest for some time with nothing on this side that could read it:
-  the half of the integrity check that is supposed to run without reaching the upstream
-  repository did not exist here. It does now, and CI runs it along with the verifier's
-  own adversarial tests.
+- `tools/port/verify-ported.mjs` and its tests - the tool a recipient runs to confirm the
+  files they received are the files that were published. It compares the shipped tree
+  against the hash manifest distributed with it, needs nothing but this repository, and CI
+  runs it along with its own adversarial tests.
 
 ### Changed
 
@@ -45,10 +75,9 @@ a model declaring `schemaVersion: "2.2.0"` validates against `schema/v2.2/`.
 
 ### Changed
 
-- A built model now carries the model's own identity from `realm.yaml` - name, description,
-  location, declared schema version - under `realm`. Previously every entity came through
-  and the thing they belong to did not, so a consumer could describe a property's rooms
-  without being able to say whose they were.
+- A built model carries the model's own identity from `realm.yaml` - name, description,
+  location, declared schema version - under `realm`, so a consumer reading the graph can say
+  which property the entities belong to.
 - The model quality section of `property.md` runs the published rule pack rather than any
   logic of its own, so a document and `realm-check` cannot disagree about one model.
 
