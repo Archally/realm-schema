@@ -3,6 +3,19 @@
 All notable changes to `@archally/realm-schema`. Versions follow the schema version:
 a model declaring `schemaVersion: "2.2.0"` validates against `schema/v2.2/`.
 
+## 2.2.9 - 2026-09-03
+
+### Changed
+
+- **Two more types accept extension properties.** `component` and `neighbor_property` now accept
+  properties prefixed `x-`, as `boundary_segment` already did. Additive: a model valid under any
+  earlier 2.2.x release stays valid. Both changes reached `schema/v2.2/` in the two previous
+  releases without an entry of their own; this entry records them, since a schema that changed
+  without a record reads as one that did not change.
+
+A NOTE ON TAGS. This repository carried no git tags before this release. Tags begin at `v2.2.9`;
+earlier releases are told apart by the version in `package.json` and by this file.
+
 ## 2.2.8 - 2026-09-02
 
 ### Added
