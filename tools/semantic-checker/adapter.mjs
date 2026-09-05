@@ -31,8 +31,28 @@ export { buildRealmModel, loadRealmModel, resolveRelationType, deriveRelationTyp
  *
  * @param {Map<string, {type: string, data: Record<string, unknown>, file: string}> | ReturnType<typeof toRealmModel>} source
  */
+/**
+ * Whether a record has ended: `lifecycle.state` of `retired` or `superseded` (schema 2.3.0),
+ * or the `x-retired` marker models carried before the block existed.
+ * @param {{data: Record<string, unknown>}} entity
+ */
+export function hasEnded(entity) {
+  const lifecycle = entity.data["lifecycle"];
+  const state = lifecycle && typeof lifecycle === "object" ? /** @type {Record<string, unknown>} */ (lifecycle)["state"] : undefined;
+  return state === "retired" || state === "superseded" || entity.data["x-retired"] !== undefined;
+}
+
 export function toCheckableModel(source) {
   const model = source instanceof Map ? toRealmModel(source) : source;
+
+  // The lifecycle contract (schema 2.3.0): a consumer leaves ended records out and says how
+  // many. A rule that asks whether a planting has a care profile is asking about a planting
+  // that stands there; one that was dug up and given away answers nothing, and reporting it
+  // would send someone to write a care profile for a shrub the neighbour now owns. The edges
+  // that touch an ended record go with it, so no rule sees a connection to nothing.
+  const ended = new Set(model.entities.filter(hasEnded).map((entity) => entity.id));
+  const entities = model.entities.filter((entity) => !ended.has(entity.id));
+  const relations = model.relations.filter((relation) => !ended.has(relation.source) && !ended.has(relation.target));
 
   return {
     schema: "realm",
@@ -41,7 +61,7 @@ export function toCheckableModel(source) {
       layers: [],
       slices: [],
     },
-    entities: model.entities.map((entity) => ({
+    entities: entities.map((entity) => ({
       id: entity.id,
       displayId: entity.id,
       name: entity.name,
@@ -54,13 +74,13 @@ export function toCheckableModel(source) {
     // `refField` becomes `predicate`: the engine's word for which declaration produced an
     // edge. It is provenance, not a second opinion about the edge's type - a rule selects
     // on `type`, and `predicate` says where that type was read from.
-    relations: model.relations.map((relation) => ({
+    relations: relations.map((relation) => ({
       id: relation.id,
       source: relation.source,
       target: relation.target,
       type: relation.type,
       predicate: relation.refField,
     })),
-    metadata: { entityTypeCounts: model.metadata.entityTypeCounts },
+    metadata: { entityTypeCounts: model.metadata.entityTypeCounts, excludedRetired: ended.size },
   };
 }

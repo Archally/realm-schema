@@ -1,0 +1,20 @@
+engineVersion: "0.1"
+rules:
+  - id: protective-device-without-source
+    severity: warn
+    description: >-
+      A protective device that names no upstream board or device sits in no board the model
+      knows of. A breaker is fed from its board, or from the residual-current device it sits
+      behind; a sub-board is fed from a breaker in the board above it. The one component that
+      legitimately names nothing here is the main board, whose supply is the system's
+      utility connection, and it is a distribution panel, not a protective device.
+    find:
+      entity_type: component
+    filter:
+      field_in:
+        data.component_type:
+          - protective-device
+    check:
+      all_non_empty:
+        - data.fed_from_ref
+    message: 'Protective device "{id}" ({name|''unnamed''}) names no board or upstream device in fed_from_ref - it sits in no board the model knows.'

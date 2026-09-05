@@ -33,7 +33,7 @@ rules:
     find:
       all: true
     filter:
-      type_not_in: [wall_segment, roof_plane, floor_slab, ceiling_slab]
+      type_not_in: [wall_segment, roof_plane, floor_slab]
     check:
       any_non_empty:
         - data.description

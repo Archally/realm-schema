@@ -2,74 +2,74 @@
   "workbench.iconTheme": "material-icon-theme",
 
   "yaml.schemas": {
-    "schema/v2.2/realm.schema.yaml": [
+    "schema/v2.3/realm.schema.yaml": [
       "**/.realm/**/realm.yaml"
     ],
-    "schema/v2.2/realm-config.schema.yaml": [
+    "schema/v2.3/realm-config.schema.yaml": [
       "**/.realm/**/realm-config.yaml"
     ],
-    "schema/v2.2/estate-change.schema.yaml": [
+    "schema/v2.3/estate-change.schema.yaml": [
       "**/.realm/**/estate-changes.yaml",
       "**/.realm/**/*.estate-change.yaml"
     ],
-    "schema/v2.2/risks.schema.yaml": [
+    "schema/v2.3/risks.schema.yaml": [
       "**/.realm/**/risks.yaml"
     ],
-    "schema/v2.2/events.schema.yaml": [
+    "schema/v2.3/events.schema.yaml": [
       "**/.realm/**/events.yaml"
     ],
-    "schema/v2.2/topology/estate.schema.yaml": [
+    "schema/v2.3/topology/estate.schema.yaml": [
       "**/.realm/**/topology/estate.yaml"
     ],
-    "schema/v2.2/topology/construction.schema.yaml": [
+    "schema/v2.3/topology/construction.schema.yaml": [
       "**/.realm/**/topology/construction.yaml"
     ],
-    "schema/v2.2/topology/boundary.schema.yaml": [
+    "schema/v2.3/topology/boundary.schema.yaml": [
       "**/.realm/**/topology/boundary.yaml"
     ],
-    "schema/v2.2/topology/spatial.schema.yaml": [
+    "schema/v2.3/topology/spatial.schema.yaml": [
       "**/.realm/**/topology/spatial.yaml"
     ],
-    "schema/v2.2/topology/equipment.schema.yaml": [
+    "schema/v2.3/topology/equipment.schema.yaml": [
       "**/.realm/**/topology/equipment.yaml"
     ],
-    "schema/v2.2/topology/tools.schema.yaml": [
+    "schema/v2.3/topology/tools.schema.yaml": [
       "**/.realm/**/topology/tools.yaml"
     ],
-    "schema/v2.2/infrastructure/systems.schema.yaml": [
+    "schema/v2.3/infrastructure/systems.schema.yaml": [
       "**/.realm/**/infrastructure/systems.yaml"
     ],
-    "schema/v2.2/infrastructure/network.schema.yaml": [
+    "schema/v2.3/infrastructure/network.schema.yaml": [
       "**/.realm/**/infrastructure/network.yaml"
     ],
-    "schema/v2.2/nature/vegetation.schema.yaml": [
+    "schema/v2.3/nature/vegetation.schema.yaml": [
       "**/.realm/**/nature/vegetation.yaml"
     ],
-    "schema/v2.2/nature/biomass.schema.yaml": [
+    "schema/v2.3/nature/biomass.schema.yaml": [
       "**/.realm/**/nature/biomass.yaml"
     ],
-    "schema/v2.2/nature/care.schema.yaml": [
+    "schema/v2.3/nature/care.schema.yaml": [
       "**/.realm/**/nature/care.yaml"
     ],
-    "schema/v2.2/nature/soil.schema.yaml": [
+    "schema/v2.3/nature/soil.schema.yaml": [
       "**/.realm/**/nature/soil.yaml"
     ],
-    "schema/v2.2/nature/recommendations.schema.yaml": [
+    "schema/v2.3/nature/recommendations.schema.yaml": [
       "**/.realm/**/nature/recommendations.yaml"
     ],
-    "schema/v2.2/operations/maintenance.schema.yaml": [
+    "schema/v2.3/operations/maintenance.schema.yaml": [
       "**/.realm/**/operations/maintenance.yaml"
     ],
-    "schema/v2.2/operations/compliance.schema.yaml": [
+    "schema/v2.3/operations/compliance.schema.yaml": [
       "**/.realm/**/operations/compliance.yaml"
     ],
-    "schema/v2.2/context/surroundings.schema.yaml": [
+    "schema/v2.3/context/surroundings.schema.yaml": [
       "**/.realm/**/context/surroundings.yaml"
     ],
-    "schema/v2.2/context/persons.schema.yaml": [
+    "schema/v2.3/context/persons.schema.yaml": [
       "**/.realm/**/context/persons.yaml"
     ],
-    "schema/v2.2/visualization/scene.schema.yaml": [
+    "schema/v2.3/visualization/scene.schema.yaml": [
       "**/.realm/**/visualization/*.scene.yaml",
       "**/.realm/**/visualization/scene.yaml"
     ]

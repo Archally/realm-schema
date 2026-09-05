@@ -6,17 +6,16 @@ YAML-based schema for modeling **private real estate**: a dual-layer spatial for
 [![license](https://img.shields.io/npm/l/@archally/realm-schema)](./LICENSE)
 [![CI](https://github.com/archally/realm-schema/actions/workflows/validate.yml/badge.svg)](https://github.com/archally/realm-schema/actions)
 
-> **Status: the schema, the validator, the model-quality checker, the documentation and a
-> worked example ship; two tools are still arriving.** What you get today is the complete
-> v2.2 schema under [`schema/v2.2/`](./schema/v2.2/), the reference validator, the quality
-> checker, four guides under [`docs/`](./docs/), and Willow Cottage. The model builder and
-> renderer arrive in subsequent releases.
+> **Status: the schema, the validator, the model-quality checker, the model builder, the
+> renderer, the schema updater, the documentation and a worked example ship.** What you get
+> is the complete v2.3 schema under [`schema/v2.3/`](./schema/v2.3/), the tools that read a
+> model written against it, four guides under [`docs/`](./docs/), and Willow Cottage.
 
 ## Validating a model
 
 ```bash
 npm install
-npm run validate -- --model path/to/.realm/v2.2
+npm run validate -- --model path/to/.realm/v2.3
 ```
 
 Five layers run: each file against its schema, then reference integrity and id
@@ -75,7 +74,7 @@ is left over, and the schema cannot ask it: does the model actually say anything
 places the schema deliberately leaves optional?
 
 ```bash
-npm run check -- --model path/to/.realm/v2.2
+npm run check -- --model path/to/.realm/v2.3
 ```
 
 Fourteen rules today - a specimen with no care profile appears on no maintenance calendar,
@@ -88,7 +87,7 @@ pass `--strict`. The full list is in [the rule reference](./docs/model-quality.m
 ## Reading a model as a graph
 
 ```bash
-npm run model -- path/to/.realm/v2.2 --pretty
+npm run model -- path/to/.realm/v2.3 --pretty
 ```
 
 One JSON document: every entity with its type, plane and data, and every reference
@@ -110,7 +109,7 @@ model.
 ## Rendering a model as documents
 
 ```bash
-npm run render -- path/to/.realm/v2.2 --document all -o ./docs
+npm run render -- path/to/.realm/v2.3 --document all -o ./docs
 ```
 
 Two markdown documents, because a property model has two readers.
@@ -165,8 +164,9 @@ left to validate against. This tool is the route forward.
 |---|---|
 | 2.0 to 2.1 | Nothing. 2.1 added enum values, optional fields and `x-` extension keys and removed nothing, so a valid 2.0 document is a valid 2.1 document. Only the declared version moves |
 | 2.1 to 2.2 | Renames the migration entity to `estate_change`: `MIG###` ids become `ECH###`, `migrations.yaml` becomes `estate-changes.yaml`, `migrations:` becomes `estate_changes:`, and every `*migration_ref*` field takes the new name |
+| 2.2 to 2.3 | Nothing. 2.3 added optional fields, enum values, one entity and one root key and removed nothing, so a valid 2.2 document is a valid 2.3 document. Only the declared version moves; a fact a model kept in an `x-` extension moves onto the new field by hand |
 
-A model two versions behind receives both in one run, in order.
+A model several versions behind receives every update in one run, in order.
 
 **The version comes from `realm.yaml`, not from the directory name.** A realm model directory
 is named for the model's own line rather than for the schema's, so a current model can
@@ -188,7 +188,7 @@ with the line it sits on, for you to judge.
 Preview with `--dry-run` first, and validate afterwards:
 
 ```bash
-npm run validate -- --model path/to/.realm/v2.2 --schemas schema/v2.2
+npm run validate -- --model path/to/.realm/v2.3 --schemas schema/v2.3
 ```
 
 ## What is a Realm model?
@@ -209,13 +209,13 @@ Cross-cutting: estate changes, risks/issues, and a chronological event log.
 
 ## Schema
 
-- **Version:** 2.2.0 (JSON Schema draft 2020-12, expressed in YAML)
+- **Version:** 2.3.0 (JSON Schema draft 2020-12, expressed in YAML)
 - **Methodology:** GDSM v1.0 (Goal-Driven Schema Modeling)
-- **Location:** [`schema/v2.2/`](./schema/v2.2/) - root composition + `metamodel`, `estate-change`, `risks`, `events`, `realm-config`, and per-plane subfolders (`topology/`, `infrastructure/`, `nature/`, `operations/`, `context/`, `visualization/`).
+- **Location:** [`schema/v2.3/`](./schema/v2.3/) - root composition + `metamodel`, `estate-change`, `risks`, `events`, `realm-config`, and per-plane subfolders (`topology/`, `infrastructure/`, `nature/`, `operations/`, `context/`, `visualization/`).
 
 Each plane's data files are validated independently against their own schema; cross-cutting files validate against `estate-change`, `risks`, and `events`.
 
-v2.2 is the only published line. Models written against 2.1 need the `migration` → `estate_change` rename; see the [changelog](./CHANGELOG.md).
+v2.3 is the only published line. A model written against 2.2 validates unchanged; one written against 2.1 needs the `migration` to `estate_change` rename, which `npm run schema-update` performs; see the [changelog](./CHANGELOG.md).
 
 ## License
 

@@ -20,10 +20,16 @@
 export const RELATION_TYPES = {
   // ── Topology ──
   building: {
+    position_derived_from: "position-derived-from", // 2.3.0
     parcel_ref: "located-on",
     furniture_refs: "contains",
     equipment_refs: "contains",
     wing_refs: "contains",
+  },
+  parcel: {
+    position_derived_from: "position-derived-from", // 2.3.0
+    // Nested in shared_edges[] (2.3.0).
+    with_ref: "shares-edge-with",
   },
   wing: {
     building_ref: "part-of",
@@ -40,21 +46,30 @@ export const RELATION_TYPES = {
     adjacent_ref: "adjacent-to",
     opens_to_room_ref: "opens-to",
     opens_to_zone_ref: "opens-to",
+    // Nested in lighting_groups[] (2.3.0); reached by the recursive scan, keyed bare.
+    circuit_ref: "on-circuit",
   },
   outdoor_zone: {
+    position_derived_from: "position-derived-from", // 2.3.0
     parcel_ref: "located-on",
     soil_profile_refs: "has-soil",
+    // Nested in shared_edges[] (2.3.0).
+    with_ref: "shares-edge-with",
   },
   boundary_segment: {
     neighbor_property_ref: "borders",
     parcel_refs: "borders",
     screening_planting_refs: "screens-with",
+    // Nested in shared_edges[] (2.3.0).
+    with_ref: "shares-edge-with",
   },
   furniture: {
     room_ref: "located-in",
     building_ref: "located-in",
+    outdoor_zone_ref: "located-in",
   },
   equipment: {
+    position_derived_from: "position-derived-from", // 2.3.0
     room_ref: "located-in",
     building_ref: "located-in",
     outdoor_zone_ref: "located-in",
@@ -70,9 +85,6 @@ export const RELATION_TYPES = {
   },
 
   // ── Topology - construction ──
-  // `ceiling_slab` repeats `floor_slab`'s entries rather than inheriting them: the schema
-  // defines it as the same shape in a different role, and a table that lists one and not
-  // the other gives two names to one geometry.
   wall_segment: {
     floor_ref: "part-of",
     wing_ref: "part-of",
@@ -82,10 +94,6 @@ export const RELATION_TYPES = {
     connects_to_ref: "connects-to",
   },
   floor_slab: {
-    floor_ref: "part-of",
-    wing_ref: "part-of",
-  },
-  ceiling_slab: {
     floor_ref: "part-of",
     wing_ref: "part-of",
   },
@@ -99,18 +107,36 @@ export const RELATION_TYPES = {
     building_ref: "located-in",
     room_ref: "located-in",
     outdoor_zone_ref: "located-in",
-    zone_ref: "located-in",
+    // Nested in distribution_zones[]: the zone a system delivers to, not where it stands.
+    zone_ref: "serves",
     utility_connection_ref: "fed-by",
     warranty_ref: "covered-by",
     component_refs: "contains",
     feeds_system_refs: "feeds",
   },
   component: {
+    position_derived_from: "position-derived-from", // 2.3.0
     system_ref: "part-of",
     room_ref: "located-in",
     building_ref: "located-in",
+    outdoor_zone_ref: "located-in",
     warranty_ref: "covered-by",
-    along_ref: "runs-along",
+    member_of_ref: "member-of",
+    // Electrical topology (2.3.0): socket -> circuit -> protective device -> board.
+    circuit_ref: "on-circuit",
+    protected_by_ref: "protected-by",
+    fed_from_ref: "fed-from",
+    wall_segment_ref: "mounted-on",
+  },
+  cable_run: {
+    system_ref: "part-of",
+    from_ref: "runs-from",
+    to_ref: "runs-to",
+    circuit_refs: "carries",
+    through_refs: "passes-through",
+    // Nested in route.legs[]; this builder reaches nested references and keys them by
+    // the bare field name.
+    wall_segment_ref: "runs-along",
   },
   utility_connection: {
     cost_category_ref: "charged-to",
@@ -118,10 +144,12 @@ export const RELATION_TYPES = {
 
   // ── Infrastructure - network ──
   network_node: {
+    position_derived_from: "position-derived-from", // 2.3.0
     room_ref: "located-in",
     outdoor_zone_ref: "located-in",
   },
   iot_device: {
+    position_derived_from: "position-derived-from", // 2.3.0
     monitored_system_ref: "monitors",
     controlled_system_ref: "controls",
     network_node_ref: "connected-to",
@@ -135,15 +163,19 @@ export const RELATION_TYPES = {
 
   // ── Nature ──
   specimen: {
+    position_derived_from: "position-derived-from", // 2.3.0
     outdoor_zone_ref: "located-in",
     care_profile_ref: "follows-protocol",
+    member_of_ref: "member-of",
     companion_specimen_refs: "companion-of",
     antagonist_specimen_refs: "antagonist-of",
   },
   planting: {
+    position_derived_from: "position-derived-from", // 2.3.0
     outdoor_zone_ref: "located-in",
     care_profile_ref: "follows-protocol",
-    change_ref: "introduced-by",
+    // Nested in shared_edges[] (2.3.0).
+    with_ref: "shares-edge-with",
   },
   soil_profile: {
     outdoor_zone_ref: "describes",
@@ -183,8 +215,12 @@ export const RELATION_TYPES = {
 
   // ── Context ──
   neighbor_property: {
+    position_derived_from: "position-derived-from", // 2.3.0
     boundary_segment_refs: "borders",
     resident_refs: "inhabited-by",
+    // Nested in features[] (2.3.0) and shared_edges[].
+    along_ref: "feature-along",
+    with_ref: "shares-edge-with",
   },
   shared_concern: {
     neighbor_property_ref: "concerns",
@@ -210,7 +246,9 @@ export const RELATION_TYPES = {
     part_of_change_ref: "part-of",
     coordinator_ref: "coordinated-by",
     event_ref: "recorded-as",
+    epic_refs: "belongs-to",
   },
+  epic: {},
   risk: {
     entity_refs: "threatens",
   },

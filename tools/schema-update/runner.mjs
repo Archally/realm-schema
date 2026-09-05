@@ -3,12 +3,13 @@ import path from "node:path";
 
 import { update as update001 } from "./updates/001-additive-2-0-to-2-1.mjs";
 import { update as update002 } from "./updates/002-migration-to-estate-change.mjs";
+import { update as update003 } from "./updates/003-additive-2-2-to-2-3.mjs";
 
 /**
  * Version order, single pass - see resolveChain. A model on 2.0 must receive
  * 001 then 002 in one run.
  */
-const ALL_UPDATES = [update001, update002];
+const ALL_UPDATES = [update001, update002, update003];
 
 /**
  * Which schema version a model is written against.

@@ -43,7 +43,7 @@ const USAGE = [
   "",
   "Examples:",
   "  realm-render examples/willow-cottage --document all -o examples/willow-cottage/.specs",
-  "  realm-render .realm/v2.2 -o overview.md --check",
+  "  realm-render .realm/v2.3 -o overview.md --check",
 ].join("\n");
 
 /** Which documents each `--document` value produces, and what each is called on disk. */

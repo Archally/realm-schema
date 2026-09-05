@@ -5,8 +5,22 @@
 
 import { entityPrefix } from "./helpers.mjs";
 import { checkEstateChangeRules } from "./estate-change-rules.mjs";
+import { checkLifecycleRules } from "./lifecycle-rules.mjs";
+import { checkGeoreferenceRules } from "./georeference-rules.mjs";
+import { checkSharedEdgeRules } from "./shared-edge-rules.mjs";
+import { checkMemberRules } from "./member-rules.mjs";
+import { checkEpicRules } from "./epic-rules.mjs";
+import { checkElectricalRules } from "./electrical-rules.mjs";
 
-export function validateSemantic(entities, config) {
+/**
+ * @param {Map<string, {data: Record<string, unknown>}>} entities
+ * @param {Record<string, number>} config
+ * @param {Record<string, unknown> | undefined} [root] the parsed `realm.yaml`, for the
+ *   rules that join an entity to the coordinate system. Optional so an older caller that
+ *   passes two arguments keeps its findings; it then simply cannot report the
+ *   georeference rule, and the runner that wants it passes the root.
+ */
+export function validateSemantic(entities, config, root) {
   const issues = [];
 
   for (const [id, { data }] of entities) {
@@ -123,6 +137,23 @@ export function validateSemantic(entities, config) {
   // so this shim, the MCP server and `rl check` all report the same findings rather
   // than three drifting copies of the same intent.
   issues.push(...checkEstateChangeRules(entities));
+
+  // Lifecycle rules (schema 2.3.0): a live entity pointing at one that ended, and a
+  // superseded record with no successor. Same origin, same reason.
+  issues.push(...checkLifecycleRules(entities));
+
+  // Georeference rule (schema 2.3.0): a gps source in a model with no WGS84 origin.
+  issues.push(...checkGeoreferenceRules(entities, root?.coordinate_system));
+  // Shared edges (2.3.0): a declaration the coordinates contradict.
+  issues.push(...checkSharedEdgeRules(entities));
+  // Placed members and epics (2.3.0): a promoted unit still listed, a list longer than
+  // the count, a member_of cycle; two epics with one order.
+  issues.push(...checkMemberRules(entities));
+  issues.push(...checkEpicRules(entities));
+  // Electrical topology and placement (2.3.0): a feed cycle, a circuit reference that is
+  // not a circuit, a circuit that crosses buildings, an anchor or a leg off its wall or
+  // past its end, a riser with no vertical leg.
+  issues.push(...checkElectricalRules(entities));
 
   return { issues };
 }

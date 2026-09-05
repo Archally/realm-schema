@@ -1,6 +1,6 @@
 {
   "name": "@archally/realm-schema",
-  "version": "2.2.9",
+  "version": "2.3.0",
   "description": "YAML-based schema for private real estate modeling - dual-layer spatial topology, infrastructure systems, nature, maintenance operations, and surrounding context",
   "license": "SEE LICENSE IN LICENSE",
   "author": "Adam Walkowski <adam.walkowski@inperceptic.com>",
@@ -23,7 +23,7 @@
   ],
   "type": "module",
   "exports": {
-    "./schema/v2.2/*": "./schema/v2.2/*"
+    "./schema/v2.3/*": "./schema/v2.3/*"
   },
   "files": [
     "schema/",
@@ -37,15 +37,15 @@
   ],
   "scripts": {
     "validate": "node tools/validator/src/cli.mjs",
-    "validate:examples": "node tools/validator/src/cli.mjs --model examples/willow-cottage/.realm/v2.2 --schemas schema/v2.2",
-    "doc-snippets": "node tools/doc-snippet-validate/cli.mjs docs/file-conventions.md docs/modeling-guide.md --schemas schema/v2.2 --validator \"node tools/validator/src/cli.mjs --model {model} --schemas {schemas}\"",
+    "validate:examples": "node tools/validator/src/cli.mjs --model examples/willow-cottage/.realm/v2.3 --schemas schema/v2.3",
+    "doc-snippets": "node tools/doc-snippet-validate/cli.mjs docs/file-conventions.md docs/modeling-guide.md --schemas schema/v2.3 --validator \"node tools/validator/src/cli.mjs --model {model} --schemas {schemas}\"",
     "check": "node tools/semantic-checker/cli.mjs",
     "model": "node tools/model-builder/cli.mjs",
     "model:example": "node tools/model-builder/cli.mjs examples/willow-cottage --pretty --warnings",
     "render": "node tools/renderer/cli.mjs",
     "render:example": "node tools/renderer/cli.mjs examples/willow-cottage --document all -o examples/willow-cottage/.specs",
     "render:check": "node tools/renderer/cli.mjs examples/willow-cottage --document all -o examples/willow-cottage/.specs --check",
-    "check:examples": "node tools/semantic-checker/cli.mjs --model examples/willow-cottage/.realm/v2.2",
+    "check:examples": "node tools/semantic-checker/cli.mjs --model examples/willow-cottage/.realm/v2.3",
     "schema-update": "node tools/schema-update/cli.mjs",
     "schema-update:list": "node tools/schema-update/cli.mjs --list"
   },

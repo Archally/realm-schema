@@ -7,14 +7,15 @@
 //     npm run build --workspace=servers/realm/core && npm run gen-derived
 
 /**
- * Estate-change consistency rules (schema v2.2.0).
+ * Estate-change consistency rules (schema v2.2.0, extended for 2.3.0 by R-H and R-I).
  *
  * These live in realm-core rather than beside the standalone validator so that the
  * validator shim, the MCP server and the `rl check` verb all report the same findings
  * from the same code. A rule implemented twice is a rule that disagrees with itself
  * eventually.
  *
- * All six ship at WARNING severity. Each one fires on the cewice model today, and a
+ * The rules ship at WARNING severity. Each of the first six fired on the cewice model
+ * when written, and a
  * blocking rule whose backlog has not been worked through blocks the person who would
  * work through it. The counts are the input to the model-update pass; raising severity
  * is a later, deliberate decision.
@@ -42,6 +43,17 @@ function executionsOf(entity) {
 function changesOf(entity) {
     const changes = entity.data['changes'];
     return Array.isArray(changes) ? changes : [];
+}
+/** `lifecycle.state`, or the legacy `x-retired` marker read as `retired`, or `active`. */
+function lifecycleStateOf(entity) {
+    const block = entity.data['lifecycle'];
+    if (block && typeof block === 'object' && !Array.isArray(block)) {
+        const state = block['state'];
+        if (typeof state === 'string')
+            return state;
+    }
+    const marker = entity.data['x-retired'];
+    return marker !== undefined && marker !== null && marker !== false ? 'retired' : 'active';
 }
 function refsOf(entity, field) {
     const value = entity.data[field];
@@ -147,11 +159,17 @@ export function checkEstateChangeRules(entities) {
         // Scoped to `add` deliberately. `modify` and `relocate` arguably want a referent
         // too, but `remove` legitimately loses one, so widening this needs a rule per
         // action rather than a looser filter.
+        //
+        // Amended for 2.3.0: an item whose `outcome` is `abandoned` or `superseded` created
+        // nothing, so there is nothing to name. The rule is not weakened; its question
+        // gained an answer the schema could not record before.
         if (status === 'completed') {
             changesOf(entity).forEach((item, index) => {
                 if (item['action'] !== 'add')
                     return;
                 if (typeof item['entity_ref'] === 'string' && item['entity_ref'].length > 0)
+                    return;
+                if (item['outcome'] === 'abandoned' || item['outcome'] === 'superseded')
                     return;
                 const entityType = typeof item['entity_type'] === 'string' ? item['entity_type'] : 'entity';
                 findings.push({
@@ -160,6 +178,35 @@ export function checkEstateChangeRules(entities) {
                     entity: id,
                     message: `status is "completed" and changes[${index}] adds a ${entityType}, but no entity_ref says which one it created`,
                 });
+            });
+        }
+        // R-H: an item that ended on a change that has not begun. `outcome` records how one
+        // item of the list ended; on a change still `proposed` or `approved` that is an
+        // ending before a beginning.
+        if (status === 'proposed' || status === 'approved') {
+            changesOf(entity).forEach((item, index) => {
+                const outcome = item['outcome'];
+                if (outcome !== 'done' && outcome !== 'superseded')
+                    return;
+                findings.push({
+                    severity: 'warning',
+                    rule: 'R-H',
+                    entity: id,
+                    message: `status is "${status}" but changes[${index}] already records outcome "${outcome}"`,
+                });
+            });
+        }
+        // R-I: a change whose record has ended (lifecycle retired or superseded) but whose
+        // status says the work is still under way. Status and lifecycle are independent
+        // axes; this is the one combination that contradicts itself.
+        const lifecycleState = lifecycleStateOf(entity);
+        if ((lifecycleState === 'retired' || lifecycleState === 'superseded') &&
+            (status === 'scheduled' || status === 'in-progress')) {
+            findings.push({
+                severity: 'warning',
+                rule: 'R-I',
+                entity: id,
+                message: `lifecycle is "${lifecycleState}" but status is "${status}": the record has ended and the work is still under way`,
             });
         }
         // R-F: the same cost recorded twice, once here and once on the event it links to.

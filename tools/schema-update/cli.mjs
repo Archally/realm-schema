@@ -16,7 +16,7 @@ Options:
 
 The model directory is the one holding realm.yaml (for example .realm/v2.1).
 Preview with --dry-run first, and validate afterwards:
-  realm-validate --model <model-dir> --schemas schema/v2.2
+  realm-validate --model <model-dir> --schemas schema/v2.3
 `;
 
 function parseArguments(argv) {
@@ -148,7 +148,7 @@ function main() {
   }
 
   console.log(`Done. Model is at ${result.finalDirectory}.`);
-  console.log("Validate it: realm-validate --model <model-dir> --schemas schema/v2.2");
+  console.log("Validate it: realm-validate --model <model-dir> --schemas schema/v2.3");
   process.exit(0);
 }
 

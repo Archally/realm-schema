@@ -187,7 +187,7 @@ export async function runValidator(argv, options = {}) {
   reportLayer("Layer 2 (Referential)", layers12.referential, counters);
   reportLayer("Layer 3 (Geometric)", validateGeometric(entities, config), counters);
   reportLayer("Layer 4 (Cross-Layer)", validateCrossLayer(entities, constructionFiles, config), counters);
-  reportLayer("Layer 5 (Semantic)", validateSemantic(entities, config), counters);
+  reportLayer("Layer 5 (Semantic)", validateSemantic(entities, config, modelFiles.get("realm.yaml")), counters);
 
   console.log();
   console.log(`Result: ${counters.errors === 0 ? "PASS" : "FAIL"} (${counters.errors} errors, ${counters.warnings} warnings, ${counters.info} info)`);

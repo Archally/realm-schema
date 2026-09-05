@@ -52,7 +52,7 @@ jobs:
         # flawless model produces. So the COUNTS are asserted rather than the verdict -
         # how many rules ran, and how many entities they ran over.
         run: |
-          node tools/semantic-checker/cli.mjs --model examples/willow-cottage/.realm/v2.2 --json > /tmp/quality.json || true
+          node tools/semantic-checker/cli.mjs --model examples/willow-cottage/.realm/v2.3 --json > /tmp/quality.json || true
           node --input-type=module -e "
           import {readFileSync} from 'node:fs';
           const report = JSON.parse(readFileSync('/tmp/quality.json', 'utf8'));
@@ -93,7 +93,7 @@ jobs:
           const text = readFileSync('/tmp/seeded-guide.md', 'utf8').replace('area_sqm:', 'area_sqm_typo:');
           writeFileSync('/tmp/seeded-guide.md', text);
           "
-          if node tools/doc-snippet-validate/cli.mjs /tmp/seeded-guide.md --schemas schema/v2.2 \
+          if node tools/doc-snippet-validate/cli.mjs /tmp/seeded-guide.md --schemas schema/v2.3 \
                --validator "node tools/validator/src/cli.mjs --model {model} --schemas {schemas}"; then
             echo "FAIL: the guide gate accepted a block with an undefined field"
             exit 1
@@ -104,14 +104,14 @@ jobs:
         # would also do if it had stopped checking anything. Breaking a reference the
         # schema requires must produce a non-zero exit.
         run: |
-          cp -r examples/willow-cottage/.realm/v2.2 /tmp/seeded
+          cp -r examples/willow-cottage/.realm/v2.3 /tmp/seeded
           node --input-type=module -e "
           import {readFileSync, writeFileSync} from 'node:fs';
           const path = '/tmp/seeded/topology/estate.yaml';
           const text = readFileSync(path, 'utf8').replace('room_type: kitchen', 'room_type: dungeon');
           writeFileSync(path, text);
           "
-          if node tools/validator/src/cli.mjs --model /tmp/seeded --schemas schema/v2.2; then
+          if node tools/validator/src/cli.mjs --model /tmp/seeded --schemas schema/v2.3; then
             echo "FAIL: the validator accepted a model with an invalid room_type"
             exit 1
           fi
@@ -141,12 +141,13 @@ jobs:
           echo "OK: the stale document was rejected"
 
       - name: A model on the previous schema version migrates to this one
-        # The worked example is on 2.2. Reversing the 2.2 rename produces a real 2.1 model
-        # of the shape the updater exists for, and migrating it forward must land exactly
-        # on the tree that was committed - then validate, so the output is judged by a tool
-        # that knows nothing about how it was produced.
+        # The worked example is on 2.3. Reversing the 2.2 rename and the 2.3 declaration
+        # produces a real 2.1 model of the shape the updater exists for, and migrating it
+        # forward through both updates must land exactly on the tree that was committed -
+        # then validate, so the output is judged by a tool that knows nothing about how it
+        # was produced.
         run: |
-          rm -rf /tmp/roundtrip && cp -r examples/willow-cottage/.realm/v2.2 /tmp/roundtrip
+          rm -rf /tmp/roundtrip && cp -r examples/willow-cottage/.realm/v2.3 /tmp/roundtrip
           mv /tmp/roundtrip/estate-changes.yaml /tmp/roundtrip/migrations.yaml
           node --input-type=module -e "
           import {readFileSync, writeFileSync, globSync} from 'node:fs';
@@ -163,7 +164,7 @@ jobs:
               .replace(/\bestate-change-applied\b/g, 'migration-applied')
               .replace(/\bestate-changes\.yaml\b/g, 'migrations.yaml')
               .replace(/\bestate-change\.schema\.yaml\b/g, 'migration.schema.yaml')
-              .replace(/^(schemaVersion:\s*)\"2\.2\.0\"/m, '\$1\"2.1.0\"');
+              .replace(/^(schemaVersion:\s*)\"2\.3\.0\"/m, '\$1\"2.1.0\"');
             if (after !== before) { reversed++; writeFileSync(file, after, 'utf8'); }
           }
           // A reversal that touched nothing would make the migration below a no-op that
@@ -172,9 +173,9 @@ jobs:
           console.log('reversed ' + reversed + ' file(s) to 2.1');
           "
           node tools/schema-update/cli.mjs /tmp/roundtrip
-          diff -r /tmp/roundtrip examples/willow-cottage/.realm/v2.2
+          diff -r /tmp/roundtrip examples/willow-cottage/.realm/v2.3
           echo "OK: the migrated model is byte-identical to the committed one"
-          node tools/validator/src/cli.mjs --model /tmp/roundtrip --schemas schema/v2.2
+          node tools/validator/src/cli.mjs --model /tmp/roundtrip --schemas schema/v2.3
 
       - name: An incomplete migration is rejected
         # Without this, the diff above proves only that two directories can be equal - which
@@ -189,7 +190,7 @@ jobs:
           if (seeded === text) { console.error('FAIL: seed anchor missing'); process.exit(1); }
           writeFileSync(path, seeded, 'utf8');
           "
-          if diff -r /tmp/seeded-update examples/willow-cottage/.realm/v2.2 > /dev/null; then
+          if diff -r /tmp/seeded-update examples/willow-cottage/.realm/v2.3 > /dev/null; then
             echo "FAIL: the comparison accepted a model with an unmigrated id"
             exit 1
           fi

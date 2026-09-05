@@ -1,0 +1,807 @@
+---
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "infrastructure/systems.schema.yaml"
+title: "Infrastructure Systems"
+description: >
+  Infrastructure systems (energy, heating, water, electrical), their physical
+  components, utility grid connections, and the cable runs of the electrical
+  layer. Covers all built systems from solar panels to sewage. Infrastructure
+  plane.
+
+x-gdsm:
+  version: "2.3.0"
+  methodology: "GDSM v1.0"
+  plane: "infrastructure"
+  domain_slice: null
+  designed_for:
+    - id: T1
+      name: "Maintenance Calendar Generation"
+      mfs_target: 90
+    - id: T2
+      name: "Property Inventory Report"
+      mfs_target: 85
+    - id: T6
+      name: "Infrastructure Topology Map"
+      mfs_target: 75
+  competency_questions:
+    - "CQ04: What energy systems serve this property, what type are they, and what is their rated capacity?"
+    - "CQ05: What is the heating system configuration - type, fuel source, capacity, installation date, warranty?"
+    - "CQ08: What utility connections exist (grid, gas, water, fiber) and who are the providers?"
+    - "CQ48: What must be checked at the periodic electrical inspection: which boards, protective devices and circuits exist, when was the last inspection, and which known defects are open against them?"
+    - "CQ49: Which circuit does a given socket outlet, switch or lighting group belong to?"
+    - "CQ50: Which protective device feeds a given circuit, and in which board, in which room, does it sit?"
+    - "CQ51: Where is the riser that carries cables between floors: which wall, at what offset, over what height?"
+    - "CQ52: Where does a cable run horizontally: along or inside which wall segments, at what height, through which rooms, and where does a cable of unknown purpose emerge?"
+  fitness:
+    last_evaluated: "2026-09-04"
+    method: >
+      Structural for the release as a whole (2.3.0 is additive only, so no task's
+      fitness can fall); numeric per question for the electrical questions, as
+      estimated in the design record against a model authored to the shapes.
+      Dimensions: CC concept coverage, AC attribute coverage, RE relation
+      expressiveness, CE constraint expressiveness, AG answer generation.
+    scores:
+      CQ48: {cc: 90, ac: 80, re: 90, ce: 70, ag: 75, mean: 81, weakest: "ce: the inspection's test results are outside the model by design"}
+      CQ49: {cc: 100, ac: 85, re: 100, ce: 85, ag: 90, mean: 92, weakest: "ac: the socket kind lives in specs"}
+      CQ50: {cc: 100, ac: 80, re: 100, ce: 80, ag: 90, mean: 90, weakest: "ac: the device rating lives in specs"}
+      CQ51: {cc: 90, ac: 85, re: 80, ce: 60, ag: 70, mean: 77, weakest: "ce: every geometry rule is code; ag: the wall elevation needs a renderer"}
+      CQ52: {cc: 90, ac: 85, re: 75, ce: 60, ag: 65, mean: 75, weakest: "as CQ51; the reference model answers with cable ends, not runs"}
+  non_goals:
+    - "Real-time telemetry values (delegated to external store)"
+    - "Circuit diagrams as drawings (single-line or wiring schematics); the model holds circuit topology - which board feeds which circuit through which protective device, and which outlets, switches and fixtures belong to it - and a diagram is a rendering of that"
+    - "Plumbing pipe-level schematics"
+  status: draft
+  owned_by: null
+  schema_ref_prefix: "SYS, CMP, UC, CBR"
+
+type: object
+additionalProperties: false
+properties:
+  systems:
+    type: array
+    title: "Infrastructure Systems"
+    description: "All infrastructure systems. Answers CQ04, CQ05."
+    items:
+      $ref: "#/$defs/system"
+  components:
+    type: array
+    title: "System Components"
+    description: "Physical components across all systems. Answers CQ05."
+    items:
+      $ref: "#/$defs/component"
+  utility_connections:
+    type: array
+    title: "Utility Connections"
+    description: "External grid connections. Answers CQ08."
+    items:
+      $ref: "#/$defs/utility_connection"
+  cable_runs:
+    type: array
+    title: "Cable Runs"
+    description: >
+      Cable runs and risers of the electrical system: what each carries,
+      what it joins, and where it goes. Answers CQ51, CQ52.
+    items:
+      $ref: "#/$defs/cable_run"
+
+$defs:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # System — SYS###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  system:
+    type: object
+    title: "Infrastructure System"
+    description: >
+      A major infrastructure system serving the property. Typed by function
+      (heating, solar, irrigation, etc.) with capacity, fuel source, and
+      installation details. Answers CQ04, CQ05. Used by T1 (maintenance),
+      T2 (inventory), T6 (topology map).
+    required: [id, name, system_type]
+    additionalProperties: false
+    patternProperties:
+      "^x-": true
+    properties:
+      id:
+        type: string
+        title: "SYS### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?SYS\\d{3,}$"
+        examples: ["SYS001", "heating.SYS001"]
+      name:
+        type: string
+        title: "System Name"
+        minLength: 1
+        examples: ["Central Heating", "Rooftop Solar Array", "Garden Irrigation"]
+      system_type:
+        type: string
+        title: "System Type"
+        description: "Functional classification of this infrastructure system."
+        enum:
+          - "heating"
+          - "cooling"
+          - "ventilation"
+          - "hot-water"
+          - "solar-electric"
+          - "solar-thermal"
+          - "battery-storage"
+          - "ev-charging"
+          - "electrical-distribution"
+          - "irrigation"
+          - "drainage"
+          - "sewage"
+          - "rainwater-collection"
+          - "gas-distribution"
+          - "fire-safety"
+          - "security"
+          - "lighting-outdoor"
+          - "network"
+        examples: ["heating"]
+      fuel_source:
+        type: string
+        title: "Fuel / Energy Source"
+        description: "Primary energy input for this system. Answers CQ04."
+        enum:
+          - "electricity"
+          - "natural-gas"
+          - "propane"
+          - "heating-oil"
+          - "wood"
+          - "pellet"
+          - "biomass"
+          - "solar"
+          - "ground-heat"
+          - "air-heat"
+          - "water-heat"
+          - "diesel"
+          - "none"
+        examples: ["natural-gas"]
+      rated_capacity:
+        type: number
+        title: "Rated Capacity"
+        description: "Nominal capacity in the capacity_unit. E.g., 25 kW, 10 kWp, 500 L."
+        exclusiveMinimum: 0
+        examples: [25, 10]
+      capacity_unit:
+        type: string
+        title: "Capacity Unit"
+        description: "Unit for rated_capacity."
+        examples: ["kW", "kWp", "kWh", "L", "m³/h", "A"]
+      efficiency_rating:
+        type: string
+        title: "Efficiency Rating"
+        description: "Energy efficiency label or COP/SCOP value."
+        examples: ["A++", "COP 4.2", "92% AFUE"]
+      installed_date:
+        $ref: "../metamodel.schema.yaml#/$defs/iso_date"
+        title: "Installation Date"
+        description: "Date the system was installed or commissioned."
+      manufacturer:
+        type: string
+        title: "Manufacturer"
+        examples: ["Viessmann", "SMA", "Grundfos"]
+      model_name:
+        type: string
+        title: "Model Name"
+        examples: ["Vitodens 200-W", "Sunny Tripower 10.0"]
+      serial_number:
+        type: string
+        title: "Serial Number"
+        examples: ["VB2W-2026-0042"]
+      # ── Location ──
+      building_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/building_ref"
+        title: "Located in Building"
+        description: "Building where this system's main unit is installed."
+      room_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/room_ref"
+        title: "Located in Room"
+        description: "Specific room (e.g., boiler room, utility room)."
+      outdoor_zone_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/outdoor_zone_ref"
+        title: "Located in Outdoor Zone"
+        description: "For outdoor systems (solar panels, irrigation, heat pump outdoor unit)."
+      position:
+        $ref: "../metamodel.schema.yaml#/$defs/position"
+        title: "Position"
+        description: "Position on property grid (for outdoor-mounted systems)."
+      # ── Relationships ──
+      utility_connection_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/utility_connection_ref"
+        title: "Fed by Utility Connection"
+        description: "Grid connection that supplies this system."
+      warranty_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/warranty_ref"
+        title: "Active Warranty"
+        description: "Warranty covering this system. Answers CQ05."
+      component_refs:
+        type: array
+        title: "Components"
+        description: "Components that make up this system."
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/component_ref"
+        uniqueItems: true
+      feeds_system_refs:
+        type: array
+        title: "Feeds Systems"
+        description: "Other systems this one feeds energy/fluid to. Used by T6."
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/system_ref"
+        uniqueItems: true
+      # ── Distribution (v1.3) ──
+      distribution_zones:
+        type: array
+        title: "Distribution Zones"
+        description: >
+          Rooms and outdoor zones served by this system with their functional
+          roles. Captures the system's coverage topology. Used by T6.
+        items:
+          type: object
+          title: "Distribution Zone"
+          required: [zone_ref]
+          additionalProperties: false
+          properties:
+            zone_ref:
+              $ref: "../metamodel.schema.yaml#/$defs/room_or_zone_ref"
+              title: "Served Room or Zone"
+              description: "Room or outdoor zone served by this system."
+            role:
+              type: string
+              title: "Role"
+              description: "Function of this zone in the system distribution."
+              examples: ["underfloor-heating", "radiator", "tap", "solenoid-valve", "circuit"]
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Component — CMP###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  component:
+    type: object
+    title: "System Component"
+    description: >
+      A physical part within an infrastructure system: boiler, radiator,
+      pump, inverter, valve, tank, filter, etc. Granular enough for
+      maintenance targeting. Answers CQ05 (configuration detail).
+      Used by T1 (maintenance), T2 (inventory). In an electrical system a
+      component is also a board, a protective device, a circuit, a junction
+      box or a terminal device, classified by component_type and joined by
+      circuit_ref, protected_by_ref and fed_from_ref (CQ48-CQ50).
+    required: [id, name, system_ref]
+    additionalProperties: false
+    allOf:
+      # A component that takes part in the electrical topology is held to the
+      # metamodel's electrical vocabulary; every other component keeps free text.
+      - if:
+          required: [circuit_ref]
+        then:
+          required: [component_type]
+          properties:
+            component_type:
+              enum: ["socket-outlet", "switch", "lighting-fixture", "junction-box", "cable-end"]
+      - if:
+          required: [protected_by_ref]
+        then:
+          required: [component_type]
+          properties:
+            component_type:
+              const: "circuit"
+      - if:
+          required: [fed_from_ref]
+        then:
+          required: [component_type]
+          properties:
+            component_type:
+              enum: ["distribution-panel", "protective-device"]
+      # A record standing for several units cannot hang on one wall.
+      - if:
+          properties:
+            unit_count: {minimum: 2}
+          required: [unit_count]
+        then:
+          not:
+            required: [wall_segment_ref]
+      # An offset along a wall is a number in no frame without the wall.
+      - if:
+          required: [wall_offset_cm]
+        then:
+          required: [wall_segment_ref]
+    patternProperties:
+      "^x-":
+        description: >
+          Custom extension properties for detail the base schema does not
+          cover - e.g. x-fixtures, where one component entity stands for a
+          COUNT of identical fittings (sixteen staked solar lamps) and needs
+          to say where they are, which a single position field cannot.
+          Follows the OpenAPI x- convention, as boundary_segments already do.
+          Values may be any valid YAML.
+    properties:
+      id:
+        type: string
+        title: "CMP### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?CMP\\d{3,}$"
+        examples: ["CMP001", "boiler.CMP003"]
+      name:
+        type: string
+        title: "Component Name"
+        minLength: 1
+        examples: ["Condensing Boiler Unit", "Circulation Pump", "Solar Inverter"]
+      component_type:
+        type: string
+        title: "Component Type"
+        description: >
+          Functional type of this component. Electrical roles use the values
+          of the metamodel's electrical component type; a component that
+          takes part in circuit_ref, protected_by_ref or fed_from_ref is
+          held to them.
+        examples: ["boiler", "radiator", "pump", "inverter", "battery-pack", "valve", "tank", "filter", "thermostat", "expansion-vessel", "flue", "distribution-panel", "protective-device", "circuit", "junction-box", "socket-outlet", "switch", "lighting-fixture", "cable-end"]
+      system_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/system_ref"
+        title: "Parent System"
+        description: "Infrastructure system this component belongs to."
+      building_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/building_ref"
+        title: "Located in Building"
+        description: "Building this component is installed in."
+      specs:
+        $ref: "../metamodel.schema.yaml#/$defs/specs"
+        title: "Specifications"
+        description: "Technical specifications for this component."
+      manufacturer:
+        type: string
+        title: "Manufacturer"
+        examples: ["Viessmann", "Grundfos"]
+      model_name:
+        type: string
+        title: "Model Name"
+        examples: ["Vitodens 200-W B2HF-25"]
+      serial_number:
+        type: string
+        title: "Serial Number"
+      installed_date:
+        $ref: "../metamodel.schema.yaml#/$defs/iso_date"
+        title: "Installation Date"
+      expected_lifespan_years:
+        type: integer
+        title: "Expected Lifespan (years)"
+        description: "Manufacturer's expected service life. Used by T1 for replacement planning."
+        minimum: 1
+        examples: [15, 25]
+      room_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/room_ref"
+        title: "Located in Room"
+      position_accuracy_m:
+        $ref: "../metamodel.schema.yaml#/$defs/position_accuracy_m"
+      position_source:
+        $ref: "../metamodel.schema.yaml#/$defs/position_source"
+      position_derived_from:
+        $ref: "../metamodel.schema.yaml#/$defs/position_derived_from"
+      position:
+        $ref: "../metamodel.schema.yaml#/$defs/position"
+        title: "Position"
+      members:
+        type: array
+        title: "Members"
+        description: >
+          Individual positions of the units this entity stands for, one
+          entry per unit, when a consumer needs to place them: six clipped
+          shrubs on either side of a walk, a run of solar lamps along a
+          fence. Explicit points only; a spacing rule is computed once and
+          its points written here with their derivation. A unit promoted to
+          an entity of its own is removed from this list.
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/placed_member"
+      member_of_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/component_ref"
+        title: "Promoted From"
+        description: >
+          The group this entity was one member of before it needed a
+          history of its own. The group keeps its count; this entity's
+          position is no longer listed among the group's members.
+        examples: ["CMP038"]
+      warranty_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/warranty_ref"
+        title: "Active Warranty"
+      # ── Electrical topology (v2.3) ──
+      circuit_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/component_ref"
+        title: "On Circuit"
+        description: >
+          The circuit this terminal device or junction box belongs to: a
+          component whose component_type is circuit. Answers CQ49. The
+          circuit is reached from here; a circuit does not list its members.
+        examples: ["CMP050"]
+      protected_by_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/component_ref"
+        title: "Protected By"
+        description: >
+          For a circuit: the protective device (breaker, RCD, RCBO, fuse)
+          that protects it, a component whose component_type is
+          protective-device. The device's fed_from_ref says which board it
+          sits in, so a circuit reaches its board through its device.
+          Answers CQ50.
+        examples: ["CMP045"]
+      fed_from_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/component_ref"
+        title: "Fed From"
+        description: >
+          For a protective device or a board: the upstream component it
+          draws its supply from. A breaker in a board names the board, or
+          the residual-current device it sits behind; a sub-board names the
+          breaker in the upstream board that feeds it. The main board names
+          nothing here; its system's utility_connection_ref is its supply.
+          Answers CQ48, CQ50.
+        examples: ["CMP043"]
+      unit_count:
+        type: integer
+        title: "Unit Count"
+        description: >
+          How many identical physical units this component stands for, when
+          one record describes several: five single sockets on one circuit
+          in one room, a run of garden lamps. Absent means one. A unit that
+          needs an answer of its own, because it is broken or sits on
+          another circuit, becomes a component of its own and this count
+          drops by one.
+        minimum: 1
+        examples: [5, 16]
+      # ── Placement on a wall (v2.3) ──
+      wall_segment_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/wall_segment_ref"
+        title: "Mounted On Wall"
+        description: >
+          The wall segment this component is mounted on or set into, from
+          the construction layer. Which face is meant follows from room_ref:
+          the wall's left_space_ref or right_space_ref that equals it. A
+          component standing for several units carries no wall; each unit
+          that needs placing becomes a component of its own.
+        examples: ["WSG029"]
+      wall_offset_cm:
+        type: number
+        title: "Offset Along Wall (cm)"
+        description: >
+          Distance from the wall segment's start point along its centreline
+          to the component's centre, in centimetres: the frame wall openings
+          are placed in. Requires wall_segment_ref.
+        minimum: 0
+        examples: [45, 210]
+      mounting_height_cm:
+        type: number
+        title: "Mounting Height (cm)"
+        description: >
+          Height of the component's centre above the finished floor of the
+          room it is in, in centimetres, whether it is on a wall or placed
+          by position: a socket at 30, a switch at 110, a ceiling box at
+          the ceiling height. Not a height above the vertical datum.
+        minimum: 0
+        examples: [30, 110, 260]
+      outdoor_zone_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/outdoor_zone_ref"
+        title: "Located in Outdoor Zone"
+        description: >
+          Outdoor zone this component stands in, for one that belongs to
+          no building and no room: a socket on a post at a parcel edge, a
+          run of garden lamps. Systems, equipment and network nodes already
+          place themselves this way; components now can.
+        examples: ["OZ006"]
+      description:
+        type: string
+      lifecycle:
+        $ref: "../metamodel.schema.yaml#/$defs/lifecycle"
+        title: "Lifecycle"
+        description: "Set when this record has ended; absent means active. Retired records are excluded by default and counted."
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Utility Connection — UC###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  utility_connection:
+    type: object
+    title: "Utility Connection"
+    description: >
+      An external utility grid connection bringing a service to the property:
+      electricity, gas, water supply, sewage, internet. Answers CQ08 (what
+      connections exist, who provides them). Used by T2 (inventory), T9 (costs).
+    required: [id, name, connection_type, provider]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "UC### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?UC\\d{3,}$"
+        examples: ["UC001"]
+      name:
+        type: string
+        title: "Connection Name"
+        minLength: 1
+        examples: ["Grid Electricity", "Municipal Water", "Fiber Internet"]
+      connection_type:
+        type: string
+        title: "Connection Type"
+        description: "Type of utility service."
+        enum:
+          - "electricity"
+          - "natural-gas"
+          - "propane-delivery"
+          - "heating-oil-delivery"
+          - "water-supply"
+          - "sewage"
+          - "fiber-internet"
+          - "cable-internet"
+          - "dsl"
+          - "telephone"
+          - "district-heating"
+        examples: ["electricity"]
+      provider:
+        type: string
+        title: "Provider / Utility Company"
+        description: "Name of the service provider."
+        examples: ["Stadtwerke München", "Deutsche Telekom"]
+      contract_id:
+        type: string
+        title: "Contract ID"
+        description: "Customer or contract number with the provider."
+        examples: ["KD-2026-12345"]
+      meter_id:
+        type: string
+        title: "Meter ID"
+        description: "Utility meter identifier for readings."
+        examples: ["1-EMH-00123456"]
+      capacity:
+        type: number
+        title: "Connection Capacity"
+        description: "Maximum capacity of this connection."
+        exclusiveMinimum: 0
+        examples: [63, 1000, 25]
+      capacity_unit:
+        type: string
+        title: "Capacity Unit"
+        examples: ["A", "Mbps", "m³/h", "kW"]
+      monthly_cost_estimate:
+        type: number
+        title: "Estimated Monthly Cost"
+        description: "Average monthly cost in the specified currency."
+        minimum: 0
+        examples: [85, 45]
+      currency:
+        type: string
+        title: "Currency"
+        pattern: "^[A-Z]{3}$"
+        examples: ["EUR"]
+      entry_point_position:
+        $ref: "../metamodel.schema.yaml#/$defs/position"
+        title: "Entry Point"
+        description: "Where the utility enters the property (for spatial layout)."
+      cost_category_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/cost_category_ref"
+        title: "Cost Category"
+        description: "Budget category for this connection's costs."
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Cable Run - CBR### (v2.3)
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  cable_run:
+    type: object
+    title: "Cable Run"
+    description: >
+      A length of cable, or a bundle of them sharing one route, between two
+      points of an electrical system: from a board to a junction box, from
+      a box to the last socket of a circuit, up a riser between floors,
+      underground to an outbuilding. Two halves, each usable alone. The
+      topological half says what the run joins (from_ref, to_ref), which
+      circuits it carries (circuit_refs) and which rooms and zones it passes
+      (through_refs), and needs no coordinate. The geometric half is a
+      route of legs against wall segments, each leg in a stated frame.
+      Cable type and cross-section go in specs. Answers CQ51 (where is the
+      riser) and CQ52 (where does the cable run). Used by T6.
+    required: [id, name, system_ref, run_type]
+    additionalProperties: false
+    patternProperties:
+      "^x-": true
+    properties:
+      id:
+        type: string
+        title: "CBR### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?CBR\\d{3,}$"
+        examples: ["CBR001"]
+      name:
+        type: string
+        title: "Run Name"
+        minLength: 1
+        examples: ["Riser from the main board to the attic", "Buried feed to the shed"]
+      system_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/system_ref"
+        title: "Parent System"
+        description: "The electrical system this run belongs to."
+        examples: ["SYS006"]
+      run_type:
+        type: string
+        title: "Run Type"
+        description: >
+          What kind of run this is. `wall-run`: horizontal, along or inside
+          walls, ceilings or floors of one storey. `riser`: vertical, between
+          floors. `buried`: underground, between buildings or to a post.
+          `overhead`: on poles or catenary. A run that changes kind is split
+          where it changes, so that a question about risers is a filter on
+          this field.
+        enum: ["wall-run", "riser", "buried", "overhead"]
+        examples: ["riser"]
+      from_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/component_ref"
+        title: "From"
+        description: "The board, protective device, box or terminal device the run starts at."
+        examples: ["CMP043"]
+      to_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/component_ref"
+        title: "To"
+        description: "The box, board or terminal device the run ends at."
+        examples: ["CMP060"]
+      circuit_refs:
+        type: array
+        title: "Carries Circuits"
+        description: >
+          The circuits whose conductors share this route; a riser carries
+          several, a final run to one socket carries one. Each is a component
+          whose component_type is circuit.
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/component_ref"
+        uniqueItems: true
+        examples: [["CMP050", "CMP051"]]
+      through_refs:
+        type: array
+        title: "Passes Through"
+        description: >
+          The rooms and outdoor zones the run passes, in order from from_ref
+          to to_ref. The topological route, for a reader or a tool that has
+          no wall geometry.
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/room_or_zone_ref"
+        examples: [["RM006", "RM014"], ["RM013", "OZ004"]]
+      route:
+        $ref: "#/$defs/cable_route"
+        title: "Route"
+        description: "The geometric route, as legs against wall segments or free polylines."
+      specs:
+        $ref: "../metamodel.schema.yaml#/$defs/specs"
+        title: "Specifications"
+        description: "Cable type, conductor count and cross-section, rated voltage, length."
+      installed_date:
+        $ref: "../metamodel.schema.yaml#/$defs/iso_date"
+        title: "Installation Date"
+      lifecycle:
+        $ref: "../metamodel.schema.yaml#/$defs/lifecycle"
+        title: "Lifecycle"
+        description: "Set when this run was removed or replaced; absent means active."
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"
+
+  cable_route:
+    type: object
+    title: "Cable Route"
+    description: >
+      An ordered list of legs. Consecutive legs meet end to start; a route
+      with one leg is common. Each leg states its own frame.
+    required: [legs]
+    additionalProperties: false
+    properties:
+      legs:
+        type: array
+        minItems: 1
+        items:
+          oneOf:
+            - $ref: "#/$defs/cable_leg_along_wall"
+            - $ref: "#/$defs/cable_leg_vertical"
+            - $ref: "#/$defs/cable_leg_free"
+
+  cable_leg_along_wall:
+    type: object
+    title: "Leg Along a Wall"
+    description: >
+      A horizontal leg along or inside one wall segment. Offsets are
+      centimetres from the wall segment's start point along its centreline,
+      the frame wall openings use; height is centimetres above the finished
+      floor of the wall's floor. Which face of the wall is meant follows
+      from placement and from the rooms in through_refs.
+    required: [kind, wall_segment_ref, from_offset_cm, to_offset_cm, height_cm]
+    additionalProperties: false
+    properties:
+      kind:
+        type: string
+        const: "along-wall"
+      wall_segment_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/wall_segment_ref"
+        title: "Wall Segment"
+        examples: ["WSG014"]
+      from_offset_cm:
+        type: number
+        title: "From Offset (cm)"
+        minimum: 0
+        examples: [0]
+      to_offset_cm:
+        type: number
+        title: "To Offset (cm)"
+        minimum: 0
+        examples: [143]
+      height_cm:
+        type: number
+        title: "Height Above Floor (cm)"
+        minimum: 0
+        examples: [230, 30]
+      placement:
+        $ref: "#/$defs/cable_placement"
+
+  cable_leg_vertical:
+    type: object
+    title: "Vertical Leg"
+    description: >
+      A vertical leg at one point of a wall segment, from one elevation to
+      another. The offset is centimetres from the wall segment's start along
+      its centreline; the elevations are metres above the vertical datum,
+      the frame slabs and wall bases are in, because a riser crosses floors
+      and no single floor is its reference.
+    required: [kind, wall_segment_ref, offset_cm, from_elevation_m, to_elevation_m]
+    additionalProperties: false
+    properties:
+      kind:
+        type: string
+        const: "vertical"
+      wall_segment_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/wall_segment_ref"
+        title: "Wall Segment"
+        examples: ["WSG014"]
+      offset_cm:
+        type: number
+        title: "Offset Along Wall (cm)"
+        minimum: 0
+        examples: [60]
+      from_elevation_m:
+        type: number
+        title: "From Elevation (m)"
+        examples: [0.0]
+      to_elevation_m:
+        type: number
+        title: "To Elevation (m)"
+        examples: [2.9]
+      placement:
+        $ref: "#/$defs/cable_placement"
+
+  cable_leg_free:
+    type: object
+    title: "Free Leg"
+    description: >
+      A leg that follows no wall: a buried cable across a lawn, an overhead
+      span, a cable across a ceiling void. A polyline in model coordinates,
+      metres, with z above the vertical datum; a buried cable's z is below
+      the ground elevation at that point.
+    required: [kind, path]
+    additionalProperties: false
+    properties:
+      kind:
+        type: string
+        const: "free"
+      path:
+        $ref: "../metamodel.schema.yaml#/$defs/polyline3d"
+        title: "Path"
+        examples: [{vertices: [{x: 8.0, y: 3.0, z: -0.7}, {x: 12.0, y: 3.0, z: -0.7}]}]
+      placement:
+        $ref: "#/$defs/cable_placement"
+
+  cable_placement:
+    type: string
+    title: "Cable Placement"
+    description: >
+      How the cable is carried on this leg: chased into the wall, on the
+      surface in trunking or clips, in conduit, above a ceiling, under a
+      floor, buried, or overhead.
+    enum: ["in-wall", "surface", "conduit", "above-ceiling", "under-floor", "buried", "overhead"]
+    examples: ["in-wall"]

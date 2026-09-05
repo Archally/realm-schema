@@ -1,0 +1,15 @@
+engineVersion: "0.1"
+rules:
+  - id: run-without-circuit
+    severity: info
+    description: >-
+      A cable run that carries no circuit the model knows of. A run is authored to say what
+      its conductors belong to; one that names nothing may be a route recorded before the
+      circuits were, which is legitimate and temporary, or a cable of unknown purpose, which
+      is a cable-end component rather than a run.
+    find:
+      entity_type: cable_run
+    check:
+      all_non_empty:
+        - data.circuit_refs
+    message: 'Cable run "{id}" ({name|''unnamed''}) carries no circuit the model knows of - fill circuit_refs, or record an unidentified cable as a cable-end component.'

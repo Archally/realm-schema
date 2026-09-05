@@ -36,7 +36,7 @@ const PLANES = new Set(["topology", "infrastructure", "nature", "operations", "c
  *
  * Searched from the file upwards rather than read off the first path segment, because
  * those paths are relative to whatever directory the caller pointed at. Pointing at
- * `.realm/v2.2` makes the first segment `topology`; pointing one level higher makes it
+ * `.realm/v2.3` makes the first segment `topology`; pointing one level higher makes it
  * `.realm`, and every entity silently loses its plane - the same model, described
  * differently depending on how it was opened.
  *
@@ -68,13 +68,17 @@ const TYPE_OF_COLLECTION = {
   wall_segments: "wall_segment",
   roof_planes: "roof_plane",
   floor_slab: "floor_slab",
-  ceiling_slab: "ceiling_slab",
+  // A ceiling slab is a floor slab in the ceiling position: `construction.schema.yaml`
+  // defines the key as `$ref: "#/$defs/floor_slab"`, so the key says where the slab sits and
+  // the `$ref` says what it is. Which role a slab plays is in its own `slab_type`.
+  ceiling_slab: "floor_slab",
   systems: "system",
   components: "component",
   utility_connections: "utility_connection",
   network_nodes: "network_node",
   iot_devices: "iot_device",
   network_links: "network_link",
+  cable_runs: "cable_run",
   specimens: "specimen",
   plantings: "planting",
   care_profiles: "species_care_profile",
@@ -92,6 +96,7 @@ const TYPE_OF_COLLECTION = {
   roads: "road_corridor",
   persons: "person",
   estate_changes: "estate_change",
+  epics: "epic",
   risks: "risk",
   issues: "issue",
   events: "event",
@@ -138,6 +143,21 @@ export function resolveModelDir(dir) {
  * @param {string} modelDir
  */
 export async function loadRealmModel(modelDir) {
+  return (await loadRealmSources(modelDir)).entities;
+}
+
+/**
+ * The two things a model file can declare: entities, and relations between them.
+ *
+ * `spatial_relations` rows are not entities: they have no id, and they carry their predicate
+ * as data (`relation_type`) rather than in a field name, so entity extraction does not see
+ * them and they are read here. They are taken from the topology plane, where the merged
+ * model puts them; a row filed under another plane is not read.
+ *
+ * @param {string} modelDir
+ * @returns {Promise<{entities: Map<string, {type: string, data: Record<string, unknown>, file: string}>, spatialRelations: Record<string, unknown>[]}>}
+ */
+export async function loadRealmSources(modelDir) {
   modelDir = resolveModelDir(modelDir);
   const helpersPath = HELPERS_CANDIDATES.find((candidate) => fs.existsSync(candidate));
   if (!helpersPath) {
@@ -147,7 +167,18 @@ export async function loadRealmModel(modelDir) {
   }
   const helpers = await import(pathToFileURL(helpersPath).href);
   const { modelFiles } = helpers.discoverModelFiles(modelDir);
-  return helpers.extractEntities(modelFiles).entities;
+
+  /** @type {Record<string, unknown>[]} */
+  const spatialRelations = [];
+  for (const [file, data] of modelFiles) {
+    if (planeOf(file) !== "topology") continue;
+    const declared = /** @type {Record<string, unknown>} */ (data)?.["spatial_relations"];
+    if (Array.isArray(declared)) {
+      for (const row of declared) if (row && typeof row === "object") spatialRelations.push(row);
+    }
+  }
+
+  return { entities: helpers.extractEntities(modelFiles).entities, spatialRelations };
 }
 
 /**
@@ -167,6 +198,35 @@ export async function loadRealmMeta(modelDir) {
   const { parse } = await import("yaml");
   const parsed = parse(fs.readFileSync(file, "utf8"));
   return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+}
+
+/**
+ * Reference fields whose name is a sentence rather than a `_ref` suffix, because the owner
+ * named the fact ("derived from") and not the pointer. Each is an edge like any other.
+ */
+const SENTENCE_NAMED_REFERENCES = new Set(["position_derived_from"]);
+
+/** Opening types you can see through and not walk through. */
+const SIGHT_ONLY_OPENINGS = new Set(["window", "skylight"]);
+
+/**
+ * A window is not a door.
+ *
+ * One room can have two openings onto the same zone - a terrace door you walk through and a
+ * fixed pane you only look through. The distinction is written in the opening's own data, so
+ * the predicate reads it: an opening that does not open `overlooks` rather than `opens-to`.
+ *
+ * @param {Record<string, unknown>} node the object the reference sits in
+ * @param {string} refField
+ * @returns {string | null} the predicate, or null to use the vocabulary
+ */
+function sightOnlyPredicate(node, refField) {
+  if (refField !== "opens_to_room_ref" && refField !== "opens_to_zone_ref") return null;
+  const openingType = node["opening_type"];
+  const fixed =
+    node["openable"] === false ||
+    (typeof openingType === "string" && SIGHT_ONLY_OPENINGS.has(openingType));
+  return fixed ? "overlooks" : null;
 }
 
 /**
@@ -199,12 +259,16 @@ function collectRelations(node, sourceId, sourceType, ids, out, seen, warnings) 
     return;
   }
 
-  for (const [key, value] of Object.entries(node)) {
+  // Narrowed once, for the checker's sake: the guards above leave `node` an object, but
+  // `unknown` narrows only as far as `object`, which has no index signature.
+  const record = /** @type {Record<string, unknown>} */ (node);
+
+  for (const [key, value] of Object.entries(record)) {
     if (NOT_ENTITY_REFS.has(key)) continue;
 
     if (key.endsWith("_refs") && Array.isArray(value)) {
       for (const target of value) if (typeof target === "string") add(key, target);
-    } else if (key.endsWith("_ref") && typeof value === "string") {
+    } else if ((key.endsWith("_ref") || SENTENCE_NAMED_REFERENCES.has(key)) && typeof value === "string") {
       add(key, value);
     } else if (typeof value === "object" && value !== null) {
       collectRelations(value, sourceId, sourceType, ids, out, seen, warnings);
@@ -217,13 +281,22 @@ function collectRelations(node, sourceId, sourceType, ids, out, seen, warnings) 
    */
   function add(refField, target) {
     if (!ids.has(target)) return;
-    const id = `REL-${sourceId}-${refField}-${target}`;
-    // The same reference can be reached twice when a nested object repeats it. An edge is
-    // a fact about two entities, not a count, so the second sighting adds nothing.
+
+    const sight = sightOnlyPredicate(record, refField);
+    const { type, curated } = sight
+      ? { type: sight, curated: true }
+      : resolveRelationType(sourceType, refField);
+
+    // The predicate is part of the id because it is not always a function of the field: a
+    // fixed pane and a terrace door onto one zone are `overlooks` and `opens-to` through the
+    // same field, and a shared id would drop the second as a repeat of the first.
+    const id = `REL-${sourceId}-${refField}-${type}-${target}`;
+    // The same fact can be reached twice when two nested objects state it - a wall whose two
+    // openings both name the room they were cut from. An edge is a fact about two entities,
+    // not a count, so the second sighting adds nothing.
     if (seen.has(id)) return;
     seen.add(id);
 
-    const { type, curated } = resolveRelationType(sourceType, refField);
     if (!curated) {
       warnings.push(
         `Unknown reference field '${refField}' on '${sourceType}' - edge typed '${type}' from the field name.`,
@@ -243,8 +316,10 @@ function collectRelations(node, sourceId, sourceType, ids, out, seen, warnings) 
  * @param {Record<string, unknown>} [meta] the model's own `realm.yaml` - name, location,
  *   schema version. Optional, because a caller holding only an extraction (the checker's
  *   tests) has no file to read it from, and no rule asks about it.
+ * @param {Record<string, unknown>[]} [spatialRelations] the topology plane's
+ *   `spatial_relations` rows. Optional for the same reason: an extraction carries none.
  */
-export function toRealmModel(extracted, meta = {}) {
+export function toRealmModel(extracted, meta = {}, spatialRelations = []) {
   const ids = new Set(extracted.keys());
   /** @type {{id: string, name?: string, type: string, plane?: string, data: Record<string, unknown>, file?: string}[]} */
   const entities = [];
@@ -273,6 +348,25 @@ export function toRealmModel(extracted, meta = {}) {
       file: entity.file,
     });
     collectRelations(entity.data, id, type, ids, relations, seen, warnings);
+  }
+
+  // Relations the model declares directly, predicate and all. A row naming an id the model
+  // does not contain is skipped like any other dangling reference - the validator reports
+  // those, and an edge to nowhere would let an entity pass a rule asking whether it is
+  // connected.
+  for (const row of spatialRelations) {
+    const source = row["from_ref"];
+    const target = row["to_ref"];
+    const type = row["relation_type"];
+    if (typeof source !== "string" || typeof target !== "string" || typeof type !== "string") {
+      warnings.push("Skipping spatial_relation with missing from_ref, to_ref or relation_type.");
+      continue;
+    }
+    if (!ids.has(source) || !ids.has(target)) continue;
+    const id = `REL-${source}-spatial_relation-${type}-${target}`;
+    if (seen.has(id)) continue;
+    seen.add(id);
+    relations.push({ id, source, target, type, refField: "spatial_relation" });
   }
 
   entities.sort((a, b) => a.id.localeCompare(b.id));
@@ -304,11 +398,11 @@ export function toRealmModel(extracted, meta = {}) {
  * @param {string} modelDir
  */
 export async function buildRealmModel(modelDir) {
-  const [extracted, meta] = await Promise.all([
-    loadRealmModel(modelDir),
+  const [sources, meta] = await Promise.all([
+    loadRealmSources(modelDir),
     loadRealmMeta(modelDir),
   ]);
-  return toRealmModel(extracted, meta);
+  return toRealmModel(sources.entities, meta, sources.spatialRelations);
 }
 
 /**

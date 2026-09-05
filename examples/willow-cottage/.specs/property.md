@@ -1,6 +1,6 @@
 # Willow Cottage
 
-> Generated from a Realm model: 145 entities, 444 relations, 5 planes, Realm schema v2.2.0.
+> Generated from a Realm model: 145 entities, 454 relations, 5 planes, Realm schema v2.3.0.
 
 **Willow Cottage, Brackwater Lane, Nether Hollowby, South West England, England**
 
@@ -379,4 +379,4 @@ flowchart LR
 
 94 authored entities, 51 derived.
 
-51 further entities form the construction layer (43 wall_segment, 5 roof_plane, 2 floor_slab, 1 ceiling_slab). They are derived from the rooms, wings and floors above rather than authored, and are summarised rather than listed - pass --geometry to enumerate them.
+51 further entities form the construction layer (43 wall_segment, 5 roof_plane, 3 floor_slab). They are derived from the rooms, wings and floors above rather than authored, and are summarised rather than listed - pass --geometry to enumerate them.

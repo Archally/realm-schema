@@ -32,7 +32,7 @@ const HELP = `${USAGE}
 Loads a realm model directory and produces a model JSON with entities and relations.
 
 Arguments:
-  <model-dir>        Path to a .realm/v2.2 directory
+  <model-dir>        Path to a .realm/v2.3 directory
 
 Options:
   --output, -o       Write to a file instead of stdout

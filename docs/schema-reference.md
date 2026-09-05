@@ -1,6 +1,6 @@
 # Realm Schema Reference
 
-Every entity in schema v2.2, with its identifier prefix and its fields. This document is generated from the schema files themselves, so it states what the validator actually enforces rather than a description of it that might have fallen behind.
+Every entity in schema v2.3, with its identifier prefix and its fields. This document is generated from the schema files themselves, so it states what the validator actually enforces rather than a description of it that might have fallen behind.
 
 For how to author a model, read the [modeling guide](./modeling-guide.md); for where the files go and how identifiers are formed, the [file conventions](./file-conventions.md). This page is the lookup, not the introduction.
 
@@ -10,6 +10,7 @@ For how to author a model, read the [modeling guide](./modeling-guide.md); for w
 
 | Prefix | Entity | Plane | Defined in |
 |---|---|---|---|
+| `EPK` | [Epic](#epic---epk) | Model root and cross-cutting | `estate-change.schema.yaml` |
 | `ECH` | [Estate Change](#estate-change---ech) | Model root and cross-cutting | `estate-change.schema.yaml` |
 | `EVT` | [Event](#event---evt) | Model root and cross-cutting | `events.schema.yaml` |
 | `RSK` | [Risk](#risk---rsk) | Model root and cross-cutting | `risks.schema.yaml` |
@@ -33,6 +34,7 @@ For how to author a model, read the [modeling guide](./modeling-guide.md); for w
 | `SYS` | [Infrastructure System](#infrastructure-system---sys) | Infrastructure | `infrastructure/systems.schema.yaml` |
 | `CMP` | [System Component](#system-component---cmp) | Infrastructure | `infrastructure/systems.schema.yaml` |
 | `UC` | [Utility Connection](#utility-connection---uc) | Infrastructure | `infrastructure/systems.schema.yaml` |
+| `CBR` | [Cable Run](#cable-run---cbr) | Infrastructure | `infrastructure/systems.schema.yaml` |
 | `BMF` | [Biomass Flow](#biomass-flow---bmf) | Nature | `nature/biomass.schema.yaml` |
 | `SCP` | [Species Care Profile](#species-care-profile---scp) | Nature | `nature/care.schema.yaml` |
 | `REC` | [Planting Recommendation](#planting-recommendation---rec) | Nature | `nature/recommendations.schema.yaml` |
@@ -50,7 +52,7 @@ For how to author a model, read the [modeling guide](./modeling-guide.md); for w
 | `EF` | [Environmental Factor](#environmental-factor---ef) | Context | `context/surroundings.schema.yaml` |
 | `RD` | [Road Corridor](#road-corridor---rd) | Context | `context/surroundings.schema.yaml` |
 
-39 entity types.
+41 entity types.
 
 ## Model root and cross-cutting
 
@@ -59,6 +61,18 @@ The model's own metadata, the shared vocabulary every plane draws on, and the th
 ### `estate-change.schema.yaml`
 
 Tracks planned changes and undertakings concerning the estate as AS-IS to TO-BE transitions. Each estate change is a discrete undertaking (add solar panels, replace fence, plant new hedge, apply to a listing platform) with timeline, status, dependencies, impact on existing entities, required resources, and a record of what was actually carried out.
+
+#### Epic - `EPK###`
+
+A named group of estate changes that a schedule or a Gantt chart groups by: the building, the garden, privacy, the forest. An epic carries a name and an order and nothing else; how a view colours it belongs to that view's configuration. Answers CQ23.
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| `id` | `epic_ref` | yes |  |
+| `name` | string | yes | Example: `Ogród`. |
+| `order` | integer | yes | Position of this epic when epics are listed or drawn; lower comes first. Unique within a model. min 1. Example: `1`. |
+| `description` | string | - |  |
+| `tags` | `tags` | - |  |
 
 #### Estate Change - `ECH###`
 
@@ -87,11 +101,13 @@ Accepts `x-` extension fields.
 | `depends_on_estate_change_refs` | list of `estate_change_ref` | - | Estate changes that must be completed before this one can start. |
 | `part_of_change_ref` | `estate_change_ref` | - | The family this change belongs to. A family parent carries the shared budget, goal and condition its members work towards, and lets a risk or an issue address the whole family rather than guessing at one member. The edge is held by the member, so the parent needs no list; membership must not form a cycle. Example: `ECH009`. |
 | `variant_group` | string | - | Names a set of mutually exclusive scenarios, declared on the parent of each competing branch. Exactly one branch is ever carried out, so members of one group are alternatives rather than dependencies and their statuses are not rolled up together. Example: `property-exit`. |
+| `epic_refs` | list of `epic_ref` | - | The epics this change belongs to, most specific first. A view that groups by one epic uses the first; a change with no epic is listed under its own heading rather than left out. |
 | `executions` | list of `execution` | - | What was actually carried out, and when. A change closed without one records no evidence that anything happened. Counts, totals and the most recent date are read from this list rather than stored beside it. Answers CQ34. |
 | `coordinator_ref` | `person_ref` | - | Person responsible for coordinating this estate change. Answers CQ32. |
 | `estimated_cost` | number | - | min 0. Example: `15000`. |
 | `currency` | string | - | Example: `EUR`. |
 | `description` | string | - |  |
+| `lifecycle` | `lifecycle` | - | Set when this record has ended; absent means active. Retired records are excluded by default and counted. |
 | `tags` | `tags` | - |  |
 
 *Inside `changes`:*
@@ -105,6 +121,7 @@ Accepts `x-` extension fields.
 | `from_state` | string | - | Current state before the change. Example: `No solar generation`. |
 | `to_state` | string | - | Desired state after the change. Example: `10kWp solar PV with 13.5kWh battery`. |
 | `actual_state` | string | - | What the change actually left behind, when that differs from the intended state or when the closure is worth recording in its own words. Work carried out in a different way than planned is the normal case rather than a fault, and a closed change that never records one is an unverified closure. Example: `Mesh sewn onto three wires; no panels and no cable ties were used`. |
+| `outcome` | enum | - | How this one item ended, when the change as a whole has a status that does not say it. `done` when the item was carried out, `superseded` when another item or change did its work, `abandoned` when it was dropped and nothing replaced it. Absent while the item is still open. A completed change may carry an abandoned item; `actual_state` says what stands there instead. One of: `done`, `superseded`, `abandoned`. Example: `abandoned`. |
 
 ### `events.schema.yaml`
 
@@ -217,6 +234,7 @@ Accepts `x-` extension fields.
 | `neighbor_property_ref` | `neighbor_property_ref` | - | Neighbor property on the other side of this boundary. |
 | `shared_ownership` | boolean | - | Whether this boundary is jointly owned/maintained with the neighbor. |
 | `base_elevation_m` | number | - | Ground elevation at the base of this boundary above vertical datum. Default 0. Non-zero for fences on retaining walls or slopes. Default `0`. Example: `0`. |
+| `shared_edges` | list of `shared_edge` | - | Edges of this element's outline that lie on another element's edge and follow it when it moves. Declare an edge here when its coordinates were set to meet a neighbour rather than measured; tools move a declared edge and never a merely coincident one. |
 | `description` | string | - |  |
 | `tags` | `tags` | - |  |
 
@@ -321,15 +339,16 @@ A furniture piece placed in a room or building (shed, gazebo): sofa, table, ward
 | `id` | string | yes |  |
 | `name` | string | yes | Example: `Kanapa narożna`. |
 | `furniture_type` | enum | yes | Primary classification of this furniture piece. One of: `sofa`, `armchair`, `table`, `desk`, `chair`, `bed`, `wardrobe`, `shelf`, `cabinet`, `dresser`, `bench`, `mirror`, and 12 more. Example: `sofa`. |
-| `room_ref` | `room_ref` | - | Room this furniture is placed in. Required if building_ref is not set. |
+| `room_ref` | `room_ref` | - | Room this furniture is placed in. Required if neither building_ref nor outdoor_zone_ref is set. |
 | `building_ref` | `building_ref` | - | Building (shed, gazebo) this furniture is placed in. Use when the item is in a structure without formal rooms. Mutually exclusive with room_ref. |
+| `outdoor_zone_ref` | `outdoor_zone_ref` | - | Outdoor zone this furniture stands in, for a piece that belongs to no building and no room: a table in a forest clearing, a bench on a lawn. A terrace or patio modelled as a room keeps using room_ref. Mutually exclusive with room_ref and building_ref. Example: `OZ006`. |
 | `wall` | `compass_direction` | - | Wall or side of the room where this furniture is positioned. |
 | `width_cm` | number | - | Example: `200`. |
 | `depth_cm` | number | - | Example: `90`. |
 | `height_cm` | number | - | Example: `210`. |
 | `brand` | string | - | Example: `IKEA`. |
 | `model` | string | - | Example: `KALLAX`. |
-| `position` | `position` | - | Position on the room layout for 2D rendering. |
+| `position` | `position` | - | Position for 2D rendering, in model coordinates like every other position; for a piece in an outdoor zone, where it stands on the estate. |
 | `description` | string | - |  |
 | `tags` | `tags` | - |  |
 
@@ -343,7 +362,7 @@ Accepts `x-` extension fields.
 |---|---|---|---|
 | `id` | string | yes |  |
 | `name` | string | yes | Example: `Piekarnik IKEA KULINARISK`. |
-| `equipment_type` | enum | yes | Primary classification of this equipment. One of: `oven`, `microwave`, `dishwasher`, `refrigerator`, `freezer`, `induction-hob`, `gas-hob`, `range-hood`, `coffee-machine`, `washing-machine`, `dryer`, `water-filter`, and 44 more. Example: `oven`. |
+| `equipment_type` | enum | yes | Primary classification of this equipment. Garden machinery that is pushed or pulled rather than powered (`lawn-roller`, `levelling-grid`, `spreader`, `garden-cart`) is equipment, not a tool. One of: `oven`, `microwave`, `dishwasher`, `refrigerator`, `freezer`, `induction-hob`, `gas-hob`, `range-hood`, `coffee-machine`, `washing-machine`, `dryer`, `water-filter`, and 52 more. Example: `oven`. |
 | `room_ref` | `room_ref` | - | Room this equipment is installed in. Required if building_ref is not set. |
 | `building_ref` | `building_ref` | - | Building (shed, gazebo) this equipment is installed in. Use when the item is in a structure without formal rooms. Mutually exclusive with room_ref. |
 | `wall` | `compass_direction` | - | Wall or side of the room where this equipment is positioned. |
@@ -361,6 +380,9 @@ Accepts `x-` extension fields.
 | `warranty_ref` | `warranty_ref` | - | Warranty covering this equipment. |
 | `installed_date` | `iso_date` | - |  |
 | `specs` | `specs` | - | Key-value technical specs beyond power_watts (capacity, dimensions, etc.). Answers CQ30. |
+| `position_accuracy_m` | `position_accuracy_m` | - |  |
+| `position_source` | `position_source` | - |  |
+| `position_derived_from` | `position_derived_from` | - |  |
 | `position` | `position` | - | Position on the room layout for 2D rendering. |
 | `description` | string | - |  |
 | `tags` | `tags` | - |  |
@@ -379,10 +401,14 @@ A discrete area of land with legal/cadastral identity. An estate may comprise mu
 | `name` | string | yes | Human-readable name for this parcel. Example: `Main Lot`. |
 | `cadastral_id` | string | - | Official land registry / cadastral identifier. Example: `12345/6`. |
 | `area_sqm` | number | - | Total area of this parcel in square meters. Example: `2500`. |
+| `position_accuracy_m` | `position_accuracy_m` | - |  |
+| `position_source` | `position_source` | - |  |
+| `position_derived_from` | `position_derived_from` | - |  |
 | `position` | `position` | - | Center position of this parcel on the property layout. |
 | `footprint` | `polygon_footprint` | - | Polygon outline of the parcel boundary. Used by T5 for rendering. |
 | `elevation_m` | number | - | Ground elevation of this parcel above the vertical datum. For flat properties using local-ground datum, typically 0. For sea-level- relative datum, the actual meters above sea level (e.g., 153). Multiple parcels may have different elevations on sloped terrain. Default `0`. Example: `0`. |
 | `vertex_elevations` | list of number | - | Per-vertex elevation (m, relative to model vertical datum / origin) for each vertex of `footprint`. Length must equal `footprint.vertices.length`. When present, the 3D viewer renders the parcel as a fan-triangulated tilted surface (centroid + adjacent vertices form coplanar triangles - no GPU bilinear fold). Vertex order matches `footprint.vertices`. |
+| `shared_edges` | list of `shared_edge` | - | Edges of this element's outline that lie on another element's edge and follow it when it moves. Declare an edge here when its coordinates were set to meet a neighbour rather than measured; tools move a declared edge and never a merely coincident one. |
 | `description` | string | - |  |
 | `tags` | `tags` | - |  |
 
@@ -402,6 +428,9 @@ Accepts `x-` extension fields.
 | `floors_count` | integer | - | Total number of floors including basement and attic if present. min 1. Example: `2`. |
 | `built_year` | integer | - | Year the building was constructed. Example: `1995`. |
 | `total_area_sqm` | number | - | Sum of all floor areas in this building. Example: `180`. |
+| `position_accuracy_m` | `position_accuracy_m` | - |  |
+| `position_source` | `position_source` | - |  |
+| `position_derived_from` | `position_derived_from` | - |  |
 | `position` | `position` | - | Center of the building footprint on the property grid. |
 | `footprint` | `polygon_footprint` | - | Ground-plan polygon in local coordinates (before rotation). |
 | `rotation_degrees` | number | - | Clockwise rotation from north in degrees. Applied to the footprint polygon vertices around the centroid for 2D rendering. 0 means the building's local +Y axis aligns with north. Default `0`. min 0. Example: `0`. |
@@ -508,9 +537,12 @@ Accepts `x-` extension fields.
 |---|---|---|---|
 | `id` | string | yes |  |
 | `name` | string | yes | Example: `Front Garden`. |
-| `zone_type` | enum | yes | Primary classification of this outdoor area. One of: `garden`, `vegetable-garden`, `orchard`, `forest`, `lawn`, `meadow`, `driveway`, `parking`, `patio`, `terrace`, `deck`, `pool-area`, and 7 more. Example: `garden`. |
+| `zone_type` | enum | yes | Primary classification of this outdoor area. A `path` is an outdoor area whose purpose is that you walk along it: a paved walk between two places, or a track through a forest. Use it regardless of surface; the surface belongs in the description. One of: `garden`, `vegetable-garden`, `orchard`, `forest`, `lawn`, `meadow`, `driveway`, `parking`, `patio`, `terrace`, `deck`, `pool-area`, and 8 more. Example: `garden`. |
 | `parcel_ref` | `parcel_ref` | yes | Land parcel this zone belongs to. |
 | `area_sqm` | number | - | Example: `120`. |
+| `position_accuracy_m` | `position_accuracy_m` | - |  |
+| `position_source` | `position_source` | - |  |
+| `position_derived_from` | `position_derived_from` | - |  |
 | `position` | `position` | - |  |
 | `footprint` | `footprint` | - | Shape of this zone on the property layout. Polygon for irregular areas, circle for round features. |
 | `sun_exposure` | enum | - | Typical sun exposure level. Answers CQ11, CQ22. Used by T3 (garden planning). One of: `full-sun`, `partial-sun`, `partial-shade`, `full-shade`. Example: `partial-sun`. |
@@ -519,6 +551,7 @@ Accepts `x-` extension fields.
 | `soil_profile_refs` | list of `soil_profile_ref` | - | Detailed soil profiles for this zone. One zone may have multiple soil profiles (e.g., lawn area vs raised bed). Answers CQ37. Convenience reverse-ref; SOIL entity is primary owner via outdoor_zone_ref. |
 | `slope_direction` | `compass_direction` | - | Direction the ground slopes downward (for drainage analysis). |
 | `slope_percent` | number | - | Gradient as percentage. 0 = flat, 100 = 45 degrees. min 0. Example: `3`. |
+| `shared_edges` | list of `shared_edge` | - | Edges of this element's outline that lie on another element's edge and follow it when it moves. Declare an edge here when its coordinates were set to meet a neighbour rather than measured; tools move a declared edge and never a merely coincident one. |
 | `description` | string | - |  |
 | `tags` | `tags` | - |  |
 
@@ -568,6 +601,9 @@ A network infrastructure device: router, switch, access point, mesh node, modem,
 | `poe_powered` | boolean | - | Whether this device is powered via Power over Ethernet. |
 | `room_ref` | `room_ref` | - |  |
 | `outdoor_zone_ref` | `outdoor_zone_ref` | - | For outdoor APs and cameras. |
+| `position_accuracy_m` | `position_accuracy_m` | - |  |
+| `position_source` | `position_source` | - |  |
+| `position_derived_from` | `position_derived_from` | - |  |
 | `position` | `position` | - |  |
 | `description` | string | - |  |
 | `tags` | `tags` | - |  |
@@ -589,8 +625,12 @@ A smart-home sensor, actuator, or controller. Connected to the network and optio
 | `network_node_ref` | `network_node_ref` | - | Network node this device connects through (hub, AP, bridge). |
 | `room_ref` | `room_ref` | - |  |
 | `outdoor_zone_ref` | `outdoor_zone_ref` | - |  |
+| `position_accuracy_m` | `position_accuracy_m` | - |  |
+| `position_source` | `position_source` | - |  |
+| `position_derived_from` | `position_derived_from` | - |  |
 | `position` | `position` | - |  |
 | `description` | string | - |  |
+| `lifecycle` | `lifecycle` | - | Set when this record has ended; absent means active. Retired records are excluded by default and counted. |
 | `tags` | `tags` | - |  |
 
 #### Network Link - `NL###`
@@ -611,7 +651,7 @@ A physical or wireless connection between two network nodes. Forms the edges of 
 
 ### `infrastructure/systems.schema.yaml`
 
-Infrastructure systems (energy, heating, water, electrical), their physical components, and utility grid connections. Covers all built systems from solar panels to sewage. Infrastructure plane.
+Infrastructure systems (energy, heating, water, electrical), their physical components, utility grid connections, and the cable runs of the electrical layer. Covers all built systems from solar panels to sewage. Infrastructure plane.
 
 #### Infrastructure System - `SYS###`
 
@@ -653,7 +693,7 @@ Accepts `x-` extension fields.
 
 #### System Component - `CMP###`
 
-A physical part within an infrastructure system: boiler, radiator, pump, inverter, valve, tank, filter, etc. Granular enough for maintenance targeting. Answers CQ05 (configuration detail). Used by T1 (maintenance), T2 (inventory).
+A physical part within an infrastructure system: boiler, radiator, pump, inverter, valve, tank, filter, etc. Granular enough for maintenance targeting. Answers CQ05 (configuration detail). Used by T1 (maintenance), T2 (inventory). In an electrical system a component is also a board, a protective device, a circuit, a junction box or a terminal device, classified by component_type and joined by circuit_ref, protected_by_ref and fed_from_ref (CQ48-CQ50).
 
 Accepts `x-` extension fields.
 
@@ -661,7 +701,7 @@ Accepts `x-` extension fields.
 |---|---|---|---|
 | `id` | string | yes |  |
 | `name` | string | yes | Example: `Condensing Boiler Unit`. |
-| `component_type` | string | - | Functional type of this component. Example: `boiler`. |
+| `component_type` | string | - | Functional type of this component. Electrical roles use the values of the metamodel's electrical component type; a component that takes part in circuit_ref, protected_by_ref or fed_from_ref is held to them. Example: `boiler`. |
 | `system_ref` | `system_ref` | yes | Infrastructure system this component belongs to. |
 | `building_ref` | `building_ref` | - | Building this component is installed in. |
 | `specs` | `specs` | - | Technical specifications for this component. |
@@ -671,9 +711,23 @@ Accepts `x-` extension fields.
 | `installed_date` | `iso_date` | - |  |
 | `expected_lifespan_years` | integer | - | Manufacturer's expected service life. Used by T1 for replacement planning. min 1. Example: `15`. |
 | `room_ref` | `room_ref` | - |  |
+| `position_accuracy_m` | `position_accuracy_m` | - |  |
+| `position_source` | `position_source` | - |  |
+| `position_derived_from` | `position_derived_from` | - |  |
 | `position` | `position` | - |  |
+| `members` | list of `placed_member` | - | Individual positions of the units this entity stands for, one entry per unit, when a consumer needs to place them: six clipped shrubs on either side of a walk, a run of solar lamps along a fence. Explicit points only; a spacing rule is computed once and its points written here with their derivation. A unit promoted to an entity of its own is removed from this list. |
+| `member_of_ref` | `component_ref` | - | The group this entity was one member of before it needed a history of its own. The group keeps its count; this entity's position is no longer listed among the group's members. Example: `CMP038`. |
 | `warranty_ref` | `warranty_ref` | - |  |
+| `circuit_ref` | `component_ref` | - | The circuit this terminal device or junction box belongs to: a component whose component_type is circuit. Answers CQ49. The circuit is reached from here; a circuit does not list its members. Example: `CMP050`. |
+| `protected_by_ref` | `component_ref` | - | For a circuit: the protective device (breaker, RCD, RCBO, fuse) that protects it, a component whose component_type is protective-device. The device's fed_from_ref says which board it sits in, so a circuit reaches its board through its device. Answers CQ50. Example: `CMP045`. |
+| `fed_from_ref` | `component_ref` | - | For a protective device or a board: the upstream component it draws its supply from. A breaker in a board names the board, or the residual-current device it sits behind; a sub-board names the breaker in the upstream board that feeds it. The main board names nothing here; its system's utility_connection_ref is its supply. Answers CQ48, CQ50. Example: `CMP043`. |
+| `unit_count` | integer | - | How many identical physical units this component stands for, when one record describes several: five single sockets on one circuit in one room, a run of garden lamps. Absent means one. A unit that needs an answer of its own, because it is broken or sits on another circuit, becomes a component of its own and this count drops by one. min 1. Example: `5`. |
+| `wall_segment_ref` | `wall_segment_ref` | - | The wall segment this component is mounted on or set into, from the construction layer. Which face is meant follows from room_ref: the wall's left_space_ref or right_space_ref that equals it. A component standing for several units carries no wall; each unit that needs placing becomes a component of its own. Example: `WSG029`. |
+| `wall_offset_cm` | number | - | Distance from the wall segment's start point along its centreline to the component's centre, in centimetres: the frame wall openings are placed in. Requires wall_segment_ref. min 0. Example: `45`. |
+| `mounting_height_cm` | number | - | Height of the component's centre above the finished floor of the room it is in, in centimetres, whether it is on a wall or placed by position: a socket at 30, a switch at 110, a ceiling box at the ceiling height. Not a height above the vertical datum. min 0. Example: `30`. |
+| `outdoor_zone_ref` | `outdoor_zone_ref` | - | Outdoor zone this component stands in, for one that belongs to no building and no room: a socket on a post at a parcel edge, a run of garden lamps. Systems, equipment and network nodes already place themselves this way; components now can. Example: `OZ006`. |
 | `description` | string | - |  |
+| `lifecycle` | `lifecycle` | - | Set when this record has ended; absent means active. Retired records are excluded by default and counted. |
 | `tags` | `tags` | - |  |
 
 #### Utility Connection - `UC###`
@@ -694,6 +748,29 @@ An external utility grid connection bringing a service to the property: electric
 | `currency` | string | - | Example: `EUR`. |
 | `entry_point_position` | `position` | - | Where the utility enters the property (for spatial layout). |
 | `cost_category_ref` | `cost_category_ref` | - | Budget category for this connection's costs. |
+| `description` | string | - |  |
+| `tags` | `tags` | - |  |
+
+#### Cable Run - `CBR###`
+
+A length of cable, or a bundle of them sharing one route, between two points of an electrical system: from a board to a junction box, from a box to the last socket of a circuit, up a riser between floors, underground to an outbuilding. Two halves, each usable alone. The topological half says what the run joins (from_ref, to_ref), which circuits it carries (circuit_refs) and which rooms and zones it passes (through_refs), and needs no coordinate. The geometric half is a route of legs against wall segments, each leg in a stated frame. Cable type and cross-section go in specs. Answers CQ51 (where is the riser) and CQ52 (where does the cable run). Used by T6.
+
+Accepts `x-` extension fields.
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| `id` | string | yes |  |
+| `name` | string | yes | Example: `Riser from the main board to the attic`. |
+| `system_ref` | `system_ref` | yes | The electrical system this run belongs to. Example: `SYS006`. |
+| `run_type` | enum | yes | What kind of run this is. `wall-run`: horizontal, along or inside walls, ceilings or floors of one storey. `riser`: vertical, between floors. `buried`: underground, between buildings or to a post. `overhead`: on poles or catenary. A run that changes kind is split where it changes, so that a question about risers is a filter on this field. One of: `wall-run`, `riser`, `buried`, `overhead`. Example: `riser`. |
+| `from_ref` | `component_ref` | - | The board, protective device, box or terminal device the run starts at. Example: `CMP043`. |
+| `to_ref` | `component_ref` | - | The box, board or terminal device the run ends at. Example: `CMP060`. |
+| `circuit_refs` | list of `component_ref` | - | The circuits whose conductors share this route; a riser carries several, a final run to one socket carries one. Each is a component whose component_type is circuit. |
+| `through_refs` | list of `room_or_zone_ref` | - | The rooms and outdoor zones the run passes, in order from from_ref to to_ref. The topological route, for a reader or a tool that has no wall geometry. |
+| `route` | `cable_route` | - | The geometric route, as legs against wall segments or free polylines. |
+| `specs` | `specs` | - | Cable type, conductor count and cross-section, rated voltage, length. |
+| `installed_date` | `iso_date` | - |  |
+| `lifecycle` | `lifecycle` | - | Set when this run was removed or replaced; absent means active. |
 | `description` | string | - |  |
 | `tags` | `tags` | - |  |
 
@@ -887,11 +964,16 @@ Accepts `x-` extension fields.
 | `leaf_retention` | enum | - | Deciduous (drops leaves) or evergreen. Affects year-round screening. One of: `deciduous`, `evergreen`, `semi-evergreen`. |
 | `bloom_months` | list of integer | - | Months when this specimen flowers (1-12). |
 | `outdoor_zone_ref` | `outdoor_zone_ref` | yes | Outdoor zone where this specimen grows. |
+| `position_accuracy_m` | `position_accuracy_m` | - |  |
+| `position_source` | `position_source` | - |  |
+| `position_derived_from` | `position_derived_from` | - |  |
 | `position` | `position` | - | Center of this specimen on the property grid. |
 | `companion_specimen_refs` | list of `specimen_ref` | - | Other specimens that benefit from proximity. Used by T3. |
 | `antagonist_specimen_refs` | list of `specimen_ref` | - | Specimens that should be kept distant. Used by T3. |
 | `care_profile_ref` | `care_profile_ref` | - | Species-level care protocol for this specimen. Answers CQ35, CQ38, CQ39. |
+| `member_of_ref` | `planting_ref` | - | The group this entity was one member of before it needed a history of its own. The group keeps its count; this entity's position is no longer listed among the group's members. Example: `PTG011`. |
 | `description` | string | - |  |
+| `lifecycle` | `lifecycle` | - | Set when this record has ended; absent means active. Retired records are excluded by default and counted. |
 | `tags` | `tags` | - |  |
 
 #### Planting - `PTG###`
@@ -921,13 +1003,19 @@ Accepts `x-` extension fields.
 | `watering_schedule` | `rrule_schedule` | - | Recurring watering schedule. Typically active in summer months only. |
 | `season` | enum | - | When this planting is actively growing or visible. One of: `spring`, `summer`, `autumn`, `winter`, `year-round`. Example: `year-round`. |
 | `outdoor_zone_ref` | `outdoor_zone_ref` | yes |  |
+| `position_accuracy_m` | `position_accuracy_m` | - |  |
+| `position_source` | `position_source` | - |  |
+| `position_derived_from` | `position_derived_from` | - |  |
 | `position` | `position` | - |  |
 | `footprint` | `footprint` | - | Shape of this planting area on the layout. |
 | `height_m` | number | - | Current height of this planting group for 3D rendering. For hedges, the maintained height. Derived from current_height_min_cm/max_cm average / 100 if not explicitly set. Example: `2.5`. |
 | `render_as` | enum | - | How this planting should appear in 3D scenes. One of: `extruded-polygon`, `ground-cover`, `point-cloud`, `row`. Default `"extruded-polygon"`. |
 | `care_profile_ref` | `care_profile_ref` | - | Species-level care protocol for this planting. Answers CQ35, CQ38, CQ39. |
 | `leaf_retention` | string | - | Leaf retention habit (e.g., deciduous, evergreen, semi-evergreen). |
+| `shared_edges` | list of `shared_edge` | - | Edges of this element's outline that lie on another element's edge and follow it when it moves. Declare an edge here when its coordinates were set to meet a neighbour rather than measured; tools move a declared edge and never a merely coincident one. |
+| `members` | list of `placed_member` | - | Individual positions of the units this entity stands for, one entry per unit, when a consumer needs to place them: six clipped shrubs on either side of a walk, a run of solar lamps along a fence. Explicit points only; a spacing rule is computed once and its points written here with their derivation. A unit promoted to an entity of its own is removed from this list. |
 | `description` | string | - |  |
+| `lifecycle` | `lifecycle` | - | Set when this record has ended; absent means active. Retired records are excluded by default and counted. |
 | `tags` | `tags` | - |  |
 
 *Inside `species_mix`:*
@@ -965,6 +1053,7 @@ A manufacturer or installer warranty covering a system or component. Critically 
 | `documentation_url` | string (uri) | - | Link to warranty terms document. Example: `https://www.viessmann.com/warranty/terms`. |
 | `contact_info` | string | - | Phone number or email for warranty claims. Example: `+49 6452 70-0`. |
 | `description` | string | - |  |
+| `lifecycle` | `lifecycle` | - | Set when this record has ended; absent means active. Retired records are excluded by default and counted. |
 | `tags` | `tags` | - |  |
 
 *Inside `service_conditions`:*
@@ -1034,6 +1123,7 @@ A recurring maintenance activity targeting a specific element (system, building,
 | `estimated_cost` | number | - | min 0. Example: `250`. |
 | `currency` | string | - | Example: `EUR`. |
 | `description` | string | - |  |
+| `lifecycle` | `lifecycle` | - | Set when this record has ended; absent means active. Retired records are excluded by default and counted. |
 | `tags` | `tags` | - |  |
 
 #### Notification Rule - `NR###`
@@ -1089,6 +1179,7 @@ A person or organization involved with the property: owner, household member, co
 | `email` | string (email) | - | Example: `jan@example.com`. |
 | `phone` | string | - | Phone number in international or local format. Example: `+48 123 456 789`. |
 | `description` | string | - |  |
+| `lifecycle` | `lifecycle` | - | Set when this record has ended; absent means active. Retired records are excluded by default and counted. |
 | `tags` | `tags` | - |  |
 
 ### `context/surroundings.schema.yaml`
@@ -1122,10 +1213,14 @@ Accepts `x-` extension fields.
 | `has_pets` | boolean | - | Whether the neighbor has outdoor pets (dogs, etc.) that impact boundary. |
 | `has_outdoor_lighting` | boolean | - | Whether neighbor lighting impacts our property (light pollution). |
 | `boundary_segment_refs` | list of `boundary_segment_ref` | - | Boundary segments between our property and this neighbor. |
-| `position` | `position` | - | Approximate center of the neighbor's nearest structure (for 2D layout). |
-| `footprint` | `polygon_footprint` | - | Outline of the neighbor's main building/structure (relative to position). Used by 2D ContextLayer for the massing block, and by 3D NeighborLayer for the building extrusion. For just the parcel boundary use parcel_footprint. |
+| `position_accuracy_m` | `position_accuracy_m` | - |  |
+| `position_source` | `position_source` | - |  |
+| `position_derived_from` | `position_derived_from` | - |  |
+| `position` | `position` | - | Approximate center of the neighbor's nearest structure (for 2D layout). Further structures go in features. |
+| `footprint` | `polygon_footprint` | - | Outline of the neighbor's main building/structure (relative to position). Used by 2D ContextLayer for the massing block, and by 3D NeighborLayer for the building extrusion. For just the parcel boundary use parcel_footprint. Further structures go in features. |
 | `parcel_footprint` | `polygon_footprint` | - | Outline of the neighbor's land parcel (cadastral polygon, relative to position). Rendered as a flat ground platform in 3D scene. Distinct from `footprint` which represents the building. Useful for vacant plots, forests, and any case where parcel boundary matters more than a single structure. |
 | `parcel_vertex_elevations` | list of number | - | Per-vertex elevation (m, relative to model vertical datum / origin) for each vertex of `parcel_footprint`. Length must equal `parcel_footprint.vertices.length`. When present, the 3D viewer renders the parcel as a fan-triangulated tilted surface (each triangle = centroid + 2 adjacent vertices). When absent, the parcel is rendered flat at `terrain_elevation_offset_cm`. Same vertex order. |
+| `features` | list of `neighbor_feature` | - | Structures and screening on this neighbour's land beyond the one building position and footprint describe: a shed at the fence, a hedge along the boundary. Answers CQ19 and CQ22 for neighbours with more than one thing on them. |
 | `roof_type` | enum | - | Approximate roof form for 3D massing context. One of: `flat`, `gable`, `hip`, `gambrel`, `mansard`, `shed`, `mono-pitch`, `unknown`. Default `"unknown"`. Example: `gable`. |
 | `roof_ridge_height_m` | number | - | Approximate ridge height above neighbor's ground level. Example: `9.5`. |
 | `ground_elevation_offset_m` | number | - | Neighbor's ground level relative to the model vertical datum. Positive = neighbor is higher. Used for 3D massing placement. May differ from terrain_elevation_offset_cm (which is an observation); this is the value used for rendering. Default `0`. Example: `0.25`. |
@@ -1196,21 +1291,29 @@ Definitions the planes draw on. The reference types (`parcel_ref`, `room_ref` an
 | Type | Shape | Notes |
 |---|---|---|
 | `semver` | pattern `^\d+\.\d+\.\d+(-[a-zA-Z0-9.]+)?(\+[a-zA-Z0-9.]+)?$` | Semantic version string (MAJOR.MINOR.PATCH). Example: `1.0.0`. |
-| `schema_version` | enum | Realm schema version this document targets. The v2.2 schemas accept documents declaring 2.1.0 and 2.0.0; 2.2.0 renamed the migration entity to estate_change, so an older document that uses that construct needs the rename before it will validate. One of: `2.2.0`, `2.1.0`, `2.0.0`. |
-| `tags` | list of string | Arbitrary classification tags for filtering and grouping. |
+| `schema_version` | enum | Realm schema version this document targets. The v2.3 schemas accept documents declaring 2.2.0, 2.1.0 and 2.0.0; 2.3.0 is additive over 2.2.0, and 2.2.0 renamed the migration entity to estate_change, so a document older than that which uses the construct needs the rename before it will validate. One of: `2.3.0`, `2.2.0`, `2.1.0`, `2.0.0`. |
+| `tags` | list of string | Arbitrary classification tags for filtering and grouping. One tag has a fixed meaning: `enum-borrowed` marks an entity whose enum-valued field carries the nearest existing value because the right one does not exist yet, so the borrowing is findable by query when the vocabulary is extended. |
 | `iso_date` | string (date) | Date in YYYY-MM-DD format. Example: `2026-03-08`. |
 | `flexible_date` | pattern `^\d{4}-(0[1-9]|1[0-2])(-(0[1-9]|[12]\d|3[01]))?$` | A full calendar date, or a year and month when the day is not known. Recorded events often come from memory or from a receipt that names only the month; this type keeps that distinction visible instead of inviting an invented day. Lexicographic order is chronological order, so values sort correctly whichever precision they carry. Example: `2025-04-18`. |
-| `position` | object | Property-relative position in the coordinate system's unit (default meters). Origin and north direction defined by the realm's coordinate_system. Answers CQ21. Used by T5 for 2D spatial layout rendering. |
+| `electrical_component_type` | enum | The role a component plays in an electrical distribution system. `distribution-panel`: a board holding protective devices, the main one or a sub-board. `protective-device`: a breaker, residual-current device, combined RCBO, fuse or main switch mounted in a board. `circuit`: a named group of conductors under one protective device, the unit a board's schedule lists. `junction-box`: an enclosure where conductors are joined. `socket-outlet`, `switch`, `lighting-fixture`: the terminal devices a circuit ends in. `cable-end`: a cable emerging from a wall, floor or ceiling whose circuit and purpose are not yet known; it becomes a terminal device or the end of a cable run once identified. A component uses these values in component_type when it takes part in circuit_ref, protected_by_ref or fed_from_ref. One of: `distribution-panel`, `protective-device`, `circuit`, `junction-box`, `socket-outlet`, `switch`, `lighting-fixture`, `cable-end`. Example: `circuit`. |
+| `position` | object | Property-relative position in the coordinate system's unit (default meters). Origin and north direction defined by the realm's coordinate_system. Accuracy and source are recorded beside the position on the entity, in position_accuracy_m and position_source. Answers CQ21. Used by T5 for 2D spatial layout rendering. |
 | `polygon_footprint` | object | Closed polygon defined by vertices relative to the element's position (centroid). Vertices are in local coordinates before rotation. The renderer rotates by the element's rotation_degrees then translates by position. Used by T5. |
 | `circle_footprint` | object | Circular shape centered on the element's position. Used for tree canopies (CQ09) and round features. Used by T5. |
 | `footprint` | `polygon_footprint` or `circle_footprint` | Ground-projection shape of an element - polygon or circle. |
 | `position3d` | object | Property-relative position with elevation above vertical datum. |
+| `position_accuracy_m` | number | Radius within which the true point lies, in metres, for the entity's position and for any outline placed relative to it. Every answer that uses the position carries this number with it. min 0. Example: `0.1`. |
+| `position_source` | enum | How the position was obtained. `surveyed` from a cadastral or instrument survey; `tape` from tape measurements off known points; `gps` from a satellite fix, which needs the realm's WGS84 origin to be declared before it can be placed; `estimated` by eye or from a description. One of: `surveyed`, `tape`, `gps`, `estimated`. Example: `tape`. |
+| `position_derived_from` | `positioned_element_ref` | The element this position was placed relative to. Records that the dependency exists, not the offset: correct the named element and this one is due for correction too. The offset stays in the description. Example: `CMP042`. |
+| `derivation` | object | Where a value came from when it was not measured on site: the statement it was read from and the date it was written down. A later survey then corrects a derivation instead of guessing whether the numbers were ever measured. |
+| `placed_member` | object | One unit of a group entity that stands for several identical things, such as one lamp of a lighting component or one shrub of a planting. The group carries the count, the care and the attributes; the member carries only where it stands, in absolute model coordinates with a height above the vertical datum, an optional label, and where the point came from when it was derived rather than measured. A unit that needs a history of its own becomes an entity and leaves this list. |
 | `vertex3d` | object | 3D vertex for use in polygon and polyline contexts. Identical shape to position3d - use position3d for point locations, vertex3d for polygon and polyline vertices. |
 | `polyline3d` | object | Ordered sequence of 3D vertices forming an open path. |
 | `polygon3d` | object | Closed 3D polygon defined by ordered vertices. First and last vertices are implicitly connected. Vertices must be CCW when viewed from the outward-facing side (normal follows right-hand rule). |
-| `coordinate_system` | object | Property-relative 2D coordinate system. Defines where (0,0) is, which direction is north, and the measurement unit. All positions in the model are relative to this system. Answers CQ21. Used by T5. |
+| `coordinate_system` | object | Property-relative 2D coordinate system. Defines where (0,0) is, which direction is north, and the measurement unit. All positions in the model are relative to this system. A model that declares origin_wgs84 can place a satellite fix; one that declares only origin_description cannot. Answers CQ21. Used by T5. |
 | `compass_direction` | enum | Cardinal or intercardinal compass direction. One of: `N`, `NE`, `E`, `SE`, `S`, `SW`, `W`, `NW`. |
 | `spatial_relation` | object | Directional or proximity relationship between two positioned elements. Answers CQ21 (relative positioning) and CQ22 (shade/exposure). Used by T4 (privacy assessment) and T5 (layout rendering). |
+| `edge_bearing_ref` | `parcel_ref` or `building_ref` or `outdoor_zone_ref` or `boundary_segment_ref` or `planting_ref` or `neighbor_property_ref` | Reference to an element whose outline has edges: a polygon footprint (parcel, building, outdoor zone, planting), a neighbour's parcel outline, or a polyline (boundary segment). Used as the far side of a shared edge. For a neighbour the outline read is parcel_footprint, the edge of their land, never footprint, which is their building. |
+| `shared_edge` | object | Declares that one edge of this element's outline lies on an edge of another element's outline, so that moving the other element's edge moves this one with it. Edges are numbered from 0 in vertex order: edge n runs from vertex n to vertex n+1, and a polygon's last edge closes back to vertex 0; a boundary segment's polyline has no closing edge. Both outlines are read in absolute model coordinates (a footprint's vertices offset by its position). The two edges must lie on one line; their endpoints need not coincide, since a lawn's western edge may run along only part of a hedge's eastern one. The element that declares the edge is the one that follows; the element it names does not declare the edge back. |
 | `rrule_schedule` | object | Recurring schedule using iCalendar RRULE (RFC 5545). Stores the pattern; instances are calculated at runtime. Answers CQ13 (due dates), CQ14 (warranty service intervals), CQ10 (watering). Used by T1, T3, T8. |
 | `execution` | object | One occasion on which planned work was actually carried out. Its identity is the work plus the date, so it is recorded in place on the task or change it belongs to rather than as an entity of its own. When an execution acquires meaning beyond the work itself - it caused damage, it involved other people, it is worth finding later on its own terms - `event_ref` promotes it to an Event, which is where participants and outcomes are recorded. Answers CQ34. |
 | `cost_record_shape` | object | Contract for cost records stored in the external data store (SQLite). Not stored in the YAML model - defines the record shape for the companion store. Answers CQ16. Used by T9. |
@@ -1218,6 +1321,8 @@ Definitions the planes draw on. The reference types (`parcel_ref`, `room_ref` an
 | `notification_channel` | enum | Delivery channel for maintenance and compliance notifications. Answers CQ17. One of: `email`, `sms`, `push`, `calendar`, `webhook`. |
 | `location` | object | Geographic location and postal address. Latitude/longitude are for climate lookups and sun-path estimation, not for spatial layout (which uses the property-relative coordinate system). Answers CQ01. Used by T2. |
 | `climate_profile` | object | Climate metadata for the property. Drives garden planning (CQ11), plant selection (CQ09, CQ10), and seasonal maintenance scheduling (CQ13). Used by T3 (garden advisory). |
+| `lifecycle_state` | enum | Whether the record is current. `active` is the default and is what an entity without a lifecycle block means. `retired`: the thing no longer exists or is no longer in use; the record stays so that references to it keep resolving. `superseded`: another record has taken its place, named in superseded_by. One of: `active`, `retired`, `superseded`. Default `"active"`. Example: `retired`. |
+| `lifecycle` | object | Records that a thing ended without deleting the record of it. A retired or superseded entity is excluded from lists, graphs and generated documents by default, and every consumer that excludes them reports how many it excluded, including zero, so that an absence is never mistaken for a thing that was never there. Independent of any status field: status says where the work stands, lifecycle says whether the record is current. |
 | `parcel_ref` | pattern `^([a-z][a-z0-9-]*\.)?LP\d{3,}$` | Typed reference to a Land Parcel entity. Example: `LP001`. |
 | `building_ref` | pattern `^([a-z][a-z0-9-]*\.)?BLD\d{3,}$` | Typed reference to a Building entity. Example: `BLD001`. |
 | `floor_ref` | pattern `^([a-z][a-z0-9-]*\.)?FLR\d{3,}$` | Typed reference to a Floor entity. Example: `FLR001`. |
@@ -1233,12 +1338,14 @@ Definitions the planes draw on. The reference types (`parcel_ref`, `room_ref` an
 | `roof_plane_ref` | pattern `^([a-z][a-z0-9-]*\.)?RFP\d{3,}$` | Typed reference to a roof plane in the construction layer (v2.0). Example: `RFP001`. |
 | `event_ref` | pattern `^([a-z][a-z0-9-]*\.)?EVT\d{3,}$` | Typed reference to an Event entity in the event log (v2.0). Example: `EVT001`. |
 | `estate_change_ref` | pattern `^([a-z][a-z0-9-]*\.)?ECH\d{3,}[a-z]?$` | Typed reference to an Estate Change entity. The optional trailing letter addresses one member of a change family, so a reference can name either the family parent or a single member of it. Example: `ECH015`. |
+| `epic_ref` | pattern `^([a-z][a-z0-9-]*\.)?EPK\d{3,}$` | Typed reference to an Epic, a named group of estate changes with a display order. Example: `EPK001`. |
 | `system_ref` | pattern `^([a-z][a-z0-9-]*\.)?SYS\d{3,}$` | Typed reference to an infrastructure System entity. Example: `SYS001`. |
 | `component_ref` | pattern `^([a-z][a-z0-9-]*\.)?CMP\d{3,}$` | Typed reference to a Component entity within a system. Example: `CMP001`. |
 | `utility_connection_ref` | pattern `^([a-z][a-z0-9-]*\.)?UC\d{3,}$` | Typed reference to a Utility Connection entity. Example: `UC001`. |
 | `network_node_ref` | pattern `^([a-z][a-z0-9-]*\.)?NN\d{3,}$` | Typed reference to a Network Node entity. Example: `NN001`. |
 | `iot_device_ref` | pattern `^([a-z][a-z0-9-]*\.)?IOT\d{3,}$` | Typed reference to an IoT Device entity. Example: `IOT001`. |
 | `network_link_ref` | pattern `^([a-z][a-z0-9-]*\.)?NL\d{3,}$` | Typed reference to a Network Link entity. Example: `NL001`. |
+| `cable_run_ref` | pattern `^([a-z][a-z0-9-]*\.)?CBR\d{3,}$` | Typed reference to a cable run or riser in the electrical layer (v2.3). Example: `CBR001`. |
 | `specimen_ref` | pattern `^([a-z][a-z0-9-]*\.)?SPM\d{3,}$` | Typed reference to a Specimen (individual plant/tree) entity. Example: `SPM001`. |
 | `planting_ref` | pattern `^([a-z][a-z0-9-]*\.)?PTG\d{3,}$` | Typed reference to a Planting (categorical group) entity. Example: `PTG001`. |
 | `biomass_flow_ref` | pattern `^([a-z][a-z0-9-]*\.)?BMF\d{3,}$` | Typed reference to a Biomass Flow entity. Example: `BMF001`. |

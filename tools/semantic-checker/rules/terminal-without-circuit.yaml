@@ -1,0 +1,26 @@
+engineVersion: "0.1"
+rules:
+  - id: terminal-without-circuit
+    severity: info
+    description: >-
+      A socket outlet, switch or junction box that names no circuit. Every one of them is on
+      some circuit; which one is read off the board by switching each breaker in turn and
+      noting what dies, so this list IS the to-do list that test closes.
+
+      `info` for that reason: an installation is modelled sockets-first and circuits later,
+      and a warning on every socket would push a modeller to invent a circuit rather than
+      measure one. Lighting fixtures are deliberately not in the filter, because the same
+      component type also describes autonomous solar lamps that are on no circuit at all;
+      a mains fixture gains circuit_ref when known and no rule pushes it.
+    find:
+      entity_type: component
+    filter:
+      field_in:
+        data.component_type:
+          - socket-outlet
+          - switch
+          - junction-box
+    check:
+      all_non_empty:
+        - data.circuit_ref
+    message: '{type} "{id}" ({name|''unnamed''}) is on no declared circuit - read it off the board with the breaker test and set circuit_ref.'

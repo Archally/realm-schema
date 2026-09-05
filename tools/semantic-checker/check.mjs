@@ -62,6 +62,9 @@ export async function checkRealmModel(source, options = {}) {
   if (options.rule && rules.length === 0) {
     throw new Error(`no rule with id "${options.rule}" in ${ruleDir}`);
   }
-  const issues = runChecker(toCheckableModel(source), rules);
-  return { ruleDir, rules, issues };
+  const checkable = toCheckableModel(source);
+  const issues = runChecker(checkable, rules);
+  // Ended records (lifecycle retired or superseded) are left out before any rule runs, and
+  // the count travels with the result: a consumer that excludes them says how many.
+  return { ruleDir, rules, issues, excludedRetired: checkable.metadata?.excludedRetired ?? 0 };
 }

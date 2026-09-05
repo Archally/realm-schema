@@ -14,7 +14,7 @@ A realm model is a directory named for the schema version it is written against:
 
 ```
 willow-cottage/
-  .realm/v2.2/
+  .realm/v2.3/
     realm.yaml
     realm-config.yaml
     topology/
@@ -28,7 +28,7 @@ willow-cottage/
 ```
 
 The `.realm/` segment keeps the model beside the thing it describes without colliding with anything
-else in that directory. The version segment is the whole version, `v2.2`, not `v2`: a model states
+else in that directory. The version segment is the whole version, `v2.3`, not `v2`: a model states
 which schema line it was authored against, and two lines can sit side by side during a migration.
 
 Nothing about the parent directory is prescribed. A model can live in its own repository, beside a
@@ -184,7 +184,7 @@ Two files are enough to validate:
 
 ```yaml
 version: "1.0.0"
-schemaVersion: "2.2.0"
+schemaVersion: "2.3.0"
 name: Willow Cottage
 description: >
   A smallholding on a hillside. Enough of a model to validate, and the point at
@@ -222,7 +222,7 @@ file looks like.
 
 - **Two-space indentation**, no tabs. YAML rejects tabs for indentation.
 - **`snake_case`** for every field name. Entity ids are the only uppercase.
-- **Quote what could be read as something else.** `schemaVersion: "2.2.0"` and dates need quotes;
+- **Quote what could be read as something else.** `schemaVersion: "2.3.0"` and dates need quotes;
   names and descriptions usually do not.
 - **Folded scalars for prose.** A `description` that runs past the line width reads better as `>`
   than as one long line.

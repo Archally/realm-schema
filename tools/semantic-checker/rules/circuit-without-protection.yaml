@@ -1,0 +1,22 @@
+engineVersion: "0.1"
+rules:
+  - id: circuit-without-protection
+    severity: warn
+    description: >-
+      A circuit that names no protective device is a circuit nobody can switch off at the
+      board. The board's schedule lists every circuit against its breaker, so the field is
+      readable in one visit; until it is filled, the question "which breaker feeds this
+      socket" stops one hop short of its answer.
+
+      `warn` because a circuit is authored to be walked to its device, and a circuit that
+      cannot be is the chain's missing link rather than a detail left for later.
+    find:
+      entity_type: component
+    filter:
+      field_in:
+        data.component_type:
+          - circuit
+    check:
+      all_non_empty:
+        - data.protected_by_ref
+    message: 'Circuit "{id}" ({name|''unnamed''}) names no protective device in protected_by_ref - nothing in the model can switch it off.'

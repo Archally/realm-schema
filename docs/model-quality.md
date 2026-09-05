@@ -5,9 +5,9 @@ Three questions can be asked of a realm model, and they are asked by three diffe
 The third question is separate because the schema cannot ask it. A field the schema **requires** is settled by validation, and a rule about it here could never fire. A field the schema leaves **optional** is exactly where a model degrades without ever going red: valid, loadable, and saying less each year. Every rule below targets an optional field or an absent relation, and that is asserted by a test rather than intended - each one must fire against a fixture the validator accepts.
 
 ```bash
-npm run check -- --model path/to/.realm/v2.2      # report
-npm run check -- --model path/to/.realm/v2.2 --strict   # treat findings as a gate
-npm run check -- --model path/to/.realm/v2.2 --rule specimen-without-care-profile
+npm run check -- --model path/to/.realm/v2.3      # report
+npm run check -- --model path/to/.realm/v2.3 --strict   # treat findings as a gate
+npm run check -- --model path/to/.realm/v2.3 --rule specimen-without-care-profile
 ```
 
 Findings are reported, not enforced. A rule here states an opinion about what makes a model useful, and a project that disagrees with one is not holding a broken model - which is why nothing fails until `--strict` says it should.
@@ -18,20 +18,25 @@ Findings are reported, not enforced. A rule here states an opinion about what ma
 |---|---|---|
 | [`boundary-segment-without-parcel`](#boundary-segment-without-parcel) | every `boundary_segment` | warn |
 | [`care-profile-without-calendar`](#care-profile-without-calendar) | every `species_care_profile` | warn |
+| [`circuit-without-protection`](#circuit-without-protection) | every `component` | warn |
 | [`closed-change-without-referent`](#closed-change-without-referent) | every `estate_change` | warn |
 | [`component-without-replacement-basis`](#component-without-replacement-basis) | every `component` | info |
 | [`cost-category-without-budget`](#cost-category-without-budget) | every `cost_category` | info |
+| [`electrical-requirement-without-system`](#electrical-requirement-without-system) | every `regulatory_requirement` | info |
 | [`estate-change-without-cost`](#estate-change-without-cost) | every `estate_change` | info |
 | [`iot-device-without-subject`](#iot-device-without-subject) | every `iot_device` | info |
 | [`planting-without-care-profile`](#planting-without-care-profile) | every `planting` | warn |
+| [`protective-device-without-source`](#protective-device-without-source) | every `component` | warn |
 | [`regulatory-requirement-without-inspection-anchor`](#regulatory-requirement-without-inspection-anchor) | every `regulatory_requirement` | warn |
 | [`risk-without-mitigation`](#risk-without-mitigation) | every `risk` | info |
+| [`run-without-circuit`](#run-without-circuit) | every `cable_run` | info |
 | [`specimen-without-care-profile`](#specimen-without-care-profile) | every `specimen` | warn |
 | [`system-without-maintenance`](#system-without-maintenance) | every `system` | info |
 | [`system-without-parts`](#system-without-parts) | every `system` | warn |
-| [`undescribed-authored-entity`](#undescribed-authored-entity) | every entity, except `wall_segment`, `roof_plane`, `floor_slab`, `ceiling_slab` | info |
+| [`terminal-without-circuit`](#terminal-without-circuit) | every `component` | info |
+| [`undescribed-authored-entity`](#undescribed-authored-entity) | every entity, except `wall_segment`, `roof_plane`, `floor_slab` | info |
 
-14 rules.
+19 rules.
 
 ### boundary-segment-without-parcel
 
@@ -58,6 +63,19 @@ Care profile "{id}" ({name|'unnamed'}) has no care calendar - everything pointin
 
 A care profile with no `care_calendar` names a species and prescribes nothing. It closes the one hole the two care-profile rules leave open: a specimen pointing at an empty profile satisfies `specimen-without-care-profile`, its planting satisfies `planting-without-care-profile`, and the plant is still on no calendar - three green checks and nothing to do in March.
 That is why this is `warn` while its two companions describe a more visible gap. A plant with no profile is an obvious hole that a reader notices; a plant with a hollow one looks handled from every direction except the calendar itself.
+
+### circuit-without-protection
+
+**warn** - reported; fails only under `--strict`. Applies to every `component`.
+
+What you will see:
+
+```
+Circuit "{id}" ({name|'unnamed'}) names no protective device in protected_by_ref - nothing in the model can switch it off.
+```
+
+A circuit that names no protective device is a circuit nobody can switch off at the board. The board's schedule lists every circuit against its breaker, so the field is readable in one visit; until it is filled, the question "which breaker feeds this socket" stops one hop short of its answer.
+`warn` because a circuit is authored to be walked to its device, and a circuit that cannot be is the chain's missing link rather than a detail left for later.
 
 ### closed-change-without-referent
 
@@ -99,6 +117,18 @@ Cost category "{id}" ({name|'unnamed'}) has no annual budget estimate - spending
 A cost category with no `annual_budget_estimate` can record what was spent but cannot say whether that was expected. Every "are we over?" question needs a figure to be over, so the category answers the retrospective question and none of the planning ones - which is the half of cost tracking people actually act on.
 An estimate, not a commitment: the field exists so a category can be compared against something, and a rough annual figure serves that better than none.
 
+### electrical-requirement-without-system
+
+**info** - reported; fails only under `--strict`. Applies to every `regulatory_requirement`.
+
+What you will see:
+
+```
+Requirement "{id}" ({name|'unnamed'}) is an electrical-safety inspection that names no system in target_system_refs - the list of boards, devices and circuits to check cannot be derived from it.
+```
+
+An electrical-safety requirement that names no system to inspect. The periodic inspection is a walk from the requirement to the electrical system, then to its boards, protective devices and circuits, then to the open issues against them; a requirement that names only the building starts that walk one hop too late, and the list of what to check cannot be derived from it.
+
 ### estate-change-without-cost
 
 **info** - reported; fails only under `--strict`. Applies to every `estate_change`.
@@ -136,6 +166,18 @@ Planting "{id}" ({name|'unnamed'}) has no care profile - the whole group appears
 
 The same gap as `specimen-without-care-profile`, one level up: a planting is a categorical group rather than an individual, and it carries the care needs of everything in it. An unlinked planting silently removes a whole bed or hedge from the maintenance calendar rather than one plant.
 
+### protective-device-without-source
+
+**warn** - reported; fails only under `--strict`. Applies to every `component`.
+
+What you will see:
+
+```
+Protective device "{id}" ({name|'unnamed'}) names no board or upstream device in fed_from_ref - it sits in no board the model knows.
+```
+
+A protective device that names no upstream board or device sits in no board the model knows of. A breaker is fed from its board, or from the residual-current device it sits behind; a sub-board is fed from a breaker in the board above it. The one component that legitimately names nothing here is the main board, whose supply is the system's utility connection, and it is a distribution panel, not a protective device.
+
 ### regulatory-requirement-without-inspection-anchor
 
 **warn** - reported; fails only under `--strict`. Applies to every `regulatory_requirement`.
@@ -161,6 +203,18 @@ Risk "{id}" ({name|'unnamed'}) records no mitigation - nothing says whether it w
 
 A recorded risk with no mitigation is a worry written down rather than a decision taken. Info rather than warn: accepting a risk is a legitimate answer, and a register whose purpose is partly to hold the accepted ones would go permanently yellow if this were louder. State the acceptance in `mitigation` and the finding goes away.
 `mitigation` is the whole of what is checked, because it is the whole of what the schema offers. A risk's only reference field points at the entities it threatens; there is no field, in either direction, that records a planned change as addressing a risk. So "a change is already dealing with this" cannot be expressed in the model and cannot be read by a rule - write it in `mitigation` in prose.
+
+### run-without-circuit
+
+**info** - reported; fails only under `--strict`. Applies to every `cable_run`.
+
+What you will see:
+
+```
+Cable run "{id}" ({name|'unnamed'}) carries no circuit the model knows of - fill circuit_refs, or record an unidentified cable as a cable-end component.
+```
+
+A cable run that carries no circuit the model knows of. A run is authored to say what its conductors belong to; one that names nothing may be a route recorded before the circuits were, which is legitimate and temporary, or a cable of unknown purpose, which is a cable-end component rather than a run.
 
 ### specimen-without-care-profile
 
@@ -202,9 +256,22 @@ A system is the abstraction over the parts that make it up: the heating system i
 A part reaches its system from either side and in either vocabulary. A `component` carries `system_ref`, and an `equipment` record may carry it too - the schema admits both for membership, so the edge is normally INCOMING. The system's own `component_refs` is optional, and a model may legitimately express membership from one side only. Any of the three satisfies this rule, because each one tells a reader what the system is made of: an expansion vessel recorded as equipment answers the question exactly as well as one recorded as a component.
 The rule therefore fires only for a system with no parts recorded in ANY form - the case where the model names a system and stops.
 
+### terminal-without-circuit
+
+**info** - reported; fails only under `--strict`. Applies to every `component`.
+
+What you will see:
+
+```
+{type} "{id}" ({name|'unnamed'}) is on no declared circuit - read it off the board with the breaker test and set circuit_ref.
+```
+
+A socket outlet, switch or junction box that names no circuit. Every one of them is on some circuit; which one is read off the board by switching each breaker in turn and noting what dies, so this list IS the to-do list that test closes.
+`info` for that reason: an installation is modelled sockets-first and circuits later, and a warning on every socket would push a modeller to invent a circuit rather than measure one. Lighting fixtures are deliberately not in the filter, because the same component type also describes autonomous solar lamps that are on no circuit at all; a mains fixture gains circuit_ref when known and no rule pushes it.
+
 ### undescribed-authored-entity
 
-**info** - reported; fails only under `--strict`. Applies to every entity, except `wall_segment`, `roof_plane`, `floor_slab`, `ceiling_slab`.
+**info** - reported; fails only under `--strict`. Applies to every entity, except `wall_segment`, `roof_plane`, `floor_slab`.
 
 What you will see:
 

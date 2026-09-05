@@ -57,11 +57,12 @@ function parseArgs(argv) {
 
 const SEVERITY_MARK = { error: "✗", warning: "⚠", warn: "⚠", info: "ℹ" };
 
-function render(model, issues, ruleDir, filter) {
+function render(model, issues, ruleDir, filter, excludedRetired) {
   const lines = [];
   lines.push("Realm model quality");
   lines.push(`  Rules:    ${path.relative(process.cwd(), ruleDir) || ruleDir}`);
   lines.push(`  Entities: ${model.entities.length}, relations: ${model.relations.length}`);
+  lines.push(`  Excluded: ${excludedRetired} retired or superseded record(s)`);
   if (filter) lines.push(`  Filter:   rule "${filter}"`);
   lines.push("");
 
@@ -97,8 +98,9 @@ async function main() {
   let ruleDir;
   let selected;
   let issues;
+  let excludedRetired;
   try {
-    ({ ruleDir, rules: selected, issues } = await checkRealmModel(model, {
+    ({ ruleDir, rules: selected, issues, excludedRetired } = await checkRealmModel(model, {
       ruleDir: args.rules,
       rule: args.rule,
     }));
@@ -112,10 +114,11 @@ async function main() {
       entities: model.entities.length,
       relations: model.relations.length,
       rules: selected.length,
+      excluded_retired: excludedRetired,
       issues,
     }, null, 2));
   } else {
-    console.log(render(model, issues, ruleDir, args.rule));
+    console.log(render(model, issues, ruleDir, args.rule, excludedRetired));
   }
 
   const errors = issues.filter((issue) => issue.severity === "error");

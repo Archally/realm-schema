@@ -1,7 +1,132 @@
 # Changelog
 
 All notable changes to `@archally/realm-schema`. Versions follow the schema version:
-a model declaring `schemaVersion: "2.2.0"` validates against `schema/v2.2/`.
+a model declaring `schemaVersion: "2.3.0"` validates against `schema/v2.3/`, and so does one
+still declaring `2.2.0`, because 2.3 removed nothing.
+
+## 2.3.0 - 2026-09-04
+
+**Additive.** Every model valid under 2.2.0 validates unchanged under 2.3.0. The claim was
+tested, not asserted: the 2.2.0 worked example as published in 2.2.9 was validated against
+this schema before it was regenerated. `schema/v2.2/` is gone from this repository, as one
+version is published at a time; `npm run schema-update` moves a 2.2 model's declaration, and
+nothing else in it needs to change.
+
+### Added
+
+- **`lifecycle`** on `specimen`, `planting`, `component`, `iot_device`, `maintenance_task`,
+  `warranty`, `person` and `estate_change`: `state` (`active` / `retired` / `superseded`),
+  `retired_at`, `retired_reason`, `superseded_by`. Absent means active. A thing that ended
+  keeps its record, so every reference to it keeps resolving. The contract for readers
+  travels in the field's description: a retired or superseded entity is left out of lists,
+  graphs and generated documents by default, and a reader that leaves them out says how many
+  it left out. The model-quality checker does both from this release (`Excluded: N` in its
+  header, `excluded_retired` in its JSON).
+- **`estate_change.changes[].outcome`** (`done` / `superseded` / `abandoned`): how one item
+  of a change ended when the change's own status does not say.
+- **How a coordinate is known**: `position_accuracy_m`, `position_source` (`surveyed` /
+  `tape` / `gps` / `estimated`) and `position_derived_from` beside `position` on `parcel`,
+  `building`, `outdoor_zone`, `specimen`, `planting`, `neighbor_property`, `equipment`,
+  `component`, `iot_device` and `network_node`.
+- **The georeference as fields** on `coordinate_system`: `origin_wgs84`, `origin_projected`
+  (EPSG code, northing, easting), `origin_elevation_m`, `elevation_datum`. The description of
+  `north_angle_degrees` now states the axis convention in words: the bearing of +Y is 360
+  minus the angle, and +X lies 90 degrees to the left of +Y.
+- **`shared_edges[]`** on `parcel`, `outdoor_zone`, `planting` and `boundary_segment`: one edge
+  of this outline lies on another element's edge and follows it when that edge moves. A lawn
+  set to meet three neighbours was a rectangle whose overlap with them nothing recorded.
+- **`neighbor_property.features[]`**: the things on a neighbour's land beyond the one
+  building `position` and `footprint` describe - a shed, a hedge, a row of trees, a fence -
+  each with a kind, dimensions, a position, an optional relative footprint and the boundary
+  segment it runs along.
+- **`metamodel.derivation`** (`derived_from`, `derived_on`): where a value came from when it
+  was not measured on site.
+- **`furniture.outdoor_zone_ref`**: a piece that belongs to no building and no room stands in
+  an outdoor zone.
+- **`members[]`** on `planting` and `component`: one placed unit per entry for a record that
+  stands for several identical things, each with its own position; **`member_of_ref`** on
+  `specimen` and `component` for a unit promoted out of its group.
+- **`epic`** (`EPK###`, root key `epics:` in `estate-changes.yaml`): a named group of estate
+  changes with a display order; **`estate_change.epic_refs`**, most specific first.
+- **The wiring inside the walls.** An electrical installation is modelled as `component`s of
+  the electrical system, classified by `metamodel.electrical_component_type`
+  (`distribution-panel`, `protective-device`, `circuit`, `junction-box`, `socket-outlet`,
+  `switch`, `lighting-fixture`, `cable-end`) and joined by `circuit_ref`, `protected_by_ref`
+  and `fed_from_ref`. `component_type` stays free text; a component that uses one of the
+  three references is held to the vocabulary. `unit_count` lets one record stand for several
+  identical units. A component can be placed on a wall of the construction layer:
+  `wall_segment_ref`, `wall_offset_cm` from the wall's start, `mounting_height_cm` above the
+  finished floor; `outdoor_zone_ref` for one outside every building.
+- **`cable_run`** (`CBR###`, root key `cable_runs:` in the systems file): a run or riser with a
+  topological half (`run_type`, `from_ref`, `to_ref`, `circuit_refs`, `through_refs`) and a
+  geometric one, `route.legs[]` in three kinds that each name their frame: `along-wall`
+  (centimetres along a wall, height above the floor), `vertical` (elevations above the
+  datum), `free` (a polyline in model metres). Either half validates alone.
+- **`lighting_group.circuit_ref`**: the circuit a room's lighting is on.
+- **`outdoor_zone.zone_type: path`**, and eight `equipment.equipment_type` values:
+  `branch-shredder`, `lawn-roller`, `levelling-grid`, `spreader`, `garden-cart`,
+  `satellite-dish`, `pressure-washer`, `cable-reel`.
+- **The `enum-borrowed` tag**: the one tag with a fixed meaning, marking an entity whose enum
+  value was borrowed from the nearest fit so the gap can be found by query.
+- **`realm-schema-update`: 2.2 to 2.3.** Additive, so it moves the declared version and nothing
+  else, and the tool says so.
+
+### Rules
+
+The validator's semantic layer and the model-quality pack grow together:
+
+- **Electrical topology** (validator): `feed-cycle` (error), `circuit-refs-not-circuits`,
+  `circuit-crosses-building`, `anchor-wall-off-room`, `anchor-beyond-wall`, `leg-beyond-wall`,
+  `leg-wall-off-route` (warnings), `riser-without-vertical-leg` (info).
+- **Lifecycle and membership** (validator): `retired-referenced-by-live`,
+  `superseded-without-successor`, `promoted-member-still-listed`, `members-exceed-count`,
+  `member-of-cycle` (error), `epic-order-not-unique`; `gps-position-without-georeference`;
+  `shared-edge-does-not-meet`, which reads both outlines in absolute coordinates and reports
+  a declared shared edge the geometry contradicts.
+- **Estate changes** (validator): an `add` item of a completed change needs an `entity_ref`
+  unless its `outcome` says nothing was created; a `done` item on a change not yet approved,
+  and a change retired while still scheduled, are each reported.
+- **Five presence rules in the pack** (`realm-check`): `circuit-without-protection`,
+  `protective-device-without-source`, `terminal-without-circuit`, `run-without-circuit`,
+  `electrical-requirement-without-system`.
+
+### Changed
+
+- **The model-quality checker leaves ended records out and says how many.** Entities whose
+  `lifecycle.state` is `retired` or `superseded` are dropped, with the edges touching them,
+  before any rule runs.
+- **The relation vocabulary** (`tools/model-builder/relation-types.mjs`) gains the edges the
+  new references make - `position-derived-from`, `shares-edge-with`, `feature-along`,
+  `member-of`, `belongs-to`, and the electrical `circuit_ref` / `protected_by_ref` /
+  `fed_from_ref` - and `system.zone_ref` now reads `serves` rather than `located-in`: a
+  distribution zone is where a system delivers, not where it stands.
+- **`spatial_relations` are edges in the model builder.** A row in the topology plane declares a
+  relation directly, carrying its predicate as data (`relation_type`) rather than in a field
+  name, so a graph built from this package now holds every relation the model states.
+- **A ceiling slab is a floor slab.** `construction.schema.yaml` defines the `ceiling_slab` key as
+  `$ref: "#/$defs/floor_slab"`: the key says where the slab sits, the reference says what it is.
+  Both keys extract as `floor_slab` entities, and which role a slab plays stays where the schema
+  puts it, in its own `slab_type`. `undescribed-authored-entity` names the construction types it
+  excludes accordingly.
+- **An opening that does not open `overlooks`.** A room with a terrace door and a fixed pane onto
+  one zone has two edges asserting different things - passage and a view - rather than one
+  predicate twice. The distinction comes from the opening's `openable` and `opening_type`.
+- **An edge is a fact, not a count.** Two nested objects stating the same relation, such as a wall
+  whose two openings both name the room they were cut from, produce one edge. The relation id
+  carries the predicate beside source, field and target, so two edges between one pair that assert
+  different things both survive.
+- The worked example declares 2.3.0, sits at `examples/willow-cottage/.realm/v2.3/`, and its
+  distribution board is a `distribution-panel`, the vocabulary's word. The four guides and the
+  schema reference describe v2.3.
+
+### Known limitations
+
+- The renderer and the model builder still show ended records; leaving them out, with the
+  count, arrives in a later release. The worked example has none, so its documents are
+  unaffected.
+- `component` reaches 36 properties: one type with electrical roles rather than eight types.
+- `estate_change.changes[].entity_ref` and `affected_entity_refs[]` are plain strings;
+  tightening them to the typed reference pattern would be a narrowing and waits for a major.
 
 ## 2.2.9 - 2026-09-03
 

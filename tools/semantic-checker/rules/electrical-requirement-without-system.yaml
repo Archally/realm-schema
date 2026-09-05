@@ -1,0 +1,20 @@
+engineVersion: "0.1"
+rules:
+  - id: electrical-requirement-without-system
+    severity: info
+    description: >-
+      An electrical-safety requirement that names no system to inspect. The periodic
+      inspection is a walk from the requirement to the electrical system, then to its boards,
+      protective devices and circuits, then to the open issues against them; a requirement
+      that names only the building starts that walk one hop too late, and the list of what to
+      check cannot be derived from it.
+    find:
+      entity_type: regulatory_requirement
+    filter:
+      field_in:
+        data.requirement_type:
+          - electrical-safety
+    check:
+      all_non_empty:
+        - data.target_system_refs
+    message: 'Requirement "{id}" ({name|''unnamed''}) is an electrical-safety inspection that names no system in target_system_refs - the list of boards, devices and circuits to check cannot be derived from it.'

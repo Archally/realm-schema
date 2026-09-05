@@ -55,7 +55,7 @@ chosen rather than measured.
 
 ```yaml
 version: "1.0.0"
-schemaVersion: "2.2.0"
+schemaVersion: "2.3.0"
 name: Willow Cottage
 description: >
   A smallholding on a hillside, used here to show the conventions.
