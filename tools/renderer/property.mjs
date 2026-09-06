@@ -2,11 +2,9 @@
 /**
  * The property document.
  *
- * Section for section from `viewers/realm/schedule-planner`, the PDF generator this schema
- * has had since March: a description part and a schedule part, under a header naming the
- * property and what it is made of. What that generator groups its planned work by - an
- * `x-epic` extension read through a project-local lookup - is not in the schema, so this one
- * groups by `status`, which every model carries.
+ * A description part and a schedule part, under a header naming the property and what it is
+ * made of. Planned work is grouped by `status`, which every model carries: `epic_refs` (2.3.0)
+ * is optional, so a model that declares no epic renders as a single undifferentiated group.
  */
 
 import {

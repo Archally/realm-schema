@@ -96,6 +96,11 @@ $defs:
       building outline. All coordinates absolute (rotation applied).
     required: [metadata, rooms, wall_segments, openings, building_outline]
     additionalProperties: false
+    patternProperties:
+      # Vendor extensions (`x-*`), as `realm` and `estate_change` already accept: opaque to
+      # the validator, reserved for tooling. What travels here on an exported scene is what
+      # produced it - the generation instant, the build id and the model's schema version.
+      "^x-": {}
     properties:
       metadata:
         $ref: "#/$defs/floor_plan_metadata"
@@ -317,6 +322,11 @@ $defs:
       absolute (rotation applied).
     required: [metadata, parcel_boundary, zones, buildings, boundaries]
     additionalProperties: false
+    patternProperties:
+      # Vendor extensions (`x-*`), as `realm` and `estate_change` already accept: opaque to
+      # the validator, reserved for tooling. What travels here on an exported scene is what
+      # produced it - the generation instant, the build id and the model's schema version.
+      "^x-": {}
     properties:
       metadata:
         $ref: "#/$defs/site_plan_metadata"
@@ -586,6 +596,11 @@ $defs:
       is unavailable, detailed walls+roofs (LOD2) when available.
     required: [metadata, ground_plane, buildings]
     additionalProperties: false
+    patternProperties:
+      # Vendor extensions (`x-*`), as `realm` and `estate_change` already accept: opaque to
+      # the validator, reserved for tooling. What travels here on an exported scene is what
+      # produced it - the generation instant, the build id and the model's schema version.
+      "^x-": {}
     properties:
       metadata:
         $ref: "#/$defs/scene_3d_metadata"

@@ -70,6 +70,12 @@ nothing else in it needs to change.
   value was borrowed from the nearest fit so the gap can be found by query.
 - **`realm-schema-update`: 2.2 to 2.3.** Additive, so it moves the declared version and nothing
   else, and the tool says so.
+- **The three scene contracts accept extension properties.** `floor_plan_scene`,
+  `site_plan_scene` and `scene_3d` accept properties prefixed `x-`, as `realm`,
+  `estate_change`, `component` and several others already did. An exported scene is a file
+  that leaves the model it came from, and the hatch is where a generator records what
+  produced it: the run's instant, the build it can be recovered from, and the schema
+  version it was built against.
 
 ### Rules
 

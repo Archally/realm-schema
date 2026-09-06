@@ -15,10 +15,8 @@ export const PRIORITY_ORDER = ["critical", "high", "medium", "low"];
 /**
  * Status, in lifecycle order.
  *
- * This is what the published renderer groups planned work by. The monorepo generator groups
- * by an `x-epic` extension field through a project-local lookup table, and the schema has no
- * such field - so a published tool cannot use it without requiring a document the schema
- * never asks for.
+ * Planned work is grouped by status rather than by epic: `epic_refs` (2.3.0) is optional, so a
+ * model that declares no epic would collapse into a single group.
  */
 export const STATUS_ORDER = ["in-progress", "approved", "proposed", "completed", "cancelled"];
 

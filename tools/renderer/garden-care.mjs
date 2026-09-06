@@ -2,10 +2,9 @@
 /**
  * The garden care document.
  *
- * Section for section from `viewers/realm/garden-care`, the other PDF generator this schema
- * has had since March: a description part (zones, what grows in them, the soil) and a
- * twelve-month calendar. It prints separately from the property document because a gardener
- * is a different reader from an owner, and the ancestor made that split for the same reason.
+ * A description part (zones, what grows in them, the soil) and a twelve-month calendar. It
+ * prints separately from the property document because a gardener is a different reader
+ * from an owner.
  */
 
 import {
