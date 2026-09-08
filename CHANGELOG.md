@@ -4,6 +4,72 @@ All notable changes to `@archally/realm-schema`. Versions follow the schema vers
 a model declaring `schemaVersion: "2.3.0"` validates against `schema/v2.3/`, and so does one
 still declaring `2.2.0`, because 2.3 removed nothing.
 
+## 2.3.1 - 2026-09-07
+
+**Additive.** Every model valid under 2.3.0 validates unchanged under 2.3.1. The claim was
+tested, not asserted: the 2.3.0 worked example as published was validated against this schema
+before it was regenerated. One optional property, one definition and one widened reference;
+nothing is removed, renamed, retyped or narrowed.
+
+### Added
+
+- **`room.staircase`** - the flight of stairs that leaves a room and reaches another floor.
+  The block sits on the room the flight starts from and names the floor it arrives at
+  (`connects_to_floor_ref`, required) and optionally the room it arrives in
+  (`arrives_in_room_ref`), so a route can be walked from any room to any other rather than
+  stopping at a floor. It carries the flight itself: `staircase_type` (`straight`,
+  `quarter-turn`, `half-turn`, `winder`, `spiral`, `ladder`), `ascent_direction`,
+  `step_count`, `going_cm` and `width_cm`.
+
+  It is a property of the room rather than an entity of its own because a room is on exactly
+  one floor and a flight spans two: the room stays where it is and the flight says what it
+  reaches. That is the shape an opening already has, sitting in the wall it is cut into and
+  naming the space on the far side.
+
+  The rise is deliberately absent. Both floors carry `finished_floor_elevation_m`, so the
+  height climbed is their difference and one riser is that divided by `step_count`. A stated
+  rise could disagree with the floors it joins.
+
+  `room_type: staircase` is neither required nor deprecated: a flight can leave a hallway or a
+  living room, and an open stair is as real as an enclosed stair hall.
+
+- **`staircase-room-without-flight`** in the model-quality pack (`warn`): a room typed
+  `staircase` that declares no flight names a stair hall whose stairs reach nowhere.
+
+### Changed
+
+- **`biomass_flow.source_ref` accepts a planting.** It took a specimen or an outdoor zone,
+  while `source_type` offers `hedge-trimmings`, `grass-clippings`, `crop-residue` and
+  `weed-clearing`, which is biomass a group yields rather than a named plant. A hedge's
+  trimmings can name the hedge instead of the ground it stands on. Widening a reference is
+  additive: every value that validated before still validates.
+
+- **A planting names the species that dominates it.** One that states a `species_mix` and no
+  `species` reads, in generated documents, as the leading species by share with the number of
+  others beside it, `Crataegus monogyna +3`. A shelter belt and a meadow are stands of several
+  species, and the species column is where a reader looks to learn which.
+
+- **A planting states the ground it covers when it is not counted in plants.** A meadow or a
+  herb strip carries `area_sqm` and no count or height range, and that area is what its size
+  column reads.
+
+- **The relation vocabulary** gains `connects-to` for both staircase references, so a graph
+  built from this package joins the floors and rooms a flight reaches.
+
+- The worked example grows to 154 entities: the lane gate as `equipment` fixed to the hedge it
+  is hung in, the stair hall's flight to the first floor, a Scots pine, a holly, a mixed
+  shelter belt of four species, a hay meadow, two species care profiles, the shelter belt's
+  trimmings as a biomass flow, and the meadow's cut as a maintenance task. Its documents are
+  regenerated with it. It declares `schemaVersion: "2.3.0"`, which is what a model on this line
+  declares: `schema_version` accepts the line's first release, and a patch adds properties
+  rather than a value to declare. The four guides and the schema reference describe v2.3.
+
+### Known limitations
+
+- The flight carries its dimensions and no geometry. Nothing states where in the room it
+  stands or which way its footprint runs, so a plan generator can say that a room has stairs
+  and not draw them.
+
 ## 2.3.0 - 2026-09-04
 
 **Additive.** Every model valid under 2.2.0 validates unchanged under 2.3.0. The claim was

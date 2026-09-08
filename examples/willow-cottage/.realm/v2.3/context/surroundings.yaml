@@ -178,7 +178,7 @@ roads:
     borders_neighbor_refs: [NP001]
     description: >
       Single-track lane with passing places, running along the top of the
-      plot. The gate opens onto it 4 m east of the north corner.
+      plot.
     tags: [single-track, public]
   - id: RD002  # public-docs-scan:allow - RD is the Road Corridor prefix, not a decision id
     name: Mill Farm track

@@ -48,6 +48,9 @@ export const RELATION_TYPES = {
     opens_to_zone_ref: "opens-to",
     // Nested in lighting_groups[] (2.3.0); reached by the recursive scan, keyed bare.
     circuit_ref: "on-circuit",
+    // Nested in the staircase block (2.3.1); reached the same way.
+    connects_to_floor_ref: "connects-to",
+    arrives_in_room_ref: "connects-to",
   },
   outdoor_zone: {
     position_derived_from: "position-derived-from", // 2.3.0

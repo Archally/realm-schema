@@ -33,7 +33,7 @@ export {
   KIND_ORDER,
 } from "./schedule.mjs";
 export { careCalendar, unscheduledThreats, subjectsOfProfile, MONTH_NAMES } from "./care-calendar.mjs";
-export { vegetationByZone, specimenSize, plantingSize } from "./vegetation.mjs";
+export { vegetationByZone, specimenSize, plantingSize, plantingSpecies } from "./vegetation.mjs";
 export { systemsWithParts, monitoringDevices } from "./systems.mjs";
 export { cell, table, section, sections, bullets, prose, blockquote, ABSENT } from "./markdown.mjs";
 export { nodeId, label, flowchart, fence } from "./mermaid.mjs";

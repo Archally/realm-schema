@@ -131,6 +131,30 @@ maintenance_tasks:
       The west wall holds back the bank above the drive; the east wall is
       already bulging.
     tags: [structural, slope]
+  - id: MT006
+    name: Meadow hay cut
+    task_type: mowing
+    kind: garden
+    target_ref: PTG005
+    schedule:
+      rrule: RRULE:FREQ=YEARLY;BYMONTH=7;BYDAY=3SA
+      summary: Third Saturday in July, every year
+    priority: low
+    season: summer
+    estimated_duration_minutes: 300
+    instructions: >
+      Cut after the seed has dropped and lift within the week. Nothing is fed
+      to this ground.
+    tools_required: [scythe bar mower, hay rake]
+    care_profile_ref: SCP004
+    cost_category_ref: CC002
+    executions:
+    - date: "2025-07-19"
+      note: >
+        Light crop; the wettest third was left standing.
+    description: >
+      The annual cut SOIL002 has always described and nothing scheduled.
+    tags: [garden, seasonal, meadow]
 
 # ── Cost categories ───────────────────────────────────────────────────────
 cost_categories:

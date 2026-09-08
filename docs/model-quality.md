@@ -31,12 +31,13 @@ Findings are reported, not enforced. A rule here states an opinion about what ma
 | [`risk-without-mitigation`](#risk-without-mitigation) | every `risk` | info |
 | [`run-without-circuit`](#run-without-circuit) | every `cable_run` | info |
 | [`specimen-without-care-profile`](#specimen-without-care-profile) | every `specimen` | warn |
+| [`staircase-room-without-flight`](#staircase-room-without-flight) | every `room` whose `room_type` is `staircase` | warn |
 | [`system-without-maintenance`](#system-without-maintenance) | every `system` | info |
 | [`system-without-parts`](#system-without-parts) | every `system` | warn |
 | [`terminal-without-circuit`](#terminal-without-circuit) | every `component` | info |
 | [`undescribed-authored-entity`](#undescribed-authored-entity) | every entity, except `wall_segment`, `roof_plane`, `floor_slab` | info |
 
-19 rules.
+20 rules.
 
 ### boundary-segment-without-parcel
 
@@ -227,6 +228,19 @@ Specimen "{id}" ({name|'unnamed'}) has no care profile - it will appear on no ma
 ```
 
 A specimen is an individual plant or tree, and the care it needs is held once per species in a care profile rather than repeated on every specimen. Without the link the specimen is present on the plan and absent from every calendar the model can produce: nothing knows when to prune it, feed it or check it. `care_profile_ref` is optional in the schema because a specimen can legitimately be recorded before its species profile exists, which makes this a gap to close rather than an error.
+
+### staircase-room-without-flight
+
+**warn** - reported; fails only under `--strict`. Applies to every `room` whose `room_type` is `staircase`.
+
+What you will see:
+
+```
+Room "{id}" ({name|'unnamed'}) is typed a staircase but names no floor it reaches - the stairs are in its name only.
+```
+
+A room whose purpose is stairs says so twice or not at all. `room_type: staircase` names the purpose; the `staircase` block (2.3.1) says which floor the flight reaches, and without it the model records a room called a stair hall that goes nowhere. A question as ordinary as "how do I get to the first floor" cannot be answered from it, and a viewer can label the room but not draw the stairs.
+Checked on the room typed `staircase` rather than on every room, because a flight can also leave a hallway or a living room and those rooms are not wrong to omit one. The converse is deliberately not a rule: a room carrying a `staircase` block without the room type is an open stair, which is how most of them are built.
 
 ### system-without-maintenance
 

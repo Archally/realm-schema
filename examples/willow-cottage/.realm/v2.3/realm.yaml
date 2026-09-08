@@ -17,6 +17,7 @@
 #   topology/estate.yaml       parcel, buildings, wings, floors, rooms, zones
 #   topology/boundary.yaml     the five boundary runs, as absolute polylines
 #   topology/spatial.yaml      relations between elements (no coordinates)
+#   topology/equipment.yaml    fixed equipment, placed on what it is fixed to
 #   topology/construction/     wall segments, slabs and roof planes, derived
 #   infrastructure/            systems, components, connections, network
 #   nature/                    specimens, plantings, care, soil, biomass

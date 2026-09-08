@@ -1,0 +1,24 @@
+engineVersion: "0.1"
+rules:
+  - id: staircase-room-without-flight
+    severity: warn
+    description: >-
+      A room whose purpose is stairs says so twice or not at all. `room_type: staircase`
+      names the purpose; the `staircase` block (2.3.1) says which floor the flight reaches,
+      and without it the model records a room called a stair hall that goes nowhere. A
+      question as ordinary as "how do I get to the first floor" cannot be answered from it,
+      and a viewer can label the room but not draw the stairs.
+
+      Checked on the room typed `staircase` rather than on every room, because a flight can
+      also leave a hallway or a living room and those rooms are not wrong to omit one. The
+      converse is deliberately not a rule: a room carrying a `staircase` block without the
+      room type is an open stair, which is how most of them are built.
+    find:
+      entity_type: room
+    filter:
+      field_eq:
+        data.room_type: staircase
+    check:
+      all_non_empty:
+        - data.staircase
+    message: 'Room "{id}" ({name|''unnamed''}) is typed a staircase but names no floor it reaches - the stairs are in its name only.'

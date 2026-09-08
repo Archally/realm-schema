@@ -78,3 +78,71 @@ care_profiles:
     description: >
       Shared profile for the beech hedge and the deciduous specimens.
     tags: [hedge, deciduous]
+  - id: SCP003
+    name: Evergreen shelter
+    species: Ilex aquifolium
+    common_name: Common holly
+    applicable_specimen_types: [tree-evergreen, shrub-evergreen]
+    applicable_planting_types: [hedge]
+    growth_rate: slow
+    lifespan_years: 300
+    hardiness_zone_min: 5a
+    care_calendar:
+    - month: 9
+      activities:
+      - activity_type: hedge-trim
+        description: >
+          Trim the belt while it can still heal before the frosts.
+    - month: 1
+      notes: >
+        Nothing is cut midwinter - an evergreen cut in frost browns back to the
+        wound.
+    - month: 4
+      activities:
+      - activity_type: inspection
+        description: >
+          Look for gaps in the belt where a plant has failed, and beat up in the
+          same season.
+    known_threats:
+    - threat_type: pest
+      name: Holly leaf miner
+    - threat_type: disease-fungal
+      name: Honey fungus
+    - threat_type: environmental
+      name: Salt-laden wind off the fetch
+    description: >
+      Care pattern for the shelter belt and the evergreens standing in it.
+    tags: [shelter, evergreen]
+  - id: SCP004
+    name: Hay meadow
+    species: Holcus lanatus
+    common_name: Yorkshire fog
+    applicable_planting_types: [meadow-section]
+    growth_rate: moderate
+    hardiness_zone_min: 5a
+    care_calendar:
+    - month: 7
+      activities:
+      - activity_type: mowing
+        description: >
+          Cut once the seed has dropped, not before.
+      - activity_type: harvesting
+        description: >
+          Lift the cut within the week - hay left lying feeds the sward it came
+          off.
+    - month: 8
+      notes: >
+        Aftermath grazed by the neighbour's sheep, which is the only thing taken
+        off it.
+    - month: 11
+      notes: >
+        Too wet to walk from here until March; nothing is done to it.
+    known_threats:
+    - threat_type: environmental
+      name: Nutrient enrichment from run-off
+    - threat_type: environmental
+      name: Soft rush spreading in the wettest ground
+    description: >
+      A meadow is kept by what is NOT done to it: never fed, cut once, and the
+      cut lifted rather than left to mulch the sward.
+    tags: [meadow, low-input]

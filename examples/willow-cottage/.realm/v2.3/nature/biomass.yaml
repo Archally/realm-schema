@@ -30,3 +30,20 @@ biomass_flows:
       Leaf from the oak and the beech hedge, caged for eighteen months and
       then dug into the raised beds.
     tags: [composting, closed-loop]
+  - id: BMF002
+    name: Shelter belt trimmings to path chip
+    source_type: hedge-trimmings
+    process: chipping
+    output_type: wood-chips
+    source_ref: PTG004
+    processing_location_ref: OZ007
+    destination_ref: OZ004
+    processing_duration_days: 1
+    estimated_annual_volume: 2.5
+    volume_unit: cubic-meters
+    seasonal_availability: [9]
+    description: >
+      A third of the belt is cut each September and chipped on the forecourt,
+      where there is room to work off the slope. The chip goes round the
+      orchard trees.
+    tags: [chipping, closed-loop]

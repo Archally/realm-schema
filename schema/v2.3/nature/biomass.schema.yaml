@@ -8,7 +8,7 @@ description: >
   productive use (garden amendment, firewood, mulch). Nature plane.
 
 x-gdsm:
-  version: "2.3.0"
+  version: "2.3.1"
   methodology: "GDSM v1.0"
   plane: "nature"
   domain_slice: null
@@ -89,7 +89,12 @@ $defs:
       source_ref:
         $ref: "../metamodel.schema.yaml#/$defs/biomass_source_ref"
         title: "Source Element"
-        description: "Specimen or outdoor zone where this biomass originates."
+        description: >
+          Where this biomass originates: a specimen, a planting or an outdoor
+          zone. Several of the source types are produced by a group rather than
+          by one plant - `hedge-trimmings` come off a hedge and
+          `grass-clippings` off a sward - so a planting is named directly rather
+          than through the zone it stands in.
       # ── Processing ──
       process:
         type: string

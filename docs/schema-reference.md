@@ -513,6 +513,7 @@ Accepts `x-` extension fields.
 | `equipment_refs` | list of `equipment_ref` | - | Equipment entities placed in this room. Redundant with equipment.room_ref but improves human readability of room definitions. |
 | `furniture_refs` | list of `furniture_ref` | - | Furniture entities placed in this room. Redundant with furniture.room_ref but improves human readability of room definitions. |
 | `openings` | list of `opening` | - | Windows, doors, and other openings in this room. Answers CQ26. |
+| `staircase` | `staircase` | - | The flight of stairs leaving this room for another floor. Present on any room the stairs start from, whatever its `room_type` - an open stair in a living room is as real as an enclosed stair hall. |
 | `lighting_groups` | list of `lighting_group` | - | Lighting fixture groups in this room, each independently switched. Answers CQ26. |
 | `heating` | `room_heating` | - | Structured heating details for this room. |
 | `description` | string | - |  |
@@ -791,7 +792,7 @@ A circular flow of organic material from source through processing to productive
 | `id` | string | yes |  |
 | `name` | string | yes | Example: `Oak Pruning to Firewood`. |
 | `source_type` | enum | yes | What kind of organic material enters this flow. One of: `tree-pruning`, `leaf-fall`, `grass-clippings`, `kitchen-waste`, `wood-harvest`, `crop-residue`, `hedge-trimmings`, `fruit-drops`, `weed-clearing`. Example: `tree-pruning`. |
-| `source_ref` | `biomass_source_ref` | - | Specimen or outdoor zone where this biomass originates. |
+| `source_ref` | `biomass_source_ref` | - | Where this biomass originates: a specimen, a planting or an outdoor zone. Several of the source types are produced by a group rather than by one plant - `hedge-trimmings` come off a hedge and `grass-clippings` off a sward - so a planting is named directly rather than through the zone it stands in. |
 | `process` | enum | yes | How the raw biomass is transformed. One of: `composting`, `chipping`, `drying`, `direct-use`, `mulching`, `vermicomposting`, `biochar`, `anaerobic-digestion`. Example: `composting`. |
 | `processing_location_ref` | `outdoor_zone_ref` | - | Zone where processing happens (e.g., compost area, wood shed). |
 | `processing_duration_days` | integer | - | Typical time from input to usable output. min 0. Example: `90`. |
@@ -1364,7 +1365,7 @@ Definitions the planes draw on. The reference types (`parcel_ref`, `room_ref` an
 | `any_entity_ref` | pattern `^([a-z][a-z0-9-]*\.)?([A-Z]{2,4}\d{3,}|ECH\d{3,}[a-z])$` | Reference to an entity of any type, for fields that deliberately accept a cross-plane mix. Estate Change ids carry an optional trailing letter addressing one member of a change family; every other prefix is digits only. Example: `SPM020`. |
 | `positioned_element_ref` | `parcel_ref` or `building_ref` or `outdoor_zone_ref` or `boundary_segment_ref` or `specimen_ref` or `system_ref` or `component_ref` or `network_node_ref` or `iot_device_ref` or `wing_ref` or `floor_ref` or `room_ref` or `planting_ref` or `neighbor_property_ref` or `equipment_ref` or `furniture_ref` | Reference to any element that can have a spatial position on the property layout. Used in spatial_relation from/to fields. |
 | `maintainable_element_ref` | `parcel_ref` or `system_ref` or `component_ref` or `building_ref` or `room_ref` or `outdoor_zone_ref` or `boundary_segment_ref` or `specimen_ref` or `planting_ref` or `network_node_ref` or `iot_device_ref` or `equipment_ref` or `tool_ref` | Reference to any element that can be a maintenance target. Used in maintenance_task.target_ref. |
-| `biomass_source_ref` | `specimen_ref` or `outdoor_zone_ref` | Reference to an element that produces biomass (specimen or outdoor zone). |
+| `biomass_source_ref` | `specimen_ref` or `planting_ref` or `outdoor_zone_ref` | Reference to an element that produces biomass: a specimen, a planting or an outdoor zone. A named tree drops its own leaf, a hedge or a meadow yields trimmings and cuttings as a group, and a zone answers for everything raked off it. |
 | `biomass_destination_ref` | `outdoor_zone_ref` or `system_ref` | Reference to where processed biomass is used (zone for compost, system for fuel). |
 | `room_or_zone_ref` | `room_ref` or `outdoor_zone_ref` | Reference to a room or outdoor zone (for system distribution targets). |
 | `specs` | list of object | Generic key-value-unit specification pairs for equipment, appliances, or other entities with diverse technical attributes. Used by T2 (inventory report) to surface specifications without schema-per-type. |

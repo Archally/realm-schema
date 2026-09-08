@@ -75,7 +75,10 @@ export function specimenSize(data) {
 }
 
 /**
- * How a planting's size reads: a count and the height range it currently occupies.
+ * How a planting's size reads: a count and the height range it currently occupies,
+ * or the ground it covers when it is not counted in plants. A meadow and a herb
+ * strip have an area and no count, and reading an empty cell for them says the
+ * model does not know how big they are, which is the opposite of true.
  * @param {Record<string, any>} data
  */
 export function plantingSize(data) {
@@ -86,5 +89,24 @@ export function plantingSize(data) {
   if (typeof low === "number" && typeof high === "number") parts.push(`${low}-${high} cm`);
   else if (typeof low === "number") parts.push(`from ${low} cm`);
   if (typeof data?.spacing_cm === "number") parts.push(`spaced ${data.spacing_cm} cm`);
+  if (parts.length === 0 && typeof data?.area_sqm === "number") parts.push(`${data.area_sqm} m2`);
   return parts.join(", ");
+}
+
+/**
+ * What a planting is, when it is one species and when it is several. A shelter
+ * belt or a meadow states a `species_mix` and no `species`, and rendering only
+ * the latter prints an empty cell for a planting that names four species - a
+ * reader takes that for "not recorded".
+ * @param {Record<string, any>} data
+ */
+export function plantingSpecies(data) {
+  if (typeof data?.species === "string") return data.species;
+  const mix = data?.species_mix;
+  if (!Array.isArray(mix) || mix.length === 0) return "";
+  // Largest share first, so the cell names the species that dominates the stand.
+  const ordered = [...mix].sort((a, b) => (b?.proportion_percent ?? 0) - (a?.proportion_percent ?? 0));
+  const lead = ordered[0]?.species ?? ordered[0]?.common_name;
+  if (!lead) return "";
+  return ordered.length > 1 ? `${lead} +${ordered.length - 1}` : String(lead);
 }

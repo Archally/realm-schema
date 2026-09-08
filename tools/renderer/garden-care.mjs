@@ -18,6 +18,7 @@ import {
   vegetationByZone,
   specimenSize,
   plantingSize,
+  plantingSpecies,
   table,
   section,
   sections,
@@ -147,7 +148,7 @@ function vegetationSection(index) {
             plantings.map((planting) => [
               planting.id,
               planting.name ?? planting.data?.common_name,
-              planting.data?.species,
+              plantingSpecies(planting.data),
               nameOf(index, followField(index, planting.id, "outdoor_zone_ref")[0]?.id),
               plantingSize(planting.data),
               planting.data?.sun_requirement,

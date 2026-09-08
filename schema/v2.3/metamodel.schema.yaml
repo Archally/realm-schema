@@ -9,7 +9,7 @@ description: >
   entry point for machine traversal.
 
 x-gdsm:
-  version: "2.3.0"
+  version: "2.3.1"
   methodology: "GDSM v1.0"
   suite_name: "Realm"
   suite_description: >
@@ -1634,9 +1634,14 @@ $defs:
 
   biomass_source_ref:
     title: "Biomass Source Reference"
-    description: "Reference to an element that produces biomass (specimen or outdoor zone)."
+    description: >
+      Reference to an element that produces biomass: a specimen, a planting or an
+      outdoor zone. A named tree drops its own leaf, a hedge or a meadow yields
+      trimmings and cuttings as a group, and a zone answers for everything raked
+      off it.
     anyOf:
       - $ref: "#/$defs/specimen_ref"
+      - $ref: "#/$defs/planting_ref"
       - $ref: "#/$defs/outdoor_zone_ref"
 
   biomass_destination_ref:

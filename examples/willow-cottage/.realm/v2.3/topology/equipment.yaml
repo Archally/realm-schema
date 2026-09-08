@@ -1,0 +1,34 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# Topology: Equipment - what is fixed to the place rather than kept in it
+#
+# Schema: topology/equipment.schema.yaml
+#
+# GENERATED from a layout specification. Areas, elevations, wall segments and
+# opening offsets are computed rather than typed, which is why they agree with
+# one another. An edit made here is replaced the next time the model is
+# generated - copy it before adapting it.
+#
+# A piece of equipment names exactly one thing it is fixed to - a room, a
+# building, a boundary run or an outdoor zone - and the schema permits only
+# one, so where a gate belongs is a decision and not a list.
+#
+# The gate is hung in the hedge and stands in the mouth of the drive. Its
+# position and clear width are that mouth, measured along the hedge run, so
+# the three cannot drift apart; `position_derived_from` names the zone the
+# measurement came from.
+# ═════════════════════════════════════════════════════════════════════════════
+
+equipments:
+  - id: EQP001
+    name: Lane gate
+    equipment_type: swing-gate
+    boundary_segment_ref: BS001
+    position: {x: 6.52, y: 0.48}
+    position_source: estimated
+    position_derived_from: OZ001
+    width_cm: 502
+    description: >
+      Five-bar timber field gate hung in the roadside hedge, filling the mouth
+      of the drive. Its west post stands 4 m east of the north corner.
+      Latched, not locked.
+    tags: [timber, five-bar, vehicle-access]

@@ -1,6 +1,6 @@
 # Willow Cottage
 
-> Generated from a Realm model: 145 entities, 454 relations, 5 planes, Realm schema v2.3.0.
+> Generated from a Realm model: 154 entities, 473 relations, 5 planes, Realm schema v2.3.0.
 
 **Willow Cottage, Brackwater Lane, Nether Hollowby, South West England, England**
 
@@ -250,12 +250,13 @@ flowchart LR
 |---|---|---|---|---|---|---|---|---|
 | MT001 | Heat pump annual service | Air-source heat pump (SYS001) | Second Monday in September, every year | autumn | high | 90 min | 180 GBP | 2025-09-08 |
 
-### garden (2)
+### garden (3)
 
 | Task | Name | Target | When | Season | Priority | Duration | Cost | Last done |
 |---|---|---|---|---|---|---|---|---|
 | MT002 | Hedge trim | Beech hedge (PTG001) | Third Saturday in August, every year | summer | medium | 240 min | - | 2025-08-16 |
 | MT003 | Orchard winter prune | Bramley apple (SPM003) | First Saturday in February, every year | winter | medium | 180 min | - | 2026-02-07 |
+| MT006 | Meadow hay cut | Hay meadow (PTG005) | Third Saturday in July, every year | summer | low | 300 min | - | 2025-07-19 |
 
 ### Cost categories
 
@@ -338,28 +339,30 @@ flowchart LR
 |---|---|
 | context | 13 |
 | infrastructure | 16 |
-| nature | 12 |
-| operations | 10 |
-| topology | 88 |
+| nature | 19 |
+| operations | 11 |
+| topology | 89 |
 | (cross-cutting) | 6 |
 
 | Type | Count | Plane |
 |---|---|---|
 | room | 15 | topology |
 | outdoor_zone | 8 | topology |
+| maintenance_task | 6 | operations |
+| specimen | 6 | nature |
 | boundary_segment | 5 | topology |
-| maintenance_task | 5 | operations |
+| planting | 5 | nature |
 | system | 5 | infrastructure |
 | neighbor_property | 4 | context |
-| specimen | 4 | nature |
+| species_care_profile | 4 | nature |
 | component | 3 | infrastructure |
 | cost_category | 3 | operations |
 | environmental_factor | 3 | context |
 | floor | 3 | topology |
 | person | 3 | context |
-| planting | 3 | nature |
 | utility_connection | 3 | infrastructure |
 | wing | 3 | topology |
+| biomass_flow | 2 | nature |
 | building | 2 | topology |
 | estate_change | 2 | - |
 | event | 2 | - |
@@ -367,8 +370,7 @@ flowchart LR
 | network_node | 2 | infrastructure |
 | road_corridor | 2 | context |
 | soil_profile | 2 | nature |
-| species_care_profile | 2 | nature |
-| biomass_flow | 1 | nature |
+| equipment | 1 | topology |
 | issue | 1 | - |
 | network_link | 1 | infrastructure |
 | parcel | 1 | topology |
@@ -377,6 +379,6 @@ flowchart LR
 | shared_concern | 1 | context |
 | warranty | 1 | operations |
 
-94 authored entities, 51 derived.
+103 authored entities, 51 derived.
 
 51 further entities form the construction layer (43 wall_segment, 5 roof_plane, 3 floor_slab). They are derived from the rooms, wings and floors above rather than authored, and are summarised rather than listed - pass --geometry to enumerate them.

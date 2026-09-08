@@ -8,7 +8,7 @@ description: >
   land ownership down to individual rooms and garden areas. Topology plane.
 
 x-gdsm:
-  version: "2.3.0"
+  version: "2.3.1"
   methodology: "GDSM v1.0"
   plane: "topology"
   domain_slice: null
@@ -26,12 +26,14 @@ x-gdsm:
     - "CQ26: What are the openings (windows, doors), lighting fixtures, and heating details for each room?"
     - "CQ33: What is the wall structure (thickness, material, adjacency) of each room, and where exactly are openings placed on each wall?"
     - "CQ34: What are the building heights (eave, ridge) for shadow and elevation analysis?"
+    - "CQ35: Which rooms do the stairs join, and how many steps is it between two floors?"
   fitness:
-    last_evaluated: "2026-09-04"
+    last_evaluated: "2026-09-07"
     method: >
-      Structural: release 2.3.0 adds optional properties, enum values, definitions
-      and entity types and removes, renames, retypes or narrows nothing, so no
-      task's fitness can fall against 2.2.0. No numeric baseline was recorded
+      Structural: release 2.3.1 adds one optional property and its definition and
+      removes, renames, retypes or narrows nothing, so no task's fitness can fall
+      against 2.3.0. Release 2.3.0 adds optional properties, enum values,
+      definitions and entity types on the same terms against 2.2.0. No numeric baseline was recorded
       before this release; the electrical questions in the systems file carry the
       first per-question estimates.
     scores: {}
@@ -713,6 +715,14 @@ $defs:
         description: "Windows, doors, and other openings in this room. Answers CQ26."
         items:
           $ref: "#/$defs/opening"
+      # ── Staircase (v2.3.1) ──
+      staircase:
+        $ref: "#/$defs/staircase"
+        title: "Staircase"
+        description: >
+          The flight of stairs leaving this room for another floor. Present on
+          any room the stairs start from, whatever its `room_type` - an open
+          stair in a living room is as real as an enclosed stair hall.
       # ── Lighting (v1.1) ──
       lighting_groups:
         type: array
@@ -843,6 +853,83 @@ $defs:
           Combines with opens_inward to fully describe the door arc.
         enum: ["left", "right"]
         examples: ["left"]
+      description:
+        type: string
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Staircase (embedded, v2.3.1)
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  staircase:
+    type: object
+    title: "Staircase"
+    description: >
+      The flight of stairs that leaves this room and reaches another floor.
+      Embedded sub-object (no ID), on the room the flight starts from, naming
+      the floor it arrives at - the same shape as an opening, which sits in the
+      wall it is cut into and names the space on the far side.
+
+      A room is on exactly one floor and a flight spans two, so the flight is a
+      property of the room rather than a room of its own. A room with stairs up
+      and stairs down declares the one that leaves it going up; the floor above
+      declares its own.
+
+      The rise is not stated here because it is already known: the two floors
+      carry `finished_floor_elevation_m`, and their difference divided by
+      `step_count` is the height of one riser. A stated rise could disagree with
+      the floors it joins.
+    required: [connects_to_floor_ref]
+    additionalProperties: false
+    properties:
+      connects_to_floor_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/floor_ref"
+        title: "Floor Reached"
+        description: >
+          The floor this flight arrives at. Usually the next level up, but a
+          flight from a cellar to the ground floor names the ground floor.
+      arrives_in_room_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/room_ref"
+        title: "Room Reached"
+        description: >
+          The room on that floor the flight arrives in - a landing, a hall, an
+          attic. Optional, and worth stating: with it the model can be walked
+          from any room to any other, and without it a route stops at the floor.
+      staircase_type:
+        type: string
+        title: "Staircase Type"
+        description: "The plan shape of the flight."
+        enum:
+          - "straight"
+          - "quarter-turn"
+          - "half-turn"
+          - "winder"
+          - "spiral"
+          - "ladder"
+        examples: ["half-turn"]
+      ascent_direction:
+        $ref: "../metamodel.schema.yaml#/$defs/compass_direction"
+        title: "Ascent Direction"
+        description: >
+          The direction faced when climbing the first flight. For a turning
+          stair this is where it starts, not where it ends.
+      step_count:
+        type: integer
+        title: "Number of Steps"
+        description: "Risers in the whole flight, landings excluded."
+        minimum: 1
+        examples: [14, 16]
+      going_cm:
+        type: number
+        title: "Going (cm)"
+        description: "Tread depth of one step, front to back."
+        exclusiveMinimum: 0
+        examples: [24, 28]
+      width_cm:
+        type: number
+        title: "Clear Width (cm)"
+        description: "Usable width between the walls or balustrades."
+        exclusiveMinimum: 0
+        examples: [90, 110]
       description:
         type: string
 

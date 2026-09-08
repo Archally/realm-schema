@@ -500,8 +500,15 @@ rooms:
         head_height_cm: 198
         depth_cm: 30
         opens_to_room_ref: RM008
+    staircase:
+      connects_to_floor_ref: FLR002
+      arrives_in_room_ref: RM010
+      staircase_type: winder
+      step_count: 14
+      going_cm: 24
+      width_cm: 90
     description: >
-      Winder stair to the first floor, with the understair cupboard beneath.
+      The understair cupboard is beneath the flight.
     tags: [ground-floor, circulation]
   - id: RM006
     name: Study
@@ -748,7 +755,7 @@ rooms:
         depth_cm: 30
         glazing: double
     description: >
-      Head of the stair; hatch to the roof space in the ceiling.
+      Hatch to the roof space in the ceiling.
     tags: [first-floor, circulation]
   - id: RM011
     name: Bedroom two
