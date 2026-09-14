@@ -75,12 +75,13 @@ export function listUpdates() {
  * Where the model lives after `update` ran against `modelDir`.
  *
  * Derived from what the hop actually did, never assumed: only a result containing a
- * `rename-directory` change moves the root. Realm models frequently sit in a directory
- * whose name is not a schema version, and those are left where they are.
+ * `copy-directory` change moves the root. Realm models frequently sit in a directory
+ * whose name is not a schema version, and those are left where they are. The source
+ * version directory is kept, so `modelDir` still exists after a hop that moved on.
  */
 export function directoryAfter(modelDir, update, changes) {
-  const renamed = changes.some((change) => change.type === "rename-directory");
-  if (!renamed) return modelDir;
+  const copied = changes.some((change) => change.type === "copy-directory");
+  if (!copied) return modelDir;
   return path.join(path.dirname(modelDir), `v${update.targetVersion}`);
 }
 
@@ -101,7 +102,7 @@ export function planChain(modelDir) {
 }
 
 /**
- * Apply every applicable update in order, following the model if a hop relocates it.
+ * Apply every applicable update in order, following the model if a hop copies it onward.
  *
  * Stops at the first hop reporting errors. A partially migrated tree is recoverable -
  * the completed hops are real and re-running resumes from the new version - whereas

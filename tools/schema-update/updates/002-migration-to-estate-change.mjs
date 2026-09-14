@@ -129,13 +129,13 @@ function survey(modelDir) {
   }
 
   // Realm model directories are named for the model's own line far more often than for
-  // the schema's, so this renames only a directory that IS a version directory for the
+  // the schema's, so this copies only a directory that IS a version directory for the
   // version being left behind.
   if (path.basename(path.resolve(modelDir)) === `v${update.sourceVersion}`) {
     changes.push({
-      type: "rename-directory",
+      type: "copy-directory",
       path: `v${update.sourceVersion}`,
-      detail: `-> v${update.targetVersion}`,
+      detail: `-> v${update.targetVersion} (v${update.sourceVersion} is kept)`,
       referenceHits: 0,
       textHits: 0,
     });
@@ -172,13 +172,45 @@ function apply(modelDir) {
     };
   }
 
-  const { changes, warnings, edits, renames } = surveyed;
+  const { changes, warnings } = surveyed;
+  let { edits, renames } = surveyed;
+
+  // THE SOURCE VERSION LINE IS KEPT. The pristine tree is copied into the next version directory
+  // BEFORE anything is written, and the copy is surveyed again so every edit and rename below
+  // addresses it. The source therefore survives the hop exactly as it was - and a run that fails
+  // halfway leaves it untouched rather than half-migrated, so the remedy is to delete the copy.
+  if (changes.some((change) => change.type === "copy-directory")) {
+    const resolved = path.resolve(modelDir);
+    const targetDir = path.join(path.dirname(resolved), `v${update.targetVersion}`);
+    if (fs.existsSync(targetDir)) {
+      return {
+        sourceVersion: update.sourceVersion,
+        targetVersion: update.targetVersion,
+        description: update.description,
+        changes,
+        warnings,
+        applied: false,
+        errors: [`v${update.targetVersion} already exists beside the model - move it aside before migrating.`],
+      };
+    }
+    try {
+      fs.cpSync(resolved, targetDir, { recursive: true });
+      ({ edits, renames } = survey(targetDir));
+    } catch (error) {
+      return {
+        sourceVersion: update.sourceVersion,
+        targetVersion: update.targetVersion,
+        description: update.description,
+        changes,
+        warnings,
+        applied: false,
+        errors: [`Failed to copy the model to v${update.targetVersion}: ${error.message}`],
+      };
+    }
+  }
+
   try {
     commit(edits, renames);
-    if (changes.some((change) => change.type === "rename-directory")) {
-      const resolved = path.resolve(modelDir);
-      fs.renameSync(resolved, path.join(path.dirname(resolved), `v${update.targetVersion}`));
-    }
   } catch (error) {
     errors.push(error.message);
   }
