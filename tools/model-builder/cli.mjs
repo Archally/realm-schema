@@ -62,24 +62,24 @@ async function main() {
     options = parseArgs(process.argv.slice(2));
   } catch (error) {
     process.stderr.write(`${error.message}\n${USAGE}\n`);
-    process.exit(2);
+    return 2;
   }
 
   if (options.help) {
     process.stdout.write(HELP);
-    return;
+    return 0;
   }
   if (!options.modelDir) {
     process.stderr.write(`${USAGE}\n`);
-    process.exit(2);
+    return 2;
   }
   if (options.output === undefined && process.argv.includes("--output")) {
     process.stderr.write(`--output needs a path\n${USAGE}\n`);
-    process.exit(2);
+    return 2;
   }
   if (!fs.existsSync(options.modelDir)) {
     process.stderr.write(`model directory not found: ${options.modelDir}\n`);
-    process.exit(2);
+    return 2;
   }
 
   const model = await buildRealmModel(options.modelDir);
@@ -102,9 +102,15 @@ async function main() {
   } else {
     process.stdout.write(`${json}\n`);
   }
+  return 0;
 }
 
-main().catch((error) => {
-  process.stderr.write(`${error?.stack ?? error}\n`);
-  process.exit(2);
-});
+main().then(
+  (code) => {
+    process.exitCode = code;
+  },
+  (error) => {
+    process.stderr.write(`${error?.stack ?? error}\n`);
+    process.exitCode = 2;
+  },
+);

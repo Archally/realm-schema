@@ -52,9 +52,15 @@ const DOCUMENTS = {
   "garden-care": { file: "garden-care.md", render: renderGardenCare, coverage: false },
 };
 
+/** A usage or input error: the entry point prints it with the usage text and ends with exit code 2. */
+class UsageError extends Error {}
+
+/**
+ * @param {string} message
+ * @returns {never}
+ */
 function fail(message) {
-  console.error(`realm-render: ${message}\n${USAGE}`);
-  process.exit(2);
+  throw new UsageError(message);
 }
 
 function parseArgs(argv) {
@@ -68,12 +74,12 @@ function parseArgs(argv) {
     relations: false,
     coverage: true,
     rules: undefined,
+    help: false,
   };
   for (let i = 0; i < argv.length; i++) {
     const token = argv[i];
     if (token === "--help" || token === "-h") {
-      console.log(USAGE);
-      process.exit(0);
+      return { ...args, help: true };
     } else if (token === "--document" || token === "-d") args.document = argv[++i];
     else if (token === "--output" || token === "-o") args.output = argv[++i];
     else if (token === "--title" || token === "-t") args.title = argv[++i];
@@ -119,6 +125,10 @@ function write(outputPath, markdown) {
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
+  if (args.help) {
+    console.log(USAGE);
+    return 0;
+  }
   if (!args.modelDir) fail("a model directory is required");
   if (!fs.existsSync(args.modelDir)) fail(`model directory not found: ${args.modelDir}`);
 
@@ -168,10 +178,15 @@ async function main() {
     }
   }
 
-  if (stale > 0) process.exit(1);
+  return stale > 0 ? 1 : 0;
 }
 
-main().catch((error) => {
-  console.error(`realm-render: ${error?.message ?? error}`);
-  process.exit(2);
-});
+main().then(
+  (code) => {
+    process.exitCode = code;
+  },
+  (error) => {
+    console.error(error instanceof UsageError ? `realm-render: ${error.message}\n${USAGE}` : `realm-render: ${error?.message ?? error}`);
+    process.exitCode = 2;
+  },
+);

@@ -33,13 +33,19 @@ import { checkRealmModel } from "./check.mjs";
 const USAGE =
   "usage: realm-check --model <dir> [--rules <dir>] [--json] [--strict] [--rule <id>]";
 
+/** A usage or input error: the entry point prints it with the usage line and ends with exit code 2. */
+class UsageError extends Error {}
+
+/**
+ * @param {string} message
+ * @returns {never}
+ */
 function fail(message) {
-  console.error(`realm-check: ${message}\n${USAGE}`);
-  process.exit(2);
+  throw new UsageError(message);
 }
 
 function parseArgs(argv) {
-  const args = { model: undefined, rules: undefined, json: false, strict: false, rule: undefined };
+  const args = { model: undefined, rules: undefined, json: false, strict: false, rule: undefined, help: false };
   for (let i = 0; i < argv.length; i++) {
     const token = argv[i];
     if (token === "--json") args.json = true;
@@ -47,7 +53,7 @@ function parseArgs(argv) {
     else if (token === "--model") args.model = argv[++i];
     else if (token === "--rules") args.rules = argv[++i];
     else if (token === "--rule") args.rule = argv[++i];
-    else if (token === "--help" || token === "-h") { console.log(USAGE); process.exit(0); }
+    else if (token === "--help" || token === "-h") return { ...args, help: true };
     else if (token.startsWith("-")) fail(`unknown flag: ${token}`);
     else if (!args.model) args.model = token;
     else fail(`unexpected argument: ${token}`);
@@ -89,6 +95,10 @@ function render(model, issues, ruleDir, filter, excludedRetired) {
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
+  if (args.help) {
+    console.log(USAGE);
+    return 0;
+  }
   if (!args.model) fail("--model is required");
   if (!fs.existsSync(args.model)) fail(`model directory not found: ${args.model}`);
 
@@ -126,10 +136,15 @@ async function main() {
   // what the schema deliberately left optional, so a warning is a judgement about a
   // model rather than a defect in it. `--strict` is how a project opts into treating
   // them as a gate.
-  if (errors.length > 0 || (args.strict && issues.length > 0)) process.exit(1);
+  return errors.length > 0 || (args.strict && issues.length > 0) ? 1 : 0;
 }
 
-main().catch((error) => {
-  console.error(`realm-check: ${error?.message ?? error}`);
-  process.exit(2);
-});
+main().then(
+  (code) => {
+    process.exitCode = code;
+  },
+  (error) => {
+    console.error(error instanceof UsageError ? `realm-check: ${error.message}\n${USAGE}` : `realm-check: ${error?.message ?? error}`);
+    process.exitCode = 2;
+  },
+);

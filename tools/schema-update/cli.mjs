@@ -63,13 +63,13 @@ function main() {
   if (parsed.error) {
     console.error(parsed.error);
     console.error(USAGE);
-    process.exit(2);
+    return 2;
   }
   const { options } = parsed;
 
   if (options.help) {
     console.log(USAGE);
-    process.exit(0);
+    return 0;
   }
 
   if (options.list) {
@@ -78,19 +78,19 @@ function main() {
       console.log(`  ${update.sourceVersion} -> ${update.targetVersion}`);
       console.log(`    ${update.description}\n`);
     }
-    process.exit(0);
+    return 0;
   }
 
   if (!options.modelDir) {
     console.error(USAGE);
-    process.exit(2);
+    return 2;
   }
 
   const detected = detectVersion(options.modelDir);
   if (!detected.version) {
     const { error } = planChain(options.modelDir);
     console.error(error);
-    process.exit(1);
+    return 1;
   }
 
   console.log(
@@ -106,7 +106,7 @@ function main() {
   const chain = resolveChain(detected.version);
   if (chain.length === 0) {
     console.log("No update available - this model is already on the newest published version.");
-    process.exit(0);
+    return 0;
   }
 
   console.log(`Chain: ${chain.map((update) => `${update.sourceVersion} -> ${update.targetVersion}`).join(", ")}\n`);
@@ -128,7 +128,7 @@ function main() {
       console.log("  announced, not planned - it reads the tree the previous hop produces");
     }
     console.log("\nNothing was written. Re-run without --dry-run to apply.");
-    process.exit(0);
+    return 0;
   }
 
   const result = applyChain(options.modelDir);
@@ -144,12 +144,12 @@ function main() {
 
   if (result.error) {
     console.error(result.error);
-    process.exit(1);
+    return 1;
   }
 
   console.log(`Done. Model is at ${result.finalDirectory}.`);
   console.log("Validate it: realm-validate --model <model-dir> --schemas schema/v2.3");
-  process.exit(0);
+  return 0;
 }
 
-main();
+process.exitCode = main();
