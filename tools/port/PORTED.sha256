@@ -22,7 +22,8 @@
 # job renderer tools/renderer extras-ok
 # job schema-update tools/schema-update extras-ok
 # job example-willow-cottage-specs examples/willow-cottage/.specs
-# job port tools/port
+# job schema-atlas tools/schema-atlas
+# job port tools/port extras-ok
 
 f2df1d059c911cac02979d3e359ca6b1760cc0f78ca40fca7eb7143f2731beb0  validator/cli.mjs
 4d4a337cc52fd24fd80ea976ff74bf405ef7688f3ecc772691b26b35157c1728  validator/core/cross-layer.mjs
@@ -65,6 +66,7 @@ cb0a74bd05dc0ce1e023254a205a930d3fc2d6257230029214dd8f4784234d91  example-willow
 2448f1aed0e31549f71ce3449dd7ce1bebcb1c2f3548ca3e33470e68794b8dfd  docs/file-conventions.md
 ffba92f8324bc4557adf7c178f6dd077c4a7b917530a0394008e8532cfb5f90b  docs/model-quality.md
 0f0a5e8d62b123de2a0e63f1aa281ee31a18690b93ded43a5436a72920e9cb02  docs/modeling-guide.md
+f41dc82d7dfd357bfaf65fc51002f063797c132df480ad7b46cc91b9d6f9ec14  docs/schema-atlas/2026-11-06-reference.md
 24c348f424ff09dd5bc54d5d8292dda1ebdb3e4185ccff042cb536a079a12f92  docs/schema-reference.md
 0de30d2ca0e83f2baa11cbadf44aa4ffbfb036879c89961eb8205ed861a86200  doc-snippet-validate/cli.mjs
 45c58a8df27c6d69c29c764a8ed32163f626cad50b7cb8b03e03a71ae6755cc9  doc-snippet-validate/extract.mjs
@@ -115,5 +117,7 @@ cd4db68a65c5e55eef0f1259a7479264afd36d49fe6b2601ef745e53035959f0  renderer/prope
 9b09a49be02ae24c5a11d79b3f4b20b91879f193f0662bf7fc716b3492b0422e  schema-update/updates/003-additive-2-2-to-2-3.mjs
 528a964ea07dd7a705608ccd735faef1b46bbfa2ed57034e937e4c2182635aca  example-willow-cottage-specs/garden-care.md
 8a283fd6c64a64768114e6abc29fce42b1834a70d40e57bd7c8cf160b7fb9da5  example-willow-cottage-specs/property.md
+c7c679f638dc335efa2f89e8b71ccb4ba2177e7003225afa1e71a72c40baf42e  schema-atlas/atlas.test.mjs
+2e6753fb7c21c5a4a8fa91207c1a7fd07075e443d428ecdca235ab261340a688  schema-atlas/cli.mjs
 f78fac92b5d75565c5ab9fa66fc0996f6eb325dc773be1d630996d30dd4cc4bb  port/verify-ported.mjs
 66212df71666cb401837d69f7b3c1f7fb84d7c96dd947b6bed4a97d5565bd149  port/verify-ported.test.mjs

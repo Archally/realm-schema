@@ -54,14 +54,18 @@ position and so carries absolute vertices; and a wall segment is a directed line
 
 ## Documentation
 
-Three guides, and they answer different questions:
+The guides and generated reference answer different questions:
 
 | Guide | Read it for |
 |---|---|
 | [File conventions](./docs/file-conventions.md) | Where a model's files go, which filenames the validator maps to a schema, and how the typed identifiers are formed |
 | [Modeling guide](./docs/modeling-guide.md) | How to author a model: what to write first, the coordinate conventions and where they invert, the two spatial layers, and what a passing validation run does and does not claim |
 | [Schema reference](./docs/schema-reference.md) | Every entity and every field. Generated from the schema itself, so it states what the validator enforces |
+| [Schema atlas](./docs/schema-atlas/2026-11-06-reference.md) | Every schema file, with fields, definitions, references and selected constraints |
 | [Model quality rules](./docs/model-quality.md) | What the quality checker reports and why each rule is worth acting on |
+
+Regenerate the atlas with `npm run atlas`; verify the committed reference with
+`npm run atlas:check`. The atlas reads the shipped schema and no model.
 
 Every YAML example in the guides that names a file is validated against the shipped schema
 in CI, as a real model rather than as a fragment. So an example you copy loads, and one that
@@ -223,8 +227,8 @@ v2.3 is the only published line. A model written against 2.2 validates unchanged
 [tools/LICENSE](./tools/LICENSE) names every tool directory. The schema, the examples and
 the documentation are [Apache-2.0](./LICENSE-APACHE), and so is every tool that establishes
 conformance or protects this distribution: the validator, the documentation-snippet
-validator, the port verifier and the schema updater. The tools that read a model for some
-other purpose - the model builder, the quality checker and its rules, the render kit and the
+validator, the port verifier, the schema updater and the schema atlas. The tools that read
+a model for some other purpose - the model builder, the quality checker and its rules, the render kit and the
 renderer - are [FSL-1.1-ALv2](./LICENSE-FSL), converting to Apache-2.0 two years after each
 release.
 

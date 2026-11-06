@@ -28,6 +28,7 @@
   "files": [
     "schema/",
     "tools/",
+    "docs/",
     "LICENSE",
     "LICENSE-APACHE",
     "LICENSE-FSL",
@@ -47,7 +48,9 @@
     "render:check": "node tools/renderer/cli.mjs examples/willow-cottage --document all -o examples/willow-cottage/.specs --check",
     "check:examples": "node tools/semantic-checker/cli.mjs --model examples/willow-cottage/.realm/v2.3",
     "schema-update": "node tools/schema-update/cli.mjs",
-    "schema-update:list": "node tools/schema-update/cli.mjs --list"
+    "schema-update:list": "node tools/schema-update/cli.mjs --list",
+    "atlas": "node tools/schema-atlas/cli.mjs generate",
+    "atlas:check": "node tools/schema-atlas/cli.mjs check"
   },
   "bin": {
     "realm-validate": "tools/validator/src/cli.mjs",

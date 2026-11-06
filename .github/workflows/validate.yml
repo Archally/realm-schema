@@ -37,6 +37,12 @@ jobs:
         # exactly what a clean tree reports.
         run: node --test "tools/port/*.test.mjs"
 
+      - name: The schema atlas tests pass
+        run: node --test tools/schema-atlas/atlas.test.mjs
+
+      - name: The schema atlas describes the shipped schema
+        run: npm run atlas:check
+
       - name: The example model validates
         run: npm run validate:examples
 

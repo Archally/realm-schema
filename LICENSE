@@ -22,6 +22,8 @@ The following are licensed under the Apache License, Version 2.0
   - tools/port/                    verifies the shipped files against the manifest
                                    published with them; it describes no realm and
                                    reads no model
+  - tools/schema-atlas/            generates the schema reference in docs/ from the
+                                   schema; it reads no model
   - tools/schema-update/           moves a model from one published schema version
                                    to the next; the transformation is the one the
                                    CHANGELOG declares
