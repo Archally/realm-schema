@@ -381,6 +381,6 @@
   <g id="archally-provenance" data-generated-build="willow-cottage-example">
     <rect x="0" y="1044" width="1104" height="20" fill="#f7f7f7"/>
     <line x1="0" y1="1044" x2="1104" y2="1044" stroke="#ddd" stroke-width="0.5"/>
-    <text x="6" y="1057" font-size="8" fill="#777">generated 2026-11-16 00:00 UTC · build willow-cottage-example · model 2.3.0 · pominięto zakończone: 0</text>
+    <text x="6" y="1057" font-size="8" fill="#777">generated 2026-11-16 00:00 UTC · build willow-cottage-example · model 2.3.0 · ended items omitted: 0</text>
   </g>
 </svg>
