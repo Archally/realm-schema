@@ -1,6 +1,6 @@
 # Willow Cottage
 
-> Generated from a Realm model: 154 entities, 473 relations, 5 planes, Realm schema v2.3.0.
+> Generated from a Realm model: 185 entities, 698 relations, 5 planes, Realm schema v2.3.0.
 
 **Willow Cottage, Brackwater Lane, Nether Hollowby, South West England, England**
 
@@ -196,27 +196,61 @@ flowchart LR
     SYS001["Air-source heat pump<br/>SYS001"]
     CMP001("Heat pump outdoor unit<br/>CMP001")
     CMP002("Hot water cylinder<br/>CMP002")
+    CMP004("Ground-floor heating manifold<br/>CMP004")
+    CMP005("Bathroom radiator<br/>CMP005")
     UC001(["Mains electricity<br/>UC001"])
     SYS002["Domestic hot water<br/>SYS002"]
+    CMP006("Bathroom basin mixer<br/>CMP006")
+    CMP007("Kitchen sink mixer<br/>CMP007")
+    UC002(["Mains water<br/>UC002"])
     SYS003["Electrical distribution<br/>SYS003"]
     CMP003("Consumer unit<br/>CMP003")
+    CMP008("Heat pump RCBO<br/>CMP008")
+    CMP009("Heat pump final circuit<br/>CMP009")
+    CMP010("Barn submain RCBO<br/>CMP010")
+    CMP011("Barn submain circuit<br/>CMP011")
+    CMP012("Barn distribution board<br/>CMP012")
+    CMP013("Barn socket RCBO<br/>CMP013")
+    CMP014("Barn socket final circuit<br/>CMP014")
+    CMP015("Barn workbench socket<br/>CMP015")
+    CMP016("Heat pump isolator<br/>CMP016")
+    CMP017("Cottage submain burial transition<br/>CMP017")
+    CMP018("Barn submain burial transition<br/>CMP018")
     SYS004["Rainwater harvesting<br/>SYS004"]
     SYS005["Garden irrigation<br/>SYS005"]
     SYS001 -->|"contains"| CMP001
     SYS001 -->|"contains"| CMP002
+    SYS001 -->|"contains"| CMP004
+    SYS001 -->|"contains"| CMP005
     UC001 -->|"feeds"| SYS001
     SYS001 -->|"feeds"| SYS002
     SYS002 -->|"contains"| CMP002
+    SYS002 -->|"contains"| CMP006
+    SYS002 -->|"contains"| CMP007
+    UC002 -->|"feeds"| SYS002
     SYS003 -->|"contains"| CMP003
+    SYS003 -->|"contains"| CMP008
+    SYS003 -->|"contains"| CMP009
+    SYS003 -->|"contains"| CMP010
+    SYS003 -->|"contains"| CMP011
+    SYS003 -->|"contains"| CMP012
+    SYS003 -->|"contains"| CMP013
+    SYS003 -->|"contains"| CMP014
+    SYS003 -->|"contains"| CMP015
+    SYS003 -->|"contains"| CMP016
+    SYS003 -->|"contains"| CMP017
+    SYS003 -->|"contains"| CMP018
     UC001 -->|"feeds"| SYS003
+    SYS003 -->|"feeds"| SYS001
+    SYS003 -->|"feeds"| SYS002
     SYS004 -->|"feeds"| SYS005
 ```
 
 | System | Name | Type | Where | Supply | Parts | Installed |
 |---|---|---|---|---|---|---|
-| SYS001 | Air-source heat pump | heating | Willow Cottage (BLD001) | Mains electricity (UC001) | CMP001, CMP002 | 2023-03-14 |
-| SYS002 | Domestic hot water | hot-water | Utility room (RM007) | - | CMP002 | 2023-03-14 |
-| SYS003 | Electrical distribution | electrical-distribution | Utility room (RM007) | Mains electricity (UC001) | CMP003 | - |
+| SYS001 | Air-source heat pump | heating | Willow Cottage (BLD001) | Mains electricity (UC001) | CMP001, CMP002, CMP004, CMP005 | 2023-03-14 |
+| SYS002 | Domestic hot water | hot-water | Utility room (RM007) | Mains water (UC002) | CMP002, CMP006, CMP007 | 2023-03-14 |
+| SYS003 | Electrical distribution | electrical-distribution | Utility room (RM007) | Mains electricity (UC001) | CMP003, CMP008, CMP009, CMP010, CMP011, CMP012, CMP013, CMP014, CMP015, CMP016, CMP017, CMP018 | - |
 | SYS004 | Rainwater harvesting | rainwater-collection | Compost corner (OZ008) | - | - | 2024-05-02 |
 | SYS005 | Garden irrigation | irrigation | Vegetable garden (OZ005) | - | - | - |
 
@@ -232,7 +266,7 @@ flowchart LR
 
 | Device | Name | Monitors | Controls | Where |
 |---|---|---|---|---|
-| IOT001 | Hall thermostat | - | Air-source heat pump (SYS001) | Entrance hall (RM002) |
+| IOT001 | Hall thermostat | Air-source heat pump (SYS001) | Air-source heat pump (SYS001) | Entrance hall (RM002) |
 | IOT002 | Vegetable bed moisture sensor | Garden irrigation (SYS005) | - | Vegetable garden (OZ005) |
 
 ## Maintenance schedule
@@ -324,10 +358,11 @@ flowchart LR
 
 ## Model coverage
 
-9 finding(s) from 4 rule(s). Each names something the schema leaves optional and this model does not say. One example per rule is shown; `realm-check` prints them all.
+24 finding(s) from 5 rule(s). Each names something the schema leaves optional and this model does not say. One example per rule is shown; `realm-check` prints them all.
 
 | Rule | Severity | Findings | Example |
 |---|---|---|---|
+| component-without-replacement-basis | info | 15 | Component "CMP004" (Ground-floor heating manifold) has no installation date, expected lifespan or warranty - nothing supports a replacement estimate. |
 | planting-without-care-profile | warn | 2 | Planting "PTG002" (Raised vegetable beds) has no care profile - the whole group appears on no maintenance calendar. |
 | specimen-without-care-profile | warn | 2 | Specimen "SPM002" (Lane oak) has no care profile - it will appear on no maintenance calendar. |
 | system-without-maintenance | info | 3 | System "SYS002" (Domestic hot water) is the target of no maintenance task - it appears on no calendar and in no schedule. |
@@ -338,7 +373,7 @@ flowchart LR
 | Plane | Entities |
 |---|---|
 | context | 13 |
-| infrastructure | 16 |
+| infrastructure | 47 |
 | nature | 19 |
 | operations | 11 |
 | topology | 89 |
@@ -346,16 +381,18 @@ flowchart LR
 
 | Type | Count | Plane |
 |---|---|---|
+| component | 18 | infrastructure |
 | room | 15 | topology |
+| pipe_run | 11 | infrastructure |
 | outdoor_zone | 8 | topology |
 | maintenance_task | 6 | operations |
 | specimen | 6 | nature |
 | boundary_segment | 5 | topology |
+| cable_run | 5 | infrastructure |
 | planting | 5 | nature |
 | system | 5 | infrastructure |
 | neighbor_property | 4 | context |
 | species_care_profile | 4 | nature |
-| component | 3 | infrastructure |
 | cost_category | 3 | operations |
 | environmental_factor | 3 | context |
 | floor | 3 | topology |
@@ -379,6 +416,6 @@ flowchart LR
 | shared_concern | 1 | context |
 | warranty | 1 | operations |
 
-103 authored entities, 51 derived.
+134 authored entities, 51 derived.
 
 51 further entities form the construction layer (43 wall_segment, 5 roof_plane, 3 floor_slab). They are derived from the rooms, wings and floors above rather than authored, and are summarised rather than listed - pass --geometry to enumerate them.

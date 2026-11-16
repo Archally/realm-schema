@@ -4,11 +4,13 @@ $id: "infrastructure/network.schema.yaml"
 title: "Network Topology"
 description: >
   Detailed network infrastructure: routers, switches, access points, mesh
-  nodes, IoT devices, and the links between them. Models the full network
-  topology for visualization and troubleshooting. Infrastructure plane.
+  nodes, IoT devices, and the links between them, with the route a wired
+  link takes and the external service an entry node is fed by. Models the
+  full network topology for visualization and troubleshooting.
+  Infrastructure plane.
 
 x-gdsm:
-  version: "2.3.0"
+  version: "2.3.2"
   methodology: "GDSM v1.0"
   plane: "infrastructure"
   domain_slice: null
@@ -134,6 +136,15 @@ $defs:
         type: boolean
         title: "PoE Powered"
         description: "Whether this device is powered via Power over Ethernet."
+      utility_connection_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/utility_connection_ref"
+        title: "Fed by Utility Connection"
+        description: >
+          The external telecommunications service this node terminates: the
+          fibre, cable, DSL or telephone line that enters the property at a
+          router or modem. Names a utility connection whose connection_type
+          is fiber-internet, cable-internet, dsl or telephone.
+        examples: ["UC003"]
       room_ref:
         $ref: "../metamodel.schema.yaml#/$defs/room_ref"
         title: "Located in Room"
@@ -273,9 +284,22 @@ $defs:
     description: >
       A physical or wireless connection between two network nodes. Forms
       the edges of the network topology graph. Answers CQ06 (link speeds
-      and types). Used by T6 (topology map).
+      and types). A wired link may also say which rooms and zones it passes
+      (through_refs) and where it runs (route), in the same frames as a
+      cable run; the order of its two nodes is not a direction of traffic.
+      Used by T6 (topology map).
     required: [id, from_node_ref, to_node_ref, link_type]
     additionalProperties: false
+    allOf:
+      # A wireless link has no physical path to record.
+      - if:
+          required: [link_type]
+          properties:
+            link_type:
+              enum: ["wifi", "wifi-2.4ghz", "wifi-5ghz", "mesh-wireless"]
+        then:
+          not:
+            required: [route]
     properties:
       id:
         type: string
@@ -289,11 +313,11 @@ $defs:
       from_node_ref:
         $ref: "../metamodel.schema.yaml#/$defs/network_node_ref"
         title: "From Node"
-        description: "Source network node."
+        description: "One end of the link, recorded first."
       to_node_ref:
         $ref: "../metamodel.schema.yaml#/$defs/network_node_ref"
         title: "To Node"
-        description: "Destination network node."
+        description: "The other end of the link."
       link_type:
         type: string
         title: "Link Type"
@@ -321,6 +345,23 @@ $defs:
         type: boolean
         title: "Delivers PoE"
         description: "Whether this link carries Power over Ethernet."
+      through_refs:
+        type: array
+        title: "Passes Through"
+        description: >
+          The rooms and outdoor zones a wired link passes, in order from
+          from_node_ref to to_node_ref. The topological route, for a reader
+          or a tool that has no wall geometry; it is not a drawable path.
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/room_or_zone_ref"
+        examples: [["RM010", "OZ004"]]
+      route:
+        $ref: "../metamodel.schema.yaml#/$defs/physical_route"
+        title: "Route"
+        description: >
+          The geometric route of a wired link, as legs against wall segments
+          or free polylines. A wireless link (wifi, wifi-2.4ghz, wifi-5ghz,
+          mesh-wireless) carries none.
       description:
         type: string
       tags:

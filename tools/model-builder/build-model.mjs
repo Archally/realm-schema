@@ -79,6 +79,7 @@ const TYPE_OF_COLLECTION = {
   iot_devices: "iot_device",
   network_links: "network_link",
   cable_runs: "cable_run",
+  pipe_runs: "pipe_run",
   specimens: "specimen",
   plantings: "planting",
   care_profiles: "species_care_profile",

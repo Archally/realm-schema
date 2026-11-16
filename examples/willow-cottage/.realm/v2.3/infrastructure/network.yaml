@@ -22,6 +22,7 @@ network_nodes:
     model_name: CF-ONT-500
     ip_address: "192.168.1.1"
     wifi_bands: [2.4GHz, 5GHz]
+    utility_connection_ref: UC003
     room_ref: RM006
     position: {x: 23.4, y: 21.4}
     description: >
@@ -48,6 +49,7 @@ iot_devices:
     name: Hall thermostat
     device_type: thermostat
     protocol: wifi
+    monitored_system_ref: SYS001
     controlled_system_ref: SYS001
     network_node_ref: NN001
     room_ref: RM002
@@ -78,6 +80,52 @@ network_links:
     link_type: ethernet-cat6
     speed_mbps: 1000
     poe_delivery: true
+    through_refs: [RM006, OZ007, RM015]
+    route:
+      legs:
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 23.4
+            y: 21.4
+            z: 0.45
+          - x: 25
+            y: 22.4
+            z: 0.45
+        placement: conduit
+      - kind: free
+        path:
+          vertices:
+          - x: 25
+            y: 22.4
+            z: 0.45
+          - x: 25.8
+            y: 22.4
+            z: -0.12
+          - x: 29
+            y: 22.4
+            z: -0.12
+          - x: 29
+            y: 19.2
+            z: 0.26
+          - x: 30
+            y: 19.2
+            z: -0.8
+        placement: buried
+      - kind: free
+        floor_ref: FLR003
+        path:
+          vertices:
+          - x: 30
+            y: 19.2
+            z: -0.8
+          - x: 33
+            y: 19.2
+            z: -0.8
+        placement: conduit
     description: >
-      Buried Cat6 in the same trench as the electrical submain, about 14 m.
+      Fictional estimated Cat6 route with terminal approaches and a buried
+      section alongside the electrical submain. Route vertices are synthetic,
+      not surveyed; node order does not state traffic direction.
     tags: [wired]

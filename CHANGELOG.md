@@ -4,6 +4,62 @@ All notable changes to `@archally/realm-schema`. Versions follow the schema vers
 a model declaring `schemaVersion: "2.3.0"` validates against `schema/v2.3/`, and so does one
 still declaring `2.2.0`, because 2.3 removed nothing.
 
+## 2.3.2 - 2026-11-16
+
+**Additive.** Every model valid under 2.3.1 validates unchanged under 2.3.2. The claim was
+tested, not asserted: the 2.3.1 worked example as published was validated against this schema
+before it was extended. One entity type, three optional properties on existing network
+entities, one optional property on a route leg and five shared definitions; nothing is
+removed, renamed, retyped or narrowed.
+
+### Added
+
+- **`pipe_run` (`PPR###`)**, root key `pipe_runs` in the systems file: a pipe of a heating
+  or domestic water system. Required: `id`, `name`, `system_ref`, `medium`, `from_ref`,
+  `to_ref`. `medium` is `heating-water`, `potable-cold-water` or `potable-hot-water`. Each
+  end is a component or a utility connection (`metamodel.component_or_utility_ref`). The
+  order of the two ends names the run and says nothing about flow; `flow_direction`
+  (`from-to`, `to-from`, `bidirectional`, `unknown`) states it, and its absence means not
+  recorded. A heating flow and its return are two runs. Optional `through_refs`, `route`,
+  `lifecycle`, `description` and `tags`. A run without a `route` is a known connection whose
+  path is not recorded.
+- **`metamodel.physical_route`** and its legs, `route_leg_along_wall`, `route_leg_vertical`,
+  `route_leg_free`, with `route_placement`: the route a cable run already had, now shared by
+  cable runs, pipe runs and wired network links, with the same frames and fields. The cable
+  definitions in the systems file (`cable_route`, `cable_leg_along_wall`,
+  `cable_leg_vertical`, `cable_leg_free`, `cable_placement`) remain and refer to them.
+- **`route_leg_free.floor_ref`**: the floor a free leg belongs to when its horizontal path
+  alone does not say, such as a pipe under a floor. It does not change the leg's frame; the
+  path stays in model coordinates with z above the vertical datum.
+- **`network_link.route`** and **`network_link.through_refs`**: where a wired link runs and
+  which rooms and zones it passes. A link whose `link_type` is `wifi`, `wifi-2.4ghz`,
+  `wifi-5ghz` or `mesh-wireless` carries no route.
+- **`network_node.utility_connection_ref`**: the telecommunications service a router or
+  modem terminates.
+- **Two model-quality warnings** in the validator's semantic layer:
+  `pipe-endpoint-utility-type` (a pipe ends at a utility connection that cannot deliver its
+  medium: potable water from `water-supply`, heating water from `district-heating`) and
+  `network-node-utility-type` (a node fed by a utility connection that is not
+  `fiber-internet`, `cable-internet`, `dsl` or `telephone`).
+- **Physical-route checks** for cable runs, pipe runs and wired network links:
+  non-finite coordinates are errors; consecutive leg endpoints more than 1 cm apart
+  are warnings when their frames can be resolved; an explicit leg floor inconsistent
+  with known attached floors or buildings is a warning. Wall-relative height uses the
+  finished floor elevation for comparisons with datum-based paths. Missing geometry
+  leaves that comparison unchecked. Multi-floor routes may associate with any attached
+  floor, and under-floor paths need not lie above their associated floor surface.
+- **The worked example records its house systems' runs**: heating and water pipe runs, cable
+  runs and a wired network link with their routes, 185 entities in all. Its pictures, drawn
+  by the Realm plan and systems renderers of Archally Pro, are in
+  `examples/willow-cottage/images/` with an index.
+
+### Changed
+
+- The leg rules `leg-beyond-wall` and `leg-wall-off-route` read every run that carries a
+  physical route: cable runs, pipe runs and wired network links.
+- The systems file's non-goals name pipe engineering and drawings, and rainwater,
+  irrigation, drainage and sewage pipes as runs, in place of plumbing pipe-level schematics.
+
 ## 2.3.1 - 2026-09-07
 
 **Additive.** Every model valid under 2.3.0 validates unchanged under 2.3.1. The claim was

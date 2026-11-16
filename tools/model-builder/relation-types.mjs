@@ -140,6 +140,16 @@ export const RELATION_TYPES = {
     // Nested in route.legs[]; this builder reaches nested references and keys them by
     // the bare field name.
     wall_segment_ref: "runs-along",
+    floor_ref: "on-floor", // 2.3.2, nested in a free leg
+  },
+  pipe_run: {
+    // 2.3.2: a pipe of a heating or domestic water system.
+    system_ref: "part-of",
+    from_ref: "runs-from",
+    to_ref: "runs-to",
+    through_refs: "passes-through",
+    wall_segment_ref: "runs-along",
+    floor_ref: "on-floor",
   },
   utility_connection: {
     cost_category_ref: "charged-to",
@@ -150,6 +160,7 @@ export const RELATION_TYPES = {
     position_derived_from: "position-derived-from", // 2.3.0
     room_ref: "located-in",
     outdoor_zone_ref: "located-in",
+    utility_connection_ref: "fed-by", // 2.3.2
   },
   iot_device: {
     position_derived_from: "position-derived-from", // 2.3.0
@@ -162,6 +173,10 @@ export const RELATION_TYPES = {
   network_link: {
     from_node_ref: "links-from",
     to_node_ref: "links-to",
+    // 2.3.2: a wired link's route, top level and nested in route.legs[].
+    through_refs: "passes-through",
+    wall_segment_ref: "runs-along",
+    floor_ref: "on-floor",
   },
 
   // ── Nature ──

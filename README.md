@@ -29,7 +29,7 @@ maps each plane's files to its schema, and any JSON-Schema-aware editor can do t
 ## The worked example
 
 [`examples/willow-cottage/`](./examples/willow-cottage/) is a fictional English
-smallholding on a hillside, and the shortest route into the schema: 145 entities across
+smallholding on a hillside, and the shortest route into the schema: 185 entities across
 every plane, heavily commented, and valid.
 
 ```bash
@@ -46,6 +46,13 @@ the construction layer beneath them - wall segments, slabs and roof planes - is 
 from those rooms rather than drawn separately, which is what the cross-layer checks are
 for. Four neighbouring parcels, two roads and five boundary runs put the plot in its
 surroundings.
+
+The house systems are recorded down to where they run: heating and water pipe runs, cable
+runs and a wired network link, each with its route against the walls of the floor it crosses
+and the risers between floors. [`examples/willow-cottage/images/`](./examples/willow-cottage/images/)
+holds ten pictures drawn from this model by the Realm plan and systems renderers of Archally
+Pro: the site plan, both cottage floors, one schematic per system family and the systems
+drawn on each floor, with an index of what each picture answers and leaves out.
 
 Two conventions are worth reading the example for, because both are easy to invert:
 `position` is absolute and `footprint` is relative to it, while a boundary segment has no

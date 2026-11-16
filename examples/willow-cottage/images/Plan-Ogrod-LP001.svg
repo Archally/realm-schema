@@ -1,0 +1,386 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1104.00" height="1064" viewBox="0 0 1104.00 1064" role="img" aria-labelledby="realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-title realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-description" font-family="'Segoe UI', Arial, sans-serif" fill="#283529">
+<title id="realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-title">Willow Cottage smallholding (LP001)</title>
+<desc id="realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-description">Site projection in m. North 180 degrees clockwise from model +Y. Model anchors preserved. 0 unplaced items. Position-only marks have unknown footprint. Use zoom for phone detail; print at A3 or larger.</desc>
+<defs>
+<clipPath id="realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-viewport">
+<rect x="0" y="120" width="764" height="651.5"/>
+</clipPath>
+<pattern id="realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-stipple" width="12" height="12" patternUnits="userSpaceOnUse">
+<circle cx="3" cy="3" r="0.8" fill="#3d7032" opacity="0.3"/>
+<circle cx="9" cy="8" r="0.7" fill="#3d7032" opacity="0.2"/>
+</pattern>
+<pattern id="realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-orchard" width="24" height="24" patternUnits="userSpaceOnUse">
+<circle cx="12" cy="12" r="4" fill="#3d7032" opacity="0.18"/>
+<circle cx="12" cy="12" r="1.3" fill="#3d7032" opacity="0.45"/>
+</pattern>
+<pattern id="realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-beds" width="16" height="16" patternUnits="userSpaceOnUse">
+<path d="M 4 0 V 16 M 8 0 V 16" stroke="#a85620" stroke-width="2" opacity="0.28"/>
+</pattern>
+<pattern id="realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-paving" width="20" height="14" patternUnits="userSpaceOnUse">
+<path d="M 0 0 H 20 M 0 14 H 20 M 10 0 V 14" fill="none" stroke="#58634f" stroke-width="0.7" opacity="0.35"/>
+</pattern>
+<pattern id="realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-grid" width="24" height="24" patternUnits="userSpaceOnUse">
+<path d="M 24 0 H 0 V 24" fill="none" stroke="#e9e4d2" stroke-width="0.5"/>
+</pattern>
+<pattern id="realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-hatch" width="12" height="12" patternUnits="userSpaceOnUse">
+<path d="M 0 12 L 12 0" fill="none" stroke="#3d7032" stroke-opacity="0.12"/>
+</pattern>
+</defs>
+<rect width="100%" height="100%" fill="#fbfaf5"/>
+<rect x="0" y="120" width="764" height="651.5" fill="url(#realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-grid)"/>
+<text x="32" y="42" font-size="22" font-weight="600">Willow Cottage smallholding (LP001)</text>
+<text x="32" y="104" font-size="13" fill="#58634f">LP001 | 1927 m² | model geometry</text>
+<g data-layer="context" clip-path="url(#realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-viewport)">
+<g data-model-id="NP001" data-entity-id="NP001" aria-label="Hollybank (north-east)">
+<title>Hollybank (north-east) (NP001)</title>
+<polygon points="457.00,-23.00 932.00,-23.00 932.00,302.00 457.00,302.00" fill="#eef4ea" stroke="#58634f" stroke-width="1.4" stroke-linejoin="round" fill-opacity="0.16" stroke-opacity="0.25" stroke-dasharray="4 4"/>
+</g>
+<g data-model-id="NP001" data-entity-id="NP001" aria-label="Hollybank (north-east)">
+<title>Hollybank (north-east) (NP001)</title>
+<polygon points="582.00,52.00 707.00,52.00 707.00,152.00 582.00,152.00" fill="#e9e4d2" stroke="#58634f" stroke-width="1.4" stroke-linejoin="round" fill-opacity="0.16" stroke-opacity="0.25"/>
+</g>
+<g data-model-id="NP002" data-entity-id="NP002" aria-label="The Old Forge (east)">
+<title>The Old Forge (east) (NP002)</title>
+<polygon points="757.00,252.00 1057.00,252.00 1057.00,652.00 757.00,652.00" fill="#eef4ea" stroke="#58634f" stroke-width="1.4" stroke-linejoin="round" fill-opacity="0.16" stroke-opacity="0.25" stroke-dasharray="4 4"/>
+</g>
+<g data-model-id="NP002" data-entity-id="NP002" aria-label="The Old Forge (east)">
+<title>The Old Forge (east) (NP002)</title>
+<polygon points="807.00,352.00 907.00,352.00 907.00,439.50 807.00,439.50" fill="#e9e4d2" stroke="#58634f" stroke-width="1.4" stroke-linejoin="round" fill-opacity="0.16" stroke-opacity="0.25"/>
+</g>
+<g data-model-id="NP003" data-entity-id="NP003" aria-label="Mill Farm meadow (south)">
+<title>Mill Farm meadow (south) (NP003)</title>
+<polygon points="207.00,764.50 732.00,764.50 732.00,1077.00 207.00,1077.00" fill="#eef4ea" stroke="#58634f" stroke-width="1.4" stroke-linejoin="round" fill-opacity="0.16" stroke-opacity="0.25" stroke-dasharray="4 4"/>
+</g>
+<g data-model-id="NP004" data-entity-id="NP004" aria-label="Brackwater coppice (west)">
+<title>Brackwater coppice (west) (NP004)</title>
+<polygon points="-343.00,202.00 7.00,202.00 7.00,677.00 -343.00,677.00" fill="#eef4ea" stroke="#58634f" stroke-width="1.4" stroke-linejoin="round" fill-opacity="0.16" stroke-opacity="0.25" stroke-dasharray="4 4"/>
+</g>
+</g>
+<g data-layer="parcel" clip-path="url(#realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-viewport)">
+<g data-model-id="LP001" data-entity-id="LP001" aria-label="Willow Cottage smallholding">
+<title>Willow Cottage smallholding (LP001)</title>
+<polygon points="82.00,152.00 507.00,183.25 732.00,352.00 657.00,664.50 307.00,739.50 32.00,452.00" fill="#eef4ea" stroke="#3d7032" stroke-width="1.4" stroke-linejoin="round" />
+</g>
+</g>
+<g data-layer="zones" clip-path="url(#realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-viewport)">
+<g data-model-id="OZ004" data-entity-id="OZ004" aria-label="Orchard">
+<title>Orchard (OZ004)</title>
+<polygon points="407.00,458.25 657.00,458.25 657.00,602.00 407.00,602.00" fill="#d9e6d0" stroke="#3d7032" stroke-width="1.4" stroke-linejoin="round" fill-opacity="0.8"/>
+<polygon points="407.00,458.25 657.00,458.25 657.00,602.00 407.00,602.00" fill="url(#realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-orchard)" stroke="none" stroke-width="1.4" stroke-linejoin="round" />
+</g>
+<g data-model-id="OZ002" data-entity-id="OZ002" aria-label="Front garden">
+<title>Front garden (OZ002)</title>
+<polygon points="77.75,177.00 250.75,177.00 250.75,352.00 48.63,352.00" fill="#d9e6d0" stroke="#3d7032" stroke-width="1.4" stroke-linejoin="round" fill-opacity="0.8"/>
+</g>
+<g data-model-id="OZ006" data-entity-id="OZ006" aria-label="Lower meadow">
+<title>Lower meadow (OZ006)</title>
+<polygon points="307.00,739.50 282.00,713.38 282.00,627.00 632.00,627.00 632.00,669.88" fill="#eef4ea" stroke="#3d7032" stroke-width="1.4" stroke-linejoin="round" fill-opacity="0.8"/>
+<polygon points="307.00,739.50 282.00,713.38 282.00,627.00 632.00,627.00 632.00,669.88" fill="url(#realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-stipple)" stroke="none" stroke-width="1.4" stroke-linejoin="round" />
+</g>
+<g data-model-id="OZ005" data-entity-id="OZ005" aria-label="Vegetable garden">
+<title>Vegetable garden (OZ005)</title>
+<polygon points="182.00,608.75 182.00,502.00 382.00,502.00 382.00,627.00 199.38,627.00" fill="#ded4b4" stroke="#3d7032" stroke-width="1.4" stroke-linejoin="round" fill-opacity="0.8"/>
+<polygon points="182.00,608.75 182.00,502.00 382.00,502.00 382.00,627.00 199.38,627.00" fill="url(#realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-beds)" stroke="none" stroke-width="1.4" stroke-linejoin="round" />
+</g>
+<g data-model-id="OZ001" data-entity-id="OZ001" aria-label="Drive">
+<title>Drive (OZ001)</title>
+<polygon points="132.00,158.25 194.50,164.50 450.75,329.50 402.00,344.50" fill="#dedbd1" stroke="#3d7032" stroke-width="1.4" stroke-linejoin="round" fill-opacity="0.8"/>
+</g>
+<g data-model-id="OZ003" data-entity-id="OZ003" aria-label="South terrace">
+<title>South terrace (OZ003)</title>
+<polygon points="257.00,495.75 394.50,495.75 394.50,545.75 257.00,545.75" fill="#dedbd1" stroke="#3d7032" stroke-width="1.4" stroke-linejoin="round" fill-opacity="0.8"/>
+<polygon points="257.00,495.75 394.50,495.75 394.50,545.75 257.00,545.75" fill="url(#realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-paving)" stroke="none" stroke-width="1.4" stroke-linejoin="round" />
+</g>
+<g data-model-id="OZ007" data-entity-id="OZ007" aria-label="Barn forecourt">
+<title>Barn forecourt (OZ007)</title>
+<polygon points="400.75,352.00 457.00,352.00 457.00,458.25 400.75,458.25" fill="#dedbd1" stroke="#3d7032" stroke-width="1.4" stroke-linejoin="round" fill-opacity="0.8"/>
+</g>
+<g data-model-id="OZ008" data-entity-id="OZ008" aria-label="Compost corner">
+<title>Compost corner (OZ008)</title>
+<polygon points="182.00,427.00 257.00,427.00 257.00,502.00 182.00,502.00" fill="#ded4b4" stroke="#3d7032" stroke-width="1.4" stroke-linejoin="round" fill-opacity="0.8"/>
+</g>
+</g>
+<g data-layer="buildings" clip-path="url(#realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-viewport)">
+<g data-model-id="WNG001" data-entity-id="WNG001" aria-label="Cottage main range">
+<title>Cottage main range (WNG001)</title>
+<polygon points="257.00,352.00 394.50,352.00 394.50,452.00 257.00,452.00" fill="#d5b49a" stroke="#283529" stroke-width="2.4" stroke-linejoin="round" />
+</g>
+<g data-model-id="WNG002" data-entity-id="WNG002" aria-label="Rear scullery lean-to">
+<title>Rear scullery lean-to (WNG002)</title>
+<polygon points="257.00,452.00 352.00,452.00 352.00,495.75 257.00,495.75" fill="#d5b49a" stroke="#283529" stroke-width="2.4" stroke-linejoin="round" />
+</g>
+<g data-model-id="WNG003" data-entity-id="WNG003" aria-label="Stone barn">
+<title>Stone barn (WNG003)</title>
+<polygon points="457.00,377.00 544.50,377.00 544.50,452.00 457.00,452.00" fill="#d5b49a" stroke="#283529" stroke-width="2.4" stroke-linejoin="round" />
+</g>
+</g>
+<g data-layer="roofs" clip-path="url(#realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-viewport)">
+<g data-model-id="RFP001" data-entity-id="RFP001" aria-label="Roof BLD001">
+<title>Roof BLD001 (RFP001)</title>
+<polygon points="252.00,402.00 399.50,402.00 399.50,347.00 252.00,347.00" fill="#d5b49a" stroke="#283529" stroke-width="1.4" stroke-linejoin="round" fill-opacity="0.9"/>
+</g>
+<g data-model-id="RFP002" data-entity-id="RFP002" aria-label="Roof BLD001">
+<title>Roof BLD001 (RFP002)</title>
+<polygon points="252.00,402.00 399.50,402.00 399.50,457.00 252.00,457.00" fill="#d5b49a" stroke="#283529" stroke-width="1.4" stroke-linejoin="round" fill-opacity="0.9"/>
+</g>
+<g data-model-id="RFP003" data-entity-id="RFP003" aria-label="Roof BLD001">
+<title>Roof BLD001 (RFP003)</title>
+<polygon points="253.88,452.00 355.13,452.00 355.13,498.88 253.88,498.88" fill="#d5b49a" stroke="#283529" stroke-width="1.4" stroke-linejoin="round" fill-opacity="0.9"/>
+</g>
+<g data-model-id="RFP004" data-entity-id="RFP004" aria-label="Roof BLD002">
+<title>Roof BLD002 (RFP004)</title>
+<polygon points="453.25,414.50 548.25,414.50 548.25,373.25 453.25,373.25" fill="#d5b49a" stroke="#283529" stroke-width="1.4" stroke-linejoin="round" fill-opacity="0.9"/>
+</g>
+<g data-model-id="RFP005" data-entity-id="RFP005" aria-label="Roof BLD002">
+<title>Roof BLD002 (RFP005)</title>
+<polygon points="453.25,414.50 548.25,414.50 548.25,455.75 453.25,455.75" fill="#d5b49a" stroke="#283529" stroke-width="1.4" stroke-linejoin="round" fill-opacity="0.9"/>
+</g>
+</g>
+<g data-layer="boundaries" clip-path="url(#realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-viewport)">
+<g data-model-id="BS001" data-entity-id="BS001" aria-label="Roadside hedge">
+<title>Roadside hedge (BS001)</title>
+<polyline points="82.00,152.00 507.00,183.25" fill="none" stroke="#3d7032" stroke-width="4" stroke-dasharray="5 3"/>
+</g>
+<g data-model-id="BS002" data-entity-id="BS002" aria-label="North-east post and rail">
+<title>North-east post and rail (BS002)</title>
+<polyline points="507.00,183.25 732.00,352.00" fill="none" stroke="#283529" stroke-width="2" />
+</g>
+<g data-model-id="BS003" data-entity-id="BS003" aria-label="East stone wall">
+<title>East stone wall (BS003)</title>
+<polyline points="732.00,352.00 657.00,664.50" fill="none" stroke="#283529" stroke-width="2" />
+</g>
+<g data-model-id="BS004" data-entity-id="BS004" aria-label="South treeline">
+<title>South treeline (BS004)</title>
+<polyline points="657.00,664.50 307.00,739.50" fill="none" stroke="#283529" stroke-width="2" />
+</g>
+<g data-model-id="BS005" data-entity-id="BS005" aria-label="West retaining wall">
+<title>West retaining wall (BS005)</title>
+<polyline points="307.00,739.50 82.00,152.00" fill="none" stroke="#283529" stroke-width="2" />
+</g>
+</g>
+<g data-layer="planting" clip-path="url(#realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-viewport)">
+<g data-model-id="PTG001" data-entity-id="PTG001" aria-label="Beech hedge">
+<title>Beech hedge (PTG001)</title>
+<circle cx="107.00" cy="220.75" r="4.00" fill="#3d7032" stroke="#283529" stroke-width="1"/>
+</g>
+<g data-model-id="PTG002" data-entity-id="PTG002" aria-label="Raised vegetable beds">
+<title>Raised vegetable beds (PTG002)</title>
+<circle cx="269.50" cy="552.00" r="4.00" fill="#3d7032" stroke="#283529" stroke-width="1"/>
+</g>
+<g data-model-id="PTG003" data-entity-id="PTG003" aria-label="Herb strip">
+<title>Herb strip (PTG003)</title>
+<circle cx="344.50" cy="520.75" r="4.00" fill="#3d7032" stroke="#283529" stroke-width="1"/>
+</g>
+<g data-model-id="PTG004" data-entity-id="PTG004" aria-label="South-west shelter belt">
+<title>South-west shelter belt (PTG004)</title>
+<circle cx="232.00" cy="614.50" r="4.00" fill="#3d7032" stroke="#283529" stroke-width="1"/>
+</g>
+<g data-model-id="PTG005" data-entity-id="PTG005" aria-label="Hay meadow">
+<title>Hay meadow (PTG005)</title>
+<circle cx="457.00" cy="689.50" r="4.00" fill="#3d7032" stroke="#283529" stroke-width="1"/>
+</g>
+</g>
+<g data-layer="canopies" clip-path="url(#realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-viewport)">
+<g data-model-id="SPM001" data-entity-id="SPM001" aria-label="The willow">
+<title>The willow (SPM001)</title>
+<circle cx="382.00" cy="689.50" r="81.25" fill="#d9e6d0" fill-opacity="0.78" stroke="#3d7032" stroke-width="1.6"/>
+<circle cx="382.00" cy="689.50" r="3.00" fill="#3d7032" stroke="#283529" stroke-width="1"/>
+</g>
+<g data-model-id="SPM002" data-entity-id="SPM002" aria-label="Lane oak">
+<title>Lane oak (SPM002)</title>
+<circle cx="132.00" cy="264.50" r="100.00" fill="#d9e6d0" fill-opacity="0.78" stroke="#3d7032" stroke-width="1.6"/>
+<circle cx="132.00" cy="264.50" r="3.00" fill="#3d7032" stroke="#283529" stroke-width="1"/>
+</g>
+<g data-model-id="SPM003" data-entity-id="SPM003" aria-label="Bramley apple">
+<title>Bramley apple (SPM003)</title>
+<circle cx="469.50" cy="502.00" r="42.50" fill="#d9e6d0" fill-opacity="0.78" stroke="#3d7032" stroke-width="1.6"/>
+<circle cx="469.50" cy="502.00" r="3.00" fill="#3d7032" stroke="#283529" stroke-width="1"/>
+</g>
+<g data-model-id="SPM004" data-entity-id="SPM004" aria-label="Conference pear">
+<title>Conference pear (SPM004)</title>
+<circle cx="557.00" cy="539.50" r="27.50" fill="#d9e6d0" fill-opacity="0.78" stroke="#3d7032" stroke-width="1.6"/>
+<circle cx="557.00" cy="539.50" r="3.00" fill="#3d7032" stroke="#283529" stroke-width="1"/>
+</g>
+<g data-model-id="SPM005" data-entity-id="SPM005" aria-label="Shelter pine">
+<title>Shelter pine (SPM005)</title>
+<circle cx="213.25" cy="612.00" r="42.50" fill="#d9e6d0" fill-opacity="0.78" stroke="#3d7032" stroke-width="1.6"/>
+<circle cx="213.25" cy="612.00" r="3.00" fill="#3d7032" stroke="#283529" stroke-width="1"/>
+</g>
+<g data-model-id="SPM006" data-entity-id="SPM006" aria-label="The unclipped holly">
+<title>The unclipped holly (SPM006)</title>
+<circle cx="250.75" cy="617.00" r="16.25" fill="#d9e6d0" fill-opacity="0.78" stroke="#3d7032" stroke-width="1.6"/>
+<circle cx="250.75" cy="617.00" r="3.00" fill="#3d7032" stroke="#283529" stroke-width="1"/>
+</g>
+</g>
+<g data-layer="labels" clip-path="url(#realm-4c-50-30-30-31-2d-6c-69-67-68-74-2d-61-32-62-34-39-30-33-35-viewport)">
+<text data-model-id="BLD001" x="265.43" y="441.94" font-size="13" fill="#283529" stroke="#fbfaf5" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Willow Cottage</text>
+<text data-model-id="BLD002" x="465.25" y="435.50" font-size="13" fill="#283529" stroke="#fbfaf5" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Stone barn</text>
+<g data-model-id="BS001" data-marker-number="1">
+<title>Roadside hedge (BS001)</title>
+<circle cx="294.50" cy="167.63" r="8" fill="#a85620"/>
+<text x="294.50" y="171.13" text-anchor="middle" font-size="10" font-weight="600" fill="#fbfaf5">1</text>
+</g>
+<g data-model-id="BS002" data-marker-number="2">
+<title>North-east post and rail (BS002)</title>
+<circle cx="619.50" cy="267.63" r="8" fill="#a85620"/>
+<text x="619.50" y="271.13" text-anchor="middle" font-size="10" font-weight="600" fill="#fbfaf5">2</text>
+</g>
+<g data-model-id="BS003" data-marker-number="3">
+<title>East stone wall (BS003)</title>
+<circle cx="694.50" cy="508.25" r="8" fill="#a85620"/>
+<text x="694.50" y="511.75" text-anchor="middle" font-size="10" font-weight="600" fill="#fbfaf5">3</text>
+</g>
+<g data-model-id="BS004" data-marker-number="4">
+<title>South treeline (BS004)</title>
+<circle cx="482.00" cy="702.00" r="8" fill="#a85620"/>
+<text x="482.00" y="705.50" text-anchor="middle" font-size="10" font-weight="600" fill="#fbfaf5">4</text>
+</g>
+<g data-model-id="BS005" data-marker-number="5">
+<title>West retaining wall (BS005)</title>
+<circle cx="194.50" cy="445.75" r="8" fill="#a85620"/>
+<text x="194.50" y="449.25" text-anchor="middle" font-size="10" font-weight="600" fill="#fbfaf5">5</text>
+</g>
+<g data-model-id="OZ001" data-marker-number="6">
+<title>Drive (OZ001)</title>
+<circle cx="294.81" cy="249.19" r="8" fill="#a85620"/>
+<text x="294.81" y="252.69" text-anchor="middle" font-size="10" font-weight="600" fill="#fbfaf5">6</text>
+</g>
+<g data-model-id="OZ002" data-marker-number="7">
+<title>Front garden (OZ002)</title>
+<circle cx="156.97" cy="264.50" r="8" fill="#a85620"/>
+<text x="156.97" y="268.00" text-anchor="middle" font-size="10" font-weight="600" fill="#fbfaf5">7</text>
+</g>
+<g data-model-id="OZ003" data-marker-number="8">
+<title>South terrace (OZ003)</title>
+<circle cx="325.75" cy="520.75" r="8" fill="#a85620"/>
+<text x="325.75" y="524.25" text-anchor="middle" font-size="10" font-weight="600" fill="#fbfaf5">8</text>
+</g>
+<text data-model-id="OZ004" x="544.00" y="519.13" font-size="13" fill="#283529" stroke="#fbfaf5" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Orchard</text>
+<g data-model-id="OZ005" data-marker-number="9">
+<title>Vegetable garden (OZ005)</title>
+<circle cx="265.48" cy="573.35" r="8" fill="#a85620"/>
+<text x="265.48" y="576.85" text-anchor="middle" font-size="10" font-weight="600" fill="#fbfaf5">9</text>
+</g>
+<text data-model-id="OZ006" x="439.00" y="664.35" font-size="13" fill="#283529" stroke="#fbfaf5" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Lower meadow</text>
+<g data-model-id="OZ007" data-marker-number="10">
+<title>Barn forecourt (OZ007)</title>
+<circle cx="428.88" cy="405.13" r="8" fill="#a85620"/>
+<text x="428.88" y="408.63" text-anchor="middle" font-size="10" font-weight="600" fill="#fbfaf5">10</text>
+</g>
+<g data-model-id="OZ008" data-marker-number="11">
+<title>Compost corner (OZ008)</title>
+<circle cx="219.50" cy="464.50" r="8" fill="#a85620"/>
+<text x="219.50" y="468.00" text-anchor="middle" font-size="10" font-weight="600" fill="#fbfaf5">11</text>
+</g>
+<g data-model-id="PTG001" data-marker-number="12">
+<title>Beech hedge (PTG001)</title>
+<circle cx="107.00" cy="220.75" r="8" fill="#a85620"/>
+<text x="107.00" y="224.25" text-anchor="middle" font-size="10" font-weight="600" fill="#fbfaf5">12</text>
+</g>
+<g data-model-id="PTG002" data-marker-number="13">
+<title>Raised vegetable beds (PTG002)</title>
+<circle cx="269.50" cy="552.00" r="8" fill="#a85620"/>
+<text x="269.50" y="555.50" text-anchor="middle" font-size="10" font-weight="600" fill="#fbfaf5">13</text>
+</g>
+<g data-model-id="PTG003" data-marker-number="14">
+<title>Herb strip (PTG003)</title>
+<circle cx="344.50" cy="520.75" r="8" fill="#a85620"/>
+<text x="344.50" y="524.25" text-anchor="middle" font-size="10" font-weight="600" fill="#fbfaf5">14</text>
+</g>
+<g data-model-id="PTG004" data-marker-number="15">
+<title>South-west shelter belt (PTG004)</title>
+<circle cx="232.00" cy="614.50" r="8" fill="#a85620"/>
+<text x="232.00" y="618.00" text-anchor="middle" font-size="10" font-weight="600" fill="#fbfaf5">15</text>
+</g>
+<g data-model-id="PTG005" data-marker-number="16">
+<title>Hay meadow (PTG005)</title>
+<circle cx="457.00" cy="689.50" r="8" fill="#a85620"/>
+<text x="457.00" y="693.00" text-anchor="middle" font-size="10" font-weight="600" fill="#fbfaf5">16</text>
+</g>
+<g data-model-id="SPM001" data-marker-number="17">
+<title>The willow (SPM001)</title>
+<circle cx="382.00" cy="689.50" r="8" fill="#a85620"/>
+<text x="382.00" y="693.00" text-anchor="middle" font-size="10" font-weight="600" fill="#fbfaf5">17</text>
+</g>
+<g data-model-id="SPM002" data-marker-number="18">
+<title>Lane oak (SPM002)</title>
+<circle cx="132.00" cy="264.50" r="8" fill="#a85620"/>
+<text x="132.00" y="268.00" text-anchor="middle" font-size="10" font-weight="600" fill="#fbfaf5">18</text>
+</g>
+<g data-model-id="SPM003" data-marker-number="19">
+<title>Bramley apple (SPM003)</title>
+<circle cx="469.50" cy="502.00" r="8" fill="#a85620"/>
+<text x="469.50" y="505.50" text-anchor="middle" font-size="10" font-weight="600" fill="#fbfaf5">19</text>
+</g>
+<g data-model-id="SPM004" data-marker-number="20">
+<title>Conference pear (SPM004)</title>
+<circle cx="557.00" cy="539.50" r="8" fill="#a85620"/>
+<text x="557.00" y="543.00" text-anchor="middle" font-size="10" font-weight="600" fill="#fbfaf5">20</text>
+</g>
+<g data-model-id="SPM005" data-marker-number="21">
+<title>Shelter pine (SPM005)</title>
+<circle cx="213.25" cy="612.00" r="8" fill="#a85620"/>
+<text x="213.25" y="615.50" text-anchor="middle" font-size="10" font-weight="600" fill="#fbfaf5">21</text>
+</g>
+<g data-model-id="SPM006" data-marker-number="22">
+<title>The unclipped holly (SPM006)</title>
+<circle cx="250.75" cy="617.00" r="8" fill="#a85620"/>
+<text x="250.75" y="620.50" text-anchor="middle" font-size="10" font-weight="600" fill="#fbfaf5">22</text>
+</g>
+</g>
+<g data-layer="legend">
+<text data-model-id="NP001" x="700.11" y="134.00" text-anchor="middle" font-size="12" fill="#58634f" stroke="#fbfaf5" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Hollybank (north-east)</text>
+<text data-model-id="NP002" x="748.00" y="450.11" text-anchor="end" font-size="12" fill="#58634f" stroke="#fbfaf5" stroke-width="3" paint-order="stroke" stroke-linejoin="round">The Old Forge (east)</text>
+<text data-model-id="NP003" x="439.43" y="757.50" text-anchor="middle" font-size="12" fill="#58634f" stroke="#fbfaf5" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Mill Farm meadow (south)</text>
+<text data-model-id="NP004" x="16.00" y="441.59" text-anchor="start" font-size="12" fill="#58634f" stroke="#fbfaf5" stroke-width="3" paint-order="stroke" stroke-linejoin="round">Brackwater coppice (west)</text>
+<path d="M 235 808.5 l -0.00 -30.00" stroke="#3d7032" stroke-width="3"/>
+<circle cx="235.00" cy="778.50" r="3" fill="#3d7032"/>
+<text x="235.00" y="762.50" text-anchor="middle" font-size="15">N</text>
+<text x="786" y="850" font-size="13">Zones: recorded polygons or</text>
+<text x="786" y="868" font-size="13">position points</text>
+<text x="786" y="886" font-size="13">Buildings: dark outline</text>
+<text x="786" y="904" font-size="13">Roofs: clay fill</text>
+<text x="786" y="922" font-size="13">Trees: recorded canopy or point</text>
+<text x="786" y="940" font-size="13">Planting: recorded footprint /</text>
+<text x="786" y="958" font-size="13">members</text>
+<text x="786" y="976" font-size="13">Boundaries: solid fence / dashed</text>
+<text x="786" y="994" font-size="13">hedge</text>
+</g>
+<g data-layer="label-index" transform="translate(0 0)">
+<text x="786" y="152" font-size="14">Label index</text>
+<text x="786" y="179" font-size="13">1. Roadside hedge (BS001)</text>
+<text x="786" y="206" font-size="13">2. North-east post and rail</text>
+<text x="786" y="225" font-size="13">(BS002)</text>
+<text x="786" y="252" font-size="13">3. East stone wall (BS003)</text>
+<text x="786" y="279" font-size="13">4. South treeline (BS004)</text>
+<text x="786" y="306" font-size="13">5. West retaining wall (BS005)</text>
+<text x="786" y="333" font-size="13">6. Drive (OZ001)</text>
+<text x="786" y="360" font-size="13">7. Front garden (OZ002)</text>
+<text x="786" y="387" font-size="13">8. South terrace (OZ003)</text>
+<text x="786" y="414" font-size="13">9. Vegetable garden (OZ005)</text>
+<text x="786" y="441" font-size="13">10. Barn forecourt (OZ007)</text>
+<text x="786" y="468" font-size="13">11. Compost corner (OZ008)</text>
+<text x="786" y="495" font-size="13">12. Beech hedge (PTG001)</text>
+<text x="786" y="522" font-size="13">13. Raised vegetable beds (PTG002)</text>
+<text x="786" y="549" font-size="13">14. Herb strip (PTG003)</text>
+<text x="786" y="576" font-size="13">15. South-west shelter belt</text>
+<text x="786" y="595" font-size="13">(PTG004)</text>
+<text x="786" y="622" font-size="13">16. Hay meadow (PTG005)</text>
+<text x="786" y="649" font-size="13">17. The willow (SPM001)</text>
+<text x="786" y="676" font-size="13">18. Lane oak (SPM002)</text>
+<text x="786" y="703" font-size="13">19. Bramley apple (SPM003)</text>
+<text x="786" y="730" font-size="13">20. Conference pear (SPM004)</text>
+<text x="786" y="757" font-size="13">21. Shelter pine (SPM005)</text>
+<text x="786" y="784" font-size="13">22. The unclipped holly (SPM006)</text>
+<text x="786" y="811" font-size="13">Lifecycle exclusions: 0</text>
+</g>
+<g data-layer="scale">
+<path d="M 32 802.5 V 807.5 H 94.50 V 802.5" fill="none" stroke="#283529" stroke-width="2"/>
+<text x="32" y="829.5" font-size="13">5 m</text>
+</g>
+  <g id="archally-provenance" data-generated-build="willow-cottage-example">
+    <rect x="0" y="1044" width="1104" height="20" fill="#f7f7f7"/>
+    <line x1="0" y1="1044" x2="1104" y2="1044" stroke="#ddd" stroke-width="0.5"/>
+    <text x="6" y="1057" font-size="8" fill="#777">generated 2026-11-16 00:00 UTC · build willow-cottage-example · model 2.3.0 · pominięto zakończone: 0</text>
+  </g>
+</svg>

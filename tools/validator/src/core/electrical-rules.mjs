@@ -37,6 +37,10 @@
  *                               past the wall's length. WARNING.
  *   leg-wall-off-route          a leg on a wall that bounds none of the rooms or zones in
  *                               `through_refs`, when `through_refs` is given. WARNING.
+ *
+ * The two leg rules read the route's geometry, not its cargo, so they apply to every run that
+ * carries the shared physical route (2.3.2): a cable run, a pipe run and a wired network link.
+ * The riser rule reads `run_type`, which only a cable run has.
  *   riser-without-vertical-leg  `run_type: riser` whose route has no `vertical` leg. A
  *                               riser with no route at all is authored topologically only
  *                               and says nothing here. INFO.
@@ -48,6 +52,9 @@
 /** An offset this far past the wall's end is a rounding, not a placement error. */
 export const WALL_LENGTH_TOLERANCE_CM = 1;
 const CABLE_RUN_ID = /^([a-z][a-z0-9-]*\.)?CBR\d{3,}$/;
+/** The prefixes of the entities that can carry a physical route (2.3.2). */
+const ROUTED_ID = /^([a-z][a-z0-9-]*\.)?(CBR|PPR|NL)\d{3,}$/;
+const ROUTED_TYPES = new Set(['cable_run', 'pipe_run', 'network_link']);
 const CIRCUIT = 'circuit';
 const BOARD = 'distribution-panel';
 /** How far a `fed_from_ref` chain is followed to find the board; an installation is not deeper. */
@@ -62,6 +69,13 @@ function num(data, key) {
 }
 function isCableRun(id, entity) {
     return entity.entityType === 'cable_run' || (entity.entityType === undefined && CABLE_RUN_ID.test(id));
+}
+/** A cable run, a pipe run or a network link: an entity whose `route` is a physical route. */
+function isRouted(id, entity) {
+    if (entity.entityType !== undefined) {
+        return ROUTED_TYPES.has(entity.entityType);
+    }
+    return ROUTED_ID.test(id);
 }
 /** The wall's length in centimetres, or null when `start` or `end` is not a point. */
 export function wallLengthCm(wall) {
@@ -130,6 +144,160 @@ function wallLegs(data) {
             out.push({ index, leg: leg });
     });
     return out;
+}
+/** Consecutive endpoints may differ by at most one centimetre. */
+export const ROUTE_JOIN_TOLERANCE_M = 0.01;
+function record(value) {
+    return value !== null && typeof value === 'object' ? value : {};
+}
+/** Resolve only stated associations, never a floor guessed from an elevation. */
+function attachedFloors(entities, data) {
+    const floors = new Set();
+    const direct = str(data, 'floor_ref');
+    if (direct !== undefined && entities.has(direct))
+        floors.add(direct);
+    for (const field of ['room_ref', 'left_space_ref', 'right_space_ref']) {
+        const ref = str(data, field);
+        const floor = ref !== undefined ? str(entities.get(ref)?.data ?? {}, 'floor_ref') : undefined;
+        if (floor !== undefined && entities.has(floor))
+            floors.add(floor);
+    }
+    return floors;
+}
+/** A finite point in model metres; absent geometry is not zero geometry. */
+function point3(value) {
+    const point = record(value);
+    const x = num(point, 'x');
+    const y = num(point, 'y');
+    const z = num(point, 'z');
+    return x !== undefined && y !== undefined && z !== undefined ? [x, y, z] : undefined;
+}
+function legEndpoint(entities, leg, end) {
+    const kind = str(leg, 'kind');
+    if (kind === 'free') {
+        const vertices = record(leg['path'])['vertices'];
+        if (!Array.isArray(vertices))
+            return undefined;
+        return point3(vertices[end ? vertices.length - 1 : 0]);
+    }
+    const wallRef = str(leg, 'wall_segment_ref');
+    const wall = wallRef !== undefined ? entities.get(wallRef)?.data : undefined;
+    if (wall === undefined)
+        return undefined;
+    const start = record(wall['start']);
+    const finish = record(wall['end']);
+    const x = num(start, 'x');
+    const y = num(start, 'y');
+    const x1 = num(finish, 'x');
+    const y1 = num(finish, 'y');
+    if (x === undefined || y === undefined || x1 === undefined || y1 === undefined)
+        return undefined;
+    const length = Math.hypot(x1 - x, y1 - y);
+    if (!Number.isFinite(length) || length === 0)
+        return undefined;
+    const offset = num(leg, kind === 'vertical' ? 'offset_cm' : end ? 'to_offset_cm' : 'from_offset_cm');
+    let z;
+    if (kind === 'vertical')
+        z = num(leg, end ? 'to_elevation_m' : 'from_elevation_m');
+    if (kind === 'along-wall') {
+        const elevations = [...attachedFloors(entities, wall)].map((id) => num(entities.get(id).data, 'finished_floor_elevation_m'));
+        const height = num(leg, 'height_cm');
+        if (elevations.length === 1 && elevations[0] !== undefined && height !== undefined)
+            z = elevations[0] + height / 100;
+    }
+    if (offset === undefined || z === undefined)
+        return undefined;
+    const point = [x + (x1 - x) * offset / (100 * length), y + (y1 - y) * offset / (100 * length), z];
+    return point.every(Number.isFinite) ? point : undefined;
+}
+function joinDistance(entities, left, right) {
+    // This pair has the same local frame even when its datum elevation is unrecorded.
+    if (str(left, 'kind') === 'along-wall' && str(right, 'kind') === 'along-wall' &&
+        str(left, 'wall_segment_ref') !== undefined && str(left, 'wall_segment_ref') === str(right, 'wall_segment_ref')) {
+        const a = num(left, 'to_offset_cm');
+        const b = num(right, 'from_offset_cm');
+        const h0 = num(left, 'height_cm');
+        const h1 = num(right, 'height_cm');
+        if (a !== undefined && b !== undefined && h0 !== undefined && h1 !== undefined)
+            return Math.hypot(a - b, h0 - h1) / 100;
+    }
+    const a = legEndpoint(entities, left, true);
+    const b = legEndpoint(entities, right, false);
+    return a !== undefined && b !== undefined ? Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]) : undefined;
+}
+function checkPhysicalRoute(entities, id, data) {
+    const findings = [];
+    const rawLegs = record(data['route'])['legs'];
+    if (!Array.isArray(rawLegs))
+        return findings;
+    const legs = rawLegs.map(record);
+    const floors = new Set();
+    const buildings = new Set();
+    const attachments = [data];
+    for (const ref of [data['from_ref'], data['to_ref'], data['from_node_ref'], data['to_node_ref'],
+        ...(Array.isArray(data['through_refs']) ? data['through_refs'] : []), ...legs.map((leg) => leg['wall_segment_ref'])]) {
+        if (typeof ref !== 'string')
+            continue;
+        const target = entities.get(ref);
+        if (target !== undefined)
+            attachments.push(target.data);
+    }
+    for (const attachment of attachments) {
+        for (const floor of attachedFloors(entities, attachment))
+            floors.add(floor);
+        const building = str(attachment, 'building_ref');
+        if (building !== undefined && entities.has(building))
+            buildings.add(building);
+        const wallRef = str(attachment, 'wall_segment_ref');
+        const wall = wallRef !== undefined ? entities.get(wallRef) : undefined;
+        if (wall !== undefined) {
+            for (const floor of attachedFloors(entities, wall.data))
+                floors.add(floor);
+        }
+    }
+    for (const floor of floors) {
+        const building = str(entities.get(floor).data, 'building_ref');
+        if (building !== undefined && entities.has(building))
+            buildings.add(building);
+    }
+    legs.forEach((leg, index) => {
+        const values = [];
+        for (const field of ['from_offset_cm', 'to_offset_cm', 'height_cm', 'offset_cm', 'from_elevation_m', 'to_elevation_m']) {
+            values.push([field, leg[field]]);
+        }
+        const vertices = record(leg['path'])['vertices'];
+        if (Array.isArray(vertices)) {
+            vertices.forEach((vertex, vertexIndex) => {
+                for (const axis of ['x', 'y', 'z'])
+                    values.push([`path.vertices[${vertexIndex}].${axis}`, record(vertex)[axis]]);
+            });
+        }
+        for (const [field, value] of values) {
+            if (typeof value === 'number' && !Number.isFinite(value)) {
+                findings.push({ severity: 'error', rule: 'route-non-finite-coordinate', entity: id,
+                    message: `route.legs[${index}].${field} is ${String(value)}; route coordinates must be finite` });
+            }
+        }
+        if (index > 0) {
+            const gap = joinDistance(entities, legs[index - 1], leg);
+            if (gap !== undefined && gap > ROUTE_JOIN_TOLERANCE_M + 1e-9) {
+                findings.push({ severity: 'warning', rule: 'route-discontinuous-legs', entity: id,
+                    message: `route.legs[${index - 1}] end and route.legs[${index}] start are ${gap.toFixed(4)} m apart; tolerance is ${ROUTE_JOIN_TOLERANCE_M} m` });
+            }
+        }
+        const floorRef = str(leg, 'floor_ref');
+        const floor = floorRef !== undefined ? entities.get(floorRef) : undefined;
+        if (floorRef === undefined || floor === undefined)
+            return;
+        const building = str(floor.data, 'building_ref');
+        const wrongFloor = floors.size > 0 && !floors.has(floorRef);
+        const wrongBuilding = buildings.size > 0 && building !== undefined && !buildings.has(building);
+        if (wrongFloor || wrongBuilding) {
+            findings.push({ severity: 'warning', rule: 'route-floor-association', entity: id,
+                message: `route.legs[${index}].floor_ref ${floorRef} contradicts attached floors (${[...floors].join(', ') || 'unknown'}) or buildings (${[...buildings].join(', ') || 'unknown'})` });
+        }
+    });
+    return findings;
 }
 export function checkElectricalRules(entities) {
     const findings = [];
@@ -209,7 +377,7 @@ export function checkElectricalRules(entities) {
         // anchor-wall-off-room and anchor-beyond-wall: a component on a wall.
         const wallRef = str(data, 'wall_segment_ref');
         const wall = wallRef !== undefined ? entities.get(wallRef) : undefined;
-        if (wall !== undefined && wallRef !== undefined && !isCableRun(id, entity)) {
+        if (wall !== undefined && wallRef !== undefined && !isRouted(id, entity)) {
             const roomId = str(data, 'room_ref');
             if (roomId !== undefined && !wallBoundsSpace(wall.data, roomId)) {
                 findings.push({
@@ -230,9 +398,10 @@ export function checkElectricalRules(entities) {
                 });
             }
         }
-        // The cable run rules.
-        if (!isCableRun(id, entity))
+        // The route rules: every routed run's legs, then the cable run's riser.
+        if (!isRouted(id, entity))
             continue;
+        findings.push(...checkPhysicalRoute(entities, id, data));
         const through = Array.isArray(data['through_refs'])
             ? data['through_refs'].filter((v) => typeof v === 'string')
             : [];
@@ -264,7 +433,7 @@ export function checkElectricalRules(entities) {
                 });
             }
         }
-        if (str(data, 'run_type') === 'riser' && legs.length > 0 && !legs.some(({ leg }) => str(leg, 'kind') === 'vertical')) {
+        if (isCableRun(id, entity) && str(data, 'run_type') === 'riser' && legs.length > 0 && !legs.some(({ leg }) => str(leg, 'kind') === 'vertical')) {
             findings.push({
                 severity: 'info',
                 rule: 'riser-without-vertical-leg',

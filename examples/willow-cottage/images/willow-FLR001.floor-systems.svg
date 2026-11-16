@@ -1,0 +1,332 @@
+<svg data-generated-at="2026-11-16T00:00:00Z" data-generated-for="2026-11-16" data-generated-build="willow-cottage-example" data-generated-renderer="realm-systems" data-generated-renderer-version="0.1.1" data-generated-model-version="2.3.0" xmlns="http://www.w3.org/2000/svg" width="1420" height="1755" viewBox="0 0 1420 1755" role="img" aria-labelledby="realm-2d-42-4c-44-30-30-31-2d-46-4c-52-30-30-31-2d-6c-69-67-68-74-title realm-2d-42-4c-44-30-30-31-2d-46-4c-52-30-30-31-2d-6c-69-67-68-74-desc">
+<title id="realm-2d-42-4c-44-30-30-31-2d-46-4c-52-30-30-31-2d-6c-69-67-68-74-title">Ground floor / physical systems - Willow Cottage</title>
+<desc id="realm-2d-42-4c-44-30-30-31-2d-46-4c-52-30-30-31-2d-6c-69-67-68-74-desc">Floor FLR001, level 0. Rooms, recorded walls and openings. Numbered room markers correspond to the full room index. Missing geometry is listed below.</desc>
+<rect width="100%" height="100%" fill="#fbfaf5"/>
+<g font-family="'Segoe UI', Arial, sans-serif" fill="#283529">
+<text x="64" y="36" font-size="24" font-weight="600">Ground floor / physical systems</text>
+<text x="64" y="61" font-size="14">Willow Cottage (BLD001) / FLR001 / level 0</text>
+<text x="64" y="84" font-size="13" fill="#58634f">Base 0 m / finished floor 0.15 m / ended entities excluded: 0</text>
+<g data-layer="floor-base" data-model-id="FLR001" transform="translate(0,54)">
+  <polygon points="64.0,64.0 592.0,64.0 592.0,448.0 428.8,448.0 428.8,616.0 64.0,616.0" fill="none" stroke="#e9e4d2" stroke-width="1" stroke-dasharray="4,2"/>
+  <polygon data-model-id="RM001" points="64.0,64.0 265.6,64.0 265.6,275.2 64.0,275.2" fill="#eee4cc" stroke="#ddd" stroke-width="0.5"/>
+  <polygon data-model-id="RM004" points="64.0,275.2 265.6,275.2 265.6,448.0 64.0,448.0" fill="#e9e4d2" stroke="#ddd" stroke-width="0.5"/>
+  <polygon data-model-id="RM002" points="265.6,64.0 428.8,64.0 428.8,275.2 265.6,275.2" fill="#e9e4d2" stroke="#ddd" stroke-width="0.5"/>
+  <polygon data-model-id="RM003" points="428.8,64.0 592.0,64.0 592.0,275.2 428.8,275.2" fill="#e3ead9" stroke="#ddd" stroke-width="0.5"/>
+  <polygon data-model-id="RM007" points="64.0,448.0 265.6,448.0 265.6,616.0 64.0,616.0" fill="#e4e7d7" stroke="#ddd" stroke-width="0.5"/>
+  <polygon data-model-id="RM005" points="265.6,275.2 428.8,275.2 428.8,448.0 265.6,448.0" fill="#e9e4d2" stroke="#ddd" stroke-width="0.5"/>
+  <polygon data-model-id="RM006" points="428.8,275.2 592.0,275.2 592.0,448.0 428.8,448.0" fill="#e9e4d2" stroke="#ddd" stroke-width="0.5"/>
+  <polygon data-model-id="RM008" points="265.6,448.0 428.8,448.0 428.8,616.0 265.6,616.0" fill="#dfece6" stroke="#ddd" stroke-width="0.5"/>
+  <g data-model-id="WSG001" transform="translate(64.0,64.0) rotate(0.0)">
+    <rect x="0" y="-7.2" width="201.6" height="14.4" fill="#283529" stroke="#283529" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG002" transform="translate(265.6,64.0) rotate(90.0)">
+    <rect x="0" y="-2.9" width="211.2" height="5.8" fill="#58634f" stroke="#58634f" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG003" transform="translate(265.6,275.2) rotate(180.0)">
+    <rect x="0" y="-2.9" width="201.6" height="5.8" fill="#58634f" stroke="#58634f" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG004" transform="translate(64.0,275.2) rotate(-90.0)">
+    <rect x="0" y="-7.2" width="211.2" height="14.4" fill="#283529" stroke="#283529" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG005" transform="translate(265.6,64.0) rotate(0.0)">
+    <rect x="0" y="-7.2" width="163.2" height="14.4" fill="#283529" stroke="#283529" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG006" transform="translate(428.8,64.0) rotate(90.0)">
+    <rect x="0" y="-2.9" width="211.2" height="5.8" fill="#58634f" stroke="#58634f" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG007" transform="translate(428.8,275.2) rotate(180.0)">
+    <rect x="0" y="-2.9" width="163.2" height="5.8" fill="#58634f" stroke="#58634f" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG008" transform="translate(428.8,64.0) rotate(0.0)">
+    <rect x="0" y="-7.2" width="163.2" height="14.4" fill="#283529" stroke="#283529" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG009" transform="translate(592.0,64.0) rotate(90.0)">
+    <rect x="0" y="-7.2" width="211.2" height="14.4" fill="#283529" stroke="#283529" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG010" transform="translate(592.0,275.2) rotate(180.0)">
+    <rect x="0" y="-2.9" width="163.2" height="5.8" fill="#58634f" stroke="#58634f" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG011" transform="translate(265.6,275.2) rotate(90.0)">
+    <rect x="0" y="-2.9" width="172.8" height="5.8" fill="#58634f" stroke="#58634f" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG012" transform="translate(265.6,448.0) rotate(180.0)">
+    <rect x="0" y="-7.2" width="201.6" height="14.4" fill="#58634f" stroke="#58634f" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG013" transform="translate(64.0,448.0) rotate(-90.0)">
+    <rect x="0" y="-7.2" width="172.8" height="14.4" fill="#283529" stroke="#283529" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG014" transform="translate(428.8,275.2) rotate(90.0)">
+    <rect x="0" y="-2.9" width="172.8" height="5.8" fill="#58634f" stroke="#58634f" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG015" transform="translate(428.8,448.0) rotate(180.0)">
+    <rect x="0" y="-7.2" width="163.2" height="14.4" fill="#58634f" stroke="#58634f" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG016" transform="translate(592.0,275.2) rotate(90.0)">
+    <rect x="0" y="-7.2" width="172.8" height="14.4" fill="#283529" stroke="#283529" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG017" transform="translate(592.0,448.0) rotate(180.0)">
+    <rect x="0" y="-7.2" width="163.2" height="14.4" fill="#283529" stroke="#283529" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG018" transform="translate(265.6,448.0) rotate(90.0)">
+    <rect x="0" y="-2.9" width="168.0" height="5.8" fill="#58634f" stroke="#58634f" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG019" transform="translate(265.6,616.0) rotate(180.0)">
+    <rect x="0" y="-5.3" width="201.6" height="10.6" fill="#283529" stroke="#283529" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG020" transform="translate(64.0,616.0) rotate(-90.0)">
+    <rect x="0" y="-5.3" width="168.0" height="10.6" fill="#283529" stroke="#283529" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG021" transform="translate(428.8,448.0) rotate(90.0)">
+    <rect x="0" y="-5.3" width="168.0" height="10.6" fill="#283529" stroke="#283529" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG022" transform="translate(428.8,616.0) rotate(180.0)">
+    <rect x="0" y="-5.3" width="163.2" height="10.6" fill="#283529" stroke="#283529" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG001:opening:0" transform="translate(126.4,64.0) rotate(0.0)">
+    <rect x="-1" y="-8.2" width="78.8" height="16.4" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="-3" x2="0" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+    <line x1="0" y1="0" x2="76.8" y2="0" stroke="#4682B4" stroke-width="2"/>
+    <line x1="76.8" y1="-3" x2="76.8" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+  </g>
+  <g data-model-id="WSG002:opening:0" transform="translate(265.6,107.2) rotate(90.0)">
+    <rect x="-1" y="-4" width="42.3" height="8" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="0" x2="40.3" y2="0" stroke="#a85620" stroke-width="1" stroke-dasharray="3,2"/>
+  </g>
+  <g data-model-id="WSG003:opening:0" transform="translate(236.8,275.2) rotate(180.0)">
+    <rect x="-1" y="-4" width="42.3" height="8" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="0" x2="40.3" y2="0" stroke="#a85620" stroke-width="1" stroke-dasharray="3,2"/>
+  </g>
+  <g data-model-id="WSG004:opening:0" transform="translate(64.0,203.2) rotate(-90.0)">
+    <rect x="-1" y="-8.2" width="45.2" height="16.4" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="-3" x2="0" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+    <line x1="0" y1="0" x2="43.2" y2="0" stroke="#4682B4" stroke-width="2"/>
+    <line x1="43.2" y1="-3" x2="43.2" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+  </g>
+  <g data-model-id="WSG005:opening:0" transform="translate(323.2,64.0) rotate(0.0)">
+    <rect x="-1" y="-8.2" width="48.1" height="16.4" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="0" x2="46.1" y2="0" stroke="#a85620" stroke-width="1" stroke-dasharray="3,2"/>
+  </g>
+  <g data-model-id="WSG006:opening:0" transform="translate(428.8,126.4) rotate(90.0)">
+    <rect x="-1" y="-4" width="42.3" height="8" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="0" x2="40.3" y2="0" stroke="#a85620" stroke-width="1" stroke-dasharray="3,2"/>
+  </g>
+  <g data-model-id="WSG007:opening:0" transform="translate(371.2,275.2) rotate(180.0)">
+    <rect x="-1" y="-4" width="42.3" height="8" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="0" x2="40.3" y2="0" stroke="#a85620" stroke-width="1" stroke-dasharray="3,2"/>
+  </g>
+  <g data-model-id="WSG008:opening:0" transform="translate(481.6,64.0) rotate(0.0)">
+    <rect x="-1" y="-8.2" width="54.8" height="16.4" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="-3" x2="0" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+    <line x1="0" y1="0" x2="52.8" y2="0" stroke="#4682B4" stroke-width="2"/>
+    <line x1="52.8" y1="-3" x2="52.8" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+  </g>
+  <g data-model-id="WSG009:opening:0" transform="translate(592.0,102.4) rotate(90.0)">
+    <rect x="-1" y="-8.2" width="54.8" height="16.4" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="-3" x2="0" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+    <line x1="0" y1="0" x2="52.8" y2="0" stroke="#4682B4" stroke-width="2"/>
+    <line x1="52.8" y1="-3" x2="52.8" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+  </g>
+  <g data-model-id="WSG012:opening:0" transform="translate(227.2,448.0) rotate(180.0)">
+    <rect x="-1" y="-8.2" width="42.3" height="16.4" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="0" x2="40.3" y2="0" stroke="#a85620" stroke-width="1" stroke-dasharray="3,2"/>
+  </g>
+  <g data-model-id="WSG013:opening:0" transform="translate(64.0,395.2) rotate(-90.0)">
+    <rect x="-1" y="-8.2" width="74.0" height="16.4" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="-2" x2="72.0" y2="-2" stroke="#4682B4" stroke-width="1.5"/>
+    <line x1="0" y1="2" x2="72.0" y2="2" stroke="#4682B4" stroke-width="1.5"/>
+  </g>
+  <g data-model-id="WSG014:opening:0" transform="translate(428.8,323.2) rotate(90.0)">
+    <rect x="-1" y="-4" width="42.3" height="8" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="0" x2="40.3" y2="0" stroke="#a85620" stroke-width="1" stroke-dasharray="3,2"/>
+  </g>
+  <g data-model-id="WSG015:opening:0" transform="translate(383.2,448.0) rotate(180.0)">
+    <rect x="-1" y="-8.2" width="38.5" height="16.4" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="0" x2="36.5" y2="0" stroke="#a85620" stroke-width="1" stroke-dasharray="3,2"/>
+  </g>
+  <g data-model-id="WSG016:opening:0" transform="translate(592.0,332.8) rotate(90.0)">
+    <rect x="-1" y="-8.2" width="45.2" height="16.4" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="-3" x2="0" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+    <line x1="0" y1="0" x2="43.2" y2="0" stroke="#4682B4" stroke-width="2"/>
+    <line x1="43.2" y1="-3" x2="43.2" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+  </g>
+  <g data-model-id="WSG017:opening:0" transform="translate(544.0,448.0) rotate(180.0)">
+    <rect x="-1" y="-8.2" width="69.2" height="16.4" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="-3" x2="0" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+    <line x1="0" y1="0" x2="67.2" y2="0" stroke="#4682B4" stroke-width="2"/>
+    <line x1="67.2" y1="-3" x2="67.2" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+  </g>
+  <g data-model-id="WSG019:opening:0" transform="translate(222.4,616.0) rotate(180.0)">
+    <rect x="-1" y="-6.28" width="45.2" height="12.56" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="0" x2="43.2" y2="0" stroke="#a85620" stroke-width="1" stroke-dasharray="3,2"/>
+  </g>
+  <g data-model-id="WSG020:opening:0" transform="translate(64.0,558.4) rotate(-90.0)">
+    <rect x="-1" y="-6.28" width="40.4" height="12.56" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="-3" x2="0" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+    <line x1="0" y1="0" x2="38.4" y2="0" stroke="#4682B4" stroke-width="2"/>
+    <line x1="38.4" y1="-3" x2="38.4" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+  </g>
+  <g data-model-id="WSG022:opening:0" transform="translate(361.6,616.0) rotate(180.0)">
+    <rect x="-1" y="-6.28" width="30.8" height="12.56" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="-3" x2="0" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+    <line x1="0" y1="0" x2="28.8" y2="0" stroke="#4682B4" stroke-width="2"/>
+    <line x1="28.8" y1="-3" x2="28.8" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+  </g>
+</g>
+<g data-layer="floor-systems" fill="none">
+<g data-model-id="PPR001" data-route-id="PPR001" data-family="heating" data-recorded-points="592,425.19999999999993 352,425.19999999999993 352,550 208,550" data-lane-offset="-8"><title>PPR001 Heat pump flow to manifold / heat</title>
+<polyline points="592,433.2 360,433.2 360,558 208,558" stroke="#fbfaf5" stroke-width="5"/>
+<polyline points="592,433.2 360,433.2 360,558 208,558" stroke="#92651d" stroke-width="2.4" stroke-dasharray=""/>
+<rect x="588" y="421.19999999999993" width="8" height="8" fill="#fbfaf5" stroke="#92651d"/>
+</g>
+<g data-model-id="PPR002" data-route-id="PPR002" data-family="heating" data-recorded-points="208,550 352,550 352,425.19999999999993 592,425.19999999999993" data-lane-offset="4"><title>PPR002 Manifold return to heat pump / heat</title>
+<polyline points="208,554 356,554 356,429.2 592,429.2" stroke="#fbfaf5" stroke-width="5"/>
+<polyline points="208,554 356,554 356,429.2 592,429.2" stroke="#92651d" stroke-width="2.4" stroke-dasharray=""/>
+<rect x="588" y="421.19999999999993" width="8" height="8" fill="#fbfaf5" stroke="#92651d"/>
+</g>
+<g data-model-id="PPR003" data-route-id="PPR003" data-family="heating" data-recorded-points="208,550 160,502" data-lane-offset="-2"><title>PPR003 Manifold flow to bathroom radiator / heat</title>
+<polyline points="206.59,551.41 158.59,503.41" stroke="#fbfaf5" stroke-width="5"/>
+<polyline points="206.59,551.41 158.59,503.41" stroke="#92651d" stroke-width="2.4" stroke-dasharray=""/>
+</g>
+<g data-model-id="PPR003" data-route-id="PPR003" data-family="heating" data-recorded-points="160,502 160,502" data-lane-offset="0"><title>PPR003 Manifold flow to bathroom radiator / heat</title>
+<path d="M 160 495 l 7 7 l -7 7 l -7 -7 Z" fill="#fbfaf5" stroke="#92651d" stroke-width="2"/>
+</g>
+<g data-model-id="PPR004" data-route-id="PPR004" data-family="heating" data-recorded-points="160,502 160,502" data-lane-offset="0"><title>PPR004 Bathroom radiator return to manifold / heat</title>
+<path d="M 160 495 l 7 7 l -7 7 l -7 -7 Z" fill="#fbfaf5" stroke="#92651d" stroke-width="2"/>
+</g>
+<g data-model-id="PPR004" data-route-id="PPR004" data-family="heating" data-recorded-points="160,502 208,550" data-lane-offset="-2"><title>PPR004 Bathroom radiator return to manifold / heat</title>
+<polyline points="161.41,500.59 209.41,548.59" stroke="#fbfaf5" stroke-width="5"/>
+<polyline points="161.41,500.59 209.41,548.59" stroke="#92651d" stroke-width="2.4" stroke-dasharray=""/>
+</g>
+<g data-model-id="PPR005" data-route-id="PPR005" data-family="heating" data-recorded-points="592,425.19999999999993 352,425.19999999999993 352,550 160,550" data-lane-offset="0"><title>PPR005 Heat pump flow to cylinder coil / heat</title>
+<polyline points="592,425.2 352,425.2 352,550 160,550" stroke="#fbfaf5" stroke-width="5"/>
+<polyline points="592,425.2 352,425.2 352,550 160,550" stroke="#92651d" stroke-width="2.4" stroke-dasharray=""/>
+<rect x="588" y="421.19999999999993" width="8" height="8" fill="#fbfaf5" stroke="#92651d"/>
+</g>
+<g data-model-id="PPR006" data-route-id="PPR006" data-family="heating" data-recorded-points="160,550 352,550 352,425.19999999999993 592,425.19999999999993" data-lane-offset="-4"><title>PPR006 Cylinder coil return to heat pump / heat</title>
+<polyline points="160,546 348,546 348,421.2 592,421.2" stroke="#fbfaf5" stroke-width="5"/>
+<polyline points="160,546 348,546 348,421.2 592,421.2" stroke="#92651d" stroke-width="2.4" stroke-dasharray=""/>
+<rect x="588" y="421.19999999999993" width="8" height="8" fill="#fbfaf5" stroke="#92651d"/>
+</g>
+<g data-model-id="PPR007" data-route-id="PPR007" data-family="water" data-recorded-points="160,550 160,550" data-lane-offset="0"><title>PPR007 Cold main to cylinder / cold</title>
+<rect x="156" y="546" width="8" height="8" fill="#fbfaf5" stroke="#376b88"/>
+</g>
+<g data-model-id="PPR008" data-route-id="PPR008" data-family="water" data-recorded-points="160,550 160,550" data-lane-offset="-4"><title>PPR008 Cold main to bathroom mixer / cold</title>
+<rect x="156" y="546" width="8" height="8" fill="#fbfaf5" stroke="#376b88"/>
+</g>
+<g data-model-id="PPR008" data-route-id="PPR008" data-family="water" data-recorded-points="160,550 160,502" data-lane-offset="-4"><title>PPR008 Cold main to bathroom mixer / cold</title>
+<polyline points="156,550 156,502" stroke="#fbfaf5" stroke-width="5"/>
+<polyline points="156,550 156,502" stroke="#376b88" stroke-width="2.4" stroke-dasharray="9 3"/>
+</g>
+<g data-model-id="PPR008" data-route-id="PPR008" data-family="water" data-recorded-points="160,502 160,502" data-lane-offset="0"><title>PPR008 Cold main to bathroom mixer / cold</title>
+<path d="M 160 495 l 7 7 l -7 7 l -7 -7 Z" fill="#fbfaf5" stroke="#376b88" stroke-width="2"/>
+</g>
+<g data-model-id="PPR009" data-route-id="PPR009" data-family="water" data-recorded-points="160,550 160,502" data-lane-offset="4"><title>PPR009 Cylinder hot feed to bathroom mixer / hot</title>
+<polyline points="164,550 164,502" stroke="#fbfaf5" stroke-width="5"/>
+<polyline points="164,550 164,502" stroke="#a74735" stroke-width="2.4" stroke-dasharray="9 3"/>
+</g>
+<g data-model-id="PPR009" data-route-id="PPR009" data-family="water" data-recorded-points="160,502 160,502" data-lane-offset="0"><title>PPR009 Cylinder hot feed to bathroom mixer / hot</title>
+<path d="M 160 495 l 7 7 l -7 7 l -7 -7 Z" fill="#fbfaf5" stroke="#a74735" stroke-width="2"/>
+</g>
+<g data-model-id="PPR010" data-route-id="PPR010" data-family="water" data-recorded-points="160,550 160,550" data-lane-offset="0"><title>PPR010 Cold main to kitchen mixer / cold</title>
+<rect x="156" y="546" width="8" height="8" fill="#fbfaf5" stroke="#376b88"/>
+</g>
+<g data-model-id="PPR010" data-route-id="PPR010" data-family="water" data-recorded-points="160,550 160,238 136,238" data-lane-offset="0"><title>PPR010 Cold main to kitchen mixer / cold</title>
+<polyline points="160,550 160,238 136,238" stroke="#fbfaf5" stroke-width="5"/>
+<polyline points="160,550 160,238 136,238" stroke="#376b88" stroke-width="2.4" stroke-dasharray="9 3"/>
+</g>
+<g data-model-id="CBR001" data-route-id="CBR001" data-family="electricity" data-recorded-points="160,550 352,550 352,425.19999999999993 592,425.19999999999993" data-lane-offset="-8"><title>CBR001 Heat pump final cable / electricity</title>
+<polyline points="160,542 344,542 344,417.2 592,417.2" stroke="#fbfaf5" stroke-width="5"/>
+<polyline points="160,542 344,542 344,417.2 592,417.2" stroke="#283529" stroke-width="2.4" stroke-dasharray="3 3"/>
+<rect x="588" y="421.19999999999993" width="8" height="8" fill="#fbfaf5" stroke="#283529"/>
+</g>
+<g data-model-id="NL001" data-route-id="NL001" data-family="network" data-recorded-points="515.1999999999999,377.19999999999993 592,425.19999999999993" data-lane-offset="0"><title>NL001 Cottage to barn / network</title>
+<polyline points="515.2,377.2 592,425.2" stroke="#fbfaf5" stroke-width="5"/>
+<polyline points="515.2,377.2 592,425.2" stroke="#5e537b" stroke-width="2.4" stroke-dasharray="10 3 2 3"/>
+<rect x="588" y="421.19999999999993" width="8" height="8" fill="#fbfaf5" stroke="#5e537b"/>
+</g>
+<circle data-model-id="CMP002" cx="160" cy="550" r="5" fill="#fbfaf5" stroke="#283529" stroke-width="2"><title>CMP002 Hot water cylinder</title></circle>
+<circle data-model-id="CMP004" cx="208" cy="550" r="5" fill="#fbfaf5" stroke="#283529" stroke-width="2"><title>CMP004 Ground-floor heating manifold</title></circle>
+<circle data-model-id="IOT001" cx="323.19999999999993" cy="166" r="5" fill="#fbfaf5" stroke="#283529" stroke-width="2"><title>IOT001 Hall thermostat</title></circle>
+<circle data-model-id="NN001" cx="515.1999999999999" cy="377.19999999999993" r="5" fill="#fbfaf5" stroke="#283529" stroke-width="2"><title>NN001 Study router</title></circle>
+<circle data-model-id="CMP007" cx="136" cy="238" r="5" fill="#fbfaf5" stroke="#283529" stroke-width="2"><title>CMP007 Kitchen sink mixer</title></circle>
+<circle data-model-id="CMP003" cx="160" cy="550" r="5" fill="#fbfaf5" stroke="#283529" stroke-width="2"><title>CMP003 Consumer unit</title></circle>
+</g><g data-layer="floor-systems-leaders"><path data-role="label-leader" d="M 160 362.8 L 168 362.8" stroke="#58634f" stroke-width="0.7" fill="none"/><path data-role="label-leader" d="M 553.6 401.2 L 558 394" stroke="#58634f" stroke-width="0.7" fill="none"/><path data-role="label-leader" d="M 472 425.2 L 472 344" stroke="#58634f" stroke-width="0.7" fill="none"/><path data-role="label-leader" d="M 184 526 L 264 606" stroke="#58634f" stroke-width="0.7" fill="none"/><path data-role="label-leader" d="M 160 526 L 366 526" stroke="#58634f" stroke-width="0.7" fill="none"/></g><g data-layer="labels">
+<g data-model-id="RM001"><title>Kitchen (RM001)</title>
+<text x="164.8" y="215.6" text-anchor="middle" fill="#283529" font-size="14" font-weight="600" stroke="#fbfaf5" stroke-width="3" paint-order="stroke">Kitchen</text>
+<text x="164.8" y="196.6" data-moved-from-y="234.6" text-anchor="middle" fill="#283529" font-size="13" stroke="#fbfaf5" stroke-width="3" paint-order="stroke">RM001 / 18.5 m²</text>
+</g>
+<g data-model-id="RM002"><title>Entrance hall (RM002)</title>
+<text x="347.2" y="215.6" text-anchor="middle" fill="#283529" font-size="14" font-weight="600" stroke="#fbfaf5" stroke-width="3" paint-order="stroke">Entrance hall</text>
+<text x="347.2" y="234.6" text-anchor="middle" fill="#283529" font-size="13" stroke="#fbfaf5" stroke-width="3" paint-order="stroke">RM002 / 15 m²</text>
+</g>
+<g data-model-id="RM003"><title>Sitting room (RM003)</title>
+<text x="510.4" y="215.6" text-anchor="middle" fill="#283529" font-size="14" font-weight="600" stroke="#fbfaf5" stroke-width="3" paint-order="stroke">Sitting room</text>
+<text x="510.4" y="234.6" text-anchor="middle" fill="#283529" font-size="13" stroke="#fbfaf5" stroke-width="3" paint-order="stroke">RM003 / 15 m²</text>
+</g>
+<g data-model-id="RM004"><title>Dining room (RM004)</title>
+<text x="164.8" y="407.6" text-anchor="middle" fill="#283529" font-size="14" font-weight="600" stroke="#fbfaf5" stroke-width="3" paint-order="stroke">Dining room</text>
+<text x="164.8" y="426.6" text-anchor="middle" fill="#283529" font-size="13" stroke="#fbfaf5" stroke-width="3" paint-order="stroke">RM004 / 15.1 m²</text>
+</g>
+<g data-model-id="RM005"><title>Stair hall (RM005)</title>
+<text x="347.2" y="407.6" text-anchor="middle" fill="#283529" font-size="14" font-weight="600" stroke="#fbfaf5" stroke-width="3" paint-order="stroke">Stair hall</text>
+<text x="347.2" y="388.6" data-moved-from-y="426.6" text-anchor="middle" fill="#283529" font-size="13" stroke="#fbfaf5" stroke-width="3" paint-order="stroke">RM005 / 12.2 m²</text>
+</g>
+<g data-model-id="RM006"><title>Study (RM006)</title>
+<text x="510.4" y="407.6" text-anchor="middle" fill="#283529" font-size="14" font-weight="600" stroke="#fbfaf5" stroke-width="3" paint-order="stroke">Study</text>
+<text x="510.4" y="450.6" data-moved-from-y="426.6" text-anchor="middle" fill="#283529" font-size="13" stroke="#fbfaf5" stroke-width="3" paint-order="stroke">RM006 / 12.2 m²</text>
+</g>
+<g data-model-id="RM007"><title>Utility room (RM007)</title>
+<text x="164.8" y="578.0" text-anchor="middle" fill="#283529" font-size="14" font-weight="600" stroke="#fbfaf5" stroke-width="3" paint-order="stroke">Utility room</text>
+<text x="164.8" y="597.0" text-anchor="middle" fill="#283529" font-size="13" stroke="#fbfaf5" stroke-width="3" paint-order="stroke">RM007 / 14.7 m²</text>
+</g>
+<g data-model-id="RM008"><title>Cloakroom (RM008)</title>
+<text x="347.2" y="578.0" text-anchor="middle" fill="#283529" font-size="14" font-weight="600" stroke="#fbfaf5" stroke-width="3" paint-order="stroke">Cloakroom</text>
+<text x="347.2" y="597.0" text-anchor="middle" fill="#283529" font-size="13" stroke="#fbfaf5" stroke-width="3" paint-order="stroke">RM008 / 11.9 m²</text>
+</g>
+</g>
+<text x="64" y="690" font-size="13" fill="#58634f">Plan bounds: 11.00 × 11.50 meters</text>
+<g data-layer="legend"><path d="M 64 702 h 96 m 0 -4 v 8 M 64 698 v 8" stroke="#283529" fill="none"/><text x="64" y="725" font-size="13">2 m / model grid: meters</text>
+<path d="M 684 702 l -2.6942229581241772e-15 -22" stroke="#283529" stroke-width="2"/><text x="684" y="672" text-anchor="middle" font-size="14">N</text>
+<text data-model-id="RM001" x="64" y="766" font-size="14" fill="#283529">1. Kitchen (RM001) / kitchen / 18.5 m²</text>
+<text data-model-id="RM002" x="64" y="788" font-size="14" fill="#283529">2. Entrance hall (RM002) / hallway / 15 m²</text>
+<text data-model-id="RM003" x="64" y="810" font-size="14" fill="#283529">3. Sitting room (RM003) / living-room / 15 m²</text>
+<text data-model-id="RM004" x="64" y="832" font-size="14" fill="#283529">4. Dining room (RM004) / dining-room / 15.1 m²</text>
+<text data-model-id="RM005" x="64" y="854" font-size="14" fill="#283529">5. Stair hall (RM005) / staircase / 12.2 m² / Stairs to FLR002</text>
+<text data-model-id="RM006" x="64" y="876" font-size="14" fill="#283529">6. Study (RM006) / office / 12.2 m²</text>
+<text data-model-id="RM007" x="64" y="898" font-size="14" fill="#283529">7. Utility room (RM007) / utility / 14.7 m²</text>
+<text data-model-id="RM008" x="64" y="920" font-size="14" fill="#283529">8. Cloakroom (RM008) / bathroom / 11.9 m²</text>
+<text data-model-id="WSG002:opening:0" x="64" y="942" font-size="14" fill="#58634f">Omitted: Door on WSG002 (WSG002:opening:0) / swing side or direction not</text>
+<text data-model-id="WSG002:opening:0" x="64" y="964" font-size="14" fill="#58634f">located</text>
+<text data-model-id="WSG003:opening:0" x="64" y="986" font-size="14" fill="#58634f">Omitted: Door on WSG003 (WSG003:opening:0) / swing side or direction not</text>
+<text data-model-id="WSG003:opening:0" x="64" y="1008" font-size="14" fill="#58634f">located</text>
+<text data-model-id="WSG005:opening:0" x="64" y="1030" font-size="14" fill="#58634f">Omitted: Door on WSG005 (WSG005:opening:0) / swing side or direction not</text>
+<text data-model-id="WSG005:opening:0" x="64" y="1052" font-size="14" fill="#58634f">located</text>
+<text data-model-id="WSG006:opening:0" x="64" y="1074" font-size="14" fill="#58634f">Omitted: Door on WSG006 (WSG006:opening:0) / swing side or direction not</text>
+<text data-model-id="WSG006:opening:0" x="64" y="1096" font-size="14" fill="#58634f">located</text>
+<text data-model-id="WSG007:opening:0" x="64" y="1118" font-size="14" fill="#58634f">Omitted: Door on WSG007 (WSG007:opening:0) / swing side or direction not</text>
+<text data-model-id="WSG007:opening:0" x="64" y="1140" font-size="14" fill="#58634f">located</text>
+<text data-model-id="WSG012:opening:0" x="64" y="1162" font-size="14" fill="#58634f">Omitted: Door on WSG012 (WSG012:opening:0) / swing side or direction not</text>
+<text data-model-id="WSG012:opening:0" x="64" y="1184" font-size="14" fill="#58634f">located</text>
+<text data-model-id="WSG014:opening:0" x="64" y="1206" font-size="14" fill="#58634f">Omitted: Door on WSG014 (WSG014:opening:0) / swing side or direction not</text>
+<text data-model-id="WSG014:opening:0" x="64" y="1228" font-size="14" fill="#58634f">located</text>
+<text data-model-id="WSG015:opening:0" x="64" y="1250" font-size="14" fill="#58634f">Omitted: Door on WSG015 (WSG015:opening:0) / swing side or direction not</text>
+<text data-model-id="WSG015:opening:0" x="64" y="1272" font-size="14" fill="#58634f">located</text>
+<text data-model-id="WSG019:opening:0" x="64" y="1294" font-size="14" fill="#58634f">Omitted: Door on WSG019 (WSG019:opening:0) / swing side or direction not</text>
+<text data-model-id="WSG019:opening:0" x="64" y="1316" font-size="14" fill="#58634f">located</text>
+</g></g><g data-layer="floor-systems-labels" font-family="Arial, sans-serif"><g data-label-for="PPR010"><title>PPR010 Cold main to kitchen mixer; Continues to outside / floor association not recorded</title><rect x="168" y="342" width="107" height="22" rx="3" fill="#fbfaf5" stroke="#58634f" stroke-width="0.5"/><g data-model-id="PPR010"><path d="M 174 353 h 18" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 174 353 h 18" stroke="#376b88" stroke-width="2.4" stroke-dasharray="9 3" fill="none"/><text x="198" y="357" font-size="12" fill="#283529">PPR010 cold</text></g></g><g data-label-for="NL001"><title>NL001 Cottage to barn; Continues to outside / floor association not recorded</title><rect x="558" y="372" width="120" height="22" rx="3" fill="#fbfaf5" stroke="#58634f" stroke-width="0.5"/><g data-model-id="NL001"><path d="M 564 383 h 18" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 564 383 h 18" stroke="#5e537b" stroke-width="2.4" stroke-dasharray="10 3 2 3" fill="none"/><text x="588" y="387" font-size="12" fill="#283529">NL001 network</text></g></g><g data-label-for="PPR001 PPR002 PPR005 PPR006 CBR001"><title>PPR001 Heat pump flow to manifold; Continues to outside / floor association not recorded
+PPR002 Manifold return to heat pump; Continues to outside / floor association not recorded
+PPR005 Heat pump flow to cylinder coil; Continues to outside / floor association not recorded
+PPR006 Cylinder coil return to heat pump; Continues to outside / floor association not recorded
+CBR001 Heat pump final cable; Continues to outside / floor association not recorded</title><rect x="324" y="258" width="152" height="86" rx="3" fill="#fbfaf5" stroke="#58634f" stroke-width="0.5"/><g data-model-id="PPR001"><path d="M 330 269 h 18" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 330 269 h 18" stroke="#92651d" stroke-width="2.4" stroke-dasharray="" fill="none"/><text x="354" y="273" font-size="12" fill="#283529">PPR001 heat</text></g><g data-model-id="PPR002"><path d="M 330 285 h 18" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 330 285 h 18" stroke="#92651d" stroke-width="2.4" stroke-dasharray="" fill="none"/><text x="354" y="289" font-size="12" fill="#283529">PPR002 heat</text></g><g data-model-id="PPR005"><path d="M 330 301 h 18" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 330 301 h 18" stroke="#92651d" stroke-width="2.4" stroke-dasharray="" fill="none"/><text x="354" y="305" font-size="12" fill="#283529">PPR005 heat</text></g><g data-model-id="PPR006"><path d="M 330 317 h 18" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 330 317 h 18" stroke="#92651d" stroke-width="2.4" stroke-dasharray="" fill="none"/><text x="354" y="321" font-size="12" fill="#283529">PPR006 heat</text></g><g data-model-id="CBR001"><path d="M 330 333 h 18" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 330 333 h 18" stroke="#283529" stroke-width="2.4" stroke-dasharray="3 3" fill="none"/><text x="354" y="337" font-size="12" fill="#283529">CBR001 electricity</text></g></g><g data-label-for="PPR003 PPR004"><title>PPR003 Manifold flow to bathroom radiator
+PPR004 Bathroom radiator return to manifold; Riser 3.25 to 0.45 m; FLR002 First floor
+PPR003 Manifold flow to bathroom radiator; Riser 0.45 to 3.25 m; FLR002 First floor
+PPR004 Bathroom radiator return to manifold; Riser 3.25 to 0.45 m; FLR002 First floor</title><rect x="264" y="606" width="209" height="54" rx="3" fill="#fbfaf5" stroke="#58634f" stroke-width="0.5"/><g data-model-id="PPR003"><path d="M 270 617 h 18" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 270 617 h 18" stroke="#92651d" stroke-width="2.4" stroke-dasharray="" fill="none"/><text x="294" y="621" font-size="12" fill="#283529">PPR003 heat</text></g><g data-model-id="PPR004"><path d="M 270 633 h 18" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 270 633 h 18" stroke="#92651d" stroke-width="2.4" stroke-dasharray="" fill="none"/><text x="294" y="637" font-size="12" fill="#283529">PPR004 heat</text></g><g data-model-id="PPR003"><path d="M 279 642 l 7 7 l -7 7 l -7 -7 Z" fill="#fbfaf5" stroke="#283529" stroke-width="2"/><text x="294" y="653" font-size="12" fill="#283529">Riser to FLR002 First floor</text></g></g><g data-label-for="PPR008 PPR009 PPR007"><title>PPR008 Cold main to bathroom mixer; Continues to outside / floor association not recorded
+PPR009 Cylinder hot feed to bathroom mixer
+PPR007 Cold main to cylinder; Continues to outside / floor association not recorded
+PPR008 Cold main to bathroom mixer; Riser 0.45 to 3.25 m; FLR002 First floor
+PPR009 Cylinder hot feed to bathroom mixer; Riser 0.45 to 3.25 m; FLR002 First floor</title><rect x="366" y="462" width="209" height="70" rx="3" fill="#fbfaf5" stroke="#58634f" stroke-width="0.5"/><g data-model-id="PPR008"><path d="M 372 473 h 18" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 372 473 h 18" stroke="#376b88" stroke-width="2.4" stroke-dasharray="9 3" fill="none"/><text x="396" y="477" font-size="12" fill="#283529">PPR008 cold</text></g><g data-model-id="PPR009"><path d="M 372 489 h 18" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 372 489 h 18" stroke="#a74735" stroke-width="2.4" stroke-dasharray="9 3" fill="none"/><text x="396" y="493" font-size="12" fill="#283529">PPR009 hot</text></g><g data-model-id="PPR007"><path d="M 372 505 h 18" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 372 505 h 18" stroke="#376b88" stroke-width="2.4" stroke-dasharray="9 3" fill="none"/><text x="396" y="509" font-size="12" fill="#283529">PPR007 cold</text></g><g data-model-id="PPR008"><path d="M 381 514 l 7 7 l -7 7 l -7 -7 Z" fill="#fbfaf5" stroke="#283529" stroke-width="2"/><text x="396" y="525" font-size="12" fill="#283529">Riser to FLR002 First floor</text></g></g></g><g data-layer="systems-index" font-family="Arial, sans-serif" fill="#283529"><text x="788" y="36" font-size="18">Systems key / FLR001</text><text x="788" y="70" font-size="14" font-weight="600">How to read the drawing</text><path d="M 788 88 h 22" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 788 88 h 22" stroke="#92651d" stroke-width="2.4" stroke-dasharray="" fill="none"/><text x="818" y="92" font-size="13">heat: heating water, heating family, solid</text><path d="M 788 107 h 22" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 788 107 h 22" stroke="#376b88" stroke-width="2.4" stroke-dasharray="9 3" fill="none"/><text x="818" y="111" font-size="13">cold: cold water, water family, long dash</text><path d="M 788 126 h 22" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 788 126 h 22" stroke="#a74735" stroke-width="2.4" stroke-dasharray="9 3" fill="none"/><text x="818" y="130" font-size="13">hot: hot water, water family, long dash</text><path d="M 788 145 h 22" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 788 145 h 22" stroke="#283529" stroke-width="2.4" stroke-dasharray="3 3" fill="none"/><text x="818" y="149" font-size="13">electricity: electricity, electricity family, short dash</text><path d="M 788 164 h 22" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 788 164 h 22" stroke="#5e537b" stroke-width="2.4" stroke-dasharray="10 3 2 3" fill="none"/><text x="818" y="168" font-size="13">network: network, network family, dash-dot</text><circle cx="797" cy="183" r="5" fill="#fbfaf5" stroke="#283529" stroke-width="2"/><text x="818" y="187" font-size="13">Equipment at its recorded position</text><path d="M 797 195 l 7 7 l -7 7 l -7 -7 Z" fill="#fbfaf5" stroke="#283529" stroke-width="2"/><text x="818" y="206" font-size="13">Riser: the run changes floor here</text><rect x="793" y="217" width="8" height="8" fill="#fbfaf5" stroke="#283529"/><text x="818" y="225" font-size="13">Continuation: the run leaves this floor</text><path d="M 788 240 h 18" stroke="#58634f" stroke-width="0.7" fill="none"/><text x="818" y="244" font-size="13">Grey leader: ties a label to its run; not a route</text><text x="818" y="263" font-size="13" fill="#58634f">Lines side by side share one recorded path; they are drawn 4 px apart</text><text x="818" y="282" font-size="13" fill="#58634f">(about 8 cm at this scale) so each stays visible. Physical routes:</text><text x="818" y="301" font-size="13" fill="#58634f">crossings do not assert a junction. Geometry is fictional and estimated,</text><text x="818" y="320" font-size="13" fill="#58634f">not surveyed. Only recorded physical routes are drawn; control/monitoring</text><text x="818" y="339" font-size="13" fill="#58634f">connectivity remains in the schematic.</text><text x="788" y="370" font-size="14" font-weight="600">Runs drawn on FLR001</text><path d="M 788 388 h 22" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 788 388 h 22" stroke="#92651d" stroke-width="2.4" stroke-dasharray="" fill="none"/><text x="818" y="392" font-size="13">PPR001 Heat pump flow to manifold (heat)</text><text x="818" y="411" font-size="13" fill="#58634f">free; conduit; z 0.45 -&gt; 0.45 -&gt; 0.45 -&gt; 0.45 m; Continues to outside /</text><text x="818" y="430" font-size="13" fill="#58634f">floor association not recorded</text><path d="M 788 445 h 22" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 788 445 h 22" stroke="#92651d" stroke-width="2.4" stroke-dasharray="" fill="none"/><text x="818" y="449" font-size="13">PPR002 Manifold return to heat pump (heat)</text><text x="818" y="468" font-size="13" fill="#58634f">free; conduit; z 0.45 -&gt; 0.45 -&gt; 0.45 -&gt; 0.45 m; Continues to outside /</text><text x="818" y="487" font-size="13" fill="#58634f">floor association not recorded</text><path d="M 788 502 h 22" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 788 502 h 22" stroke="#92651d" stroke-width="2.4" stroke-dasharray="" fill="none"/><text x="818" y="506" font-size="13">PPR003 Manifold flow to bathroom radiator (heat)</text><text x="818" y="525" font-size="13" fill="#58634f">free; surface; z 0.45 -&gt; 0.45 m</text><text x="818" y="544" font-size="13" fill="#58634f">vertical; surface; z 0.45 -&gt; 3.25 m; Riser 0.45 to 3.25 m; FLR002 First</text><text x="818" y="563" font-size="13" fill="#58634f">floor</text><path d="M 788 578 h 22" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 788 578 h 22" stroke="#92651d" stroke-width="2.4" stroke-dasharray="" fill="none"/><text x="818" y="582" font-size="13">PPR004 Bathroom radiator return to manifold (heat)</text><text x="818" y="601" font-size="13" fill="#58634f">vertical; surface; z 3.25 -&gt; 0.45 m; Riser 3.25 to 0.45 m; FLR002 First</text><text x="818" y="620" font-size="13" fill="#58634f">floor</text><text x="818" y="639" font-size="13" fill="#58634f">free; surface; z 0.45 -&gt; 0.45 m</text><path d="M 788 654 h 22" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 788 654 h 22" stroke="#92651d" stroke-width="2.4" stroke-dasharray="" fill="none"/><text x="818" y="658" font-size="13">PPR005 Heat pump flow to cylinder coil (heat)</text><text x="818" y="677" font-size="13" fill="#58634f">free; conduit; z 0.45 -&gt; 0.45 -&gt; 0.45 -&gt; 0.45 m; Continues to outside /</text><text x="818" y="696" font-size="13" fill="#58634f">floor association not recorded</text><path d="M 788 711 h 22" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 788 711 h 22" stroke="#92651d" stroke-width="2.4" stroke-dasharray="" fill="none"/><text x="818" y="715" font-size="13">PPR006 Cylinder coil return to heat pump (heat)</text><text x="818" y="734" font-size="13" fill="#58634f">free; conduit; z 0.45 -&gt; 0.45 -&gt; 0.45 -&gt; 0.45 m; Continues to outside /</text><text x="818" y="753" font-size="13" fill="#58634f">floor association not recorded</text><path d="M 788 768 h 22" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 788 768 h 22" stroke="#376b88" stroke-width="2.4" stroke-dasharray="9 3" fill="none"/><text x="818" y="772" font-size="13">PPR007 Cold main to cylinder (cold)</text><text x="818" y="791" font-size="13" fill="#58634f">free; surface; z -0.48 -&gt; 0.45 m; Continues to outside / floor association</text><text x="818" y="810" font-size="13" fill="#58634f">not recorded</text><path d="M 788 825 h 22" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 788 825 h 22" stroke="#376b88" stroke-width="2.4" stroke-dasharray="9 3" fill="none"/><text x="818" y="829" font-size="13">PPR008 Cold main to bathroom mixer (cold)</text><text x="818" y="848" font-size="13" fill="#58634f">free; surface; z -0.48 -&gt; 0.45 m; Continues to outside / floor association</text><text x="818" y="867" font-size="13" fill="#58634f">not recorded</text><text x="818" y="886" font-size="13" fill="#58634f">free; surface; z 0.45 -&gt; 0.45 m</text><text x="818" y="905" font-size="13" fill="#58634f">vertical; surface; z 0.45 -&gt; 3.25 m; Riser 0.45 to 3.25 m; FLR002 First</text><text x="818" y="924" font-size="13" fill="#58634f">floor</text><path d="M 788 939 h 22" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 788 939 h 22" stroke="#a74735" stroke-width="2.4" stroke-dasharray="9 3" fill="none"/><text x="818" y="943" font-size="13">PPR009 Cylinder hot feed to bathroom mixer (hot)</text><text x="818" y="962" font-size="13" fill="#58634f">free; surface; z 0.45 -&gt; 0.45 m</text><text x="818" y="981" font-size="13" fill="#58634f">vertical; surface; z 0.45 -&gt; 3.25 m; Riser 0.45 to 3.25 m; FLR002 First</text><text x="818" y="1000" font-size="13" fill="#58634f">floor</text><path d="M 788 1015 h 22" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 788 1015 h 22" stroke="#376b88" stroke-width="2.4" stroke-dasharray="9 3" fill="none"/><text x="818" y="1019" font-size="13">PPR010 Cold main to kitchen mixer (cold)</text><text x="818" y="1038" font-size="13" fill="#58634f">free; surface; z -0.48 -&gt; 0.45 m; Continues to outside / floor association</text><text x="818" y="1057" font-size="13" fill="#58634f">not recorded</text><text x="818" y="1076" font-size="13" fill="#58634f">free; surface; z 0.45 -&gt; 0.45 -&gt; 1.05 m</text><path d="M 788 1091 h 22" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 788 1091 h 22" stroke="#283529" stroke-width="2.4" stroke-dasharray="3 3" fill="none"/><text x="818" y="1095" font-size="13">CBR001 Heat pump final cable (electricity)</text><text x="818" y="1114" font-size="13" fill="#58634f">free; conduit; z 0.45 -&gt; 0.45 -&gt; 0.45 -&gt; 0.45 m; Continues to outside /</text><text x="818" y="1133" font-size="13" fill="#58634f">floor association not recorded</text><path d="M 788 1148 h 22" stroke="#fbfaf5" stroke-width="5" fill="none"/><path d="M 788 1148 h 22" stroke="#5e537b" stroke-width="2.4" stroke-dasharray="10 3 2 3" fill="none"/><text x="818" y="1152" font-size="13">NL001 Cottage to barn (network)</text><text x="818" y="1171" font-size="13" fill="#58634f">free; conduit; z 0.45 -&gt; 0.45 m; Continues to outside / floor association</text><text x="818" y="1190" font-size="13" fill="#58634f">not recorded</text><text x="788" y="1221" font-size="14" font-weight="600">Equipment</text><circle cx="797" cy="1239" r="5" fill="#fbfaf5" stroke="#283529" stroke-width="2"/><text x="818" y="1243" font-size="13">CMP002 Hot water cylinder</text><circle cx="797" cy="1258" r="5" fill="#fbfaf5" stroke="#283529" stroke-width="2"/><text x="818" y="1262" font-size="13">CMP004 Ground-floor heating manifold</text><circle cx="797" cy="1277" r="5" fill="#fbfaf5" stroke="#283529" stroke-width="2"/><text x="818" y="1281" font-size="13">IOT001 Hall thermostat</text><circle cx="797" cy="1296" r="5" fill="#fbfaf5" stroke="#283529" stroke-width="2"/><text x="818" y="1300" font-size="13">NN001 Study router</text><circle cx="797" cy="1315" r="5" fill="#fbfaf5" stroke="#283529" stroke-width="2"/><text x="818" y="1319" font-size="13">CMP007 Kitchen sink mixer</text><circle cx="797" cy="1334" r="5" fill="#fbfaf5" stroke="#283529" stroke-width="2"/><text x="818" y="1338" font-size="13">CMP003 Consumer unit</text><text x="788" y="1369" font-size="14" font-weight="600">Not drawn on this floor</text><text x="788" y="1391" font-size="13">Unlocated: PPR011 Cylinder hot feed to kitchen mixer: physical route not</text><text x="788" y="1410" font-size="13">recorded.</text><text x="788" y="1429" font-size="13">Unlocated: CBR002 Cottage to barn buried submain: recorded route coordinates</text><text x="788" y="1448" font-size="13">have no floor association; floor segment not inferred.</text><text x="788" y="1467" font-size="13">Unlocated: CBR004 Cottage submain approach: recorded route coordinates have no</text><text x="788" y="1486" font-size="13">floor association; floor segment not inferred.</text><text x="788" y="1505" font-size="13">Unlocated: CBR005 Barn submain approach: recorded route coordinates have no</text><text x="788" y="1524" font-size="13">floor association; floor segment not inferred.</text><text x="788" y="1543" font-size="13">Unlocated: CMP008 Heat pump RCBO: associated with RM007 Utility room; exact</text><text x="788" y="1562" font-size="13">position not recorded.</text><text x="788" y="1581" font-size="13">Unlocated: CMP009 Heat pump final circuit: associated with RM007 Utility room;</text><text x="788" y="1600" font-size="13">exact position not recorded.</text><text x="788" y="1619" font-size="13">Unlocated: CMP010 Barn submain RCBO: associated with RM007 Utility room; exact</text><text x="788" y="1638" font-size="13">position not recorded.</text><text x="788" y="1657" font-size="13">Unlocated: CMP011 Barn submain circuit: associated with RM007 Utility room;</text><text x="788" y="1676" font-size="13">exact position not recorded.</text></g>  <g id="archally-provenance" data-generated-build="willow-cottage-example">
+    <rect x="0" y="1735" width="1420" height="20" fill="#f7f7f7"/>
+    <line x1="0" y1="1735" x2="1420" y2="1735" stroke="#ddd" stroke-width="0.5"/>
+    <text x="6" y="1748" font-size="8" fill="#777">generated 2026-11-16 00:00 UTC · build willow-cottage-example · model 2.3.0 · realm-systems 0.1.1 (build willow-cottage-example); physical overlay</text>
+  </g>
+</svg>

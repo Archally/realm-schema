@@ -12,7 +12,7 @@
 # exclusion mechanisms: from the verifying side they mean the same thing, and
 # re-encoding the rules here would put a second implementation of them in another repo.
 # job validator tools/validator/src extras-ok
-# job example-willow-cottage examples/willow-cottage/.realm/v2.3
+# job example-willow-cottage examples/willow-cottage/.realm/v2.3 extras-ok
 # job docs docs
 # job doc-snippet-validate tools/doc-snippet-validate extras-ok
 # job semantic-checker tools/semantic-checker extras-ok
@@ -24,10 +24,11 @@
 # job example-willow-cottage-specs examples/willow-cottage/.specs
 # job schema-atlas tools/schema-atlas
 # job port tools/port extras-ok
+# job example-willow-cottage-images examples/willow-cottage/images
 
 f2df1d059c911cac02979d3e359ca6b1760cc0f78ca40fca7eb7143f2731beb0  validator/cli.mjs
 4d4a337cc52fd24fd80ea976ff74bf405ef7688f3ecc772691b26b35157c1728  validator/core/cross-layer.mjs
-8ee6dc4e9b9e9c16ad659ecb36a52e6beaf53dc9b495099d3ab18b34fbee9ba0  validator/core/electrical-rules.mjs
+e28894f854fc9a786fd0f7827a2cdb7cd60a43da1776a8d371b4720c034c0d4d  validator/core/electrical-rules.mjs
 4578e0cd3637a8db49d573b57ad3f370f17383eea830bdef272c6629fcdbb88d  validator/core/epic-rules.mjs
 f51a323509d67a30e88b9cf503a0e2967c3e4a21c062377c15bd582fe3d0ad73  validator/core/estate-change-rules.mjs
 3a9336f1a2ab9c045217eeafac93ef95345d30b588544a7db4644368f57f83d4  validator/core/geometric.mjs
@@ -35,16 +36,18 @@ f51a323509d67a30e88b9cf503a0e2967c3e4a21c062377c15bd582fe3d0ad73  validator/core
 4e7d2c5830a2e27dbad7782f304f10d53ae8f71d10d6d679bf0b947095cbb12a  validator/core/helpers.mjs
 4296e08b593ca0486f4b1d2860745c84670d1eb9f9624528268beadf20a3c6a1  validator/core/lifecycle-rules.mjs
 7bbd5f2b457c10c3b6bb722a4e6f2fa2ff3c0a315aca67979f463f86f7ddbd85  validator/core/member-rules.mjs
+261209b5bc7b2f1abd252af35083ec165bb33251a5d219793ef42bdce58dcd22  validator/core/pipe-and-network-rules.mjs
 0e753c6782b971907db2c9a5998c1de11d7a93f130944bc5b3fcf3127334ded4  validator/core/referential.mjs
-0069b734411c226821cd6200e6d41a870f17a353480e4f982f687d8987831c84  validator/core/semantic.mjs
+b783b16a5f26091be1e1bc7f3f49c3e17c0fd290d2cebe487eaadfd61b2ae0de  validator/core/route-rule-fixtures.mjs
+468da9647e9fe437b9598a944075f0312c37524b9ff010ceb09cac0ddc99795c  validator/core/semantic.mjs
 60ac727d140966b00ceb52d23c7b80d672ced5b1caa97f58822ed4f5220866b3  validator/core/shared-edge-rules.mjs
 0d7cca5b1c56f94a2107642c91193bdf40eee5aee27293cc6c41ab84f4f03c3c  validator/core/structural.mjs
 6a23cf7c898f4cdc19a733cb68f772c71c514fb4063b177f994ed3e059b9d24b  example-willow-cottage/context/persons.yaml
 ecc57ca1af189a6842c286c0b0acced9ca8c1444152f094e70a99810fe69bb66  example-willow-cottage/context/surroundings.yaml
 71615da59b51666590122d429289fef27dc5599cbed7d80d64e279bbf3c0d0a0  example-willow-cottage/estate-changes.yaml
 3ddc36e6dcfafb3902da43eb846242d79d37d55a3f4e2fb635f5c5a0e860a593  example-willow-cottage/events.yaml
-2c259f87ba5f110a9f4668a8ec02cadf028775946357d95fe102b429900b3e74  example-willow-cottage/infrastructure/network.yaml
-9ee0488c36836108a8679b0aefbcc7913864163888f3959e35165837dbad5229  example-willow-cottage/infrastructure/systems.yaml
+b3d00f939ff856e8b2809dc212ec895b94943d41f1958070bcebd8d0fb71ad66  example-willow-cottage/infrastructure/network.yaml
+04af80cfa2b27872c24672e603d27f09d9ef7948f5e7805787d1a6af350a9019  example-willow-cottage/infrastructure/systems.yaml
 1b154375c0bb96823016c2b8da667e04e1ec0c1f8b69e309887739a1b1b336c8  example-willow-cottage/nature/biomass.yaml
 7b7d245f1f8be84559c97ef2a79f84d3c1fde9fd58986c49bda0ea7b14ac69b8  example-willow-cottage/nature/care.yaml
 ae00d4ab9745a691acea24b244a9728b85c583dffd336803015e686226560d1b  example-willow-cottage/nature/soil.yaml
@@ -66,8 +69,8 @@ cb0a74bd05dc0ce1e023254a205a930d3fc2d6257230029214dd8f4784234d91  example-willow
 2448f1aed0e31549f71ce3449dd7ce1bebcb1c2f3548ca3e33470e68794b8dfd  docs/file-conventions.md
 ffba92f8324bc4557adf7c178f6dd077c4a7b917530a0394008e8532cfb5f90b  docs/model-quality.md
 0f0a5e8d62b123de2a0e63f1aa281ee31a18690b93ded43a5436a72920e9cb02  docs/modeling-guide.md
-f41dc82d7dfd357bfaf65fc51002f063797c132df480ad7b46cc91b9d6f9ec14  docs/schema-atlas/2026-11-06-reference.md
-24c348f424ff09dd5bc54d5d8292dda1ebdb3e4185ccff042cb536a079a12f92  docs/schema-reference.md
+e8c636e2559d30e028ff9d1d866e360ebf1cbab4c08a0038e68b25eba3956f26  docs/schema-atlas/2026-11-06-reference.md
+1d175d696cb4c977ff0bdcc3913602c233fa79a785bad20ccefe914935ccb449  docs/schema-reference.md
 0de30d2ca0e83f2baa11cbadf44aa4ffbfb036879c89961eb8205ed861a86200  doc-snippet-validate/cli.mjs
 45c58a8df27c6d69c29c764a8ed32163f626cad50b7cb8b03e03a71ae6755cc9  doc-snippet-validate/extract.mjs
 8254163392ccac95db0d61e07b139ec16ad62b9a0bca06fe9ba293821a49ae5a  semantic-checker/adapter.mjs
@@ -93,9 +96,9 @@ d792113c0dead34f6a7df9f2e1b2b04a527b46b4a865940d50795a943ca8d515  semantic-rules
 2cb6c1d41535473d674d1217fb468c52c2baf5b449ec63007dab00a2ac08cbe7  semantic-rules/system-without-parts.yaml
 bd47aeab0e0420a5c7e5995db1f70397a426595e1e114b7ae794935cd8475116  semantic-rules/terminal-without-circuit.yaml
 14beaa9181e219914ec5cb399a6f6281d77db149dc7e7fc11752211466444283  semantic-rules/undescribed-authored-entity.yaml
-332dc336b8d9cb7054c8f7026658527f887c3872727c3aee486db88db01372ff  model-builder/build-model.mjs
+9f44b80936561a2d6ecac43a035d60a30757a49df186789b6c963bfb4ccf64b8  model-builder/build-model.mjs
 a66479f47d2d4101d15ed0e2865fb4c20db8986d9ab70b7117415a3313e752ae  model-builder/cli.mjs
-3e280f845a85ebbcbf876c59d43d8faa17ef34eff4c5d69ac3eae2759bc15303  model-builder/relation-types.mjs
+670740d05a40291515b9ac7ffc2b8776fc951328bf3debcb5ecce65961a83cba  model-builder/relation-types.mjs
 8c679d4fea40c28189144a144ef7de67160a77fe0e1f04570046976eedda44bf  render-kit/care-calendar.mjs
 b57b225916eb26cc983309183160885238d711c652a80d7293ec375cd07b30be  render-kit/containment.mjs
 1e124a65d2ed45afe641a636ca72865a1e7cd4c3a3338de443a01772f0fdee5f  render-kit/index.mjs
@@ -115,9 +118,20 @@ cd4db68a65c5e55eef0f1259a7479264afd36d49fe6b2601ef745e53035959f0  renderer/prope
 2f8c8cb764804f9863cb0a223d16b2e7b8e8afa4fed1f3340f611309c56add3c  schema-update/updates/001-additive-2-0-to-2-1.mjs
 7e891d0439feec2f76d4df505bfd1751ad64db4f2ef63390fc1c5be42ece23ff  schema-update/updates/002-migration-to-estate-change.mjs
 9b09a49be02ae24c5a11d79b3f4b20b91879f193f0662bf7fc716b3492b0422e  schema-update/updates/003-additive-2-2-to-2-3.mjs
-528a964ea07dd7a705608ccd735faef1b46bbfa2ed57034e937e4c2182635aca  example-willow-cottage-specs/garden-care.md
-8a283fd6c64a64768114e6abc29fce42b1834a70d40e57bd7c8cf160b7fb9da5  example-willow-cottage-specs/property.md
+47da18f0b2635a9988e6f75d0ce9c714d680099a10415e1a00ba452ca9bcdff5  example-willow-cottage-specs/garden-care.md
+553311bb42f453f71f1376906c164d7b8f8503b42e0e3dd1aacabe35fca9f57d  example-willow-cottage-specs/property.md
 c7c679f638dc335efa2f89e8b71ccb4ba2177e7003225afa1e71a72c40baf42e  schema-atlas/atlas.test.mjs
 2e6753fb7c21c5a4a8fa91207c1a7fd07075e443d428ecdca235ab261340a688  schema-atlas/cli.mjs
-f78fac92b5d75565c5ab9fa66fc0996f6eb325dc773be1d630996d30dd4cc4bb  port/verify-ported.mjs
-66212df71666cb401837d69f7b3c1f7fb84d7c96dd947b6bed4a97d5565bd149  port/verify-ported.test.mjs
+d3ea23b42acc0573703e4855b97db1433a732d20f23532b08c1234fe3d64f7e3  port/verify-ported.mjs
+e0716190818b9ba837cdd74de13c349cf1780a737f19e9c73f621ea4780a7f53  port/verify-ported.test.mjs
+9d0c02b503a0427a0f5cdcf35676544e1e56c82f256059f5b8c3c099baaeca27  example-willow-cottage-images/Floor-BLD001-FLR001.svg
+7ed4d8e23bd6ca9a43540ba61db8923b0f31da182c9ed7c46942d63192b307e4  example-willow-cottage-images/Floor-BLD001-FLR002.svg
+c06f7a0920db28d9aa051279b8354e3bc2860b97bec2c508586d8c6d6cd3c60c  example-willow-cottage-images/Plan-Ogrod-LP001.svg
+52f6ecf2d6a2de5a196c3ed75c16e99f38da73af4c3b46fac5d3c8820dd420f9  example-willow-cottage-images/README.md
+496e621458e160f98e9c47c44c7a3645dbe859ad6752ec8aa0a919c5dfa26ce3  example-willow-cottage-images/willow-FLR001.floor-systems.svg
+eadf839776e0d9e231720e4663bebe88997cca25f2dddf4a99d7fda77e91b50c  example-willow-cottage-images/willow-FLR002.floor-systems.svg
+075ff85b8e01d2408bd837d97ce44b97b51b31592066a0c18e02d7f6b5f4bd2f  example-willow-cottage-images/willow-FLR003.floor-systems.svg
+10f052d395c5243c486ac28bb18b592f879d6ae6bedbf5b9a4d5ccfe05deeb33  example-willow-cottage-images/willow-electricity.systems.svg
+e622f1919b43d7304de4358f8c0f0e81f8ccc7b5054307063a6a9527105e88b8  example-willow-cottage-images/willow-heating.systems.svg
+8b84ad49a12c9820644d38b302fac0380db0ea25cf602a1c2da7f16c9ba057e3  example-willow-cottage-images/willow-network.systems.svg
+9155942b5a8161a15fd1c7ba95bcb8be49bd83481b82691a9dbebd121d2efbef  example-willow-cottage-images/willow-water.systems.svg

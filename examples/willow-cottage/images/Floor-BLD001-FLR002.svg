@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760.0" height="1152" viewBox="0 0 760.0 1152" role="img" aria-labelledby="realm-2d-42-4c-44-30-30-31-2d-46-4c-52-30-30-32-2d-6c-69-67-68-74-title realm-2d-42-4c-44-30-30-31-2d-46-4c-52-30-30-32-2d-6c-69-67-68-74-desc">
+<title id="realm-2d-42-4c-44-30-30-31-2d-46-4c-52-30-30-32-2d-6c-69-67-68-74-title">First floor - Willow Cottage</title>
+<desc id="realm-2d-42-4c-44-30-30-31-2d-46-4c-52-30-30-32-2d-6c-69-67-68-74-desc">Floor FLR002, level 1. Rooms, recorded walls and openings. Numbered room markers correspond to the full room index. Missing geometry is listed below.</desc>
+<rect width="100%" height="100%" fill="#fbfaf5"/>
+<g font-family="'Segoe UI', Arial, sans-serif" fill="#283529">
+<text x="64" y="36" font-size="24" font-weight="600">First floor</text>
+<text x="64" y="61" font-size="14">Willow Cottage (BLD001) / FLR002 / level 1</text>
+<text x="64" y="84" font-size="13" fill="#58634f">Base 2.85 m / finished floor 2.95 m / ended entities excluded: 0</text>
+<g data-layer="floor-base" data-model-id="FLR002" transform="translate(0,54)">
+  <polygon points="64.0,64.0 592.0,64.0 592.0,448.0 428.8,448.0 428.8,616.0 64.0,616.0" fill="none" stroke="#e9e4d2" stroke-width="1" stroke-dasharray="4,2"/>
+  <polygon data-model-id="RM009" points="64.0,64.0 265.6,64.0 265.6,275.2 64.0,275.2" fill="#e0e8e8" stroke="#ddd" stroke-width="0.5"/>
+  <polygon data-model-id="RM012" points="64.0,275.2 265.6,275.2 265.6,448.0 64.0,448.0" fill="#dfece6" stroke="#ddd" stroke-width="0.5"/>
+  <polygon data-model-id="RM010" points="265.6,64.0 428.8,64.0 428.8,275.2 265.6,275.2" fill="#e9e4d2" stroke="#ddd" stroke-width="0.5"/>
+  <polygon data-model-id="RM011" points="428.8,64.0 592.0,64.0 592.0,275.2 428.8,275.2" fill="#e0e8e8" stroke="#ddd" stroke-width="0.5"/>
+  <polygon data-model-id="RM013" points="265.6,275.2 428.8,275.2 428.8,448.0 265.6,448.0" fill="#e0e8e8" stroke="#ddd" stroke-width="0.5"/>
+  <polygon data-model-id="RM014" points="428.8,275.2 592.0,275.2 592.0,448.0 428.8,448.0" fill="#e9e4d2" stroke="#ddd" stroke-width="0.5"/>
+  <g data-model-id="WSG023" transform="translate(64.0,64.0) rotate(0.0)">
+    <rect x="0" y="-7.2" width="201.6" height="14.4" fill="#283529" stroke="#283529" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG024" transform="translate(265.6,64.0) rotate(90.0)">
+    <rect x="0" y="-2.9" width="211.2" height="5.8" fill="#58634f" stroke="#58634f" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG025" transform="translate(265.6,275.2) rotate(180.0)">
+    <rect x="0" y="-2.9" width="201.6" height="5.8" fill="#58634f" stroke="#58634f" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG026" transform="translate(64.0,275.2) rotate(-90.0)">
+    <rect x="0" y="-7.2" width="211.2" height="14.4" fill="#283529" stroke="#283529" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG027" transform="translate(265.6,64.0) rotate(0.0)">
+    <rect x="0" y="-7.2" width="163.2" height="14.4" fill="#283529" stroke="#283529" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG028" transform="translate(428.8,64.0) rotate(90.0)">
+    <rect x="0" y="-2.9" width="211.2" height="5.8" fill="#58634f" stroke="#58634f" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG029" transform="translate(428.8,275.2) rotate(180.0)">
+    <rect x="0" y="-2.9" width="163.2" height="5.8" fill="#58634f" stroke="#58634f" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG030" transform="translate(428.8,64.0) rotate(0.0)">
+    <rect x="0" y="-7.2" width="163.2" height="14.4" fill="#283529" stroke="#283529" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG031" transform="translate(592.0,64.0) rotate(90.0)">
+    <rect x="0" y="-7.2" width="211.2" height="14.4" fill="#283529" stroke="#283529" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG032" transform="translate(592.0,275.2) rotate(180.0)">
+    <rect x="0" y="-2.9" width="163.2" height="5.8" fill="#58634f" stroke="#58634f" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG033" transform="translate(265.6,275.2) rotate(90.0)">
+    <rect x="0" y="-2.9" width="172.8" height="5.8" fill="#58634f" stroke="#58634f" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG034" transform="translate(265.6,448.0) rotate(180.0)">
+    <rect x="0" y="-7.2" width="201.6" height="14.4" fill="#283529" stroke="#283529" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG035" transform="translate(64.0,448.0) rotate(-90.0)">
+    <rect x="0" y="-7.2" width="172.8" height="14.4" fill="#283529" stroke="#283529" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG036" transform="translate(428.8,275.2) rotate(90.0)">
+    <rect x="0" y="-2.9" width="172.8" height="5.8" fill="#58634f" stroke="#58634f" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG037" transform="translate(428.8,448.0) rotate(180.0)">
+    <rect x="0" y="-7.2" width="163.2" height="14.4" fill="#283529" stroke="#283529" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG038" transform="translate(592.0,275.2) rotate(90.0)">
+    <rect x="0" y="-7.2" width="172.8" height="14.4" fill="#283529" stroke="#283529" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG039" transform="translate(592.0,448.0) rotate(180.0)">
+    <rect x="0" y="-7.2" width="163.2" height="14.4" fill="#283529" stroke="#283529" stroke-width="0.5"/>
+  </g>
+  <g data-model-id="WSG023:opening:0" transform="translate(131.2,64.0) rotate(0.0)">
+    <rect x="-1" y="-8.2" width="59.6" height="16.4" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="-3" x2="0" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+    <line x1="0" y1="0" x2="57.6" y2="0" stroke="#4682B4" stroke-width="2"/>
+    <line x1="57.6" y1="-3" x2="57.6" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+  </g>
+  <g data-model-id="WSG024:opening:0" transform="translate(265.6,112.0) rotate(90.0)">
+    <rect x="-1" y="-4" width="40.4" height="8" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="0" x2="38.4" y2="0" stroke="#a85620" stroke-width="1" stroke-dasharray="3,2"/>
+  </g>
+  <g data-model-id="WSG026:opening:0" transform="translate(64.0,198.4) rotate(-90.0)">
+    <rect x="-1" y="-8.2" width="45.2" height="16.4" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="-3" x2="0" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+    <line x1="0" y1="0" x2="43.2" y2="0" stroke="#4682B4" stroke-width="2"/>
+    <line x1="43.2" y1="-3" x2="43.2" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+  </g>
+  <g data-model-id="WSG027:opening:0" transform="translate(332.8,64.0) rotate(0.0)">
+    <rect x="-1" y="-8.2" width="35.6" height="16.4" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="-3" x2="0" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+    <line x1="0" y1="0" x2="33.6" y2="0" stroke="#4682B4" stroke-width="2"/>
+    <line x1="33.6" y1="-3" x2="33.6" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+  </g>
+  <g data-model-id="WSG028:opening:0" transform="translate(428.8,121.6) rotate(90.0)">
+    <rect x="-1" y="-4" width="40.4" height="8" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="0" x2="38.4" y2="0" stroke="#a85620" stroke-width="1" stroke-dasharray="3,2"/>
+  </g>
+  <g data-model-id="WSG029:opening:0" transform="translate(376.0,275.2) rotate(180.0)">
+    <rect x="-1" y="-4" width="40.4" height="8" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="0" x2="38.4" y2="0" stroke="#a85620" stroke-width="1" stroke-dasharray="3,2"/>
+  </g>
+  <g data-model-id="WSG031:opening:0" transform="translate(592.0,112.0) rotate(90.0)">
+    <rect x="-1" y="-8.2" width="54.8" height="16.4" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="-3" x2="0" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+    <line x1="0" y1="0" x2="52.8" y2="0" stroke="#4682B4" stroke-width="2"/>
+    <line x1="52.8" y1="-3" x2="52.8" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+  </g>
+  <g data-model-id="WSG033:opening:0" transform="translate(265.6,318.4) rotate(90.0)">
+    <rect x="-1" y="-4" width="38.5" height="8" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="0" x2="36.5" y2="0" stroke="#a85620" stroke-width="1" stroke-dasharray="3,2"/>
+  </g>
+  <g data-model-id="WSG035:opening:0" transform="translate(64.0,385.6) rotate(-90.0)">
+    <rect x="-1" y="-8.2" width="40.4" height="16.4" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="-3" x2="0" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+    <line x1="0" y1="0" x2="38.4" y2="0" stroke="#4682B4" stroke-width="2"/>
+    <line x1="38.4" y1="-3" x2="38.4" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+  </g>
+  <g data-model-id="WSG036:opening:0" transform="translate(428.8,325.6) rotate(90.0)">
+    <rect x="-1" y="-4" width="38.5" height="8" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="0" x2="36.5" y2="0" stroke="#a85620" stroke-width="1" stroke-dasharray="3,2"/>
+  </g>
+  <g data-model-id="WSG037:opening:0" transform="translate(376.0,448.0) rotate(180.0)">
+    <rect x="-1" y="-8.2" width="54.8" height="16.4" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="-3" x2="0" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+    <line x1="0" y1="0" x2="52.8" y2="0" stroke="#4682B4" stroke-width="2"/>
+    <line x1="52.8" y1="-3" x2="52.8" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+  </g>
+  <g data-model-id="WSG039:opening:0" transform="translate(534.4,448.0) rotate(180.0)">
+    <rect x="-1" y="-8.2" width="35.6" height="16.4" fill="#fbfaf5" stroke="none"/>
+    <line x1="0" y1="-3" x2="0" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+    <line x1="0" y1="0" x2="33.6" y2="0" stroke="#4682B4" stroke-width="2"/>
+    <line x1="33.6" y1="-3" x2="33.6" y2="3" stroke="#4682B4" stroke-width="1.5"/>
+  </g>
+</g>
+<g data-layer="labels">
+<g data-model-id="RM009"><title>Principal bedroom (RM009)</title>
+<text x="164.8" y="215.6" text-anchor="middle" fill="#283529" font-size="14" font-weight="600" stroke="#fbfaf5" stroke-width="3" paint-order="stroke">Principal bedroom</text>
+<text x="164.8" y="234.6" text-anchor="middle" fill="#283529" font-size="13">RM009 / 18.5 m²</text>
+</g>
+<g data-model-id="RM010"><title>Landing (RM010)</title>
+<text x="347.2" y="215.6" text-anchor="middle" fill="#283529" font-size="14" font-weight="600" stroke="#fbfaf5" stroke-width="3" paint-order="stroke">Landing</text>
+<text x="347.2" y="234.6" text-anchor="middle" fill="#283529" font-size="13">RM010 / 15 m²</text>
+</g>
+<g data-model-id="RM011"><title>Bedroom two (RM011)</title>
+<text x="510.4" y="215.6" text-anchor="middle" fill="#283529" font-size="14" font-weight="600" stroke="#fbfaf5" stroke-width="3" paint-order="stroke">Bedroom two</text>
+<text x="510.4" y="234.6" text-anchor="middle" fill="#283529" font-size="13">RM011 / 15 m²</text>
+</g>
+<g data-model-id="RM012"><title>Bathroom (RM012)</title>
+<text x="164.8" y="407.6" text-anchor="middle" fill="#283529" font-size="14" font-weight="600" stroke="#fbfaf5" stroke-width="3" paint-order="stroke">Bathroom</text>
+<text x="164.8" y="426.6" text-anchor="middle" fill="#283529" font-size="13">RM012 / 15.1 m²</text>
+</g>
+<g data-model-id="RM013"><title>Bedroom three (RM013)</title>
+<text x="347.2" y="407.6" text-anchor="middle" fill="#283529" font-size="14" font-weight="600" stroke="#fbfaf5" stroke-width="3" paint-order="stroke">Bedroom three</text>
+<text x="347.2" y="426.6" text-anchor="middle" fill="#283529" font-size="13">RM013 / 12.2 m²</text>
+</g>
+<g data-model-id="RM014"><title>Box room (RM014)</title>
+<text x="510.4" y="407.6" text-anchor="middle" fill="#283529" font-size="14" font-weight="600" stroke="#fbfaf5" stroke-width="3" paint-order="stroke">Box room</text>
+<text x="510.4" y="426.6" text-anchor="middle" fill="#283529" font-size="13">RM014 / 12.2 m²</text>
+</g>
+</g>
+<text x="64" y="690" font-size="13" fill="#58634f">Plan bounds: 11.00 × 11.50 meters</text>
+<g data-layer="legend"><path d="M 64 702 h 96 m 0 -4 v 8 M 64 698 v 8" stroke="#283529" fill="none"/><text x="64" y="725" font-size="13">2 m / model grid: meters</text>
+<path d="M 684 702 l -2.6942229581241772e-15 -22" stroke="#283529" stroke-width="2"/><text x="684" y="672" text-anchor="middle" font-size="14">N</text>
+<text data-model-id="RM009" x="64" y="766" font-size="14" fill="#283529">1. Principal bedroom (RM009) / bedroom / 18.5 m²</text>
+<text data-model-id="RM010" x="64" y="788" font-size="14" fill="#283529">2. Landing (RM010) / hallway / 15 m² / Stairs from FLR001</text>
+<text data-model-id="RM011" x="64" y="810" font-size="14" fill="#283529">3. Bedroom two (RM011) / bedroom / 15 m²</text>
+<text data-model-id="RM012" x="64" y="832" font-size="14" fill="#283529">4. Bathroom (RM012) / bathroom / 15.1 m²</text>
+<text data-model-id="RM013" x="64" y="854" font-size="14" fill="#283529">5. Bedroom three (RM013) / bedroom / 12.2 m²</text>
+<text data-model-id="RM014" x="64" y="876" font-size="14" fill="#283529">6. Box room (RM014) / storage / 12.2 m²</text>
+<text data-model-id="WSG024:opening:0" x="64" y="898" font-size="14" fill="#58634f">Omitted: Door on WSG024 (WSG024:opening:0) / swing side or direction not</text>
+<text data-model-id="WSG024:opening:0" x="64" y="920" font-size="14" fill="#58634f">located</text>
+<text data-model-id="WSG028:opening:0" x="64" y="942" font-size="14" fill="#58634f">Omitted: Door on WSG028 (WSG028:opening:0) / swing side or direction not</text>
+<text data-model-id="WSG028:opening:0" x="64" y="964" font-size="14" fill="#58634f">located</text>
+<text data-model-id="WSG029:opening:0" x="64" y="986" font-size="14" fill="#58634f">Omitted: Door on WSG029 (WSG029:opening:0) / swing side or direction not</text>
+<text data-model-id="WSG029:opening:0" x="64" y="1008" font-size="14" fill="#58634f">located</text>
+<text data-model-id="WSG033:opening:0" x="64" y="1030" font-size="14" fill="#58634f">Omitted: Door on WSG033 (WSG033:opening:0) / swing side or direction not</text>
+<text data-model-id="WSG033:opening:0" x="64" y="1052" font-size="14" fill="#58634f">located</text>
+<text data-model-id="WSG036:opening:0" x="64" y="1074" font-size="14" fill="#58634f">Omitted: Door on WSG036 (WSG036:opening:0) / swing side or direction not</text>
+<text data-model-id="WSG036:opening:0" x="64" y="1096" font-size="14" fill="#58634f">located</text>
+</g></g>  <g id="archally-provenance" data-generated-build="willow-cottage-example">
+    <rect x="0" y="1132" width="760" height="20" fill="#f7f7f7"/>
+    <line x1="0" y1="1132" x2="760" y2="1132" stroke="#ddd" stroke-width="0.5"/>
+    <text x="6" y="1145" font-size="8" fill="#777">generated 2026-11-16 00:00 UTC · build willow-cottage-example · model 2.3.0 · pominięto zakończone: 0</text>
+  </g>
+</svg>

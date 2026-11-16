@@ -11,6 +11,7 @@ import { checkSharedEdgeRules } from "./shared-edge-rules.mjs";
 import { checkMemberRules } from "./member-rules.mjs";
 import { checkEpicRules } from "./epic-rules.mjs";
 import { checkElectricalRules } from "./electrical-rules.mjs";
+import { checkPipeAndNetworkRules } from "./pipe-and-network-rules.mjs";
 
 /**
  * @param {Map<string, {data: Record<string, unknown>}>} entities
@@ -152,8 +153,11 @@ export function validateSemantic(entities, config, root) {
   issues.push(...checkEpicRules(entities));
   // Electrical topology and placement (2.3.0): a feed cycle, a circuit reference that is
   // not a circuit, a circuit that crosses buildings, an anchor or a leg off its wall or
-  // past its end, a riser with no vertical leg.
+  // past its end, a riser with no vertical leg. The leg rules also read pipe runs and wired
+  // network links (2.3.2), which share the route.
   issues.push(...checkElectricalRules(entities));
+  // Pipe runs and network supply (2.3.2): a pipe or a node fed by the wrong utility.
+  issues.push(...checkPipeAndNetworkRules(entities));
 
   return { issues };
 }

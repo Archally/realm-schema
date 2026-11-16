@@ -35,6 +35,7 @@ For how to author a model, read the [modeling guide](./modeling-guide.md); for w
 | `CMP` | [System Component](#system-component---cmp) | Infrastructure | `infrastructure/systems.schema.yaml` |
 | `UC` | [Utility Connection](#utility-connection---uc) | Infrastructure | `infrastructure/systems.schema.yaml` |
 | `CBR` | [Cable Run](#cable-run---cbr) | Infrastructure | `infrastructure/systems.schema.yaml` |
+| `PPR` | [Pipe Run](#pipe-run---ppr) | Infrastructure | `infrastructure/systems.schema.yaml` |
 | `BMF` | [Biomass Flow](#biomass-flow---bmf) | Nature | `nature/biomass.schema.yaml` |
 | `SCP` | [Species Care Profile](#species-care-profile---scp) | Nature | `nature/care.schema.yaml` |
 | `REC` | [Planting Recommendation](#planting-recommendation---rec) | Nature | `nature/recommendations.schema.yaml` |
@@ -52,7 +53,7 @@ For how to author a model, read the [modeling guide](./modeling-guide.md); for w
 | `EF` | [Environmental Factor](#environmental-factor---ef) | Context | `context/surroundings.schema.yaml` |
 | `RD` | [Road Corridor](#road-corridor---rd) | Context | `context/surroundings.schema.yaml` |
 
-41 entity types.
+42 entity types.
 
 ## Model root and cross-cutting
 
@@ -583,7 +584,7 @@ The systems that serve the property, the components they are built from, and the
 
 ### `infrastructure/network.schema.yaml`
 
-Detailed network infrastructure: routers, switches, access points, mesh nodes, IoT devices, and the links between them. Models the full network topology for visualization and troubleshooting. Infrastructure plane.
+Detailed network infrastructure: routers, switches, access points, mesh nodes, IoT devices, and the links between them, with the route a wired link takes and the external service an entry node is fed by. Models the full network topology for visualization and troubleshooting. Infrastructure plane.
 
 #### Network Node - `NN###`
 
@@ -600,6 +601,7 @@ A network infrastructure device: router, switch, access point, mesh node, modem,
 | `mac_address` | string | - | Example: `00:1A:2B:3C:4D:5E`. |
 | `wifi_bands` | list of enum | - | Supported WiFi frequency bands (for APs and routers). One of: `2.4GHz`, `5GHz`, `6GHz`. |
 | `poe_powered` | boolean | - | Whether this device is powered via Power over Ethernet. |
+| `utility_connection_ref` | `utility_connection_ref` | - | The external telecommunications service this node terminates: the fibre, cable, DSL or telephone line that enters the property at a router or modem. Names a utility connection whose connection_type is fiber-internet, cable-internet, dsl or telephone. Example: `UC003`. |
 | `room_ref` | `room_ref` | - |  |
 | `outdoor_zone_ref` | `outdoor_zone_ref` | - | For outdoor APs and cameras. |
 | `position_accuracy_m` | `position_accuracy_m` | - |  |
@@ -636,23 +638,25 @@ A smart-home sensor, actuator, or controller. Connected to the network and optio
 
 #### Network Link - `NL###`
 
-A physical or wireless connection between two network nodes. Forms the edges of the network topology graph. Answers CQ06 (link speeds and types). Used by T6 (topology map).
+A physical or wireless connection between two network nodes. Forms the edges of the network topology graph. Answers CQ06 (link speeds and types). A wired link may also say which rooms and zones it passes (through_refs) and where it runs (route), in the same frames as a cable run; the order of its two nodes is not a direction of traffic. Used by T6 (topology map).
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | `id` | string | yes |  |
 | `name` | string | - | Example: `Router to Office Switch`. |
-| `from_node_ref` | `network_node_ref` | yes | Source network node. |
-| `to_node_ref` | `network_node_ref` | yes | Destination network node. |
+| `from_node_ref` | `network_node_ref` | yes | One end of the link, recorded first. |
+| `to_node_ref` | `network_node_ref` | yes | The other end of the link. |
 | `link_type` | enum | yes | Physical medium of this connection. One of: `ethernet-cat5e`, `ethernet-cat6`, `ethernet-cat6a`, `fiber-single-mode`, `fiber-multi-mode`, `wifi`, `coax`, `powerline`, `mesh-wireless`, `wifi-2.4ghz`, `wifi-5ghz`. Example: `ethernet-cat6`. |
 | `speed_mbps` | integer | - | Negotiated or nominal link speed. min 1. Example: `1000`. |
 | `poe_delivery` | boolean | - | Whether this link carries Power over Ethernet. |
+| `through_refs` | list of `room_or_zone_ref` | - | The rooms and outdoor zones a wired link passes, in order from from_node_ref to to_node_ref. The topological route, for a reader or a tool that has no wall geometry; it is not a drawable path. |
+| `route` | `physical_route` | - | The geometric route of a wired link, as legs against wall segments or free polylines. A wireless link (wifi, wifi-2.4ghz, wifi-5ghz, mesh-wireless) carries none. |
 | `description` | string | - |  |
 | `tags` | `tags` | - |  |
 
 ### `infrastructure/systems.schema.yaml`
 
-Infrastructure systems (energy, heating, water, electrical), their physical components, utility grid connections, and the cable runs of the electrical layer. Covers all built systems from solar panels to sewage. Infrastructure plane.
+Infrastructure systems (energy, heating, water, electrical), their physical components, utility grid connections, the cable runs of the electrical layer and the pipe runs of the heating and domestic water systems. Covers all built systems from solar panels to sewage. Infrastructure plane.
 
 #### Infrastructure System - `SYS###`
 
@@ -768,10 +772,29 @@ Accepts `x-` extension fields.
 | `to_ref` | `component_ref` | - | The box, board or terminal device the run ends at. Example: `CMP060`. |
 | `circuit_refs` | list of `component_ref` | - | The circuits whose conductors share this route; a riser carries several, a final run to one socket carries one. Each is a component whose component_type is circuit. |
 | `through_refs` | list of `room_or_zone_ref` | - | The rooms and outdoor zones the run passes, in order from from_ref to to_ref. The topological route, for a reader or a tool that has no wall geometry. |
-| `route` | `cable_route` | - | The geometric route, as legs against wall segments or free polylines. |
+| `route` | `physical_route` | - | The geometric route, as legs against wall segments or free polylines. |
 | `specs` | `specs` | - | Cable type, conductor count and cross-section, rated voltage, length. |
 | `installed_date` | `iso_date` | - |  |
 | `lifecycle` | `lifecycle` | - | Set when this run was removed or replaced; absent means active. |
+| `description` | string | - |  |
+| `tags` | `tags` | - |  |
+
+#### Pipe Run - `PPR###`
+
+A length of pipe between two points of a heating or domestic water system: from a heat pump to a hot water cylinder, from the water main's entry to the cylinder, from the cylinder to the taps of a floor. Two halves, each usable alone, as for a cable run. The topological half says what the pipe joins (from_ref, to_ref), what it carries (medium), which way it flows when that is known (flow_direction) and which rooms and zones it passes (through_refs), and needs no coordinate. The geometric half is a physical route of legs against wall segments or free polylines; a run without one is a known connection whose path is not recorded. A heating flow and its return are two runs, each with its own direction. Used by T6.
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| `id` | string | yes |  |
+| `name` | string | yes | Example: `Heating flow from the heat pump to the cylinder`. |
+| `system_ref` | `system_ref` | yes | The heating or domestic water system this pipe belongs to. Example: `SYS001`. |
+| `medium` | enum | yes | What the pipe carries. `heating-water`: the water of a heating circuit, flow or return. `potable-cold-water`: drinking-quality cold water from the supply. `potable-hot-water`: drinking-quality hot water from a cylinder or a water heater. One of: `heating-water`, `potable-cold-water`, `potable-hot-water`. Example: `heating-water`. |
+| `from_ref` | `component_or_utility_ref` | yes | The component or utility connection the run starts at, as recorded. The order of from_ref and to_ref names the run; it is not a statement of which way the medium flows. Example: `CMP001`. |
+| `to_ref` | `component_or_utility_ref` | yes | The component or utility connection the run ends at, as recorded. Example: `CMP002`. |
+| `flow_direction` | enum | - | Which way the medium flows, relative to from_ref and to_ref. `from-to` and `to-from` state it; `bidirectional` says it flows either way; `unknown` says it was looked for and not established. Absent means not recorded, which a reader treats as unknown. One of: `from-to`, `to-from`, `bidirectional`, `unknown`. Example: `from-to`. |
+| `through_refs` | list of `room_or_zone_ref` | - | The rooms and outdoor zones the run passes, in order from from_ref to to_ref. The topological route, for a reader or a tool that has no wall geometry; it is not a drawable path. |
+| `route` | `physical_route` | - | The geometric route, as legs against wall segments or free polylines. |
+| `lifecycle` | `lifecycle` | - | Set when this run was removed or replaced; absent means active. Retired records are excluded by default and counted. |
 | `description` | string | - |  |
 | `tags` | `tags` | - |  |
 
@@ -1347,6 +1370,7 @@ Definitions the planes draw on. The reference types (`parcel_ref`, `room_ref` an
 | `iot_device_ref` | pattern `^([a-z][a-z0-9-]*\.)?IOT\d{3,}$` | Typed reference to an IoT Device entity. Example: `IOT001`. |
 | `network_link_ref` | pattern `^([a-z][a-z0-9-]*\.)?NL\d{3,}$` | Typed reference to a Network Link entity. Example: `NL001`. |
 | `cable_run_ref` | pattern `^([a-z][a-z0-9-]*\.)?CBR\d{3,}$` | Typed reference to a cable run or riser in the electrical layer (v2.3). Example: `CBR001`. |
+| `pipe_run_ref` | pattern `^([a-z][a-z0-9-]*\.)?PPR\d{3,}$` | Typed reference to a pipe run of a heating or domestic water system (v2.3.2). Example: `PPR001`. |
 | `specimen_ref` | pattern `^([a-z][a-z0-9-]*\.)?SPM\d{3,}$` | Typed reference to a Specimen (individual plant/tree) entity. Example: `SPM001`. |
 | `planting_ref` | pattern `^([a-z][a-z0-9-]*\.)?PTG\d{3,}$` | Typed reference to a Planting (categorical group) entity. Example: `PTG001`. |
 | `biomass_flow_ref` | pattern `^([a-z][a-z0-9-]*\.)?BMF\d{3,}$` | Typed reference to a Biomass Flow entity. Example: `BMF001`. |
@@ -1368,6 +1392,12 @@ Definitions the planes draw on. The reference types (`parcel_ref`, `room_ref` an
 | `biomass_source_ref` | `specimen_ref` or `planting_ref` or `outdoor_zone_ref` | Reference to an element that produces biomass: a specimen, a planting or an outdoor zone. A named tree drops its own leaf, a hedge or a meadow yields trimmings and cuttings as a group, and a zone answers for everything raked off it. |
 | `biomass_destination_ref` | `outdoor_zone_ref` or `system_ref` | Reference to where processed biomass is used (zone for compost, system for fuel). |
 | `room_or_zone_ref` | `room_ref` or `outdoor_zone_ref` | Reference to a room or outdoor zone (for system distribution targets). |
+| `component_or_utility_ref` | `component_ref` or `utility_connection_ref` | Reference to a component or to a utility connection: the two things a pipe run can end at, a part of a system or the point where a utility enters the property (v2.3.2). |
+| `physical_route` | object | Where a run built into or across the property lies: a cable, a pipe or a wired network link. An ordered list of legs; consecutive legs meet end to start, and a route with one leg is common. Each leg states its own frame. A route says where the run is, not what it carries or which way anything flows; those belong to the run that owns the route. |
+| `route_leg_along_wall` | object | A horizontal leg along or inside one wall segment. Offsets are centimetres from the wall segment's start point along its centreline, the frame wall openings use; height is centimetres above the finished floor of the wall's floor. Which face of the wall is meant follows from placement and from the rooms in the run's through_refs. |
+| `route_leg_vertical` | object | A vertical leg at one point of a wall segment, from one elevation to another: a cable riser, a pipe rising to the floor above. The offset is centimetres from the wall segment's start along its centreline; the elevations are metres above the vertical datum, the frame slabs and wall bases are in, because a vertical leg crosses floors and no single floor is its reference. |
+| `route_leg_free` | object | A leg that follows no wall: a buried cable or pipe across a lawn, an overhead span, a run across a ceiling void or under a floor. A polyline in model coordinates, metres, with z above the vertical datum; a buried run's z is below the ground elevation at that point. |
+| `route_placement` | enum | How the run is carried on this leg: chased into the wall, on the surface in trunking or clips, in conduit, above a ceiling, under a floor, buried, or overhead. One of: `in-wall`, `surface`, `conduit`, `above-ceiling`, `under-floor`, `buried`, `overhead`. Example: `in-wall`. |
 | `specs` | list of object | Generic key-value-unit specification pairs for equipment, appliances, or other entities with diverse technical attributes. Used by T2 (inventory report) to surface specifications without schema-per-type. |
 
 ## Configuration

@@ -9,9 +9,11 @@
 # generated - copy it before adapting it.
 #
 # A system is the function; a component is a thing you can replace. The heat
-# pump is one system with two components, and the warranty covers the
-# components while the maintenance task targets the system - which is why both
-# kinds of reference exist and neither is a shortcut for the other.
+# pump and hot-water systems share one cylinder. Its coil keeps heating water
+# separate from potable water. SYS002 owns it; both systems list it. The
+# warranty covers the components while the maintenance task targets the system
+# - which is why both kinds of reference exist and neither is a shortcut for
+# the other.
 #
 # A utility connection is where the estate meets somebody else's network. Its
 # `entry_point_position` is a model coordinate, so a meter box or a stopcock
@@ -33,7 +35,7 @@ systems:
     position: {x: 25.8, y: 22.4}
     utility_connection_ref: UC001
     warranty_ref: WRT001
-    component_refs: [CMP001, CMP002]
+    component_refs: [CMP001, CMP002, CMP004, CMP005]
     feeds_system_refs: [SYS002]
     description: >
       Outdoor unit on a plinth against the cottage's east gable, sheltered
@@ -49,8 +51,9 @@ systems:
     installed_date: "2023-03-14"
     building_ref: BLD001
     room_ref: RM007
+    utility_connection_ref: UC002
     warranty_ref: WRT001
-    component_refs: [CMP002]
+    component_refs: [CMP002, CMP006, CMP007]
     description: >
       Unvented cylinder in the utility room, heated by the heat pump with an
       immersion backup.
@@ -64,7 +67,8 @@ systems:
     building_ref: BLD001
     room_ref: RM007
     utility_connection_ref: UC001
-    component_refs: [CMP003]
+    component_refs: [CMP003, CMP008, CMP009, CMP010, CMP011, CMP012, CMP013, CMP014, CMP015, CMP016, CMP017, CMP018]
+    feeds_system_refs: [SYS001, SYS002]
     description: >
       Consumer unit in the utility room, with a submain running to the barn.
     tags: [electrical]
@@ -103,6 +107,11 @@ components:
     installed_date: "2023-03-14"
     expected_lifespan_years: 15
     building_ref: BLD001
+    outdoor_zone_ref: OZ007
+    position: {x: 25.8, y: 22.4}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: SYS001
     warranty_ref: WRT001
     specs:
     - key: refrigerant
@@ -123,6 +132,10 @@ components:
     expected_lifespan_years: 20
     building_ref: BLD001
     room_ref: RM007
+    position: {x: 16, y: 25}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM007
     warranty_ref: WRT001
     specs:
     - key: capacity
@@ -132,7 +145,10 @@ components:
       value: "3.1"
       unit: m2
     description: >
-      Unvented, 210 litres, with a 3 kW immersion element for backup.
+      Unvented, 210 litres, with a 3 kW immersion element for backup. One
+      shared asset: owned by SYS002, also a component of SYS001. Heating water
+      stays in the isolated coil; stored potable water feeds the taps.
+      Position is a fictional estimate.
     tags: [hot-water]
   - id: CMP003
     name: Consumer unit
@@ -142,6 +158,10 @@ components:
     expected_lifespan_years: 25
     building_ref: BLD001
     room_ref: RM007
+    position: {x: 16, y: 25}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM007
     specs:
     - key: ways
       value: "16"
@@ -151,6 +171,210 @@ components:
     description: >
       Sixteen-way board with RCBOs throughout. Last inspected under REG001.
     tags: [electrical, inspected]
+  - id: CMP004
+    name: Ground-floor heating manifold
+    system_ref: SYS001
+    component_type: manifold
+    building_ref: BLD001
+    room_ref: RM007
+    position: {x: 17, y: 25}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM007
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Manifold
+      serving the ground-floor underfloor loops; individual loops are not
+      enumerated.
+    tags: [fictional-house-systems]
+  - id: CMP005
+    name: Bathroom radiator
+    system_ref: SYS001
+    component_type: radiator
+    building_ref: BLD001
+    room_ref: RM012
+    position: {x: 16.2, y: 22.8}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM012
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Representative
+      upstairs heating terminal.
+    tags: [fictional-house-systems]
+  - id: CMP006
+    name: Bathroom basin mixer
+    system_ref: SYS002
+    component_type: tap
+    building_ref: BLD001
+    room_ref: RM012
+    position: {x: 15, y: 22}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM012
+    mounting_height_cm: 90
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Separate
+      potable hot and cold feeds join only at the mixer.
+    tags: [fictional-house-systems]
+  - id: CMP007
+    name: Kitchen sink mixer
+    system_ref: SYS002
+    component_type: tap
+    building_ref: BLD001
+    room_ref: RM001
+    position: {x: 15.5, y: 18.5}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM001
+    mounting_height_cm: 90
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Hot and cold
+      terminal; the hot pipe connection is known but its physical path is
+      deliberately unrecorded.
+    tags: [fictional-house-systems]
+  - id: CMP008
+    name: Heat pump RCBO
+    system_ref: SYS003
+    component_type: protective-device
+    building_ref: BLD001
+    room_ref: RM007
+    fed_from_ref: CMP003
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Dedicated
+      protective device in the consumer unit.
+    tags: [fictional-house-systems]
+  - id: CMP009
+    name: Heat pump final circuit
+    system_ref: SYS003
+    component_type: circuit
+    building_ref: BLD001
+    room_ref: RM007
+    protected_by_ref: CMP008
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Dedicated
+      circuit supplying CMP001.
+    tags: [fictional-house-systems]
+  - id: CMP010
+    name: Barn submain RCBO
+    system_ref: SYS003
+    component_type: protective-device
+    building_ref: BLD001
+    room_ref: RM007
+    fed_from_ref: CMP003
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Protects the
+      submain to the barn board.
+    tags: [fictional-house-systems]
+  - id: CMP011
+    name: Barn submain circuit
+    system_ref: SYS003
+    component_type: circuit
+    building_ref: BLD001
+    room_ref: RM007
+    protected_by_ref: CMP010
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Carries power
+      to the barn board, not directly to its final socket.
+    tags: [fictional-house-systems]
+  - id: CMP012
+    name: Barn distribution board
+    system_ref: SYS003
+    component_type: distribution-panel
+    building_ref: BLD002
+    room_ref: RM015
+    position: {x: 31, y: 19.2}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM015
+    fed_from_ref: CMP010
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Sub-board
+      supplied through the cottage's barn submain protective device.
+    tags: [fictional-house-systems]
+  - id: CMP013
+    name: Barn socket RCBO
+    system_ref: SYS003
+    component_type: protective-device
+    building_ref: BLD002
+    room_ref: RM015
+    fed_from_ref: CMP012
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Protective
+      device in the barn board.
+    tags: [fictional-house-systems]
+  - id: CMP014
+    name: Barn socket final circuit
+    system_ref: SYS003
+    component_type: circuit
+    building_ref: BLD002
+    room_ref: RM015
+    protected_by_ref: CMP013
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Local final
+      circuit supplied by the barn board.
+    tags: [fictional-house-systems]
+  - id: CMP015
+    name: Barn workbench socket
+    system_ref: SYS003
+    component_type: socket-outlet
+    building_ref: BLD002
+    room_ref: RM015
+    position: {x: 35, y: 19.2}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM015
+    circuit_ref: CMP014
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Representative
+      barn terminal; no whole-property circuit schedule is implied.
+    tags: [fictional-house-systems]
+  - id: CMP016
+    name: Heat pump isolator
+    system_ref: SYS003
+    component_type: switch
+    building_ref: BLD001
+    outdoor_zone_ref: OZ007
+    position: {x: 25.8, y: 22.4}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: OZ007
+    circuit_ref: CMP009
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Electrical
+      terminal beside CMP001; isolates the heat pump supply without
+      reclassifying the heat exchanger as an electrical switch.
+    tags: [fictional-house-systems]
+  - id: CMP017
+    name: Cottage submain burial transition
+    system_ref: SYS003
+    component_type: cable-end
+    building_ref: BLD001
+    outdoor_zone_ref: OZ007
+    position: {x: 25.8, y: 22.4}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: OZ007
+    circuit_ref: CMP011
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Cable
+      transition 0.6 m below generated terrain at this XY; joins the cottage
+      approach to the buried submain.
+    tags: [fictional-house-systems]
+  - id: CMP018
+    name: Barn submain burial transition
+    system_ref: SYS003
+    component_type: cable-end
+    building_ref: BLD001
+    outdoor_zone_ref: OZ007
+    position: {x: 29, y: 19.2}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: OZ007
+    circuit_ref: CMP011
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Cable
+      transition 0.6 m below generated terrain at this XY; joins the buried
+      submain to the barn approach.
+    tags: [fictional-house-systems]
 
 # ── Utility connections - where the estate meets someone else's network ────
 utility_connections:
@@ -197,3 +421,635 @@ utility_connections:
       Fibre to the premises, entering at the study and terminating on the
       router.
     tags: [network]
+
+# ── Heating and potable water - separate media, shared physical assets ────
+pipe_runs:
+  - id: PPR001
+    name: Heat pump flow to manifold
+    system_ref: SYS001
+    medium: heating-water
+    from_ref: CMP001
+    to_ref: CMP004
+    flow_direction: from-to
+    through_refs: [OZ007, RM006, RM005, RM008, RM007]
+    route:
+      legs:
+      - kind: free
+        path:
+          vertices:
+          - x: 25.8
+            y: 22.4
+            z: 0.45
+          - x: 25
+            y: 22.4
+            z: 0.45
+        placement: conduit
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 25
+            y: 22.4
+            z: 0.45
+          - x: 20
+            y: 22.4
+            z: 0.45
+          - x: 20
+            y: 25
+            z: 0.45
+          - x: 17
+            y: 25
+            z: 0.45
+        placement: conduit
+    description: >
+      Fictional layout fixture, estimated rather than surveyed.
+    tags: [fictional-house-systems]
+  - id: PPR002
+    name: Manifold return to heat pump
+    system_ref: SYS001
+    medium: heating-water
+    from_ref: CMP004
+    to_ref: CMP001
+    flow_direction: from-to
+    through_refs: [RM007, RM008, RM005, RM006, OZ007]
+    route:
+      legs:
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 17
+            y: 25
+            z: 0.45
+          - x: 20
+            y: 25
+            z: 0.45
+          - x: 20
+            y: 22.4
+            z: 0.45
+          - x: 25
+            y: 22.4
+            z: 0.45
+        placement: conduit
+      - kind: free
+        path:
+          vertices:
+          - x: 25
+            y: 22.4
+            z: 0.45
+          - x: 25.8
+            y: 22.4
+            z: 0.45
+        placement: conduit
+    description: >
+      Fictional layout fixture, estimated rather than surveyed.
+    tags: [fictional-house-systems]
+  - id: PPR003
+    name: Manifold flow to bathroom radiator
+    system_ref: SYS001
+    medium: heating-water
+    from_ref: CMP004
+    to_ref: CMP005
+    flow_direction: from-to
+    through_refs: [RM007, RM012]
+    route:
+      legs:
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 17
+            y: 25
+            z: 0.45
+          - x: 16
+            y: 24
+            z: 0.45
+        placement: surface
+      - kind: vertical
+        wall_segment_ref: WSG012
+        offset_cm: 220
+        from_elevation_m: 0.45
+        to_elevation_m: 3.25
+        placement: surface
+      - kind: free
+        floor_ref: FLR002
+        path:
+          vertices:
+          - x: 16
+            y: 24
+            z: 3.25
+          - x: 16.2
+            y: 22.8
+            z: 3.25
+        placement: surface
+    description: >
+      Fictional layout fixture, estimated rather than surveyed.
+    tags: [fictional-house-systems]
+  - id: PPR004
+    name: Bathroom radiator return to manifold
+    system_ref: SYS001
+    medium: heating-water
+    from_ref: CMP005
+    to_ref: CMP004
+    flow_direction: from-to
+    through_refs: [RM012, RM007]
+    route:
+      legs:
+      - kind: free
+        floor_ref: FLR002
+        path:
+          vertices:
+          - x: 16.2
+            y: 22.8
+            z: 3.25
+          - x: 16
+            y: 24
+            z: 3.25
+        placement: surface
+      - kind: vertical
+        wall_segment_ref: WSG012
+        offset_cm: 220
+        from_elevation_m: 3.25
+        to_elevation_m: 0.45
+        placement: surface
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 16
+            y: 24
+            z: 0.45
+          - x: 17
+            y: 25
+            z: 0.45
+        placement: surface
+    description: >
+      Fictional layout fixture, estimated rather than surveyed.
+    tags: [fictional-house-systems]
+  - id: PPR005
+    name: Heat pump flow to cylinder coil
+    system_ref: SYS001
+    medium: heating-water
+    from_ref: CMP001
+    to_ref: CMP002
+    flow_direction: from-to
+    through_refs: [OZ007, RM006, RM005, RM008, RM007]
+    route:
+      legs:
+      - kind: free
+        path:
+          vertices:
+          - x: 25.8
+            y: 22.4
+            z: 0.45
+          - x: 25
+            y: 22.4
+            z: 0.45
+        placement: conduit
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 25
+            y: 22.4
+            z: 0.45
+          - x: 20
+            y: 22.4
+            z: 0.45
+          - x: 20
+            y: 25
+            z: 0.45
+          - x: 16
+            y: 25
+            z: 0.45
+        placement: conduit
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Heating water
+      stays inside the cylinder coil, separate from stored potable water.
+    tags: [fictional-house-systems]
+  - id: PPR006
+    name: Cylinder coil return to heat pump
+    system_ref: SYS001
+    medium: heating-water
+    from_ref: CMP002
+    to_ref: CMP001
+    flow_direction: from-to
+    through_refs: [RM007, RM008, RM005, RM006, OZ007]
+    route:
+      legs:
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 16
+            y: 25
+            z: 0.45
+          - x: 20
+            y: 25
+            z: 0.45
+          - x: 20
+            y: 22.4
+            z: 0.45
+          - x: 25
+            y: 22.4
+            z: 0.45
+        placement: conduit
+      - kind: free
+        path:
+          vertices:
+          - x: 25
+            y: 22.4
+            z: 0.45
+          - x: 25.8
+            y: 22.4
+            z: 0.45
+        placement: conduit
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Return from
+      the same isolated heating coil.
+    tags: [fictional-house-systems]
+  - id: PPR007
+    name: Cold main to cylinder
+    system_ref: SYS002
+    medium: potable-cold-water
+    from_ref: UC002
+    to_ref: CMP002
+    flow_direction: from-to
+    through_refs: [OZ001, OZ002, OZ008, RM007]
+    route:
+      legs:
+      - kind: free
+        path:
+          vertices:
+          - x: 8.2
+            y: 3.4
+            z: 2.32
+          - x: 13.5
+            y: 16
+            z: 0.71
+          - x: 13.5
+            y: 25
+            z: -0.48
+          - x: 16
+            y: 25
+            z: -0.48
+        placement: buried
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 16
+            y: 25
+            z: -0.48
+          - x: 16
+            y: 25
+            z: 0.45
+        placement: surface
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Buried points
+      are 0.6 m below the generated terrain; the final leg rises to the
+      cylinder inlet.
+    tags: [fictional-house-systems]
+  - id: PPR008
+    name: Cold main to bathroom mixer
+    system_ref: SYS002
+    medium: potable-cold-water
+    from_ref: UC002
+    to_ref: CMP006
+    flow_direction: from-to
+    through_refs: [OZ001, OZ002, OZ008, RM007, RM012]
+    route:
+      legs:
+      - kind: free
+        path:
+          vertices:
+          - x: 8.2
+            y: 3.4
+            z: 2.32
+          - x: 13.5
+            y: 16
+            z: 0.71
+          - x: 13.5
+            y: 25
+            z: -0.48
+          - x: 16
+            y: 25
+            z: -0.48
+        placement: buried
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 16
+            y: 25
+            z: -0.48
+          - x: 16
+            y: 25
+            z: 0.45
+        placement: surface
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 16
+            y: 25
+            z: 0.45
+          - x: 16
+            y: 24
+            z: 0.45
+        placement: surface
+      - kind: vertical
+        wall_segment_ref: WSG012
+        offset_cm: 220
+        from_elevation_m: 0.45
+        to_elevation_m: 3.25
+        placement: surface
+      - kind: free
+        floor_ref: FLR002
+        path:
+          vertices:
+          - x: 16
+            y: 24
+            z: 3.25
+          - x: 15
+            y: 22
+            z: 3.25
+          - x: 15
+            y: 22
+            z: 3.85
+        placement: surface
+    description: >
+      Fictional layout fixture, estimated rather than surveyed.
+    tags: [fictional-house-systems]
+  - id: PPR009
+    name: Cylinder hot feed to bathroom mixer
+    system_ref: SYS002
+    medium: potable-hot-water
+    from_ref: CMP002
+    to_ref: CMP006
+    flow_direction: from-to
+    through_refs: [RM007, RM012]
+    route:
+      legs:
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 16
+            y: 25
+            z: 0.45
+          - x: 16
+            y: 24
+            z: 0.45
+        placement: surface
+      - kind: vertical
+        wall_segment_ref: WSG012
+        offset_cm: 220
+        from_elevation_m: 0.45
+        to_elevation_m: 3.25
+        placement: surface
+      - kind: free
+        floor_ref: FLR002
+        path:
+          vertices:
+          - x: 16
+            y: 24
+            z: 3.25
+          - x: 15
+            y: 22
+            z: 3.25
+          - x: 15
+            y: 22
+            z: 3.85
+        placement: surface
+    description: >
+      Fictional layout fixture, estimated rather than surveyed.
+    tags: [fictional-house-systems]
+  - id: PPR010
+    name: Cold main to kitchen mixer
+    system_ref: SYS002
+    medium: potable-cold-water
+    from_ref: UC002
+    to_ref: CMP007
+    flow_direction: from-to
+    through_refs: [OZ001, OZ002, OZ008, RM007, RM004, RM001]
+    route:
+      legs:
+      - kind: free
+        path:
+          vertices:
+          - x: 8.2
+            y: 3.4
+            z: 2.32
+          - x: 13.5
+            y: 16
+            z: 0.71
+          - x: 13.5
+            y: 25
+            z: -0.48
+          - x: 16
+            y: 25
+            z: -0.48
+        placement: buried
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 16
+            y: 25
+            z: -0.48
+          - x: 16
+            y: 25
+            z: 0.45
+        placement: surface
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 16
+            y: 25
+            z: 0.45
+          - x: 16
+            y: 18.5
+            z: 0.45
+          - x: 15.5
+            y: 18.5
+            z: 1.05
+        placement: surface
+    description: >
+      Fictional layout fixture, estimated rather than surveyed.
+    tags: [fictional-house-systems]
+  - id: PPR011
+    name: Cylinder hot feed to kitchen mixer
+    system_ref: SYS002
+    medium: potable-hot-water
+    from_ref: CMP002
+    to_ref: CMP007
+    flow_direction: from-to
+    through_refs: [RM007, RM004, RM001]
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Connection
+      known; physical route deliberately not recorded. Through-rooms are
+      topology, not drawable geometry.
+    tags: [fictional-house-systems]
+
+# ── Electrical cables - protected circuits and physical routes ────────────
+cable_runs:
+  - id: CBR001
+    name: Heat pump final cable
+    system_ref: SYS003
+    run_type: wall-run
+    from_ref: CMP008
+    to_ref: CMP016
+    circuit_refs: [CMP009]
+    through_refs: [RM007, RM008, RM005, RM006, OZ007]
+    route:
+      legs:
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 16
+            y: 25
+            z: 0.45
+          - x: 20
+            y: 25
+            z: 0.45
+          - x: 20
+            y: 22.4
+            z: 0.45
+          - x: 25
+            y: 22.4
+            z: 0.45
+        placement: conduit
+      - kind: free
+        path:
+          vertices:
+          - x: 25
+            y: 22.4
+            z: 0.45
+          - x: 25.8
+            y: 22.4
+            z: 0.45
+        placement: conduit
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Representative
+      cable, with terminal approaches included; no cable sizing or
+      installation compliance is asserted.
+    tags: [fictional-house-systems]
+  - id: CBR002
+    name: Cottage to barn buried submain
+    system_ref: SYS003
+    run_type: buried
+    from_ref: CMP017
+    to_ref: CMP018
+    circuit_refs: [CMP011]
+    through_refs: [OZ007]
+    route:
+      legs:
+      - kind: free
+        path:
+          vertices:
+          - x: 25.8
+            y: 22.4
+            z: -0.12
+          - x: 29
+            y: 22.4
+            z: -0.12
+          - x: 29
+            y: 19.2
+            z: 0.26
+        placement: buried
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Representative
+      cable, with terminal approaches included; no cable sizing or
+      installation compliance is asserted.
+    tags: [fictional-house-systems]
+  - id: CBR004
+    name: Cottage submain approach
+    system_ref: SYS003
+    run_type: wall-run
+    from_ref: CMP010
+    to_ref: CMP017
+    circuit_refs: [CMP011]
+    through_refs: [RM007, RM008, RM005, RM006, OZ007]
+    route:
+      legs:
+      - kind: free
+        path:
+          vertices:
+          - x: 16
+            y: 25
+            z: 0.45
+          - x: 20
+            y: 25
+            z: 0.45
+          - x: 20
+            y: 22.4
+            z: 0.45
+          - x: 25
+            y: 22.4
+            z: 0.45
+          - x: 25.8
+            y: 22.4
+            z: -0.12
+        placement: conduit
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Representative
+      cable, with terminal approaches included; no cable sizing or
+      installation compliance is asserted.
+    tags: [fictional-house-systems]
+  - id: CBR005
+    name: Barn submain approach
+    system_ref: SYS003
+    run_type: wall-run
+    from_ref: CMP018
+    to_ref: CMP012
+    circuit_refs: [CMP011]
+    through_refs: [OZ007, RM015]
+    route:
+      legs:
+      - kind: free
+        path:
+          vertices:
+          - x: 29
+            y: 19.2
+            z: 0.26
+          - x: 30
+            y: 19.2
+            z: -0.8
+          - x: 31
+            y: 19.2
+            z: -0.8
+        placement: conduit
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Representative
+      cable, with terminal approaches included; no cable sizing or
+      installation compliance is asserted.
+    tags: [fictional-house-systems]
+  - id: CBR003
+    name: Barn workbench socket cable
+    system_ref: SYS003
+    run_type: wall-run
+    from_ref: CMP013
+    to_ref: CMP015
+    circuit_refs: [CMP014]
+    through_refs: [RM015]
+    route:
+      legs:
+      - kind: free
+        floor_ref: FLR003
+        path:
+          vertices:
+          - x: 31
+            y: 19.2
+            z: -0.8
+          - x: 35
+            y: 19.2
+            z: -0.8
+        placement: conduit
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Representative
+      cable, with terminal approaches included; no cable sizing or
+      installation compliance is asserted.
+    tags: [fictional-house-systems]

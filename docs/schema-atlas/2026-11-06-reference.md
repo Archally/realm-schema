@@ -276,7 +276,7 @@ Network Topology
 
 | JSON Pointer | Type / constraints | Reference |
 |---|---|---|
-| / | type: object; additionalProperties: false; description: Detailed network infrastructure: routers, switches, access points, mesh nodes, IoT devices, and the links between them. Models the full network topology for visualization and troubleshooting. Infrastructure plane.  |  |
+| / | type: object; additionalProperties: false; description: Detailed network infrastructure: routers, switches, access points, mesh nodes, IoT devices, and the links between them, with the route a wired link takes and the external service an entry node is fed by. Models the full network topology for visualization and troubleshooting. Infrastructure plane.  |  |
 | /properties/network&#95;nodes | type: array; description: Network infrastructure devices. Answers CQ06. |  |
 | /properties/network&#95;nodes/items |  | #/$defs/network&#95;node |
 | /properties/iot&#95;devices | type: array; description: Smart-home sensors, actuators, controllers. Answers CQ07. |  |
@@ -295,6 +295,7 @@ Network Topology
 | /$defs/network&#95;node/properties/wifi&#95;bands | type: array; description: Supported WiFi frequency bands (for APs and routers). |  |
 | /$defs/network&#95;node/properties/wifi&#95;bands/items | type: string; enum: &#91;"2.4GHz","5GHz","6GHz"&#93; |  |
 | /$defs/network&#95;node/properties/poe&#95;powered | type: boolean; description: Whether this device is powered via Power over Ethernet. |  |
+| /$defs/network&#95;node/properties/utility&#95;connection&#95;ref | description: The external telecommunications service this node terminates: the fibre, cable, DSL or telephone line that enters the property at a router or modem. Names a utility connection whose connection&#95;type is fiber-internet, cable-internet, dsl or telephone.  | ../metamodel.schema.yaml#/$defs/utility&#95;connection&#95;ref |
 | /$defs/network&#95;node/properties/room&#95;ref |  | ../metamodel.schema.yaml#/$defs/room&#95;ref |
 | /$defs/network&#95;node/properties/outdoor&#95;zone&#95;ref | description: For outdoor APs and cameras. | ../metamodel.schema.yaml#/$defs/outdoor&#95;zone&#95;ref |
 | /$defs/network&#95;node/properties/position&#95;accuracy&#95;m |  | ../metamodel.schema.yaml#/$defs/position&#95;accuracy&#95;m |
@@ -323,15 +324,21 @@ Network Topology
 | /$defs/iot&#95;device/properties/description | type: string |  |
 | /$defs/iot&#95;device/properties/lifecycle | description: Set when this record has ended; absent means active. Retired records are excluded by default and counted. | ../metamodel.schema.yaml#/$defs/lifecycle |
 | /$defs/iot&#95;device/properties/tags |  | ../metamodel.schema.yaml#/$defs/tags |
-| /$defs/network&#95;link | type: object; required: &#91;"id","from&#95;node&#95;ref","to&#95;node&#95;ref","link&#95;type"&#93;; additionalProperties: false; description: A physical or wireless connection between two network nodes. Forms the edges of the network topology graph. Answers CQ06 (link speeds and types). Used by T6 (topology map).  |  |
+| /$defs/network&#95;link | type: object; required: &#91;"id","from&#95;node&#95;ref","to&#95;node&#95;ref","link&#95;type"&#93;; additionalProperties: false; description: A physical or wireless connection between two network nodes. Forms the edges of the network topology graph. Answers CQ06 (link speeds and types). A wired link may also say which rooms and zones it passes (through&#95;refs) and where it runs (route), in the same frames as a cable run; the order of its two nodes is not a direction of traffic. Used by T6 (topology map).  |  |
+| /$defs/network&#95;link/allOf/0/if | required: &#91;"link&#95;type"&#93; |  |
+| /$defs/network&#95;link/allOf/0/if/properties/link&#95;type | enum: &#91;"wifi","wifi-2.4ghz","wifi-5ghz","mesh-wireless"&#93; |  |
+| /$defs/network&#95;link/allOf/0/then/not | required: &#91;"route"&#93; |  |
 | /$defs/network&#95;link/properties | description: {"type":"string"} |  |
 | /$defs/network&#95;link/properties/id | type: string; pattern: ^(&#91;a-z&#93;&#91;a-z0-9-&#93;&#42;&#92;.)?NL&#92;d{3,}$ |  |
 | /$defs/network&#95;link/properties/name | type: string |  |
-| /$defs/network&#95;link/properties/from&#95;node&#95;ref | description: Source network node. | ../metamodel.schema.yaml#/$defs/network&#95;node&#95;ref |
-| /$defs/network&#95;link/properties/to&#95;node&#95;ref | description: Destination network node. | ../metamodel.schema.yaml#/$defs/network&#95;node&#95;ref |
+| /$defs/network&#95;link/properties/from&#95;node&#95;ref | description: One end of the link, recorded first. | ../metamodel.schema.yaml#/$defs/network&#95;node&#95;ref |
+| /$defs/network&#95;link/properties/to&#95;node&#95;ref | description: The other end of the link. | ../metamodel.schema.yaml#/$defs/network&#95;node&#95;ref |
 | /$defs/network&#95;link/properties/link&#95;type | type: string; enum: &#91;"ethernet-cat5e","ethernet-cat6","ethernet-cat6a","fiber-single-mode","fiber-multi-mode","wifi","coax","powerline","mesh-wireless","wifi-2.4ghz","wifi-5ghz"&#93;; description: Physical medium of this connection. |  |
 | /$defs/network&#95;link/properties/speed&#95;mbps | type: integer; description: Negotiated or nominal link speed. |  |
 | /$defs/network&#95;link/properties/poe&#95;delivery | type: boolean; description: Whether this link carries Power over Ethernet. |  |
+| /$defs/network&#95;link/properties/through&#95;refs | type: array; description: The rooms and outdoor zones a wired link passes, in order from from&#95;node&#95;ref to to&#95;node&#95;ref. The topological route, for a reader or a tool that has no wall geometry; it is not a drawable path.  |  |
+| /$defs/network&#95;link/properties/through&#95;refs/items |  | ../metamodel.schema.yaml#/$defs/room&#95;or&#95;zone&#95;ref |
+| /$defs/network&#95;link/properties/route | description: The geometric route of a wired link, as legs against wall segments or free polylines. A wireless link (wifi, wifi-2.4ghz, wifi-5ghz, mesh-wireless) carries none.  | ../metamodel.schema.yaml#/$defs/physical&#95;route |
 | /$defs/network&#95;link/properties/description | type: string |  |
 | /$defs/network&#95;link/properties/tags |  | ../metamodel.schema.yaml#/$defs/tags |
 
@@ -341,7 +348,7 @@ Infrastructure Systems
 
 | JSON Pointer | Type / constraints | Reference |
 |---|---|---|
-| / | type: object; additionalProperties: false; description: Infrastructure systems (energy, heating, water, electrical), their physical components, utility grid connections, and the cable runs of the electrical layer. Covers all built systems from solar panels to sewage. Infrastructure plane.  |  |
+| / | type: object; additionalProperties: false; description: Infrastructure systems (energy, heating, water, electrical), their physical components, utility grid connections, the cable runs of the electrical layer and the pipe runs of the heating and domestic water systems. Covers all built systems from solar panels to sewage. Infrastructure plane.  |  |
 | /properties/systems | type: array; description: All infrastructure systems. Answers CQ04, CQ05. |  |
 | /properties/systems/items |  | #/$defs/system |
 | /properties/components | type: array; description: Physical components across all systems. Answers CQ05. |  |
@@ -350,6 +357,8 @@ Infrastructure Systems
 | /properties/utility&#95;connections/items |  | #/$defs/utility&#95;connection |
 | /properties/cable&#95;runs | type: array; description: Cable runs and risers of the electrical system: what each carries, what it joins, and where it goes. Answers CQ51, CQ52.  |  |
 | /properties/cable&#95;runs/items |  | #/$defs/cable&#95;run |
+| /properties/pipe&#95;runs | type: array; description: Pipe runs of the heating and domestic water systems: what each carries, what it joins, which way it flows when that is known, and where it goes. An absent list means the pipes are not recorded, not that there are none.  |  |
+| /properties/pipe&#95;runs/items |  | #/$defs/pipe&#95;run |
 | /$defs/system | type: object; required: &#91;"id","name","system&#95;type"&#93;; additionalProperties: false; description: A major infrastructure system serving the property. Typed by function (heating, solar, irrigation, etc.) with capacity, fuel source, and installation details. Answers CQ04, CQ05. Used by T1 (maintenance), T2 (inventory), T6 (topology map).  |  |
 | /$defs/system/properties | description: {"type":"string"} |  |
 | /$defs/system/properties/id | type: string; pattern: ^(&#91;a-z&#93;&#91;a-z0-9-&#93;&#42;&#92;.)?SYS&#92;d{3,}$ |  |
@@ -454,36 +463,32 @@ Infrastructure Systems
 | /$defs/cable&#95;run/properties/circuit&#95;refs/items |  | ../metamodel.schema.yaml#/$defs/component&#95;ref |
 | /$defs/cable&#95;run/properties/through&#95;refs | type: array; description: The rooms and outdoor zones the run passes, in order from from&#95;ref to to&#95;ref. The topological route, for a reader or a tool that has no wall geometry.  |  |
 | /$defs/cable&#95;run/properties/through&#95;refs/items |  | ../metamodel.schema.yaml#/$defs/room&#95;or&#95;zone&#95;ref |
-| /$defs/cable&#95;run/properties/route | description: The geometric route, as legs against wall segments or free polylines. | #/$defs/cable&#95;route |
+| /$defs/cable&#95;run/properties/route | description: The geometric route, as legs against wall segments or free polylines. | ../metamodel.schema.yaml#/$defs/physical&#95;route |
 | /$defs/cable&#95;run/properties/specs | description: Cable type, conductor count and cross-section, rated voltage, length. | ../metamodel.schema.yaml#/$defs/specs |
 | /$defs/cable&#95;run/properties/installed&#95;date |  | ../metamodel.schema.yaml#/$defs/iso&#95;date |
 | /$defs/cable&#95;run/properties/lifecycle | description: Set when this run was removed or replaced; absent means active. | ../metamodel.schema.yaml#/$defs/lifecycle |
 | /$defs/cable&#95;run/properties/description | type: string |  |
 | /$defs/cable&#95;run/properties/tags |  | ../metamodel.schema.yaml#/$defs/tags |
-| /$defs/cable&#95;route | type: object; required: &#91;"legs"&#93;; additionalProperties: false; description: An ordered list of legs. Consecutive legs meet end to start; a route with one leg is common. Each leg states its own frame.  |  |
-| /$defs/cable&#95;route/properties/legs | type: array |  |
-| /$defs/cable&#95;route/properties/legs/items/oneOf/0 |  | #/$defs/cable&#95;leg&#95;along&#95;wall |
-| /$defs/cable&#95;route/properties/legs/items/oneOf/1 |  | #/$defs/cable&#95;leg&#95;vertical |
-| /$defs/cable&#95;route/properties/legs/items/oneOf/2 |  | #/$defs/cable&#95;leg&#95;free |
-| /$defs/cable&#95;leg&#95;along&#95;wall | type: object; required: &#91;"kind","wall&#95;segment&#95;ref","from&#95;offset&#95;cm","to&#95;offset&#95;cm","height&#95;cm"&#93;; additionalProperties: false; description: A horizontal leg along or inside one wall segment. Offsets are centimetres from the wall segment's start point along its centreline, the frame wall openings use; height is centimetres above the finished floor of the wall's floor. Which face of the wall is meant follows from placement and from the rooms in through&#95;refs.  |  |
-| /$defs/cable&#95;leg&#95;along&#95;wall/properties/kind | type: string; const: along-wall |  |
-| /$defs/cable&#95;leg&#95;along&#95;wall/properties/wall&#95;segment&#95;ref |  | ../metamodel.schema.yaml#/$defs/wall&#95;segment&#95;ref |
-| /$defs/cable&#95;leg&#95;along&#95;wall/properties/from&#95;offset&#95;cm | type: number |  |
-| /$defs/cable&#95;leg&#95;along&#95;wall/properties/to&#95;offset&#95;cm | type: number |  |
-| /$defs/cable&#95;leg&#95;along&#95;wall/properties/height&#95;cm | type: number |  |
-| /$defs/cable&#95;leg&#95;along&#95;wall/properties/placement |  | #/$defs/cable&#95;placement |
-| /$defs/cable&#95;leg&#95;vertical | type: object; required: &#91;"kind","wall&#95;segment&#95;ref","offset&#95;cm","from&#95;elevation&#95;m","to&#95;elevation&#95;m"&#93;; additionalProperties: false; description: A vertical leg at one point of a wall segment, from one elevation to another. The offset is centimetres from the wall segment's start along its centreline; the elevations are metres above the vertical datum, the frame slabs and wall bases are in, because a riser crosses floors and no single floor is its reference.  |  |
-| /$defs/cable&#95;leg&#95;vertical/properties/kind | type: string; const: vertical |  |
-| /$defs/cable&#95;leg&#95;vertical/properties/wall&#95;segment&#95;ref |  | ../metamodel.schema.yaml#/$defs/wall&#95;segment&#95;ref |
-| /$defs/cable&#95;leg&#95;vertical/properties/offset&#95;cm | type: number |  |
-| /$defs/cable&#95;leg&#95;vertical/properties/from&#95;elevation&#95;m | type: number |  |
-| /$defs/cable&#95;leg&#95;vertical/properties/to&#95;elevation&#95;m | type: number |  |
-| /$defs/cable&#95;leg&#95;vertical/properties/placement |  | #/$defs/cable&#95;placement |
-| /$defs/cable&#95;leg&#95;free | type: object; required: &#91;"kind","path"&#93;; additionalProperties: false; description: A leg that follows no wall: a buried cable across a lawn, an overhead span, a cable across a ceiling void. A polyline in model coordinates, metres, with z above the vertical datum; a buried cable's z is below the ground elevation at that point.  |  |
-| /$defs/cable&#95;leg&#95;free/properties/kind | type: string; const: free |  |
-| /$defs/cable&#95;leg&#95;free/properties/path |  | ../metamodel.schema.yaml#/$defs/polyline3d |
-| /$defs/cable&#95;leg&#95;free/properties/placement |  | #/$defs/cable&#95;placement |
-| /$defs/cable&#95;placement | type: string; enum: &#91;"in-wall","surface","conduit","above-ceiling","under-floor","buried","overhead"&#93;; description: How the cable is carried on this leg: chased into the wall, on the surface in trunking or clips, in conduit, above a ceiling, under a floor, buried, or overhead.  |  |
+| /$defs/cable&#95;route | description: The route of a cable run: the metamodel's physical route, legs against wall segments or free polylines. | ../metamodel.schema.yaml#/$defs/physical&#95;route |
+| /$defs/cable&#95;leg&#95;along&#95;wall |  | ../metamodel.schema.yaml#/$defs/route&#95;leg&#95;along&#95;wall |
+| /$defs/cable&#95;leg&#95;vertical |  | ../metamodel.schema.yaml#/$defs/route&#95;leg&#95;vertical |
+| /$defs/cable&#95;leg&#95;free |  | ../metamodel.schema.yaml#/$defs/route&#95;leg&#95;free |
+| /$defs/cable&#95;placement |  | ../metamodel.schema.yaml#/$defs/route&#95;placement |
+| /$defs/pipe&#95;run | type: object; required: &#91;"id","name","system&#95;ref","medium","from&#95;ref","to&#95;ref"&#93;; additionalProperties: false; description: A length of pipe between two points of a heating or domestic water system: from a heat pump to a hot water cylinder, from the water main's entry to the cylinder, from the cylinder to the taps of a floor. Two halves, each usable alone, as for a cable run. The topological half says what the pipe joins (from&#95;ref, to&#95;ref), what it carries (medium), which way it flows when that is known (flow&#95;direction) and which rooms and zones it passes (through&#95;refs), and needs no coordinate. The geometric half is a physical route of legs against wall segments or free polylines; a run without one is a known connection whose path is not recorded. A heating flow and its return are two runs, each with its own direction. Used by T6.  |  |
+| /$defs/pipe&#95;run/properties | description: {"type":"string"} |  |
+| /$defs/pipe&#95;run/properties/id | type: string; pattern: ^(&#91;a-z&#93;&#91;a-z0-9-&#93;&#42;&#92;.)?PPR&#92;d{3,}$ |  |
+| /$defs/pipe&#95;run/properties/name | type: string |  |
+| /$defs/pipe&#95;run/properties/system&#95;ref | description: The heating or domestic water system this pipe belongs to. | ../metamodel.schema.yaml#/$defs/system&#95;ref |
+| /$defs/pipe&#95;run/properties/medium | type: string; enum: &#91;"heating-water","potable-cold-water","potable-hot-water"&#93;; description: What the pipe carries. &#96;heating-water&#96;: the water of a heating circuit, flow or return. &#96;potable-cold-water&#96;: drinking-quality cold water from the supply. &#96;potable-hot-water&#96;: drinking-quality hot water from a cylinder or a water heater.  |  |
+| /$defs/pipe&#95;run/properties/from&#95;ref | description: The component or utility connection the run starts at, as recorded. The order of from&#95;ref and to&#95;ref names the run; it is not a statement of which way the medium flows.  | ../metamodel.schema.yaml#/$defs/component&#95;or&#95;utility&#95;ref |
+| /$defs/pipe&#95;run/properties/to&#95;ref | description: The component or utility connection the run ends at, as recorded. | ../metamodel.schema.yaml#/$defs/component&#95;or&#95;utility&#95;ref |
+| /$defs/pipe&#95;run/properties/flow&#95;direction | type: string; enum: &#91;"from-to","to-from","bidirectional","unknown"&#93;; description: Which way the medium flows, relative to from&#95;ref and to&#95;ref. &#96;from-to&#96; and &#96;to-from&#96; state it; &#96;bidirectional&#96; says it flows either way; &#96;unknown&#96; says it was looked for and not established. Absent means not recorded, which a reader treats as unknown.  |  |
+| /$defs/pipe&#95;run/properties/through&#95;refs | type: array; description: The rooms and outdoor zones the run passes, in order from from&#95;ref to to&#95;ref. The topological route, for a reader or a tool that has no wall geometry; it is not a drawable path.  |  |
+| /$defs/pipe&#95;run/properties/through&#95;refs/items |  | ../metamodel.schema.yaml#/$defs/room&#95;or&#95;zone&#95;ref |
+| /$defs/pipe&#95;run/properties/route | description: The geometric route, as legs against wall segments or free polylines. | ../metamodel.schema.yaml#/$defs/physical&#95;route |
+| /$defs/pipe&#95;run/properties/lifecycle | description: Set when this run was removed or replaced; absent means active. Retired records are excluded by default and counted. | ../metamodel.schema.yaml#/$defs/lifecycle |
+| /$defs/pipe&#95;run/properties/description | type: string |  |
+| /$defs/pipe&#95;run/properties/tags |  | ../metamodel.schema.yaml#/$defs/tags |
 
 ## metamodel.schema.yaml
 
@@ -644,6 +649,7 @@ Realm Metamodel
 | /$defs/iot&#95;device&#95;ref | type: string; pattern: ^(&#91;a-z&#93;&#91;a-z0-9-&#93;&#42;&#92;.)?IOT&#92;d{3,}$; description: Typed reference to an IoT Device entity. |  |
 | /$defs/network&#95;link&#95;ref | type: string; pattern: ^(&#91;a-z&#93;&#91;a-z0-9-&#93;&#42;&#92;.)?NL&#92;d{3,}$; description: Typed reference to a Network Link entity. |  |
 | /$defs/cable&#95;run&#95;ref | type: string; pattern: ^(&#91;a-z&#93;&#91;a-z0-9-&#93;&#42;&#92;.)?CBR&#92;d{3,}$; description: Typed reference to a cable run or riser in the electrical layer (v2.3). |  |
+| /$defs/pipe&#95;run&#95;ref | type: string; pattern: ^(&#91;a-z&#93;&#91;a-z0-9-&#93;&#42;&#92;.)?PPR&#92;d{3,}$; description: Typed reference to a pipe run of a heating or domestic water system (v2.3.2). |  |
 | /$defs/specimen&#95;ref | type: string; pattern: ^(&#91;a-z&#93;&#91;a-z0-9-&#93;&#42;&#92;.)?SPM&#92;d{3,}$; description: Typed reference to a Specimen (individual plant/tree) entity. |  |
 | /$defs/planting&#95;ref | type: string; pattern: ^(&#91;a-z&#93;&#91;a-z0-9-&#93;&#42;&#92;.)?PTG&#92;d{3,}$; description: Typed reference to a Planting (categorical group) entity. |  |
 | /$defs/biomass&#95;flow&#95;ref | type: string; pattern: ^(&#91;a-z&#93;&#91;a-z0-9-&#93;&#42;&#92;.)?BMF&#92;d{3,}$; description: Typed reference to a Biomass Flow entity. |  |
@@ -701,6 +707,34 @@ Realm Metamodel
 | /$defs/room&#95;or&#95;zone&#95;ref | description: Reference to a room or outdoor zone (for system distribution targets). |  |
 | /$defs/room&#95;or&#95;zone&#95;ref/anyOf/0 |  | #/$defs/room&#95;ref |
 | /$defs/room&#95;or&#95;zone&#95;ref/anyOf/1 |  | #/$defs/outdoor&#95;zone&#95;ref |
+| /$defs/component&#95;or&#95;utility&#95;ref | description: Reference to a component or to a utility connection: the two things a pipe run can end at, a part of a system or the point where a utility enters the property (v2.3.2).  |  |
+| /$defs/component&#95;or&#95;utility&#95;ref/oneOf/0 |  | #/$defs/component&#95;ref |
+| /$defs/component&#95;or&#95;utility&#95;ref/oneOf/1 |  | #/$defs/utility&#95;connection&#95;ref |
+| /$defs/physical&#95;route | type: object; required: &#91;"legs"&#93;; additionalProperties: false; description: Where a run built into or across the property lies: a cable, a pipe or a wired network link. An ordered list of legs; consecutive legs meet end to start, and a route with one leg is common. Each leg states its own frame. A route says where the run is, not what it carries or which way anything flows; those belong to the run that owns the route.  |  |
+| /$defs/physical&#95;route/properties/legs | type: array |  |
+| /$defs/physical&#95;route/properties/legs/items/oneOf/0 |  | #/$defs/route&#95;leg&#95;along&#95;wall |
+| /$defs/physical&#95;route/properties/legs/items/oneOf/1 |  | #/$defs/route&#95;leg&#95;vertical |
+| /$defs/physical&#95;route/properties/legs/items/oneOf/2 |  | #/$defs/route&#95;leg&#95;free |
+| /$defs/route&#95;leg&#95;along&#95;wall | type: object; required: &#91;"kind","wall&#95;segment&#95;ref","from&#95;offset&#95;cm","to&#95;offset&#95;cm","height&#95;cm"&#93;; additionalProperties: false; description: A horizontal leg along or inside one wall segment. Offsets are centimetres from the wall segment's start point along its centreline, the frame wall openings use; height is centimetres above the finished floor of the wall's floor. Which face of the wall is meant follows from placement and from the rooms in the run's through&#95;refs.  |  |
+| /$defs/route&#95;leg&#95;along&#95;wall/properties/kind | type: string; const: along-wall |  |
+| /$defs/route&#95;leg&#95;along&#95;wall/properties/wall&#95;segment&#95;ref |  | #/$defs/wall&#95;segment&#95;ref |
+| /$defs/route&#95;leg&#95;along&#95;wall/properties/from&#95;offset&#95;cm | type: number |  |
+| /$defs/route&#95;leg&#95;along&#95;wall/properties/to&#95;offset&#95;cm | type: number |  |
+| /$defs/route&#95;leg&#95;along&#95;wall/properties/height&#95;cm | type: number |  |
+| /$defs/route&#95;leg&#95;along&#95;wall/properties/placement |  | #/$defs/route&#95;placement |
+| /$defs/route&#95;leg&#95;vertical | type: object; required: &#91;"kind","wall&#95;segment&#95;ref","offset&#95;cm","from&#95;elevation&#95;m","to&#95;elevation&#95;m"&#93;; additionalProperties: false; description: A vertical leg at one point of a wall segment, from one elevation to another: a cable riser, a pipe rising to the floor above. The offset is centimetres from the wall segment's start along its centreline; the elevations are metres above the vertical datum, the frame slabs and wall bases are in, because a vertical leg crosses floors and no single floor is its reference.  |  |
+| /$defs/route&#95;leg&#95;vertical/properties/kind | type: string; const: vertical |  |
+| /$defs/route&#95;leg&#95;vertical/properties/wall&#95;segment&#95;ref |  | #/$defs/wall&#95;segment&#95;ref |
+| /$defs/route&#95;leg&#95;vertical/properties/offset&#95;cm | type: number |  |
+| /$defs/route&#95;leg&#95;vertical/properties/from&#95;elevation&#95;m | type: number |  |
+| /$defs/route&#95;leg&#95;vertical/properties/to&#95;elevation&#95;m | type: number |  |
+| /$defs/route&#95;leg&#95;vertical/properties/placement |  | #/$defs/route&#95;placement |
+| /$defs/route&#95;leg&#95;free | type: object; required: &#91;"kind","path"&#93;; additionalProperties: false; description: A leg that follows no wall: a buried cable or pipe across a lawn, an overhead span, a run across a ceiling void or under a floor. A polyline in model coordinates, metres, with z above the vertical datum; a buried run's z is below the ground elevation at that point.  |  |
+| /$defs/route&#95;leg&#95;free/properties/kind | type: string; const: free |  |
+| /$defs/route&#95;leg&#95;free/properties/path |  | #/$defs/polyline3d |
+| /$defs/route&#95;leg&#95;free/properties/floor&#95;ref | description: The floor this leg belongs to, when its horizontal path alone does not say: a pipe in the void under a floor, a cable above a ceiling. It associates the leg with a floor and does not change its frame: the path stays in model coordinates with z above the vertical datum, so a leg under a floor can belong to that floor while its z is below the floor's finished surface. Absent means the association is not recorded.  | #/$defs/floor&#95;ref |
+| /$defs/route&#95;leg&#95;free/properties/placement |  | #/$defs/route&#95;placement |
+| /$defs/route&#95;placement | type: string; enum: &#91;"in-wall","surface","conduit","above-ceiling","under-floor","buried","overhead"&#93;; description: How the run is carried on this leg: chased into the wall, on the surface in trunking or clips, in conduit, above a ceiling, under a floor, buried, or overhead.  |  |
 | /$defs/specs | type: array; description: Generic key-value-unit specification pairs for equipment, appliances, or other entities with diverse technical attributes. Used by T2 (inventory report) to surface specifications without schema-per-type.  |  |
 | /$defs/specs/items | type: object; required: &#91;"value"&#93;; additionalProperties: false |  |
 | /$defs/specs/items/properties/key | type: string; description: Specification name (e.g., cutting&#95;width&#95;cm, tank&#95;capacity&#95;liters, battery&#95;voltage). |  |

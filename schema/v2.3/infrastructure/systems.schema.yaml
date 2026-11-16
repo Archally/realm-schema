@@ -4,12 +4,12 @@ $id: "infrastructure/systems.schema.yaml"
 title: "Infrastructure Systems"
 description: >
   Infrastructure systems (energy, heating, water, electrical), their physical
-  components, utility grid connections, and the cable runs of the electrical
-  layer. Covers all built systems from solar panels to sewage. Infrastructure
-  plane.
+  components, utility grid connections, the cable runs of the electrical
+  layer and the pipe runs of the heating and domestic water systems. Covers
+  all built systems from solar panels to sewage. Infrastructure plane.
 
 x-gdsm:
-  version: "2.3.0"
+  version: "2.3.2"
   methodology: "GDSM v1.0"
   plane: "infrastructure"
   domain_slice: null
@@ -49,10 +49,11 @@ x-gdsm:
   non_goals:
     - "Real-time telemetry values (delegated to external store)"
     - "Circuit diagrams as drawings (single-line or wiring schematics); the model holds circuit topology - which board feeds which circuit through which protective device, and which outlets, switches and fixtures belong to it - and a diagram is a rendering of that"
-    - "Plumbing pipe-level schematics"
+    - "Plumbing schematics as drawings and pipe engineering (diameters, pressures, fittings, valves on a run); the model holds which pipe joins which components or utility connection, the medium it carries, its stated flow direction and its route, and a diagram is a rendering of that"
+    - "Rainwater, irrigation, drainage and sewage pipes as runs; those systems keep their system-level feeds"
   status: draft
   owned_by: null
-  schema_ref_prefix: "SYS, CMP, UC, CBR"
+  schema_ref_prefix: "SYS, CMP, UC, CBR, PPR"
 
 type: object
 additionalProperties: false
@@ -83,6 +84,16 @@ properties:
       what it joins, and where it goes. Answers CQ51, CQ52.
     items:
       $ref: "#/$defs/cable_run"
+  pipe_runs:
+    type: array
+    title: "Pipe Runs"
+    description: >
+      Pipe runs of the heating and domestic water systems: what each
+      carries, what it joins, which way it flows when that is known, and
+      where it goes. An absent list means the pipes are not recorded, not
+      that there are none.
+    items:
+      $ref: "#/$defs/pipe_run"
 
 $defs:
   # ═══════════════════════════════════════════════════════════════════════════
@@ -666,7 +677,7 @@ $defs:
           $ref: "../metamodel.schema.yaml#/$defs/room_or_zone_ref"
         examples: [["RM006", "RM014"], ["RM013", "OZ004"]]
       route:
-        $ref: "#/$defs/cable_route"
+        $ref: "../metamodel.schema.yaml#/$defs/physical_route"
         title: "Route"
         description: "The geometric route, as legs against wall segments or free polylines."
       specs:
@@ -686,122 +697,115 @@ $defs:
         $ref: "../metamodel.schema.yaml#/$defs/tags"
 
   cable_route:
-    type: object
+    $ref: "../metamodel.schema.yaml#/$defs/physical_route"
     title: "Cable Route"
-    description: >
-      An ordered list of legs. Consecutive legs meet end to start; a route
-      with one leg is common. Each leg states its own frame.
-    required: [legs]
-    additionalProperties: false
-    properties:
-      legs:
-        type: array
-        minItems: 1
-        items:
-          oneOf:
-            - $ref: "#/$defs/cable_leg_along_wall"
-            - $ref: "#/$defs/cable_leg_vertical"
-            - $ref: "#/$defs/cable_leg_free"
+    description: "The route of a cable run: the metamodel's physical route, legs against wall segments or free polylines."
 
   cable_leg_along_wall:
-    type: object
+    $ref: "../metamodel.schema.yaml#/$defs/route_leg_along_wall"
     title: "Leg Along a Wall"
-    description: >
-      A horizontal leg along or inside one wall segment. Offsets are
-      centimetres from the wall segment's start point along its centreline,
-      the frame wall openings use; height is centimetres above the finished
-      floor of the wall's floor. Which face of the wall is meant follows
-      from placement and from the rooms in through_refs.
-    required: [kind, wall_segment_ref, from_offset_cm, to_offset_cm, height_cm]
-    additionalProperties: false
-    properties:
-      kind:
-        type: string
-        const: "along-wall"
-      wall_segment_ref:
-        $ref: "../metamodel.schema.yaml#/$defs/wall_segment_ref"
-        title: "Wall Segment"
-        examples: ["WSG014"]
-      from_offset_cm:
-        type: number
-        title: "From Offset (cm)"
-        minimum: 0
-        examples: [0]
-      to_offset_cm:
-        type: number
-        title: "To Offset (cm)"
-        minimum: 0
-        examples: [143]
-      height_cm:
-        type: number
-        title: "Height Above Floor (cm)"
-        minimum: 0
-        examples: [230, 30]
-      placement:
-        $ref: "#/$defs/cable_placement"
 
   cable_leg_vertical:
-    type: object
+    $ref: "../metamodel.schema.yaml#/$defs/route_leg_vertical"
     title: "Vertical Leg"
-    description: >
-      A vertical leg at one point of a wall segment, from one elevation to
-      another. The offset is centimetres from the wall segment's start along
-      its centreline; the elevations are metres above the vertical datum,
-      the frame slabs and wall bases are in, because a riser crosses floors
-      and no single floor is its reference.
-    required: [kind, wall_segment_ref, offset_cm, from_elevation_m, to_elevation_m]
-    additionalProperties: false
-    properties:
-      kind:
-        type: string
-        const: "vertical"
-      wall_segment_ref:
-        $ref: "../metamodel.schema.yaml#/$defs/wall_segment_ref"
-        title: "Wall Segment"
-        examples: ["WSG014"]
-      offset_cm:
-        type: number
-        title: "Offset Along Wall (cm)"
-        minimum: 0
-        examples: [60]
-      from_elevation_m:
-        type: number
-        title: "From Elevation (m)"
-        examples: [0.0]
-      to_elevation_m:
-        type: number
-        title: "To Elevation (m)"
-        examples: [2.9]
-      placement:
-        $ref: "#/$defs/cable_placement"
 
   cable_leg_free:
-    type: object
+    $ref: "../metamodel.schema.yaml#/$defs/route_leg_free"
     title: "Free Leg"
-    description: >
-      A leg that follows no wall: a buried cable across a lawn, an overhead
-      span, a cable across a ceiling void. A polyline in model coordinates,
-      metres, with z above the vertical datum; a buried cable's z is below
-      the ground elevation at that point.
-    required: [kind, path]
-    additionalProperties: false
-    properties:
-      kind:
-        type: string
-        const: "free"
-      path:
-        $ref: "../metamodel.schema.yaml#/$defs/polyline3d"
-        title: "Path"
-        examples: [{vertices: [{x: 8.0, y: 3.0, z: -0.7}, {x: 12.0, y: 3.0, z: -0.7}]}]
-      placement:
-        $ref: "#/$defs/cable_placement"
 
   cable_placement:
-    type: string
+    $ref: "../metamodel.schema.yaml#/$defs/route_placement"
     title: "Cable Placement"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Pipe Run - PPR### (v2.3.2)
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  pipe_run:
+    type: object
+    title: "Pipe Run"
     description: >
-      How the cable is carried on this leg: chased into the wall, on the
-      surface in trunking or clips, in conduit, above a ceiling, under a
-      floor, buried, or overhead.
-    enum: ["in-wall", "surface", "conduit", "above-ceiling", "under-floor", "buried", "overhead"]
-    examples: ["in-wall"]
+      A length of pipe between two points of a heating or domestic water
+      system: from a heat pump to a hot water cylinder, from the water
+      main's entry to the cylinder, from the cylinder to the taps of a
+      floor. Two halves, each usable alone, as for a cable run. The
+      topological half says what the pipe joins (from_ref, to_ref), what it
+      carries (medium), which way it flows when that is known
+      (flow_direction) and which rooms and zones it passes (through_refs),
+      and needs no coordinate. The geometric half is a physical route of
+      legs against wall segments or free polylines; a run without one is a
+      known connection whose path is not recorded. A heating flow and its
+      return are two runs, each with its own direction. Used by T6.
+    required: [id, name, system_ref, medium, from_ref, to_ref]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "PPR### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?PPR\\d{3,}$"
+        examples: ["PPR001", "heating.PPR002"]
+      name:
+        type: string
+        title: "Run Name"
+        minLength: 1
+        examples: ["Heating flow from the heat pump to the cylinder", "Cold main to the cylinder"]
+      system_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/system_ref"
+        title: "Parent System"
+        description: "The heating or domestic water system this pipe belongs to."
+        examples: ["SYS001"]
+      medium:
+        type: string
+        title: "Medium"
+        description: >
+          What the pipe carries. `heating-water`: the water of a heating
+          circuit, flow or return. `potable-cold-water`: drinking-quality
+          cold water from the supply. `potable-hot-water`: drinking-quality
+          hot water from a cylinder or a water heater.
+        enum: ["heating-water", "potable-cold-water", "potable-hot-water"]
+        examples: ["heating-water"]
+      from_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/component_or_utility_ref"
+        title: "From"
+        description: >
+          The component or utility connection the run starts at, as
+          recorded. The order of from_ref and to_ref names the run; it is
+          not a statement of which way the medium flows.
+        examples: ["CMP001", "UC002"]
+      to_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/component_or_utility_ref"
+        title: "To"
+        description: "The component or utility connection the run ends at, as recorded."
+        examples: ["CMP002"]
+      flow_direction:
+        type: string
+        title: "Flow Direction"
+        description: >
+          Which way the medium flows, relative to from_ref and to_ref.
+          `from-to` and `to-from` state it; `bidirectional` says it flows
+          either way; `unknown` says it was looked for and not established.
+          Absent means not recorded, which a reader treats as unknown.
+        enum: ["from-to", "to-from", "bidirectional", "unknown"]
+        examples: ["from-to"]
+      through_refs:
+        type: array
+        title: "Passes Through"
+        description: >
+          The rooms and outdoor zones the run passes, in order from from_ref
+          to to_ref. The topological route, for a reader or a tool that has
+          no wall geometry; it is not a drawable path.
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/room_or_zone_ref"
+        examples: [["RM007", "RM003"]]
+      route:
+        $ref: "../metamodel.schema.yaml#/$defs/physical_route"
+        title: "Route"
+        description: "The geometric route, as legs against wall segments or free polylines."
+      lifecycle:
+        $ref: "../metamodel.schema.yaml#/$defs/lifecycle"
+        title: "Lifecycle"
+        description: "Set when this run was removed or replaced; absent means active. Retired records are excluded by default and counted."
+      description:
+        type: string
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"

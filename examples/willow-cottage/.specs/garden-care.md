@@ -1,6 +1,6 @@
 # Willow Cottage - garden care
 
-> Generated from a Realm model: 154 entities, 473 relations, 5 planes, Realm schema v2.3.0. 6 specimens, 5 plantings, 4 care profiles, 2 soil profiles.
+> Generated from a Realm model: 185 entities, 698 relations, 5 planes, Realm schema v2.3.0. 6 specimens, 5 plantings, 4 care profiles, 2 soil profiles.
 
 **Willow Cottage, Brackwater Lane, Nether Hollowby, South West England, England**
 

@@ -9,7 +9,7 @@ description: >
   entry point for machine traversal.
 
 x-gdsm:
-  version: "2.3.1"
+  version: "2.3.2"
   methodology: "GDSM v1.0"
   suite_name: "Realm"
   suite_description: >
@@ -39,7 +39,7 @@ x-gdsm:
         - "topology/tools.schema.yaml"
         - "topology/construction.schema.yaml"
     - id: infrastructure
-      description: "Built systems: energy, heating, water, electrical (boards, circuits, cable runs), network topology, IoT"
+      description: "Built systems: energy, heating, water, electrical (boards, circuits, cable runs), pipe runs, network topology with wired link routes, IoT"
       schemas:
         - "infrastructure/systems.schema.yaml"
         - "infrastructure/network.schema.yaml"
@@ -82,6 +82,8 @@ x-gdsm:
       - SLB   # Floor Slab (v2.0)
       - RFP   # Roof Plane (v2.0)
       - CBR   # Cable Run (v2.3): drawn on a wall elevation, against the walls defined here
+      - PPR   # Pipe Run (v2.3.2): drawn against the same walls, in the same route frames
+      - NL    # Network Link (v2.3.2): a wired link with a route, in the same route frames
     infrastructure_diagram:
       - SYS   # System
       - CMP   # Component
@@ -98,7 +100,6 @@ x-gdsm:
       - ISS   # Issue
       - SCP   # Species Care Profile
       - SOIL  # Soil Profile
-      - NL    # Network Link
       - BMF   # Biomass Flow
       - REC   # Planting Recommendation
       - PRS   # Person
@@ -157,11 +158,15 @@ x-gdsm:
     NL:
       schema: "infrastructure/network.schema.yaml"
       entity: "network_link"
-      description: "Physical or wireless link between network nodes"
+      description: "Physical or wireless link between network nodes; a wired link may carry a route (v2.3.2)"
     CBR:
       schema: "infrastructure/systems.schema.yaml"
       entity: "cable_run"
       description: "Cable run or riser: the circuits it carries, the components it joins, and its route against wall segments (v2.3)"
+    PPR:
+      schema: "infrastructure/systems.schema.yaml"
+      entity: "pipe_run"
+      description: "Pipe of a heating or domestic water system: the medium it carries, what it joins, its stated flow direction and its route (v2.3.2)"
     SPM:
       schema: "nature/vegetation.schema.yaml"
       entity: "specimen"
@@ -1457,6 +1462,13 @@ $defs:
     pattern: "^([a-z][a-z0-9-]*\\.)?CBR\\d{3,}$"
     examples: ["CBR001"]
 
+  pipe_run_ref:
+    type: string
+    title: "Pipe Run Reference"
+    description: "Typed reference to a pipe run of a heating or domestic water system (v2.3.2)."
+    pattern: "^([a-z][a-z0-9-]*\\.)?PPR\\d{3,}$"
+    examples: ["PPR001"]
+
   # ═══════════════════════════════════════════════════════════════════════════
   # Entity Reference Types — Nature
   # ═══════════════════════════════════════════════════════════════════════════
@@ -1657,6 +1669,157 @@ $defs:
     anyOf:
       - $ref: "#/$defs/room_ref"
       - $ref: "#/$defs/outdoor_zone_ref"
+
+  component_or_utility_ref:
+    title: "Component or Utility Connection Reference"
+    description: >
+      Reference to a component or to a utility connection: the two things a
+      pipe run can end at, a part of a system or the point where a utility
+      enters the property (v2.3.2).
+    oneOf:
+      - $ref: "#/$defs/component_ref"
+      - $ref: "#/$defs/utility_connection_ref"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Physical Routes (v2.3.2)
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  physical_route:
+    type: object
+    title: "Physical Route"
+    description: >
+      Where a run built into or across the property lies: a cable, a pipe or
+      a wired network link. An ordered list of legs; consecutive legs meet
+      end to start, and a route with one leg is common. Each leg states its
+      own frame. A route says where the run is, not what it carries or which
+      way anything flows; those belong to the run that owns the route.
+    required: [legs]
+    additionalProperties: false
+    properties:
+      legs:
+        type: array
+        minItems: 1
+        items:
+          oneOf:
+            - $ref: "#/$defs/route_leg_along_wall"
+            - $ref: "#/$defs/route_leg_vertical"
+            - $ref: "#/$defs/route_leg_free"
+
+  route_leg_along_wall:
+    type: object
+    title: "Leg Along a Wall"
+    description: >
+      A horizontal leg along or inside one wall segment. Offsets are
+      centimetres from the wall segment's start point along its centreline,
+      the frame wall openings use; height is centimetres above the finished
+      floor of the wall's floor. Which face of the wall is meant follows
+      from placement and from the rooms in the run's through_refs.
+    required: [kind, wall_segment_ref, from_offset_cm, to_offset_cm, height_cm]
+    additionalProperties: false
+    properties:
+      kind:
+        type: string
+        const: "along-wall"
+      wall_segment_ref:
+        $ref: "#/$defs/wall_segment_ref"
+        title: "Wall Segment"
+        examples: ["WSG014"]
+      from_offset_cm:
+        type: number
+        title: "From Offset (cm)"
+        minimum: 0
+        examples: [0]
+      to_offset_cm:
+        type: number
+        title: "To Offset (cm)"
+        minimum: 0
+        examples: [143]
+      height_cm:
+        type: number
+        title: "Height Above Floor (cm)"
+        minimum: 0
+        examples: [230, 30]
+      placement:
+        $ref: "#/$defs/route_placement"
+
+  route_leg_vertical:
+    type: object
+    title: "Vertical Leg"
+    description: >
+      A vertical leg at one point of a wall segment, from one elevation to
+      another: a cable riser, a pipe rising to the floor above. The offset is
+      centimetres from the wall segment's start along its centreline; the
+      elevations are metres above the vertical datum, the frame slabs and
+      wall bases are in, because a vertical leg crosses floors and no single
+      floor is its reference.
+    required: [kind, wall_segment_ref, offset_cm, from_elevation_m, to_elevation_m]
+    additionalProperties: false
+    properties:
+      kind:
+        type: string
+        const: "vertical"
+      wall_segment_ref:
+        $ref: "#/$defs/wall_segment_ref"
+        title: "Wall Segment"
+        examples: ["WSG014"]
+      offset_cm:
+        type: number
+        title: "Offset Along Wall (cm)"
+        minimum: 0
+        examples: [60]
+      from_elevation_m:
+        type: number
+        title: "From Elevation (m)"
+        examples: [0.0]
+      to_elevation_m:
+        type: number
+        title: "To Elevation (m)"
+        examples: [2.9]
+      placement:
+        $ref: "#/$defs/route_placement"
+
+  route_leg_free:
+    type: object
+    title: "Free Leg"
+    description: >
+      A leg that follows no wall: a buried cable or pipe across a lawn, an
+      overhead span, a run across a ceiling void or under a floor. A
+      polyline in model coordinates, metres, with z above the vertical
+      datum; a buried run's z is below the ground elevation at that point.
+    required: [kind, path]
+    additionalProperties: false
+    properties:
+      kind:
+        type: string
+        const: "free"
+      path:
+        $ref: "#/$defs/polyline3d"
+        title: "Path"
+        examples: [{vertices: [{x: 8.0, y: 3.0, z: -0.7}, {x: 12.0, y: 3.0, z: -0.7}]}]
+      floor_ref:
+        $ref: "#/$defs/floor_ref"
+        title: "On Floor"
+        description: >
+          The floor this leg belongs to, when its horizontal path alone does
+          not say: a pipe in the void under a floor, a cable above a ceiling.
+          It associates the leg with a floor and does not change its frame:
+          the path stays in model coordinates with z above the vertical
+          datum, so a leg under a floor can belong to that floor while its z
+          is below the floor's finished surface. Absent means the
+          association is not recorded.
+        examples: ["FLR001"]
+      placement:
+        $ref: "#/$defs/route_placement"
+
+  route_placement:
+    type: string
+    title: "Route Placement"
+    description: >
+      How the run is carried on this leg: chased into the wall, on the
+      surface in trunking or clips, in conduit, above a ceiling, under a
+      floor, buried, or overhead.
+    enum: ["in-wall", "surface", "conduit", "above-ceiling", "under-floor", "buried", "overhead"]
+    examples: ["in-wall"]
 
   # ═══════════════════════════════════════════════════════════════════════════
   # Generic Specifications (v1.3)
