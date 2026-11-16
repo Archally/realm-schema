@@ -13,7 +13,7 @@ the model declares.
 
 | File | Answers | Leaves out |
 |---|---|---|
-| `willow-site.plan.svg` | How the parcel (LP001) is laid out: outdoor zones by kind, the two buildings with their roofs, the boundary runs, the named trees and plantings at their recorded positions, and the neighbouring parcels at the margin in the direction they lie. Numbered markers refer to the index beside the plan. | Individual plants inside a zone: a texture shows the zone's kind (meadow, orchard, vegetable beds, paving), not where each plant stands. Neighbours are cut at the frame. No house systems. |
+| `willow-site.plan.svg` | How the parcel (LP001) is laid out and reached: the lane and the farm track outside it, the drive, paths and yards joined into one network, the outdoor zones by kind with their names, the two buildings with their roofs, the boundary runs, the trees as light canopies at their recorded spread, the plantings, and the house-system equipment that stands outside the buildings (the heat pump, the rainwater tank, the irrigation, the utility entry points, a cable transition and a soil sensor), each with its id and name in the colour of its system. A short legend and a building-services key sit beside the plan; numbered markers refer to the index. | Individual plants inside a zone: a texture shows the zone's kind, not where each plant stands. House-system equipment inside a building (shown on the floor plans) and items with no recorded position are counted, not drawn. Neighbours and roads are cut at the frame. |
 
 ## Floors of the cottage
 

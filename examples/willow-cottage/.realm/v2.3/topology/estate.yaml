@@ -997,18 +997,18 @@ outdoor_zones:
     name: Drive
     zone_type: driveway
     parcel_ref: LP001
-    area_sqm: 69.9
-    position: {x: 17.49, y: 8.12}
+    area_sqm: 62.6
+    position: {x: 16.84, y: 8.25}
     footprint:
       shape: polygon
       vertices:
-        - {x: -13.49, y: -7.62}   # abs 4, 0.5
-        - {x: -8.49, y: -7.12}   # abs 9, 1
-        - {x: 12.01, y: 6.08}   # abs 29.5, 14.2
-        - {x: 8.11, y: 7.28}   # abs 25.6, 15.4
+        - {x: -12.84, y: -7.75}   # abs 4, 0.5
+        - {x: -7.84, y: -7.25}   # abs 9, 1
+        - {x: 12.66, y: 7.75}   # abs 29.5, 16
+        - {x: 8.76, y: 7.75}   # abs 25.6, 16
     sun_exposure: full-sun
     # Slope read off the terrain triangle under this zone's centroid, which sits
-    # at 2.26 m relative to the datum.
+    # at 2.25 m relative to the datum.
     slope_direction: S
     slope_percent: 12.2
     description: >
@@ -1085,23 +1085,23 @@ outdoor_zones:
     name: Vegetable garden
     zone_type: vegetable-garden
     parcel_ref: LP001
-    area_sqm: 159
-    position: {x: 16.05, y: 32.97}
+    area_sqm: 103
+    position: {x: 16.07, y: 34.72}
     footprint:
       shape: polygon
       vertices:
-        - {x: -8.05, y: 3.57}   # abs 8, 36.55
-        - {x: -8.05, y: -4.97}   # abs 8, 28
-        - {x: 7.95, y: -4.97}   # abs 24, 28
-        - {x: 7.95, y: 5.03}   # abs 24, 38
-        - {x: -6.66, y: 5.03}   # abs 9.39, 38
+        - {x: -8.07, y: 1.82}   # abs 8, 36.55
+        - {x: -8.07, y: -3.22}   # abs 8, 31.5
+        - {x: 7.93, y: -3.22}   # abs 24, 31.5
+        - {x: 7.93, y: 3.28}   # abs 24, 38
+        - {x: -6.68, y: 3.28}   # abs 9.39, 38
     # Trimmed to the parcel outline: the zone was laid out as a rectangle and
     # the boundary cuts across it, so it has more vertices than corners.
     sun_exposure: full-sun
     soil_type: loam
     soil_profile_refs: [SOIL001]
     # Slope read off the terrain triangle under this zone's centroid, which sits
-    # at -1.01 m relative to the datum.
+    # at -1.26 m relative to the datum.
     slope_direction: S
     slope_percent: 14.2
     description: >
@@ -1179,3 +1179,46 @@ outdoor_zones:
       Three timber bays and a leaf-mould cage on the west bank, in the shade
       of the coppice and a short barrow-push above the vegetable beds.
     tags: [composting, shaded]
+  - id: OZ009
+    name: Front path
+    zone_type: path
+    parcel_ref: LP001
+    area_sqm: 6.2
+    position: {x: 19.87, y: 13.79}
+    footprint:
+      shape: polygon
+      vertices:
+        - {x: -0.67, y: -2.69}   # abs 19.2, 11.1
+        - {x: 0.73, y: -1.69}   # abs 20.6, 12.1
+        - {x: 0.73, y: 2.21}   # abs 20.6, 16
+        - {x: -0.67, y: 2.21}   # abs 19.2, 16
+    sun_exposure: full-sun
+    # Slope read off the terrain triangle under this zone's centroid, which sits
+    # at 1.55 m relative to the datum.
+    slope_direction: S
+    slope_percent: 12.2
+    description: >
+      Flagstone path from the front door north to the drive.
+    tags: [paved, access]
+  - id: OZ010
+    name: East path
+    zone_type: path
+    parcel_ref: LP001
+    area_sqm: 7
+    position: {x: 25.5, y: 28}
+    footprint:
+      shape: polygon
+      vertices:
+        - {x: -0.5, y: -3.5}   # abs 25, 24.5
+        - {x: 0.5, y: -3.5}   # abs 26, 24.5
+        - {x: 0.5, y: 3.5}   # abs 26, 31.5
+        - {x: -0.5, y: 3.5}   # abs 25, 31.5
+    sun_exposure: partial-sun
+    # Slope read off the terrain triangle under this zone's centroid, which sits
+    # at -0.28 m relative to the datum.
+    slope_direction: S
+    slope_percent: 13.9
+    description: >
+      Gravel path from the barn forecourt down the side of the cottage to the
+      south terrace.
+    tags: [gravel, access]

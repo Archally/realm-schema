@@ -1,6 +1,6 @@
 # Willow Cottage
 
-> Generated from a Realm model: 185 entities, 698 relations, 5 planes, Realm schema v2.3.0.
+> Generated from a Realm model: 187 entities, 700 relations, 5 planes, Realm schema v2.3.0.
 
 **Willow Cottage, Brackwater Lane, Nether Hollowby, South West England, England**
 
@@ -42,6 +42,8 @@ flowchart TD
     OZ006("Lower meadow<br/>OZ006")
     OZ007("Barn forecourt<br/>OZ007")
     OZ008("Compost corner<br/>OZ008")
+    OZ009("Front path<br/>OZ009")
+    OZ010("East path<br/>OZ010")
     BLD001 --> FLR001
     BLD001 --> WNG001
     BLD001 --> WNG002
@@ -71,6 +73,8 @@ flowchart TD
     LP001 --> OZ006
     LP001 --> OZ007
     LP001 --> OZ008
+    LP001 --> OZ009
+    LP001 --> OZ010
     WNG001 --> FLR002
     WNG003 --> FLR003
 ```
@@ -101,14 +105,16 @@ flowchart TD
 | WNG003 | 2 | wing | Stone barn | - | Stone barn (BLD002) |
 | FLR003 | 3 | floor | Barn floor | 42 m2 | Stone barn (WNG003) |
 | RM015 | 4 | room | Barn bay | 42 m2 | Barn floor (FLR003) |
-| OZ001 | 1 | outdoor_zone | Drive | 69.9 m2 | Willow Cottage smallholding (LP001) |
+| OZ001 | 1 | outdoor_zone | Drive | 62.6 m2 | Willow Cottage smallholding (LP001) |
 | OZ002 | 1 | outdoor_zone | Front garden | 210 m2 | Willow Cottage smallholding (LP001) |
 | OZ003 | 1 | outdoor_zone | South terrace | 44 m2 | Willow Cottage smallholding (LP001) |
 | OZ004 | 1 | outdoor_zone | Orchard | 230 m2 | Willow Cottage smallholding (LP001) |
-| OZ005 | 1 | outdoor_zone | Vegetable garden | 159 m2 | Willow Cottage smallholding (LP001) |
+| OZ005 | 1 | outdoor_zone | Vegetable garden | 103 m2 | Willow Cottage smallholding (LP001) |
 | OZ006 | 1 | outdoor_zone | Lower meadow | 177.5 m2 | Willow Cottage smallholding (LP001) |
 | OZ007 | 1 | outdoor_zone | Barn forecourt | 38.3 m2 | Willow Cottage smallholding (LP001) |
 | OZ008 | 1 | outdoor_zone | Compost corner | 36 m2 | Willow Cottage smallholding (LP001) |
+| OZ009 | 1 | outdoor_zone | Front path | 6.2 m2 | Willow Cottage smallholding (LP001) |
+| OZ010 | 1 | outdoor_zone | East path | 7 m2 | Willow Cottage smallholding (LP001) |
 
 ## Buildings and rooms
 
@@ -161,14 +167,16 @@ Detached barn east of the cottage, on its own platform 1.2 m lower. Reached from
 
 | Zone | Name | Type | Area | Sun | Slope |
 |---|---|---|---|---|---|
-| OZ001 | Drive | driveway | 69.9 m2 | full-sun | 12.2% S |
+| OZ001 | Drive | driveway | 62.6 m2 | full-sun | 12.2% S |
 | OZ002 | Front garden | lawn | 210 m2 | full-sun | 12.9% S |
 | OZ003 | South terrace | terrace | 44 m2 | full-sun | 14.2% S |
 | OZ004 | Orchard | orchard | 230 m2 | full-sun | 12.4% S |
-| OZ005 | Vegetable garden | vegetable-garden | 159 m2 | full-sun | 14.2% S |
+| OZ005 | Vegetable garden | vegetable-garden | 103 m2 | full-sun | 14.2% S |
 | OZ006 | Lower meadow | meadow | 177.5 m2 | partial-sun | 13.9% S |
 | OZ007 | Barn forecourt | gravel-area | 38.3 m2 | partial-sun | 11.5% S |
 | OZ008 | Compost corner | compost-area | 36 m2 | partial-shade | 14.2% S |
+| OZ009 | Front path | path | 6.2 m2 | full-sun | 12.2% S |
+| OZ010 | East path | path | 7 m2 | partial-sun | 13.9% S |
 
 ### Boundary
 
@@ -178,7 +186,7 @@ Detached barn east of the cottage, on its own platform 1.2 m lower. Reached from
 | BS002 | North-east post and rail | fence-wood | 22.5 m | Hollybank (north-east) (NP001) |
 | BS003 | East stone wall | wall-stone | 25.71 m | The Old Forge (east) (NP002) |
 | BS004 | South treeline | natural-treeline | 28.64 m | Mill Farm meadow (south) (NP003) |
-| BS005 | West retaining wall | wall-stone | 50.33 m | Brackwater coppice (west) (NP004) |
+| BS005 | West retaining wall | wall-stone | 56.16 m | Brackwater coppice (west) (NP004) |
 
 ### Neighbouring property
 
@@ -376,7 +384,7 @@ flowchart LR
 | infrastructure | 47 |
 | nature | 19 |
 | operations | 11 |
-| topology | 89 |
+| topology | 91 |
 | (cross-cutting) | 6 |
 
 | Type | Count | Plane |
@@ -384,7 +392,7 @@ flowchart LR
 | component | 18 | infrastructure |
 | room | 15 | topology |
 | pipe_run | 11 | infrastructure |
-| outdoor_zone | 8 | topology |
+| outdoor_zone | 10 | topology |
 | maintenance_task | 6 | operations |
 | specimen | 6 | nature |
 | boundary_segment | 5 | topology |
@@ -416,6 +424,6 @@ flowchart LR
 | shared_concern | 1 | context |
 | warranty | 1 | operations |
 
-134 authored entities, 51 derived.
+136 authored entities, 51 derived.
 
 51 further entities form the construction layer (43 wall_segment, 5 roof_plane, 3 floor_slab). They are derived from the rooms, wings and floors above rather than authored, and are summarised rather than listed - pass --geometry to enumerate them.

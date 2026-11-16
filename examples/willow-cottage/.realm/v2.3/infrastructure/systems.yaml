@@ -90,7 +90,7 @@ systems:
     name: Garden irrigation
     system_type: irrigation
     outdoor_zone_ref: OZ005
-    position: {x: 15.5, y: 31}
+    position: {x: 15.5, y: 33}
     description: >
       Soaker hose across the four raised beds, on a tap timer from the
       rainwater tank.

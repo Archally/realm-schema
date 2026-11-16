@@ -12,8 +12,9 @@
 # topology plane places itself with a `position` and then describes its shape
 # relative to that; a boundary has no centre worth naming, so it does not.
 #
-# Each run here spans two parcel corners, so the five segments close the
-# hexagon exactly and their vertices are the corners themselves.
+# Each run follows the parcel outline from one corner to another, so the five
+# runs close the hexagon exactly and their vertices are the corners
+# themselves. The west wall turns at the W corner and so has three.
 # ═════════════════════════════════════════════════════════════════════════════
 
 boundary_segments:
@@ -96,13 +97,14 @@ boundary_segments:
     name: West retaining wall
     boundary_type: wall-stone
     direction: W
-    length_m: 50.33
+    length_m: 56.16
     height_m: 1.1
     condition: good
     installed_year: 1994
     screening_opacity: solid
     vertices:
       - {x: 18, y: 47}   # S corner
+      - {x: -4, y: 24}   # W corner
       - {x: 0, y: 0}   # N corner
     base_elevation_m: -3
     parcel_refs: [LP001]

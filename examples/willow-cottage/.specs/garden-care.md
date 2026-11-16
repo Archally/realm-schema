@@ -1,6 +1,6 @@
 # Willow Cottage - garden care
 
-> Generated from a Realm model: 185 entities, 698 relations, 5 planes, Realm schema v2.3.0. 6 specimens, 5 plantings, 4 care profiles, 2 soil profiles.
+> Generated from a Realm model: 187 entities, 700 relations, 5 planes, Realm schema v2.3.0. 6 specimens, 5 plantings, 4 care profiles, 2 soil profiles.
 
 **Willow Cottage, Brackwater Lane, Nether Hollowby, South West England, England**
 
@@ -10,14 +10,16 @@
 
 | Zone | Name | Type | Area | Sun | Slope | Soil | Growing |
 |---|---|---|---|---|---|---|---|
-| OZ001 | Drive | driveway | 69.9 m2 | full-sun | 12.2% S | - | nothing recorded |
+| OZ001 | Drive | driveway | 62.6 m2 | full-sun | 12.2% S | - | nothing recorded |
 | OZ002 | Front garden | lawn | 210 m2 | full-sun | 12.9% S | - | 1 specimens, 1 plantings |
 | OZ003 | South terrace | terrace | 44 m2 | full-sun | 14.2% S | - | nothing recorded |
 | OZ004 | Orchard | orchard | 230 m2 | full-sun | 12.4% S | - | 2 specimens |
-| OZ005 | Vegetable garden | vegetable-garden | 159 m2 | full-sun | 14.2% S | SOIL001 | 2 specimens, 3 plantings |
+| OZ005 | Vegetable garden | vegetable-garden | 103 m2 | full-sun | 14.2% S | SOIL001 | 2 specimens, 3 plantings |
 | OZ006 | Lower meadow | meadow | 177.5 m2 | partial-sun | 13.9% S | SOIL002 | 1 specimens, 1 plantings |
 | OZ007 | Barn forecourt | gravel-area | 38.3 m2 | partial-sun | 11.5% S | - | nothing recorded |
 | OZ008 | Compost corner | compost-area | 36 m2 | partial-shade | 14.2% S | - | nothing recorded |
+| OZ009 | Front path | path | 6.2 m2 | full-sun | 12.2% S | - | nothing recorded |
+| OZ010 | East path | path | 7 m2 | partial-sun | 13.9% S | - | nothing recorded |
 
 ## Plantings and specimens
 

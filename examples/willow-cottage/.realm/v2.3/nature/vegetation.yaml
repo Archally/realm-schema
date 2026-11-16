@@ -220,7 +220,7 @@ plantings:
     name: Herb strip
     planting_type: herb-garden
     outdoor_zone_ref: OZ005
-    position: {x: 21, y: 29.5}
+    position: {x: 21, y: 32.3}
     area_sqm: 6
     season: year-round
     sun_requirement: full-sun

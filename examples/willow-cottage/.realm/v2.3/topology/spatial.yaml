@@ -44,7 +44,7 @@ spatial_relations:
   - from_ref: OZ001
     to_ref: OZ007
     relation_type: enables-access
-    distance_m: 15.9
+    distance_m: 16.2
     notes: >
       The drive runs from the gate down to the forecourt.
   - from_ref: NP001
@@ -57,7 +57,7 @@ spatial_relations:
   - from_ref: NP004
     to_ref: OZ001
     relation_type: shades
-    distance_m: 40.3
+    distance_m: 39.7
     notes: >
       The coppice on the west bank keeps the drive in shade until mid-morning.
   - from_ref: BS004
