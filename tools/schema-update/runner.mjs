@@ -4,21 +4,22 @@ import path from "node:path";
 import { update as update001 } from "./updates/001-additive-2-0-to-2-1.mjs";
 import { update as update002 } from "./updates/002-migration-to-estate-change.mjs";
 import { update as update003 } from "./updates/003-additive-2-2-to-2-3.mjs";
+import { update as update004 } from "./updates/004-additive-2-3-to-2-4.mjs";
+import { update as update005 } from "./updates/005-additive-2-4-0-to-2-4-1.mjs";
+import { update as update006 } from "./updates/006-additive-2-4-1-to-2-4-2.mjs";
 
 /**
  * Version order, single pass - see resolveChain. A model on 2.0 must receive
  * 001 then 002 in one run.
  */
-const ALL_UPDATES = [update001, update002, update003];
+const ALL_UPDATES = [update001, update002, update003, update004, update005, update006];
 
 /**
  * Which schema version a model is written against.
  *
- * `realm.yaml`'s `schemaVersion` is authoritative and the directory name is only a
- * fallback, which is the opposite of what a version directory suggests. A realm model
- * directory is named for the MODEL's own line, not the schema's: a real estate on 2.2.0
- * lives in `.realm/v1/` and has since it was authored. Reading the directory first would
- * answer `1` for a model that is fully current.
+ * The model directory name identifies the model's own line. The updater reads
+ * `schemaVersion` from `realm.yaml` first and uses a directory name of the form
+ * `v<major>.<minor>` as a fallback.
  *
  * `version:` in the same file is the model's own version and is never consulted.
  *

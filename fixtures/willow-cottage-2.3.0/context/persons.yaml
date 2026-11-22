@@ -1,0 +1,39 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# Context: Persons - people and organisations the model refers to
+#
+# Schema: context/persons.schema.yaml
+#
+# GENERATED from a layout specification. Areas, elevations, wall segments and
+# opening offsets are computed rather than typed, which is why they agree with
+# one another. An edit made here is replaced the next time the model is
+# generated - copy it before adapting it.
+#
+# Roles, not identities. A published example naming invented people would read
+# as a record of someone; a real model puts the actual names here and is not
+# published.
+# ═════════════════════════════════════════════════════════════════════════════
+
+persons:
+  - id: PRS001
+    name: The owner
+    person_type: owner
+    role: Owner-occupier
+    description: >
+      Stands in for the household in this example. A real model would name the
+      person.
+    tags: [household]
+  - id: PRS002
+    name: Brackwater Heating
+    person_type: service-provider
+    company: Brackwater Heating Ltd
+    role: Heat pump servicing and plumbing
+    description: >
+      Services the heat pump annually and holds the installation warranty.
+    tags: [contractor, heating]
+  - id: PRS003
+    name: Hollybank household
+    person_type: neighbor
+    description: >
+      Occupiers of the farmhouse to the north-east. Named here only as the
+      residents of NP001.
+    tags: [neighbour]

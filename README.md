@@ -8,14 +8,14 @@ YAML-based schema for modeling **private real estate**: a dual-layer spatial for
 
 > **Status: the schema, the validator, the model-quality checker, the model builder, the
 > renderer, the schema updater, the documentation and a worked example ship.** What you get
-> is the complete v2.3 schema under [`schema/v2.3/`](./schema/v2.3/), the tools that read a
+> is the current **2.4.2** schema under [`schema/v2.4/`](./schema/v2.4/), the tools that read a
 > model written against it, four guides under [`docs/`](./docs/), and Willow Cottage.
 
 ## Validating a model
 
 ```bash
 npm install
-npm run validate -- --model path/to/.realm/v2.3
+npm run validate -- --model path/to/.realm/v1
 ```
 
 Five layers run: each file against its schema, then reference integrity and id
@@ -29,7 +29,7 @@ maps each plane's files to its schema, and any JSON-Schema-aware editor can do t
 ## The worked example
 
 [`examples/willow-cottage/`](./examples/willow-cottage/) is a fictional English
-smallholding on a hillside, and the shortest route into the schema: 185 entities across
+smallholding on a hillside, and the shortest route into the schema: 211 entities across
 every plane, heavily commented, and valid.
 
 ```bash
@@ -44,14 +44,16 @@ A two-storey stone cottage with a rear lean-to shows how a building is the union
 wings and why the roof belongs on the wing. Fifteen rooms carry walls and openings, and
 the construction layer beneath them - wall segments, slabs and roof planes - is derived
 from those rooms rather than drawn separately, which is what the cross-layer checks are
-for. Four neighbouring parcels, two roads and five boundary runs put the plot in its
-surroundings.
+for. Four neighbours, two roads and five boundary runs put the plot in its surroundings,
+with Hollybank represented by separate farmhouse and paddock parcels. The example declares
+schema version 2.4.1 and records regional coordinates, the `Europe/London` time zone and two
+raked wall tops on the lean-to.
 
 The house systems are recorded down to where they run: heating and water pipe runs, cable
 runs and a wired network link, each with its route against the walls of the floor it crosses
 and the risers between floors. [`examples/willow-cottage/images/`](./examples/willow-cottage/images/)
-holds ten pictures drawn from this model by the Realm plan and systems renderers of Archally
-Pro: the site plan, both cottage floors, one schematic per system family and the systems
+holds ten illustrations of Willow Cottage from the Realm plan and systems renderers of
+Archally Pro: the site plan, both cottage floors, one schematic per system family and the systems
 drawn on each floor, with an index of what each picture answers and leaves out.
 
 Two conventions are worth reading the example for, because both are easy to invert:
@@ -67,12 +69,12 @@ The guides and generated reference answer different questions:
 |---|---|
 | [File conventions](./docs/file-conventions.md) | Where a model's files go, which filenames the validator maps to a schema, and how the typed identifiers are formed |
 | [Modeling guide](./docs/modeling-guide.md) | How to author a model: what to write first, the coordinate conventions and where they invert, the two spatial layers, and what a passing validation run does and does not claim |
-| [Schema reference](./docs/schema-reference.md) | Every entity and every field. Generated from the schema itself, so it states what the validator enforces |
-| [Schema atlas](./docs/schema-atlas/2026-11-06-reference.md) | Every schema file, with fields, definitions, references and selected constraints |
+| [Schema reference](./docs/schema-reference.md) | Entities and fields in the current schema |
+| [v2.4 schema atlas](./docs/schema-atlas/2026-11-22-v2.4-reference.md) | Schema files, fields, definitions, references and selected constraints for v2.4 |
 | [Model quality rules](./docs/model-quality.md) | What the quality checker reports and why each rule is worth acting on |
 
 Regenerate the atlas with `npm run atlas`; verify the committed reference with
-`npm run atlas:check`. The atlas reads the shipped schema and no model.
+`npm run atlas:check`. The committed atlas covers v2.4. The [v2.4 schema files](./schema/v2.4/) define the current fields and constraints.
 
 Every YAML example in the guides that names a file is validated against the shipped schema
 in CI, as a real model rather than as a fragment. So an example you copy loads, and one that
@@ -85,7 +87,7 @@ is left over, and the schema cannot ask it: does the model actually say anything
 places the schema deliberately leaves optional?
 
 ```bash
-npm run check -- --model path/to/.realm/v2.3
+npm run check -- --model path/to/.realm/v1
 ```
 
 Fourteen rules today - a specimen with no care profile appears on no maintenance calendar,
@@ -98,7 +100,7 @@ pass `--strict`. The full list is in [the rule reference](./docs/model-quality.m
 ## Reading a model as a graph
 
 ```bash
-npm run model -- path/to/.realm/v2.3 --pretty
+npm run model -- path/to/.realm/v1 --pretty
 ```
 
 One JSON document: every entity with its type, plane and data, and every reference
@@ -120,7 +122,7 @@ model.
 ## Rendering a model as documents
 
 ```bash
-npm run render -- path/to/.realm/v2.3 --document all -o ./docs
+npm run render -- path/to/.realm/v1 --document all -o ./docs
 ```
 
 Two markdown documents, because a property model has two readers.
@@ -167,15 +169,15 @@ npm run schema-update -- path/to/.realm/v2.1             # apply
 npm run schema-update:list                               # every available update
 ```
 
-This repository publishes **one** schema version at a time - a superseded line is not kept
-alongside the current one - so a model written against an earlier release has no directory
-left to validate against. This tool is the route forward.
+[`schema/v2.3/`](./schema/v2.3/) remains available for older models. Use the schema updater
+to move a model to the current release.
 
 | Update | What it does to a model |
 |---|---|
 | 2.0 to 2.1 | Nothing. 2.1 added enum values, optional fields and `x-` extension keys and removed nothing, so a valid 2.0 document is a valid 2.1 document. Only the declared version moves |
 | 2.1 to 2.2 | Renames the migration entity to `estate_change`: `MIG###` ids become `ECH###`, `migrations.yaml` becomes `estate-changes.yaml`, `migrations:` becomes `estate_changes:`, and every `*migration_ref*` field takes the new name |
 | 2.2 to 2.3 | Nothing. 2.3 added optional fields, enum values, one entity and one root key and removed nothing, so a valid 2.2 document is a valid 2.3 document. Only the declared version moves; a fact a model kept in an `x-` extension moves onto the new field by hand |
+| 2.3 to 2.4.2 | Advances the declaration in `realm.yaml` through 2.4.0, 2.4.1 and 2.4.2. The model's records stay the same |
 
 A model several versions behind receives every update in one run, in order.
 
@@ -199,7 +201,7 @@ with the line it sits on, for you to judge.
 Preview with `--dry-run` first, and validate afterwards:
 
 ```bash
-npm run validate -- --model path/to/.realm/v2.3 --schemas schema/v2.3
+npm run validate -- --model path/to/.realm/v1 --schemas schema/v2.4
 ```
 
 ## What is a Realm model?
@@ -220,13 +222,13 @@ Cross-cutting: estate changes, risks/issues, and a chronological event log.
 
 ## Schema
 
-- **Version:** 2.3.0 (JSON Schema draft 2020-12, expressed in YAML)
+- **Version:** 2.4.2 (JSON Schema draft 2020-12, expressed in YAML)
 - **Methodology:** GDSM v1.0 (Goal-Driven Schema Modeling)
-- **Location:** [`schema/v2.3/`](./schema/v2.3/) - root composition + `metamodel`, `estate-change`, `risks`, `events`, `realm-config`, and per-plane subfolders (`topology/`, `infrastructure/`, `nature/`, `operations/`, `context/`, `visualization/`).
+- **Location:** [`schema/v2.4/`](./schema/v2.4/) - root composition + `metamodel`, `estate-change`, `risks`, `events`, `realm-config`, and per-plane subfolders (`topology/`, `infrastructure/`, `nature/`, `operations/`, `context/`, `visualization/`).
 
 Each plane's data files are validated independently against their own schema; cross-cutting files validate against `estate-change`, `risks`, and `events`.
 
-v2.3 is the only published line. A model written against 2.2 validates unchanged; one written against 2.1 needs the `migration` to `estate_change` rename, which `npm run schema-update` performs; see the [changelog](./CHANGELOG.md).
+The validation scripts select v2.4 by default. See the [changelog](./CHANGELOG.md) for the schema additions in 2.4.0 through 2.4.2.
 
 ## License
 

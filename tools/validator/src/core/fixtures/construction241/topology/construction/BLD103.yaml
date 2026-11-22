@@ -1,0 +1,24 @@
+# Juniper Lane (fictional): a 3.0 by 1.2 m open-fronted woodstore. A wall plate (BEAM012) rests
+# on the back wall, a front beam (BEAM011) on two posts; a mono-pitch roof falls from 2.30 m at
+# the back to 1.90 m at the front.
+building_ref: BLD103
+generated_from:
+  semantic_source_refs: ["topology/estate.yaml"]
+  schema_version: "2.4.1"
+  generated_at: "2026-11-18T10:00:00Z"
+  generator: "manual"
+wall_segments:
+  - { id: WSG120, start: { x: 40.0, y: 20.0 }, end: { x: 43.0, y: 20.0 }, base_elevation_m: 0, height_m: 2.20, thickness_cm: 20, is_exterior: true, wall_type: exterior, material: brick, wing_ref: WNG103,
+      dimension_source: tape, dimension_accuracy_m: 0.01 }
+columns:
+  - { id: COL011, position: { x: 40.06, y: 21.14 }, base_elevation_m: 0, height_m: 1.76, width_cm: 10, material: timber, wing_ref: WNG103 }
+  - { id: COL012, position: { x: 42.94, y: 21.14 }, base_elevation_m: 0, height_m: 1.76, width_cm: 10, material: timber, wing_ref: WNG103 }
+beams:
+  - { id: BEAM011, start: { x: 40.0, y: 21.14 }, end: { x: 43.0, y: 21.14 }, top_elevation_start_m: 1.90, top_elevation_end_m: 1.90, width_cm: 8, depth_cm: 14, material: timber, wing_ref: WNG103,
+      rests_on_column_refs: [COL011, COL012], supports_roof_plane_refs: [RFP120] }
+  - { id: BEAM012, start: { x: 40.0, y: 20.0 }, end: { x: 43.0, y: 20.0 }, top_elevation_start_m: 2.30, top_elevation_end_m: 2.30, width_cm: 10, depth_cm: 10, material: timber, wing_ref: WNG103,
+      rests_on_wall_segment_refs: [WSG120], supports_roof_plane_refs: [RFP120] }
+roof_planes:
+  - { id: RFP120, building_ref: BLD103, wing_ref: WNG103, surface_type: slope, facing_direction: N, pitch_degrees: 19.33, overhang_cm: 10,
+      dimension_source: estimated, derived_from: "photographs; to confirm against the building's drawings",
+      vertices_3d: [ { x: 39.9, y: 19.9, z: 2.335 }, { x: 43.1, y: 19.9, z: 2.335 }, { x: 43.1, y: 21.24, z: 1.865 }, { x: 39.9, y: 21.24, z: 1.865 } ] }

@@ -70,6 +70,43 @@ iot_devices:
       Battery sensor in the second raised bed; the irrigation timer reads it
       before running.
     tags: [garden, sensor]
+  - id: IOT003
+    name: Orchard frost station
+    device_type: weather-station
+    protocol: zigbee
+    monitored_system_ref: SYS005
+    network_node_ref: NN002
+    outdoor_zone_ref: OZ004
+    position: {x: 34, y: 34.5}
+    description: >
+      Air temperature and humidity at blossom height in the lower orchard,
+      where the cold air settles; it warns of a frost night in April, and the
+      irrigation timer holds off while it reads frost.
+    tags: [garden, sensor, frost]
+  - id: IOT004
+    name: Gate camera
+    device_type: camera
+    protocol: wifi
+    monitored_system_ref: SYS007
+    network_node_ref: NN001
+    outdoor_zone_ref: OZ002
+    position: {x: 9, y: 4.6}
+    description: >
+      Camera on the gate post, looking up the drive; it records only the
+      drive, not the lane.
+    tags: [security]
+  - id: IOT005
+    name: Pear moisture sensor
+    device_type: soil-moisture-sensor
+    protocol: zigbee
+    monitored_system_ref: SYS005
+    network_node_ref: NN002
+    outdoor_zone_ref: OZ004
+    position: {x: 38.8, y: 32.2}
+    description: >
+      Battery sensor in the mulch ring of the stressed pear, read before a
+      dry-spell watering from the standpipe.
+    tags: [garden, sensor]
 
 # ── Links ─────────────────────────────────────────────────────────────────
 network_links:
@@ -102,16 +139,16 @@ network_links:
             z: 0.45
           - x: 25.8
             y: 22.4
-            z: -0.12
+            z: -0.87
           - x: 29
             y: 22.4
-            z: -0.12
+            z: -0.99
           - x: 29
             y: 19.2
-            z: 0.26
+            z: -0.6
           - x: 30
             y: 19.2
-            z: -0.8
+            z: -0.1
         placement: buried
       - kind: free
         floor_ref: FLR003
@@ -119,10 +156,10 @@ network_links:
           vertices:
           - x: 30
             y: 19.2
-            z: -0.8
+            z: -0.1
           - x: 33
             y: 19.2
-            z: -0.8
+            z: -0.1
         placement: conduit
     description: >
       Fictional estimated Cat6 route with terminal approaches and a buried

@@ -1,0 +1,865 @@
+---
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "topology/construction.schema.yaml"
+title: "Construction Geometry"
+description: >
+  AI-agent-generated construction geometry layer. Defines wall segments,
+  floor slabs, roof planes, columns, beams and building shells as
+  first-class entities with 3D coordinates. Derived from semantic estate
+  descriptions by an AI agent; authoritative for 2D floor plan and 3D
+  rendering. One file per floor (FLR###.yaml) or per simple building
+  (BLD###.yaml).
+
+x-gdsm:
+  version: "2.4.2"
+  methodology: "GDSM v1.0"
+  plane: "topology"
+  domain_slice: null
+  designed_for:
+    - id: T5
+      name: "2D Spatial Layout Visualization"
+      mfs_target: 80
+  competency_questions:
+    - "CQ33: What is the wall structure (thickness, material, adjacency) of each room?"
+    - "CQ34: What are the building heights (eave, ridge) for shadow and elevation analysis?"
+    - "CQ54: What carries the roof of an open structure - where does each post or column stand, how high does it reach and what is its section?"
+    - "CQ55: Where does the top edge of a wall whose top is not level run, and does it meet the roof above it?"
+    - "CQ56: What rests on the posts of an open structure and carries its roof - where does each beam run, how high is its top at each end, what is its section, and what does it rest on?"
+    - "CQ58: How is each stated dimension known - surveyed, measured, read from the drawings or estimated - and how far may it be off?"
+    - "CQ59: Where walls meet, which wall runs on to the outer corner, which walls stop at its face, and which are mitred - so that the face seen at each corner and the length each wall is drawn are known?"
+  fitness:
+    last_evaluated: "2026-11-21"
+    method: >
+      Structural: release 2.4.2 adds two optional properties on a wall segment
+      and one shared definition, and removes, renames, retypes or narrows
+      nothing, so no task's fitness can fall against 2.4.1.
+      Structural: release 2.4.1 adds two entity types (column, beam), one
+      optional property on a wall segment and two optional provenance
+      properties, and removes, renames, retypes or narrows nothing, so no
+      task's fitness can fall against 2.4.0.
+      Structural: release 2.3.0 adds optional properties, enum values, definitions
+      and entity types and removes, renames, retypes or narrows nothing, so no
+      task's fitness can fall against 2.2.0. No numeric baseline was recorded
+      before this release; the electrical questions in the systems file carry the
+      first per-question estimates.
+    scores: {}
+  non_goals:
+    - "Structural engineering calculations (load, moment, shear)"
+    - "Thermal bridging analysis"
+    - "Mechanical and plumbing routing (ducts, pipes). Electrical cable runs and risers are placed by the infrastructure plane against the wall segments defined here; this layer is the frame they are anchored to, not their home"
+    - "Roof framing member by member (rafters, purlins, battens), braces, footings, beams resting on beams and the joints between columns, beams and roof members: columns and beams state what carries a roof, not how it is framed"
+    - "How a wall joint is built (masonry bond, ties, fixings, corner posts): a wall joint states which wall runs through, not how it is built"
+  status: draft
+  owned_by: null
+  schema_ref_prefix: "WSG, SLB, RFP, COL, BEAM"
+  design_notes: >
+    Construction entities are derived, not authored. The AI agent reads
+    semantic descriptions (rooms, buildings, openings) and produces
+    deterministic geometry. Humans review and optionally correct.
+    Renderers consume construction data, not semantic descriptions.
+    IFC analogies: WSG ≈ IfcWall, SLB ≈ IfcSlab, RFP ≈ IfcRoof,
+    COL ≈ IfcColumn, BEAM ≈ IfcBeam. A beam names the columns and walls
+    that carry it and the roof planes it carries; nothing names the beam
+    back, so what rests on a column is found by the reverse lookup.
+    Wall segment ids are referenced from the infrastructure plane
+    (electrical components and cable runs), so a regeneration must keep
+    the id of every wall it re-derives: the key is the room and side the
+    wall was derived from, and a new id is allocated only for a wall that
+    key did not exist for before.
+
+type: object
+required: [generated_from]
+additionalProperties: false
+properties:
+  floor_ref:
+    $ref: "../metamodel.schema.yaml#/$defs/floor_ref"
+    title: "Source Floor"
+    description: >
+      Floor this construction file describes. Required for buildings
+      with formal floor entities. Mutually exclusive with building_ref.
+
+  building_ref:
+    $ref: "../metamodel.schema.yaml#/$defs/building_ref"
+    title: "Source Building"
+    description: >
+      Building this construction file describes. Used only for simple
+      buildings without formal floor entities (sheds, gazebos).
+      Mutually exclusive with floor_ref.
+
+  generated_from:
+    $ref: "#/$defs/provenance"
+    title: "Generation Provenance"
+
+  wall_segments:
+    type: array
+    title: "Wall Segments"
+    description: >
+      Wall segments for this floor. Optional for open structures
+      (carports, pergolas) that have no walls.
+    items:
+      $ref: "#/$defs/wall_segment"
+
+  columns:
+    type: array
+    title: "Columns"
+    description: >
+      Posts and columns of this floor or building that stand on their own,
+      such as the posts that carry the roof of an open gazebo or carport.
+      Answers CQ54.
+    items:
+      $ref: "#/$defs/column"
+
+  beams:
+    type: array
+    title: "Beams"
+    description: >
+      Beams of this floor or building: horizontal or sloped members that
+      rest on columns or walls and carry a roof, such as the beams on top of
+      a gazebo's posts or a wall plate along the top of a wall. Answers CQ56.
+    items:
+      $ref: "#/$defs/beam"
+
+  floor_slab:
+    $ref: "#/$defs/floor_slab"
+    title: "Floor Slab"
+    description: "The structural slab for this floor level."
+
+  ceiling_slab:
+    $ref: "#/$defs/floor_slab"
+    title: "Ceiling Slab"
+    description: >
+      The ceiling/upper slab for this floor. May be the same as the
+      next floor's floor_slab. Omit for top floor (roof takes over).
+
+  roof_planes:
+    type: array
+    title: "Roof Planes"
+    description: >
+      Roof planes for this floor. Only present on the topmost floor
+      file (or on BLD-level files for flat-roof buildings).
+    items:
+      $ref: "#/$defs/roof_plane"
+
+  building_shell:
+    $ref: "#/$defs/building_shell"
+    title: "Building Shell"
+    description: "Simplified building envelope for LOD0/LOD1 rendering."
+
+$defs:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Provenance
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  provenance:
+    type: object
+    title: "Generation Provenance"
+    description: "Tracks how this construction geometry was generated."
+    required: [semantic_source_refs, schema_version, generated_at]
+    additionalProperties: false
+    properties:
+      semantic_source_refs:
+        type: array
+        title: "Source Files"
+        description: "Semantic YAML files used as input for generation."
+        items:
+          type: string
+        minItems: 1
+        examples: [["topology/estate.yaml", "topology/boundary.yaml"]]
+      schema_version:
+        type: string
+        title: "Schema Version Used"
+        examples: ["2.0.0"]
+      generated_at:
+        type: string
+        format: date-time
+        title: "Generation Timestamp"
+      generator:
+        type: string
+        title: "Generator"
+        description: "Tool or agent that produced this file."
+        examples: ["realm-modeler-v2", "manual"]
+      human_edited:
+        type: boolean
+        title: "Human Edited"
+        description: "True if a human has modified the generated output."
+        default: false
+      inference_log:
+        type: object
+        title: "Inference Statistics"
+        description: "Statistics from the AI agent's generation run."
+        additionalProperties: true
+        properties:
+          rooms_processed:
+            type: integer
+          walls_generated:
+            type: integer
+          walls_merged:
+            type: integer
+          openings_mapped:
+            type: integer
+          warnings:
+            type: array
+            items:
+              type: string
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Wall Segment — WSG###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  wall_segment:
+    type: object
+    title: "Wall Segment"
+    description: >
+      A continuous section of wall with uniform thickness and material.
+      Defined by start and end points in model coordinates (meters).
+      References the rooms/zones on each side. Carries opening cutout
+      positions. Generated from room walls{N,E,S,W} descriptions.
+    required: [id, start, end, thickness_cm, is_exterior]
+    additionalProperties: false
+    not:
+      required: [top_profile, gable_peak_elevation_m]
+    properties:
+      id:
+        type: string
+        title: "WSG### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?WSG\\d{3,}$"
+        examples: ["WSG001", "main.WSG001"]
+
+      # ── Geometry ──
+      start:
+        $ref: "../metamodel.schema.yaml#/$defs/position"
+        title: "Start Point"
+        description: "Start of the wall centerline in model coordinates (meters)."
+      end:
+        $ref: "../metamodel.schema.yaml#/$defs/position"
+        title: "End Point"
+        description: "End of the wall centerline in model coordinates (meters)."
+      start_joint:
+        $ref: "#/$defs/wall_joint"
+        title: "Joint at Start"
+        description: >
+          How this wall meets the other walls at its start point: it runs
+          through, abuts, or is mitred. Without it the joint follows the rule
+          stated on wall_joint. Answers CQ59.
+        examples: ["through"]
+      end_joint:
+        $ref: "#/$defs/wall_joint"
+        title: "Joint at End"
+        description: >
+          How this wall meets the other walls at its end point: it runs
+          through, abuts, or is mitred. Without it the joint follows the rule
+          stated on wall_joint. Answers CQ59.
+        examples: ["abuts"]
+      base_elevation_m:
+        type: number
+        title: "Base Elevation (m)"
+        description: "Bottom of the wall above vertical datum."
+        default: 0
+      height_m:
+        type: number
+        title: "Wall Height (m)"
+        description: >
+          Height of this wall segment from base_elevation_m to its top: the
+          level top of a plain wall, the eaves line where the two slopes of a
+          gable start, or the lowest point of a top_profile.
+        exclusiveMinimum: 0
+        examples: [2.6, 2.8]
+      thickness_cm:
+        type: number
+        title: "Wall Thickness (cm)"
+        exclusiveMinimum: 0
+        examples: [24, 12, 15]
+      gable_peak_elevation_m:
+        type: number
+        title: "Gable Peak Elevation (m)"
+        description: >
+          Elevation above vertical datum of the peak of a symmetric gable top,
+          at the middle of the wall. The two slopes start at base_elevation_m +
+          height_m at both ends of the wall. A gable whose peak is off-centre
+          is stated as a top_profile instead; a wall states one or the other.
+      top_profile:
+        type: array
+        title: "Top Profile"
+        description: >
+          The top edge of a wall whose top is not level, as points along its
+          centreline: two points for a wall under a mono-pitch roof, three for a
+          gable whose peak is off-centre, more for a stepped top. The edge runs
+          straight from point to point; the first point is at the start and the
+          last at the end. Without it the top is level at base_elevation_m +
+          height_m, or a symmetric gable when gable_peak_elevation_m is stated.
+          Answers CQ55.
+        minItems: 2
+        items:
+          $ref: "#/$defs/wall_top_point"
+        examples:
+          - - { offset_from_start_cm: 0, elevation_m: 2.10 }
+            - { offset_from_start_cm: 180, elevation_m: 2.40 }
+
+      # ── Classification ──
+      is_exterior:
+        type: boolean
+        title: "Exterior Wall"
+        description: "True if this wall faces outside the building envelope."
+      wall_type:
+        type: string
+        title: "Wall Type"
+        enum: ["exterior", "interior-load-bearing", "interior-partition"]
+        examples: ["exterior"]
+      material:
+        type: string
+        title: "Material"
+        examples: ["gazobeton", "karton-gips", "beton", "cegła"]
+
+      # ── Adjacency ──
+      left_space_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/room_or_zone_ref"
+        title: "Left Space"
+        description: >
+          Room or outdoor zone on the left side of the wall (when looking
+          from start to end).
+      right_space_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/room_or_zone_ref"
+        title: "Right Space"
+        description: "Room or outdoor zone on the right side."
+
+      # ── Floor association ──
+      floor_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/floor_ref"
+        title: "Floor"
+        description: "Floor this wall segment belongs to."
+
+      # ── Openings ──
+      openings:
+        type: array
+        title: "Opening Cutouts"
+        description: "Windows and doors placed on this wall segment."
+        items:
+          $ref: "#/$defs/wall_opening"
+
+      # ── Wing ──
+      wing_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/wing_ref"
+        title: "Wing"
+        description: "Structural wing this wall segment belongs to."
+
+      # ── Provenance ──
+      derived_from:
+        type: string
+        title: "Source"
+        description: "Which semantic wall this was derived from (e.g., 'RM001.walls.E')."
+        examples: ["RM001.walls.E", "RM003.walls.N + RM004.walls.S"]
+      dimension_source:
+        $ref: "../metamodel.schema.yaml#/$defs/dimension_source"
+        title: "Dimension Source"
+        description: "How the heights, elevations, pitches and sizes stated on this element are known. Answers CQ58."
+      dimension_accuracy_m:
+        $ref: "../metamodel.schema.yaml#/$defs/dimension_accuracy_m"
+        title: "Dimension Accuracy (m)"
+        description: "How far a dimension stated on this element may lie from the true value. Answers CQ58."
+
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Wall Joint (embedded on wall_segment start_joint / end_joint)
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  wall_joint:
+    type: string
+    title: "Wall Joint"
+    description: >
+      How one end of a wall meets the other walls at its point. Walls meet
+      where an end lies within 2 cm of another wall's end or centreline.
+      through: the wall runs on to the outer face of the walls that stop
+      against it, so its own face shows at the corner. abuts: the wall
+      stops at the face of the wall that runs through. mitre: the wall ends
+      on the line joining the points where its two faces meet the faces of
+      the one other wall there, which is mitred too. Where no end at a
+      point states a joint, walls that continue each other in a straight
+      line, or a wall that passes through the point, run through; otherwise
+      the thickest wall runs through and the others abut, a tie in thickness
+      goes to the longer wall, and a remaining tie goes to the lower id. A
+      mitre is drawn only where stated. Where some ends state a joint, an
+      unstated end abuts a wall that runs through, is mitred with a mitred
+      wall, and runs through when every other end abuts. A joint never moves
+      a wall's start or end: its length and its openings' offsets stay
+      measured on the centreline. Answers CQ59.
+    enum: ["through", "abuts", "mitre"]
+    examples: ["through", "abuts", "mitre"]
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Wall Top Point (embedded in wall_segment.top_profile)
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  wall_top_point:
+    type: object
+    title: "Wall Top Point"
+    description: >
+      One point of a wall's top edge: how far along the wall from its start
+      point, and how high above vertical datum. Answers CQ55.
+    required: [offset_from_start_cm, elevation_m]
+    additionalProperties: false
+    properties:
+      offset_from_start_cm:
+        type: number
+        title: "Offset from Wall Start (cm)"
+        description: "Distance along the centreline from the wall's start point, measured as an opening's offset is."
+        minimum: 0
+        examples: [0, 180]
+      elevation_m:
+        type: number
+        title: "Top Elevation (m)"
+        description: "Elevation of the wall's top at this point above vertical datum, as base_elevation_m is measured."
+        examples: [2.10, 2.40]
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Wall Opening (embedded on wall_segment)
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  wall_opening:
+    type: object
+    title: "Wall Opening"
+    description: >
+      A window, door, or other opening placed on a wall segment.
+      Position is measured along the wall from start point.
+    required: [opening_type, offset_from_start_cm, width_cm, height_cm]
+    additionalProperties: false
+    properties:
+      opening_type:
+        type: string
+        title: "Opening Type"
+        enum:
+          - "window"
+          - "door"
+          - "terrace-door"
+          - "french-door"
+          - "sliding-door"
+          - "skylight"
+          - "garage-door"
+      offset_from_start_cm:
+        type: number
+        title: "Offset from Wall Start (cm)"
+        description: "Distance from wall segment start to the opening's near edge."
+        minimum: 0
+      width_cm:
+        type: number
+        title: "Width (cm)"
+        exclusiveMinimum: 0
+      height_cm:
+        type: number
+        title: "Height (cm)"
+        exclusiveMinimum: 0
+      sill_height_cm:
+        type: number
+        title: "Sill Height (cm)"
+        minimum: 0
+        default: 0
+      head_height_cm:
+        type: number
+        title: "Head Height (cm)"
+        exclusiveMinimum: 0
+      depth_cm:
+        type: number
+        title: "Reveal Depth (cm)"
+        exclusiveMinimum: 0
+      swing_direction:
+        type: string
+        title: "Swing Direction"
+        enum: ["left", "right"]
+      opens_inward:
+        type: boolean
+        title: "Opens Inward"
+      glazing:
+        type: string
+        title: "Glazing Type"
+        enum: ["single", "double", "triple"]
+      connects_to_ref:
+        title: "Connects To"
+        description: "Room or zone on the other side of this opening; null if it connects to the exterior."
+        anyOf:
+          - $ref: "../metamodel.schema.yaml#/$defs/room_or_zone_ref"
+          - type: "null"
+      source_room_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/room_ref"
+        title: "Source Room"
+        description: "Room whose semantic opening definition this was derived from."
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Floor Slab — SLB###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  floor_slab:
+    type: object
+    title: "Floor Slab"
+    description: >
+      A horizontal structural element (floor or ceiling slab). Defined by
+      a polygon outline at a specific elevation. Used for 3D floor/ceiling
+      rendering and room volume computation.
+    required: [id, floor_ref, outline, elevation_m, thickness_cm]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "SLB### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?SLB\\d{3,}$"
+        examples: ["SLB001", "main.SLB001"]
+      floor_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/floor_ref"
+        title: "Floor"
+        description: "Floor this slab belongs to."
+      outline:
+        $ref: "../metamodel.schema.yaml#/$defs/polygon_footprint"
+        title: "Slab Outline"
+        description: "Plan-view polygon of this slab in model coordinates."
+      elevation_m:
+        type: number
+        title: "Top Surface Elevation (m)"
+        description: "Elevation of the finished floor surface above vertical datum."
+      thickness_cm:
+        type: number
+        title: "Slab Thickness (cm)"
+        exclusiveMinimum: 0
+        examples: [20, 25, 30]
+      slab_type:
+        type: string
+        title: "Slab Type"
+        enum: ["ground-floor", "intermediate", "roof-slab", "basement"]
+      material:
+        type: string
+        title: "Material"
+        examples: ["reinforced-concrete", "timber-joist", "steel-composite"]
+      derived_from:
+        type: string
+        title: "Source"
+        examples: ["FLR001 + BLD001.footprint"]
+      dimension_source:
+        $ref: "../metamodel.schema.yaml#/$defs/dimension_source"
+        title: "Dimension Source"
+        description: "How the heights, elevations, pitches and sizes stated on this element are known. Answers CQ58."
+      dimension_accuracy_m:
+        $ref: "../metamodel.schema.yaml#/$defs/dimension_accuracy_m"
+        title: "Dimension Accuracy (m)"
+        description: "How far a dimension stated on this element may lie from the true value. Answers CQ58."
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Roof Plane — RFP###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  roof_plane:
+    type: object
+    title: "Roof Plane"
+    description: >
+      A planar surface of the roof. A gable roof has 2 planes; a hip roof
+      has 4. Each plane is a 3D polygon defining the visible roof surface.
+      Generated from building roof metadata (type, pitch, ridge_direction).
+    required: [id, building_ref, vertices_3d, surface_type]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "RFP### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?RFP\\d{3,}$"
+        examples: ["RFP001", "main.RFP001"]
+      building_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/building_ref"
+        title: "Building"
+        description: "Building this roof plane covers."
+      wing_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/wing_ref"
+        title: "Wing"
+        description: "Wing this roof plane covers. Required when building has wings."
+      vertices_3d:
+        type: array
+        title: "3D Vertices"
+        description: >
+          Ordered vertices of this roof plane in model coordinates with
+          elevation. CCW winding viewed from above.
+        minItems: 3
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/position3d"
+      surface_type:
+        type: string
+        title: "Surface Type"
+        enum: ["slope", "ridge-cap", "flat", "dormer-slope", "dormer-face"]
+      pitch_degrees:
+        type: number
+        title: "Pitch (degrees)"
+        minimum: 0
+        maximum: 90
+      facing_direction:
+        $ref: "../metamodel.schema.yaml#/$defs/compass_direction"
+        title: "Facing Direction"
+        description: "Compass direction the slope faces (down-slope direction)."
+      material:
+        type: string
+        title: "Roof Material"
+        examples: ["tile-concrete", "tile-ceramic", "metal-standing-seam", "bitumen", "slate"]
+      overhang_cm:
+        type: number
+        title: "Overhang (cm)"
+        minimum: 0
+      has_pv_panels:
+        type: boolean
+        title: "Has PV Panels"
+        description: "Whether photovoltaic panels are mounted on this plane."
+      derived_from:
+        type: string
+        title: "Source"
+        examples: ["BLD001 (gable, pitch=35, ridge=E)"]
+      dimension_source:
+        $ref: "../metamodel.schema.yaml#/$defs/dimension_source"
+        title: "Dimension Source"
+        description: "How the heights, elevations, pitches and sizes stated on this element are known. Answers CQ58."
+      dimension_accuracy_m:
+        $ref: "../metamodel.schema.yaml#/$defs/dimension_accuracy_m"
+        title: "Dimension Accuracy (m)"
+        description: "How far a dimension stated on this element may lie from the true value. Answers CQ58."
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Column - COL###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  column:
+    type: object
+    title: "Column"
+    description: >
+      A post or column: a vertical member standing on its own that carries a
+      roof, a beam or an upper floor, such as a post of an open gazebo, a
+      carport or a porch. Stated by where its foot stands, how high it
+      reaches and its cross-section. Answers CQ54. Used by T5.
+    required: [id, position, height_m, width_cm]
+    additionalProperties: false
+    allOf:
+      - if:
+          required: [section_shape]
+          properties:
+            section_shape: { const: "rectangular" }
+        then:
+          required: [depth_cm]
+        else:
+          not:
+            required: [depth_cm]
+    properties:
+      id:
+        type: string
+        title: "COL### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?COL\\d{3,}$"
+        examples: ["COL001", "main.COL001"]
+      position:
+        $ref: "../metamodel.schema.yaml#/$defs/position"
+        title: "Foot Position"
+        description: "Centre of the column's foot in model coordinates (meters)."
+      base_elevation_m:
+        type: number
+        title: "Base Elevation (m)"
+        description: "Bottom of the column above vertical datum."
+        default: 0
+        examples: [0, 0.15]
+      height_m:
+        type: number
+        title: "Height (m)"
+        description: "From the column's base to its top; the top is where the roof or beam it carries rests."
+        exclusiveMinimum: 0
+        examples: [2.15, 2.4]
+      section_shape:
+        type: string
+        title: "Section Shape"
+        description: "Shape of the column's cross-section."
+        enum: ["square", "rectangular", "round"]
+        default: "square"
+      width_cm:
+        type: number
+        title: "Width (cm)"
+        description: >
+          Side of a square section, the side along rotation_degrees of a
+          rectangular one, or the diameter of a round one.
+        exclusiveMinimum: 0
+        examples: [12, 14, 20]
+      depth_cm:
+        type: number
+        title: "Depth (cm)"
+        description: "Second side of a rectangular section; stated only for a rectangular one."
+        exclusiveMinimum: 0
+        examples: [20]
+      rotation_degrees:
+        type: number
+        title: "Rotation (degrees)"
+        description: >
+          Clockwise rotation of the section from north, as a building's
+          rotation is measured. 0 puts width_cm along the east-west axis.
+        default: 0
+        minimum: 0
+        exclusiveMaximum: 360
+        examples: [0, 15.5]
+      material:
+        type: string
+        title: "Material"
+        examples: ["timber", "glulam", "steel", "concrete", "brick"]
+      supports_roof_plane_refs:
+        type: array
+        title: "Supported Roof Planes"
+        description: "Roof planes whose underside rests on this column's top."
+        uniqueItems: true
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/roof_plane_ref"
+        examples: [["RFP101", "RFP104"]]
+      floor_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/floor_ref"
+        title: "Floor"
+        description: "Floor this column belongs to, in a floor's construction document."
+      wing_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/wing_ref"
+        title: "Wing"
+        description: "Structural wing this column belongs to."
+      derived_from:
+        type: string
+        title: "Source"
+        description: "What the column was derived from, such as a building's description or a measured survey."
+        examples: ["BLD101 description", "survey 2026-05"]
+      dimension_source:
+        $ref: "../metamodel.schema.yaml#/$defs/dimension_source"
+        title: "Dimension Source"
+        description: "How the heights, elevations, pitches and sizes stated on this element are known. Answers CQ58."
+      dimension_accuracy_m:
+        $ref: "../metamodel.schema.yaml#/$defs/dimension_accuracy_m"
+        title: "Dimension Accuracy (m)"
+        description: "How far a dimension stated on this element may lie from the true value. Answers CQ58."
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Beam - BEAM###
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  beam:
+    type: object
+    title: "Beam"
+    description: >
+      A beam: a horizontal or sloped member that rests on columns or walls
+      and carries a roof, such as a beam on top of a gazebo's posts or a
+      wall plate along the top of a wall. Stated by the plan line of its
+      centreline from start to end, the elevation of its top at each end and
+      its rectangular cross-section; its underside is its top less its depth.
+      Answers CQ56. Used by T5.
+    required: [id, start, end, top_elevation_start_m, top_elevation_end_m, width_cm, depth_cm]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        title: "BEAM### Identifier"
+        pattern: "^([a-z][a-z0-9-]*\\.)?BEAM\\d{3,}$"
+        examples: ["BEAM001", "main.BEAM001"]
+      start:
+        $ref: "../metamodel.schema.yaml#/$defs/position"
+        title: "Start Point"
+        description: "Start of the beam's centreline in plan, in model coordinates (meters)."
+      end:
+        $ref: "../metamodel.schema.yaml#/$defs/position"
+        title: "End Point"
+        description: "End of the beam's centreline in plan, in model coordinates (meters)."
+      top_elevation_start_m:
+        type: number
+        title: "Top Elevation at Start (m)"
+        description: "Elevation of the beam's top at its start point above vertical datum."
+        examples: [2.30]
+      top_elevation_end_m:
+        type: number
+        title: "Top Elevation at End (m)"
+        description: >
+          Elevation of the beam's top at its end point above vertical datum;
+          the same as at the start for a level beam, different for a sloped one.
+        examples: [2.30, 2.90]
+      width_cm:
+        type: number
+        title: "Width (cm)"
+        description: "Horizontal side of the beam's cross-section."
+        exclusiveMinimum: 0
+        examples: [10, 8]
+      depth_cm:
+        type: number
+        title: "Depth (cm)"
+        description: "Vertical side of the beam's cross-section, from its underside to its top."
+        exclusiveMinimum: 0
+        examples: [16, 20]
+      material:
+        type: string
+        title: "Material"
+        examples: ["timber", "glulam", "steel", "concrete"]
+      rests_on_column_refs:
+        type: array
+        title: "Resting on Columns"
+        description: "Columns whose tops carry this beam's underside."
+        uniqueItems: true
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/column_ref"
+        examples: [["COL001", "COL002"]]
+      rests_on_wall_segment_refs:
+        type: array
+        title: "Resting on Walls"
+        description: "Wall segments whose tops carry this beam's underside, at one of the beam's ends or along it."
+        uniqueItems: true
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/wall_segment_ref"
+        examples: [["WSG120"]]
+      supports_roof_plane_refs:
+        type: array
+        title: "Supported Roof Planes"
+        description: "Roof planes whose underside rests on this beam's top."
+        uniqueItems: true
+        items:
+          $ref: "../metamodel.schema.yaml#/$defs/roof_plane_ref"
+        examples: [["RFP101"]]
+      floor_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/floor_ref"
+        title: "Floor"
+        description: "Floor this beam belongs to, in a floor's construction document."
+      wing_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/wing_ref"
+        title: "Wing"
+        description: "Structural wing this beam belongs to."
+      derived_from:
+        type: string
+        title: "Source"
+        description: "What the beam was derived from, such as a building's description, photographs or a measured survey."
+        examples: ["photographs of the gazebo", "survey 2026-05"]
+      dimension_source:
+        $ref: "../metamodel.schema.yaml#/$defs/dimension_source"
+        title: "Dimension Source"
+        description: "How the heights, elevations, pitches and sizes stated on this element are known. Answers CQ58."
+      dimension_accuracy_m:
+        $ref: "../metamodel.schema.yaml#/$defs/dimension_accuracy_m"
+        title: "Dimension Accuracy (m)"
+        description: "How far a dimension stated on this element may lie from the true value. Answers CQ58."
+      tags:
+        $ref: "../metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Building Shell (LOD0/LOD1)
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  building_shell:
+    type: object
+    title: "Building Shell"
+    description: >
+      Simplified building envelope for LOD0 (footprint) and LOD1 (extruded
+      block) rendering. Pre-computed from footprint + heights for fast 3D.
+    required: [footprint_absolute]
+    additionalProperties: false
+    properties:
+      footprint_absolute:
+        $ref: "../metamodel.schema.yaml#/$defs/polygon_footprint"
+        title: "Absolute Footprint"
+        description: "Building footprint in model coordinates (rotation applied)."
+      ground_elevation_m:
+        type: number
+        title: "Ground Elevation (m)"
+      eave_elevation_m:
+        type: number
+        title: "Eave Elevation (m)"
+      ridge_elevation_m:
+        type: number
+        title: "Ridge Elevation (m)"

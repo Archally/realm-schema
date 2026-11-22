@@ -21,8 +21,11 @@
 # `connects_to_ref` - not two doors in one wall.
 #
 # All coordinates are model-absolute. Elevations are metres above the vertical
-# datum, so this floor's slab sits at -1.2 m and its walls rise 2.8 m from
-# there.
+# datum, so this floor's slab sits at -0.5 m and a partition rises 2.8 m from
+# there, to the ceiling. An outside or load-bearing wall goes on: to the next
+# storey's floor where there is one, else to the eave of the roof it holds up.
+# A gable end is one segment with its peak under the ridge, even where several
+# rooms stand behind it.
 # ═════════════════════════════════════════════════════════════════════════════
 
 floor_ref: FLR003
@@ -31,7 +34,7 @@ building_ref: BLD002
 generated_from:
   semantic_source_refs:
     - "topology/estate.yaml"
-  schema_version: "2.3.0"
+  schema_version: "2.4.1"
   generated_at: "2026-09-01T00:00:00Z"
   generator: gen-willow-cottage
   human_edited: false
@@ -48,9 +51,9 @@ building_shell:
       - {x: 37, y: 18}
       - {x: 37, y: 24}
       - {x: 30, y: 24}
-  ground_elevation_m: -1.2
-  eave_elevation_m: 1.7
-  ridge_elevation_m: 3.8
+  ground_elevation_m: -0.5
+  eave_elevation_m: 2.4
+  ridge_elevation_m: 4.5
 
 # ── Slabs ─────────────────────────────────────────────────────────────────
 floor_slab:
@@ -63,7 +66,7 @@ floor_slab:
       - {x: 37, y: 18}
       - {x: 37, y: 24}
       - {x: 30, y: 24}
-  elevation_m: -1.2
+  elevation_m: -0.5
   thickness_cm: 15
   slab_type: ground-floor
   material: reinforced-concrete
@@ -77,8 +80,8 @@ wall_segments:
     thickness_cm: 25
     is_exterior: true
     wall_type: exterior
-    base_elevation_m: -1.2
-    height_m: 2.8
+    base_elevation_m: -0.5
+    height_m: 2.9
     material: rubble-stone
     right_space_ref: RM015
     floor_ref: FLR003
@@ -90,8 +93,9 @@ wall_segments:
     thickness_cm: 25
     is_exterior: true
     wall_type: exterior
-    base_elevation_m: -1.2
-    height_m: 2.8
+    base_elevation_m: -0.5
+    height_m: 2.9
+    gable_peak_elevation_m: 4.5
     material: rubble-stone
     right_space_ref: RM015
     floor_ref: FLR003
@@ -103,8 +107,8 @@ wall_segments:
     thickness_cm: 25
     is_exterior: true
     wall_type: exterior
-    base_elevation_m: -1.2
-    height_m: 2.8
+    base_elevation_m: -0.5
+    height_m: 2.9
     material: rubble-stone
     right_space_ref: RM015
     floor_ref: FLR003
@@ -135,8 +139,9 @@ wall_segments:
     thickness_cm: 25
     is_exterior: true
     wall_type: exterior
-    base_elevation_m: -1.2
-    height_m: 2.8
+    base_elevation_m: -0.5
+    height_m: 2.9
+    gable_peak_elevation_m: 4.5
     material: rubble-stone
     right_space_ref: RM015
     floor_ref: FLR003

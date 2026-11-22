@@ -35,7 +35,7 @@ systems:
     position: {x: 25.8, y: 22.4}
     utility_connection_ref: UC001
     warranty_ref: WRT001
-    component_refs: [CMP001, CMP002, CMP004, CMP005]
+    component_refs: [CMP001, CMP002, CMP004, CMP005, CMP019, CMP020]
     feeds_system_refs: [SYS002]
     description: >
       Outdoor unit on a plinth against the cottage's east gable, sheltered
@@ -53,7 +53,7 @@ systems:
     room_ref: RM007
     utility_connection_ref: UC002
     warranty_ref: WRT001
-    component_refs: [CMP002, CMP006, CMP007]
+    component_refs: [CMP002, CMP006, CMP007, CMP027]
     description: >
       Unvented cylinder in the utility room, heated by the heat pump with an
       immersion backup.
@@ -67,7 +67,7 @@ systems:
     building_ref: BLD001
     room_ref: RM007
     utility_connection_ref: UC001
-    component_refs: [CMP003, CMP008, CMP009, CMP010, CMP011, CMP012, CMP013, CMP014, CMP015, CMP016, CMP017, CMP018]
+    component_refs: [CMP003, CMP008, CMP009, CMP010, CMP011, CMP012, CMP013, CMP014, CMP015, CMP016, CMP017, CMP018, CMP021, CMP022, CMP023, CMP024, CMP025, CMP026]
     feeds_system_refs: [SYS001, SYS002]
     description: >
       Consumer unit in the utility room, with a submain running to the barn.
@@ -91,10 +91,34 @@ systems:
     system_type: irrigation
     outdoor_zone_ref: OZ005
     position: {x: 15.5, y: 33}
+    component_refs: [CMP028]
     description: >
       Soaker hose across the four raised beds, on a tap timer from the
       rainwater tank.
     tags: [water, garden, seasonal]
+  - id: SYS006
+    name: Septic tank
+    system_type: sewage
+    rated_capacity: 2800
+    capacity_unit: litres
+    installed_date: "1978-06-01"
+    outdoor_zone_ref: OZ006
+    position: {x: 36, y: 39.6}
+    description: >
+      Two-chamber concrete tank at the top of the meadow, discharging to a
+      drainage field below it. Placed well away from the willow, whose roots
+      seek out wet ground.
+    tags: [water, drainage]
+  - id: SYS007
+    name: Drive security
+    system_type: security
+    installed_date: "2025-10-04"
+    outdoor_zone_ref: OZ002
+    position: {x: 9, y: 4.6}
+    description: >
+      One camera at the gate watching the drive; it keeps a week of recordings
+      on its own card.
+    tags: [security]
 
 # ── Components - the replaceable parts ────────────────────────────────────
 components:
@@ -374,6 +398,157 @@ components:
       Fictional layout fixture, estimated rather than surveyed. Cable
       transition 0.6 m below generated terrain at this XY; joins the buried
       submain to the barn approach.
+    tags: [fictional-house-systems]
+  - id: CMP019
+    name: Heat pump condensate soakaway
+    system_ref: SYS001
+    component_type: soakaway
+    installed_date: "2023-03-14"
+    building_ref: BLD001
+    outdoor_zone_ref: OZ007
+    position: {x: 27, y: 23.9}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: OZ007
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Gravel pit
+      taking the outdoor unit's defrost water, so it never freezes on the
+      forecourt.
+    tags: [fictional-house-systems]
+  - id: CMP020
+    name: Outdoor temperature sensor
+    system_ref: SYS001
+    component_type: sensor
+    installed_date: "2023-03-14"
+    building_ref: BLD001
+    position: {x: 17.5, y: 15.6}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: BLD001
+    mounting_height_cm: 180
+    description: >
+      Fictional layout fixture, estimated rather than surveyed.
+      Weather-compensation sensor on the shaded north wall; the heat pump sets
+      its flow temperature from it.
+    tags: [fictional-house-systems]
+  - id: CMP021
+    name: Garden RCBO
+    system_ref: SYS003
+    component_type: protective-device
+    installed_date: "2024-04-20"
+    building_ref: BLD001
+    room_ref: RM007
+    fed_from_ref: CMP003
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Protects the
+      outdoor circuit of the terrace socket and the path lights.
+    tags: [fictional-house-systems]
+  - id: CMP022
+    name: Garden final circuit
+    system_ref: SYS003
+    component_type: circuit
+    installed_date: "2024-04-20"
+    building_ref: BLD001
+    room_ref: RM007
+    protected_by_ref: CMP021
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Outdoor
+      circuit supplying the terrace socket and the two path bollards.
+    tags: [fictional-house-systems]
+  - id: CMP023
+    name: Terrace outdoor socket
+    system_ref: SYS003
+    component_type: socket-outlet
+    installed_date: "2024-04-20"
+    building_ref: BLD001
+    outdoor_zone_ref: OZ003
+    position: {x: 18, y: 27.9}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: OZ003
+    mounting_height_cm: 45
+    circuit_ref: CMP022
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Weatherproof
+      socket on the south wall, used for the mower and the terrace lights.
+    tags: [fictional-house-systems]
+  - id: CMP024
+    name: East path bollard, north
+    system_ref: SYS003
+    component_type: lighting-fixture
+    installed_date: "2024-04-20"
+    outdoor_zone_ref: OZ010
+    position: {x: 25.5, y: 26}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: OZ010
+    circuit_ref: CMP022
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Low bollard
+      light at the top of the east path.
+    tags: [fictional-house-systems]
+  - id: CMP025
+    name: East path bollard, south
+    system_ref: SYS003
+    component_type: lighting-fixture
+    installed_date: "2024-04-20"
+    outdoor_zone_ref: OZ010
+    position: {x: 25.5, y: 30.5}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: OZ010
+    circuit_ref: CMP022
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Low bollard
+      light where the east path meets the vegetable garden.
+    tags: [fictional-house-systems]
+  - id: CMP026
+    name: Barn outside socket
+    system_ref: SYS003
+    component_type: socket-outlet
+    installed_date: "2019-11-08"
+    building_ref: BLD002
+    outdoor_zone_ref: OZ007
+    position: {x: 29.6, y: 21.6}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: OZ007
+    mounting_height_cm: 100
+    circuit_ref: CMP014
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Weatherproof
+      socket on the barn's west wall, for tools used on the forecourt.
+    tags: [fictional-house-systems]
+  - id: CMP027
+    name: Outside tap, west wall
+    system_ref: SYS002
+    component_type: tap
+    installed_date: "2021-05-08"
+    building_ref: BLD001
+    outdoor_zone_ref: OZ008
+    position: {x: 13.6, y: 24}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: OZ008
+    mounting_height_cm: 60
+    description: >
+      Fictional layout fixture, estimated rather than surveyed.
+      Frost-protected cold tap on the mains, beside the compost corner.
+    tags: [fictional-house-systems]
+  - id: CMP028
+    name: Orchard standpipe
+    system_ref: SYS005
+    component_type: tap
+    installed_date: "2024-05-02"
+    outdoor_zone_ref: OZ004
+    position: {x: 28.5, y: 30.5}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: OZ004
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Hose point on
+      the irrigation line at the orchard's west end, for young trees in a dry
+      spell.
     tags: [fictional-house-systems]
 
 # ── Utility connections - where the estate meets someone else's network ────
@@ -683,16 +858,16 @@ pipe_runs:
           vertices:
           - x: 8.2
             y: 3.4
-            z: 2.32
+            z: 1.99
           - x: 13.5
             y: 16
-            z: 0.71
+            z: 0.24
           - x: 13.5
             y: 25
-            z: -0.48
+            z: -0.94
           - x: 16
             y: 25
-            z: -0.48
+            z: -0.99
         placement: buried
       - kind: free
         floor_ref: FLR001
@@ -700,7 +875,7 @@ pipe_runs:
           vertices:
           - x: 16
             y: 25
-            z: -0.48
+            z: -0.99
           - x: 16
             y: 25
             z: 0.45
@@ -725,16 +900,16 @@ pipe_runs:
           vertices:
           - x: 8.2
             y: 3.4
-            z: 2.32
+            z: 1.99
           - x: 13.5
             y: 16
-            z: 0.71
+            z: 0.24
           - x: 13.5
             y: 25
-            z: -0.48
+            z: -0.94
           - x: 16
             y: 25
-            z: -0.48
+            z: -0.99
         placement: buried
       - kind: free
         floor_ref: FLR001
@@ -742,7 +917,7 @@ pipe_runs:
           vertices:
           - x: 16
             y: 25
-            z: -0.48
+            z: -0.99
           - x: 16
             y: 25
             z: 0.45
@@ -840,16 +1015,16 @@ pipe_runs:
           vertices:
           - x: 8.2
             y: 3.4
-            z: 2.32
+            z: 1.99
           - x: 13.5
             y: 16
-            z: 0.71
+            z: 0.24
           - x: 13.5
             y: 25
-            z: -0.48
+            z: -0.94
           - x: 16
             y: 25
-            z: -0.48
+            z: -0.99
         placement: buried
       - kind: free
         floor_ref: FLR001
@@ -857,7 +1032,7 @@ pipe_runs:
           vertices:
           - x: 16
             y: 25
-            z: -0.48
+            z: -0.99
           - x: 16
             y: 25
             z: 0.45
@@ -952,13 +1127,13 @@ cable_runs:
           vertices:
           - x: 25.8
             y: 22.4
-            z: -0.12
+            z: -0.87
           - x: 29
             y: 22.4
-            z: -0.12
+            z: -0.99
           - x: 29
             y: 19.2
-            z: 0.26
+            z: -0.6
         placement: buried
     description: >
       Fictional layout fixture, estimated rather than surveyed. Representative
@@ -992,7 +1167,7 @@ cable_runs:
             z: 0.45
           - x: 25.8
             y: 22.4
-            z: -0.12
+            z: -0.87
         placement: conduit
     description: >
       Fictional layout fixture, estimated rather than surveyed. Representative
@@ -1014,13 +1189,13 @@ cable_runs:
           vertices:
           - x: 29
             y: 19.2
-            z: 0.26
+            z: -0.6
           - x: 30
             y: 19.2
-            z: -0.8
+            z: -0.1
           - x: 31
             y: 19.2
-            z: -0.8
+            z: -0.1
         placement: conduit
     description: >
       Fictional layout fixture, estimated rather than surveyed. Representative
@@ -1043,10 +1218,10 @@ cable_runs:
           vertices:
           - x: 31
             y: 19.2
-            z: -0.8
+            z: -0.1
           - x: 35
             y: 19.2
-            z: -0.8
+            z: -0.1
         placement: conduit
     description: >
       Fictional layout fixture, estimated rather than surveyed. Representative

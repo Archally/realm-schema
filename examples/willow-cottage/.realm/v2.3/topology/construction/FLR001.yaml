@@ -21,8 +21,11 @@
 # `connects_to_ref` - not two doors in one wall.
 #
 # All coordinates are model-absolute. Elevations are metres above the vertical
-# datum, so this floor's slab sits at 0 m and its walls rise 2.45 m from
-# there.
+# datum, so this floor's slab sits at 0 m and a partition rises 2.45 m from
+# there, to the ceiling. An outside or load-bearing wall goes on: to the next
+# storey's floor where there is one, else to the eave of the roof it holds up.
+# A gable end is one segment with its peak under the ridge, even where several
+# rooms stand behind it.
 # ═════════════════════════════════════════════════════════════════════════════
 
 floor_ref: FLR001
@@ -31,7 +34,7 @@ building_ref: BLD001
 generated_from:
   semantic_source_refs:
     - "topology/estate.yaml"
-  schema_version: "2.3.0"
+  schema_version: "2.4.1"
   generated_at: "2026-09-01T00:00:00Z"
   generator: gen-willow-cottage
   human_edited: false
@@ -51,8 +54,8 @@ building_shell:
       - {x: 21.6, y: 27.5}
       - {x: 14, y: 27.5}
   ground_elevation_m: 0
-  eave_elevation_m: 4.6
-  ridge_elevation_m: 8.2
+  eave_elevation_m: 5.2
+  ridge_elevation_m: 8.8
 
 # ── Slabs ─────────────────────────────────────────────────────────────────
 floor_slab:
@@ -98,7 +101,7 @@ wall_segments:
     is_exterior: true
     wall_type: exterior
     base_elevation_m: 0
-    height_m: 2.45
+    height_m: 2.85
     material: rubble-stone
     right_space_ref: RM001
     floor_ref: FLR001
@@ -169,7 +172,7 @@ wall_segments:
     is_exterior: true
     wall_type: exterior
     base_elevation_m: 0
-    height_m: 2.45
+    height_m: 2.85
     material: rubble-stone
     right_space_ref: RM001
     floor_ref: FLR001
@@ -192,7 +195,7 @@ wall_segments:
     is_exterior: true
     wall_type: exterior
     base_elevation_m: 0
-    height_m: 2.45
+    height_m: 2.85
     material: rubble-stone
     right_space_ref: RM002
     floor_ref: FLR001
@@ -263,7 +266,7 @@ wall_segments:
     is_exterior: true
     wall_type: exterior
     base_elevation_m: 0
-    height_m: 2.45
+    height_m: 2.85
     material: rubble-stone
     right_space_ref: RM003
     floor_ref: FLR001
@@ -286,7 +289,7 @@ wall_segments:
     is_exterior: true
     wall_type: exterior
     base_elevation_m: 0
-    height_m: 2.45
+    height_m: 2.85
     material: rubble-stone
     right_space_ref: RM003
     floor_ref: FLR001
@@ -337,7 +340,7 @@ wall_segments:
     is_exterior: false
     wall_type: interior-load-bearing
     base_elevation_m: 0
-    height_m: 2.45
+    height_m: 2.85
     material: rubble-stone
     right_space_ref: RM004
     left_space_ref: RM007
@@ -361,7 +364,7 @@ wall_segments:
     is_exterior: true
     wall_type: exterior
     base_elevation_m: 0
-    height_m: 2.45
+    height_m: 2.85
     material: rubble-stone
     right_space_ref: RM004
     floor_ref: FLR001
@@ -409,7 +412,7 @@ wall_segments:
     is_exterior: false
     wall_type: interior-load-bearing
     base_elevation_m: 0
-    height_m: 2.45
+    height_m: 2.85
     material: rubble-stone
     right_space_ref: RM005
     left_space_ref: RM008
@@ -433,7 +436,7 @@ wall_segments:
     is_exterior: true
     wall_type: exterior
     base_elevation_m: 0
-    height_m: 2.45
+    height_m: 2.85
     material: rubble-stone
     right_space_ref: RM006
     floor_ref: FLR001
@@ -456,7 +459,7 @@ wall_segments:
     is_exterior: true
     wall_type: exterior
     base_elevation_m: 0
-    height_m: 2.45
+    height_m: 2.85
     material: rubble-stone
     right_space_ref: RM006
     floor_ref: FLR001
@@ -493,7 +496,7 @@ wall_segments:
     is_exterior: true
     wall_type: exterior
     base_elevation_m: 0
-    height_m: 2.45
+    height_m: 2.7
     material: brick
     right_space_ref: RM007
     floor_ref: FLR001
@@ -516,7 +519,10 @@ wall_segments:
     is_exterior: true
     wall_type: exterior
     base_elevation_m: 0
-    height_m: 2.45
+    height_m: 2.7
+    top_profile:
+      - {offset_from_start_cm: 0, elevation_m: 2.7}
+      - {offset_from_start_cm: 350, elevation_m: 3.64}
     material: brick
     right_space_ref: RM007
     floor_ref: FLR001
@@ -539,7 +545,10 @@ wall_segments:
     is_exterior: true
     wall_type: exterior
     base_elevation_m: 0
-    height_m: 2.45
+    height_m: 2.7
+    top_profile:
+      - {offset_from_start_cm: 0, elevation_m: 3.64}
+      - {offset_from_start_cm: 350, elevation_m: 2.7}
     material: brick
     right_space_ref: RM008
     floor_ref: FLR001
@@ -552,7 +561,7 @@ wall_segments:
     is_exterior: true
     wall_type: exterior
     base_elevation_m: 0
-    height_m: 2.45
+    height_m: 2.7
     material: brick
     right_space_ref: RM008
     floor_ref: FLR001

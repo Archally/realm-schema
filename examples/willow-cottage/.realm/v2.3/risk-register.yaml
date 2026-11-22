@@ -20,7 +20,7 @@ risks:
     category: operational
     severity: moderate
     status: monitoring
-    entity_refs: [SPM003, SPM004, OZ004, EF002]
+    entity_refs: [SPM003, SPM004, SPM010, OZ004, EF002, IOT003]
     description: >
       Cold air draining down the fall settles at the stream and reaches the
       lower orchard. A late frost during blossom costs most of the crop.

@@ -7,6 +7,7 @@ import { entityPrefix } from "./helpers.mjs";
 import { checkEstateChangeRules } from "./estate-change-rules.mjs";
 import { checkLifecycleRules } from "./lifecycle-rules.mjs";
 import { checkGeoreferenceRules } from "./georeference-rules.mjs";
+import { checkTimeZoneRules } from "./time-zone-rules.mjs";
 import { checkSharedEdgeRules } from "./shared-edge-rules.mjs";
 import { checkMemberRules } from "./member-rules.mjs";
 import { checkEpicRules } from "./epic-rules.mjs";
@@ -16,10 +17,8 @@ import { checkPipeAndNetworkRules } from "./pipe-and-network-rules.mjs";
 /**
  * @param {Map<string, {data: Record<string, unknown>}>} entities
  * @param {Record<string, number>} config
- * @param {Record<string, unknown> | undefined} [root] the parsed `realm.yaml`, for the
- *   rules that join an entity to the coordinate system. Optional so an older caller that
- *   passes two arguments keeps its findings; it then simply cannot report the
- *   georeference rule, and the runner that wants it passes the root.
+ * @param {Record<string, unknown> | undefined} [root] the parsed `realm.yaml`,
+ *   which supplies the coordinate system and location for georeference and time zone rules.
  */
 export function validateSemantic(entities, config, root) {
   const issues = [];
@@ -56,16 +55,8 @@ export function validateSemantic(entities, config, root) {
 
     // ── BLD (Building) ──
     if (prefix === "BLD") {
-      // S05: Building with ground_elevation → floors should have base_elevation
-      //
-      // Only buildings that HAVE floors are in scope. A building with no floors
-      // at all was previously reported as "no floors have base_elevation_m",
-      // which describes a gap that does not exist: the cewice gazebo has no
-      // storey of its own, it is an open shelter bolted to a patio. Reading that
-      // message as written leads to inventing a floor entity to satisfy it, and
-      // the invented floor then trips C07 for having no slab. Whether every
-      // building ought to have a floor is a different question from whether a
-      // building and its floors agree about elevation, which is what S05 asks.
+      // S05: A building with a ground elevation and at least one floor needs at
+      // least one floor with a base elevation.
       if (data.ground_elevation_m != null) {
         let floorCount = 0;
         let hasFloorWithElevation = false;
@@ -134,17 +125,16 @@ export function validateSemantic(entities, config, root) {
     }
   }
 
-  // Estate-change rules (R-A..R-F, plus the family-cycle check) come from realm-core,
-  // so this shim, the MCP server and `rl check` all report the same findings rather
-  // than three drifting copies of the same intent.
+  // Estate-change rules R-A through R-F and the family-cycle check.
   issues.push(...checkEstateChangeRules(entities));
 
   // Lifecycle rules (schema 2.3.0): a live entity pointing at one that ended, and a
-  // superseded record with no successor. Same origin, same reason.
+  // superseded record with no successor.
   issues.push(...checkLifecycleRules(entities));
 
   // Georeference rule (schema 2.3.0): a gps source in a model with no WGS84 origin.
   issues.push(...checkGeoreferenceRules(entities, root?.coordinate_system));
+  issues.push(...checkTimeZoneRules(root));
   // Shared edges (2.3.0): a declaration the coordinates contradict.
   issues.push(...checkSharedEdgeRules(entities));
   // Placed members and epics (2.3.0): a promoted unit still listed, a list longer than

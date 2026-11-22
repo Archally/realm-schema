@@ -7,11 +7,11 @@ import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 
 const executable = fileURLToPath(new URL('./cli.mjs', import.meta.url));
-function fixture(context) {
+function fixture(context, schemaLine = 'v2.4') {
   const root = mkdtempSync(join(tmpdir(), 'realm-atlas-'));
   context.after(() => rmSync(root, { recursive: true, force: true }));
-  const schemaDirectory = join(root, 'schema/v2.3');
-  const output = join(root, 'docs/schema-atlas/2026-11-06-reference.md');
+  const schemaDirectory = join(root, 'schema', schemaLine);
+  const output = join(root, 'docs/schema-atlas', `2026-11-22-${schemaLine}-reference.md`);
   mkdirSync(join(schemaDirectory, 'topology/deep'), { recursive: true });
   writeFileSync(join(schemaDirectory, 'realm.schema.yaml'), 'title: Realm\ntype: object\nproperties:\n  parcels:\n    type: array\n    items:\n      $ref: "topology/deep/estate.schema.yaml#/$defs/parcel"\n');
   writeFileSync(join(schemaDirectory, 'topology/deep/estate.schema.yaml'), 'title: Estate\n$defs:\n  parcel:\n    type: object\n    properties:\n      "a/b~c":\n        type: string\n        description: |\n          A | B <tag> `code` [link] *text* \\path\n          next line\n    allOf:\n      - required: [id]\n    additionalProperties: false\nx-gdsm:\n  description: omitted metadata\n');
@@ -42,11 +42,20 @@ test('public-shaped default invocation has Realm title, defaults and determinist
   assert.equal(run('generate').status, 0);
   assert.ok(existsSync(output));
   const body = readFileSync(output, 'utf8');
-  assert.match(body, /^# Realm v2\.3 schema atlas\n/);
+  assert.match(body, /^# Realm v2\.4 schema atlas\n/);
   assert.match(body, /YAML schemas define validation.*selected constraints.*rather than replacing a validator/);
   assert.ok(!body.includes(root));
   assert.equal(run('generate').status, 0);
   assert.equal(readFileSync(output, 'utf8'), body);
+});
+
+test('explicit v2.3 line selects the schema directory, title and output file', context => {
+  const { output, run } = fixture(context, 'v2.3');
+  assert.equal(run('generate', '--line', 'v2.3').status, 0);
+  const body = readFileSync(output, 'utf8');
+  assert.match(body, /^# Realm v2\.3 schema atlas\n/);
+  assert.match(body, /\]\(\.\.\/\.\.\/schema\/v2\.3\/realm\.schema\.yaml\)/);
+  assert.equal(run('check', '--line', 'v2.3').status, 0);
 });
 
 test('traverses nested definitions, arrays and references with JSON Pointer and Markdown escaping', context => {
@@ -81,9 +90,9 @@ test('check preserves bytes and mtime for current and stale output and never cre
 
 test('explicit schema and output options resolve from the working directory', context => {
   const { root, run } = fixture(context);
-  assert.equal(run('generate', '--schema', 'schema/v2.3', '--out', 'custom/reference.md').status, 0);
+  assert.equal(run('generate', '--schema', 'schema/v2.4', '--out', 'custom/reference.md').status, 0);
   assert.ok(existsSync(join(root, 'custom/reference.md')));
-  assert.equal(run('check', '--schema', 'schema/v2.3', '--out', 'custom/reference.md').status, 0);
+  assert.equal(run('check', '--schema', 'schema/v2.4', '--out', 'custom/reference.md').status, 0);
 });
 
 test('empty schema tree fails clearly without creating output', context => {
@@ -108,22 +117,23 @@ test('malformed YAML fails without changing existing output', context => {
 test('invalid modes and options including option-valued missing arguments fail without writes', context => {
   const { output, run } = fixture(context);
   const invalidArguments = [[], ['unknown'], ['generate', '--unknown', 'value'], ['generate', '--schema'],
-    ['generate', '--out'], ['generate', '--schema', '--out', 'file.md'], ['generate', '--out', '--schema', 'schema/v2.3'],
-    ['generate', 'extra'], ['generate', '--out', '']];
+    ['generate', '--out'], ['generate', '--schema', '--out', 'file.md'], ['generate', '--out', '--schema', 'schema/v2.4'],
+    ['generate', 'extra'], ['generate', '--out', ''], ['generate', '--line'], ['generate', '--line', '../schema']];
   for (const argumentsList of invalidArguments) {
     const result = run(...argumentsList);
     assert.equal(result.status, 2, JSON.stringify(argumentsList));
-    assert.match(result.stderr, /Usage:|Unknown or incomplete option:/);
+    assert.match(result.stderr, /Usage:|Unknown or incomplete option:|Schema line must use vMAJOR\.MINOR/);
     assert.ok(!existsSync(output));
   }
 });
 
 const repository = resolve(dirname(executable), '../..');
-const deployed = existsSync(join(repository, 'package.json')) && existsSync(join(repository, 'schema/v2.3'));
+const deployed = existsSync(join(repository, 'package.json')) && existsSync(join(repository, 'schema/v2.4'));
 test('shipped atlas covers all 24 schemas with working source links and public package invariants', { skip: !deployed }, () => {
-  const schemaDirectory = join(repository, 'schema/v2.3');
-  const output = join(repository, 'docs/schema-atlas/2026-11-06-reference.md');
+  const schemaDirectory = join(repository, 'schema/v2.4');
+  const output = join(repository, 'docs/schema-atlas/2026-11-22-v2.4-reference.md');
   const body = readFileSync(output, 'utf8');
+  assert.match(body, /^# Realm v2\.4 schema atlas\n/);
   const expected = readdirSync(schemaDirectory, { recursive: true })
     .filter(name => name.endsWith('.schema.yaml')).map(name => name.replaceAll('\\', '/')).sort();
   assert.equal(expected.length, 24);

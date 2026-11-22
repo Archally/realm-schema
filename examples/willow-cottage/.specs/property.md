@@ -1,6 +1,6 @@
 # Willow Cottage
 
-> Generated from a Realm model: 187 entities, 700 relations, 5 planes, Realm schema v2.3.0.
+> Generated from a Realm model: 211 entities, 772 relations, 5 planes, Realm schema v2.4.1.
 
 **Willow Cottage, Brackwater Lane, Nether Hollowby, South West England, England**
 
@@ -149,7 +149,7 @@ Two-storey stone cottage with a single-storey rear lean-to, set on a levelled te
 
 ### Stone barn (BLD002)
 
-Detached barn east of the cottage, on its own platform 1.2 m lower. Reached from the drive; no internal connection to the house.
+Detached barn east of the cottage, on its own platform 0.5 m lower. Reached from the drive; no internal connection to the house.
 
 | Property | Value |
 |---|---|
@@ -167,23 +167,23 @@ Detached barn east of the cottage, on its own platform 1.2 m lower. Reached from
 
 | Zone | Name | Type | Area | Sun | Slope |
 |---|---|---|---|---|---|
-| OZ001 | Drive | driveway | 62.6 m2 | full-sun | 12.2% S |
-| OZ002 | Front garden | lawn | 210 m2 | full-sun | 12.9% S |
-| OZ003 | South terrace | terrace | 44 m2 | full-sun | 14.2% S |
-| OZ004 | Orchard | orchard | 230 m2 | full-sun | 12.4% S |
-| OZ005 | Vegetable garden | vegetable-garden | 103 m2 | full-sun | 14.2% S |
-| OZ006 | Lower meadow | meadow | 177.5 m2 | partial-sun | 13.9% S |
-| OZ007 | Barn forecourt | gravel-area | 38.3 m2 | partial-sun | 11.5% S |
-| OZ008 | Compost corner | compost-area | 36 m2 | partial-shade | 14.2% S |
-| OZ009 | Front path | path | 6.2 m2 | full-sun | 12.2% S |
-| OZ010 | East path | path | 7 m2 | partial-sun | 13.9% S |
+| OZ001 | Drive | driveway | 62.6 m2 | full-sun | 13.2% S |
+| OZ002 | Front garden | lawn | 210 m2 | full-sun | 13.3% S |
+| OZ003 | South terrace | terrace | 44 m2 | full-sun | 12.8% S |
+| OZ004 | Orchard | orchard | 230 m2 | full-sun | 9.3% SE |
+| OZ005 | Vegetable garden | vegetable-garden | 103 m2 | full-sun | 12.8% S |
+| OZ006 | Lower meadow | meadow | 177.5 m2 | partial-sun | 12.3% S |
+| OZ007 | Barn forecourt | gravel-area | 38.3 m2 | partial-sun | 15.6% S |
+| OZ008 | Compost corner | compost-area | 36 m2 | partial-shade | 12.8% S |
+| OZ009 | Front path | path | 6.2 m2 | full-sun | 13.2% S |
+| OZ010 | East path | path | 7 m2 | partial-sun | 12.3% S |
 
 ### Boundary
 
 | Segment | Name | Type | Length | Borders |
 |---|---|---|---|---|
 | BS001 | Roadside hedge | hedge-mixed | 34.09 m | - |
-| BS002 | North-east post and rail | fence-wood | 22.5 m | Hollybank (north-east) (NP001) |
+| BS002 | North-east post and rail | fence-wood | 22.5 m | Hollybank paddock (north-east) (NP005) |
 | BS003 | East stone wall | wall-stone | 25.71 m | The Old Forge (east) (NP002) |
 | BS004 | South treeline | natural-treeline | 28.64 m | Mill Farm meadow (south) (NP003) |
 | BS005 | West retaining wall | wall-stone | 56.16 m | Brackwater coppice (west) (NP004) |
@@ -196,6 +196,7 @@ Detached barn east of the cottage, on its own platform 1.2 m lower. Reached from
 | NP002 | The Old Forge (east) | residential-single | Single-storey conversion of the village forge, occupied at weekends. |
 | NP003 | Mill Farm meadow (south) | agricultural | Grazing meadow across the stream, in the same ownership as Mill Farm. No buildings within sight of the cottage. |
 | NP004 | Brackwater coppice (west) | forest | Hazel coppice on the west bank, cut on a seven-year rotation. Its edge trees overhang the drive. |
+| NP005 | Hollybank paddock (north-east) | agricultural | Hollybank's grazing paddock between the lane, the track and the post-and-rail fence. The farmhouse looks across it to the cottage. |
 
 ## Systems and utilities
 
@@ -206,10 +207,13 @@ flowchart LR
     CMP002("Hot water cylinder<br/>CMP002")
     CMP004("Ground-floor heating manifold<br/>CMP004")
     CMP005("Bathroom radiator<br/>CMP005")
+    CMP019("Heat pump condensate soakaway<br/>CMP019")
+    CMP020("Outdoor temperature sensor<br/>CMP020")
     UC001(["Mains electricity<br/>UC001"])
     SYS002["Domestic hot water<br/>SYS002"]
     CMP006("Bathroom basin mixer<br/>CMP006")
     CMP007("Kitchen sink mixer<br/>CMP007")
+    CMP027("Outside tap, west wall<br/>CMP027")
     UC002(["Mains water<br/>UC002"])
     SYS003["Electrical distribution<br/>SYS003"]
     CMP003("Consumer unit<br/>CMP003")
@@ -224,17 +228,29 @@ flowchart LR
     CMP016("Heat pump isolator<br/>CMP016")
     CMP017("Cottage submain burial transition<br/>CMP017")
     CMP018("Barn submain burial transition<br/>CMP018")
+    CMP021("Garden RCBO<br/>CMP021")
+    CMP022("Garden final circuit<br/>CMP022")
+    CMP023("Terrace outdoor socket<br/>CMP023")
+    CMP024("East path bollard, north<br/>CMP024")
+    CMP025("East path bollard, south<br/>CMP025")
+    CMP026("Barn outside socket<br/>CMP026")
     SYS004["Rainwater harvesting<br/>SYS004"]
     SYS005["Garden irrigation<br/>SYS005"]
+    CMP028("Orchard standpipe<br/>CMP028")
+    SYS006["Septic tank<br/>SYS006"]
+    SYS007["Drive security<br/>SYS007"]
     SYS001 -->|"contains"| CMP001
     SYS001 -->|"contains"| CMP002
     SYS001 -->|"contains"| CMP004
     SYS001 -->|"contains"| CMP005
+    SYS001 -->|"contains"| CMP019
+    SYS001 -->|"contains"| CMP020
     UC001 -->|"feeds"| SYS001
     SYS001 -->|"feeds"| SYS002
     SYS002 -->|"contains"| CMP002
     SYS002 -->|"contains"| CMP006
     SYS002 -->|"contains"| CMP007
+    SYS002 -->|"contains"| CMP027
     UC002 -->|"feeds"| SYS002
     SYS003 -->|"contains"| CMP003
     SYS003 -->|"contains"| CMP008
@@ -248,19 +264,28 @@ flowchart LR
     SYS003 -->|"contains"| CMP016
     SYS003 -->|"contains"| CMP017
     SYS003 -->|"contains"| CMP018
+    SYS003 -->|"contains"| CMP021
+    SYS003 -->|"contains"| CMP022
+    SYS003 -->|"contains"| CMP023
+    SYS003 -->|"contains"| CMP024
+    SYS003 -->|"contains"| CMP025
+    SYS003 -->|"contains"| CMP026
     UC001 -->|"feeds"| SYS003
     SYS003 -->|"feeds"| SYS001
     SYS003 -->|"feeds"| SYS002
     SYS004 -->|"feeds"| SYS005
+    SYS005 -->|"contains"| CMP028
 ```
 
 | System | Name | Type | Where | Supply | Parts | Installed |
 |---|---|---|---|---|---|---|
-| SYS001 | Air-source heat pump | heating | Willow Cottage (BLD001) | Mains electricity (UC001) | CMP001, CMP002, CMP004, CMP005 | 2023-03-14 |
-| SYS002 | Domestic hot water | hot-water | Utility room (RM007) | Mains water (UC002) | CMP002, CMP006, CMP007 | 2023-03-14 |
-| SYS003 | Electrical distribution | electrical-distribution | Utility room (RM007) | Mains electricity (UC001) | CMP003, CMP008, CMP009, CMP010, CMP011, CMP012, CMP013, CMP014, CMP015, CMP016, CMP017, CMP018 | - |
+| SYS001 | Air-source heat pump | heating | Willow Cottage (BLD001) | Mains electricity (UC001) | CMP001, CMP002, CMP004, CMP005, CMP019, CMP020 | 2023-03-14 |
+| SYS002 | Domestic hot water | hot-water | Utility room (RM007) | Mains water (UC002) | CMP002, CMP006, CMP007, CMP027 | 2023-03-14 |
+| SYS003 | Electrical distribution | electrical-distribution | Utility room (RM007) | Mains electricity (UC001) | CMP003, CMP008, CMP009, CMP010, CMP011, CMP012, CMP013, CMP014, CMP015, CMP016, CMP017, CMP018, CMP021, CMP022, CMP023, CMP024, CMP025, CMP026 | - |
 | SYS004 | Rainwater harvesting | rainwater-collection | Compost corner (OZ008) | - | - | 2024-05-02 |
-| SYS005 | Garden irrigation | irrigation | Vegetable garden (OZ005) | - | - | - |
+| SYS005 | Garden irrigation | irrigation | Vegetable garden (OZ005) | - | CMP028 | - |
+| SYS006 | Septic tank | sewage | Lower meadow (OZ006) | - | - | 1978-06-01 |
+| SYS007 | Drive security | security | Front garden (OZ002) | - | - | 2025-10-04 |
 
 ### Utility connections
 
@@ -276,6 +301,9 @@ flowchart LR
 |---|---|---|---|---|
 | IOT001 | Hall thermostat | Air-source heat pump (SYS001) | Air-source heat pump (SYS001) | Entrance hall (RM002) |
 | IOT002 | Vegetable bed moisture sensor | Garden irrigation (SYS005) | - | Vegetable garden (OZ005) |
+| IOT003 | Orchard frost station | Garden irrigation (SYS005) | - | Orchard (OZ004) |
+| IOT004 | Gate camera | Drive security (SYS007) | - | Front garden (OZ002) |
+| IOT005 | Pear moisture sensor | Garden irrigation (SYS005) | - | Orchard (OZ004) |
 
 ## Maintenance schedule
 
@@ -286,18 +314,21 @@ flowchart LR
 | MT004 | Gutter and downpipe clear | Willow Cottage (BLD001) | First Saturday in November, every year | autumn | high | 120 min | - | 2025-11-01 |
 | MT005 | Retaining wall inspection | West retaining wall (BS005) | Every April | spring | medium | 45 min | - | - |
 
-### infrastructure (1)
+### infrastructure (3)
 
 | Task | Name | Target | When | Season | Priority | Duration | Cost | Last done |
 |---|---|---|---|---|---|---|---|---|
 | MT001 | Heat pump annual service | Air-source heat pump (SYS001) | Second Monday in September, every year | autumn | high | 90 min | 180 GBP | 2025-09-08 |
+| MT007 | Septic tank desludge | Septic tank (SYS006) | Every May | spring | high | 60 min | 260 GBP | 2025-05-14 |
+| MT008 | Rainwater filter clean | Rainwater harvesting (SYS004) | First Saturday in March, every year | spring | medium | 30 min | - | - |
 
-### garden (3)
+### garden (4)
 
 | Task | Name | Target | When | Season | Priority | Duration | Cost | Last done |
 |---|---|---|---|---|---|---|---|---|
 | MT002 | Hedge trim | Beech hedge (PTG001) | Third Saturday in August, every year | summer | medium | 240 min | - | 2025-08-16 |
 | MT003 | Orchard winter prune | Bramley apple (SPM003) | First Saturday in February, every year | winter | medium | 180 min | - | 2026-02-07 |
+| MT009 | Pear mulch and feed | Conference pear (SPM004) | Third Saturday in March, every year | spring | medium | 60 min | - | 2025-03-15 |
 | MT006 | Meadow hay cut | Hay meadow (PTG005) | Third Saturday in July, every year | summer | low | 300 min | - | 2025-07-19 |
 
 ### Cost categories
@@ -305,7 +336,7 @@ flowchart LR
 | Category | Name | Annual budget | Charged from the schedule above |
 |---|---|---|---|
 | CC001 | Electricity | 1740 GBP | 180 GBP |
-| CC002 | Water and drainage | 504 GBP | - |
+| CC002 | Water and drainage | 504 GBP | 260 GBP |
 | CC003 | Broadband | 456 GBP | - |
 
 ## Planned work
@@ -326,7 +357,7 @@ flowchart LR
 
 | Risk | Name | Category | Severity | Status | Threatens | Mitigation |
 |---|---|---|---|---|---|---|
-| RSK001 | Frost damage to orchard blossom | operational | moderate | monitoring | EF002, OZ004, SPM003, SPM004 | The orchard stops short of the meadow, and the two most exposed trees are the pear and the youngest apple. Fleece is kept for forecast frosts after the first blossom. |
+| RSK001 | Frost damage to orchard blossom | operational | moderate | monitoring | EF002, IOT003, OZ004, SPM003, SPM004, SPM010 | The orchard stops short of the meadow, and the two most exposed trees are the pear and the youngest apple. Fleece is kept for forecast frosts after the first blossom. |
 
 ### Open issues
 
@@ -366,40 +397,41 @@ flowchart LR
 
 ## Model coverage
 
-24 finding(s) from 5 rule(s). Each names something the schema leaves optional and this model does not say. One example per rule is shown; `realm-check` prints them all.
+32 finding(s) from 5 rule(s). Each names something the schema leaves optional and this model does not say. One example per rule is shown; `realm-check` prints them all.
 
 | Rule | Severity | Findings | Example |
 |---|---|---|---|
 | component-without-replacement-basis | info | 15 | Component "CMP004" (Ground-floor heating manifold) has no installation date, expected lifespan or warranty - nothing supports a replacement estimate. |
-| planting-without-care-profile | warn | 2 | Planting "PTG002" (Raised vegetable beds) has no care profile - the whole group appears on no maintenance calendar. |
-| specimen-without-care-profile | warn | 2 | Specimen "SPM002" (Lane oak) has no care profile - it will appear on no maintenance calendar. |
+| planting-without-care-profile | warn | 4 | Planting "PTG002" (Raised vegetable beds) has no care profile - the whole group appears on no maintenance calendar. |
+| specimen-without-care-profile | warn | 7 | Specimen "SPM002" (Lane oak) has no care profile - it will appear on no maintenance calendar. |
 | system-without-maintenance | info | 3 | System "SYS002" (Domestic hot water) is the target of no maintenance task - it appears on no calendar and in no schedule. |
-| system-without-parts | warn | 2 | System "SYS004" (Rainwater harvesting) has no parts recorded - nothing says what it is made of. |
+| system-without-parts | warn | 3 | System "SYS004" (Rainwater harvesting) has no parts recorded - nothing says what it is made of. |
 
 ## Catalogue
 
 | Plane | Entities |
 |---|---|
-| context | 13 |
-| infrastructure | 47 |
-| nature | 19 |
-| operations | 11 |
-| topology | 91 |
+| context | 14 |
+| infrastructure | 62 |
+| nature | 26 |
+| operations | 14 |
+| topology | 89 |
 | (cross-cutting) | 6 |
 
 | Type | Count | Plane |
 |---|---|---|
-| component | 18 | infrastructure |
+| component | 28 | infrastructure |
 | room | 15 | topology |
 | pipe_run | 11 | infrastructure |
+| specimen | 11 | nature |
 | outdoor_zone | 10 | topology |
-| maintenance_task | 6 | operations |
-| specimen | 6 | nature |
+| maintenance_task | 9 | operations |
+| planting | 7 | nature |
+| system | 7 | infrastructure |
 | boundary_segment | 5 | topology |
 | cable_run | 5 | infrastructure |
-| planting | 5 | nature |
-| system | 5 | infrastructure |
-| neighbor_property | 4 | context |
+| iot_device | 5 | infrastructure |
+| neighbor_property | 5 | context |
 | species_care_profile | 4 | nature |
 | cost_category | 3 | operations |
 | environmental_factor | 3 | context |
@@ -411,7 +443,6 @@ flowchart LR
 | building | 2 | topology |
 | estate_change | 2 | - |
 | event | 2 | - |
-| iot_device | 2 | infrastructure |
 | network_node | 2 | infrastructure |
 | road_corridor | 2 | context |
 | soil_profile | 2 | nature |
@@ -424,6 +455,6 @@ flowchart LR
 | shared_concern | 1 | context |
 | warranty | 1 | operations |
 
-136 authored entities, 51 derived.
+162 authored entities, 49 derived.
 
-51 further entities form the construction layer (43 wall_segment, 5 roof_plane, 3 floor_slab). They are derived from the rooms, wings and floors above rather than authored, and are summarised rather than listed - pass --geometry to enumerate them.
+49 further entities form the construction layer (41 wall_segment, 5 roof_plane, 3 floor_slab). They are derived from the rooms, wings and floors above rather than authored, and are summarised rather than listed - pass --geometry to enumerate them.

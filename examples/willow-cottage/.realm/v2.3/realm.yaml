@@ -8,10 +8,9 @@
 #
 # Willow Cottage is FICTIONAL. It is the worked example for the Realm schema:
 # a smallholding on a hillside, with a two-storey stone cottage, a detached
-# barn, eight outdoor zones and four neighbouring parcels. No part of it
-# describes a real property, which is why it carries no latitude or longitude
-# - a made-up address with real coordinates would put it somewhere that
-# exists.
+# barn, eight outdoor zones and four neighbouring parcels. Its coordinates are
+# rounded to one decimal on purpose, so they name a region in South West
+# England and no real property.
 #
 # Model files:
 #   topology/estate.yaml       parcel, buildings, wings, floors, rooms, zones
@@ -34,7 +33,8 @@
 # ═════════════════════════════════════════════════════════════════════════════
 
 version: "1.0.0"
-schemaVersion: "2.3.0"
+schemaVersion: "2.4.1"
+x-language: en
 name: Willow Cottage
 description: >
   Fictional smallholding of about 1927 m² on a south-facing hillside. A
@@ -49,9 +49,13 @@ location:
   city: Nether Hollowby
   region: South West England
   country: England
+  latitude: 51.0
+  longitude: -2.5
+  time_zone: Europe/London
 
-# No latitude/longitude: the estate is fictional. A real model records both,
-# and anchors the local grid to a national one - see `coordinate_system`.
+# Rounded to one decimal on purpose, so these coordinates name a region in
+# South West England and no real property. A real model records exact ones
+# and anchors its local grid to a national one - see `coordinate_system`.
 
 climate:
   hardiness_zone: 9a
@@ -73,8 +77,8 @@ coordinate_system:
   vertical_datum_description: >
     Z = 0 is ground level at the cottage's front threshold, 96 m above mean
     sea level. Every elevation in the model is relative to it. The parcel
-    corners run from 3.4 m at the lane down to -3 m at the stream, a fall of
-    6.4 m; the centre of the plot sits at 0.5 m.
+    corners run from 3.2 m at the lane down to -3.2 m at the stream, a fall
+    of 6.4 m; the centre of the plot sits at -0.17 m.
   description: >
     The +Y axis is true south and the +X axis true east - exactly, because
     the estate is fictional and its grid was chosen rather than surveyed. A

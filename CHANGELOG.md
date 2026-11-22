@@ -4,6 +4,121 @@ All notable changes to `@archally/realm-schema`. Versions follow the schema vers
 a model declaring `schemaVersion: "2.3.0"` validates against `schema/v2.3/`, and so does one
 still declaring `2.2.0`, because 2.3 removed nothing.
 
+## 2.4.2 - 2026-11-21
+
+**Additive.** The 2.4.2 schema accepts every model valid under 2.4.1. A document that states a wall joint requires schema version 2.4.2.
+
+### Added
+
+- **`start_joint`** and **`end_joint`** on a wall segment, of **`wall_joint`** (`through`, `abuts`, `mitre`): states
+  how each end of a wall meets the other walls at its point (within 2 cm of another wall's end or centreline). A joint
+  never moves `start` or `end`, so wall length, opening offsets and wall anchors stay measured on the centreline. Where
+  no end at a point states a joint, walls continuing in a straight line or passing through run through; otherwise the
+  thickest wall runs through, a tie in thickness goes to the longer wall, and a remaining tie goes to the lower id; a
+  mitre is drawn only where stated. Where some ends state a joint, an unstated end takes the complement.
+- **`schema_version` `2.4.2`**.
+
+### Checks
+
+Archally Pro's `rl check` and the standalone validator report:
+
+- G27 `wall-joint-conflict` (warning) when stated joints at a point contradict: two non-collinear runs both state
+  `through`, a wall states `through` where another wall passes through mid-length, collinear ends in one run state both
+  `through` and `abuts`, or every end at the point states `abuts`.
+- G28 `wall-joint-mitre-shape` (warning) when `mitre` is stated where a mitre has no line: more than two walls meet at
+  the point, a wall passes through it, the two walls continue in a straight line, or the other wall states `through` or
+  `abuts`.
+- G29 `wall-joint-free-end` (warning) when a joint is stated at a wall end where no other wall meets within 2 cm.
+
+## 2.4.1 - 2026-11-18
+
+**Additive.** The 2.4.1 schema accepts every model valid under 2.4.0. A document that uses columns, beams, wall top profiles, dimension provenance or a time zone
+requires schema version 2.4.1 or later.
+
+### Added
+
+- **`columns`** in a construction document, of **`column`** (`COL###`): a post or column standing on its own that
+  carries a roof, a beam or an upper floor, such as a post of an open gazebo or a carport. Stated by the position of
+  its foot, its base elevation, its height and its section (`square`, `rectangular` with `depth_cm`, or `round`), with
+  an optional rotation, material and the roof planes it carries.
+- **`beams`** in a construction document, of **`beam`** (`BEAM###`): a horizontal or sloped member that rests on
+  columns or walls and carries a roof, such as the beams on top of a gazebo's posts or a wall plate. Stated by the plan
+  line of its centreline, the elevation of its top at each end and its width and depth; it names the columns and wall
+  segments it rests on and the roof planes it carries.
+- **`top_profile`** on a wall segment, of **`wall_top_point`**: the top edge of a wall whose top is not level, as
+  points along the wall, each an offset from the wall's start and an elevation. Two points state a wall under a
+  mono-pitch roof, three a gable whose peak is off-centre, more a stepped top. A wall states either `top_profile` or
+  `gable_peak_elevation_m`, not both.
+- **`dimension_source`** and **`dimension_accuracy_m`** on a building, a wing, a floor, a wall segment, a floor slab, a
+  roof plane, a column and a beam: how the element's heights, elevations, pitches and sizes are known (`surveyed`,
+  `tape`, `design-document` or `estimated`) and how far they may lie from the true value.
+- **`location.time_zone`**: the property's time zone as a name from the time zone database, such as `Europe/London`,
+  or `UTC`. Local clock times at the property, such as the hour the sun is drawn for, are read in this zone, summer
+  time included. A fixed offset is not accepted.
+- **`column_ref`** and **`beam_ref`**, typed references to the two new entity types.
+- **`schema_version` `2.4.1`**.
+
+### Changed
+
+- `height_m` on a wall segment: the height from `base_elevation_m` to the wall's level top, to the eaves line of a
+  gable, or to the lowest point of a top profile.
+- `gable_peak_elevation_m` on a wall segment: the two slopes of a gable start at `base_elevation_m` + `height_m` at
+  both ends of the wall.
+
+### Checks
+
+Archally Pro's `rl check` and the standalone validator report:
+
+- G18 `wall-top-profile-shape` (error) when a top profile does not start at the wall's start, end at its end, or advance
+  along it.
+- G19 `wall-top-off-roof` (warning) when a shaped wall top, or the level top of an exterior wall of a simple building
+  without floors, lies more than 5 cm from the roof plane above it anywhere along the wall.
+- G20 `wall-height-off-profile` (warning) when a wall's `height_m` disagrees with the lowest point of its top profile.
+- G21 `column-top-off-roof` (warning) when a column's top is more than 5 cm from a roof plane it carries.
+- G22 `column-outside-building` (warning) when a column stands outside its building's footprint by more than the roof
+  overhang.
+- G23 `beam-off-support` (warning) when a beam's underside does not meet the top of a column or wall it rests on, or the
+  column or wall is not under it.
+- G24 `beam-off-roof` (warning) when a beam's top is more than 5 cm from a roof plane it carries, or does not lie under it.
+- G25 `beam-zero-length` (error) when a beam's start and end coincide.
+- G26 `construction-number-not-finite` (error) when a column, a beam or a point of a wall's top profile states a number
+  that is not finite.
+- C11 `roof-on-nothing` (warning) when a building has roof planes but neither walls nor columns.
+- `time-zone-missing` (warning) when a model states latitude and longitude, or a WGS84 origin, but no time zone.
+- `time-zone-unknown` (warning) when a time zone name is well formed but unknown to the time zone database in use.
+- `time-zone-far-from-longitude` (warning) when the time zone's offset is more than 3.5 hours from the solar time of
+  the stated longitude in both winter and summer.
+
+## 2.4.0 - 2026-11-18
+
+**Additive.** The 2.4.0 schema accepts every model valid under 2.3.2. A document that uses an executable effect requires schema version 2.4.0 or later.
+
+### Added
+
+- **`changes[].effect`** on an estate change (`estate_change_effect`): what the item does to
+  the model, in a form a tool can apply without reading prose. `add` carries the new record
+  in `after`; `replace` carries a whole record in `after` (the same id replaces the record, a
+  different id supersedes it) or field changes in `property_changes`; `modify` carries field
+  changes; `relocate` carries field changes limited to position, elevation, outline, route
+  and location fields; `remove` carries the `lifecycle` the record ends with, always
+  `retired`, so references to it keep resolving. `construction` holds the whole construction
+  document of a building or floor that an add or replace brings with it. `materialized_on`
+  records when the model itself was updated to show the effect, which keeps the plan apart
+  from what was built.
+- **`effect_property_change`**: one field change, `kind` `set`, `unset`, `append` or
+  `remove-item`, a `property` name or dot path, a `value`, and an optional `old_value` the
+  change expects to find.
+- **`relocation_property`**: the fields a relocation may change.
+- **`estate_record`**: a record of any estate entity held in a plane file, validated against
+  the entity type its id prefix names. Construction elements change through a construction
+  document; plan records (estate changes, epics, risks, issues, events) are not estate.
+- **`schema_version` `2.4.0`**.
+
+### Changed
+
+- When an item carries an `effect`, its `entity_ref` must be a typed entity id. An item
+  without one keeps a free-text `entity_ref` and is a description only.
+
 ## 2.3.2 - 2026-11-16
 
 **Additive.** Every model valid under 2.3.1 validates unchanged under 2.3.2. The claim was

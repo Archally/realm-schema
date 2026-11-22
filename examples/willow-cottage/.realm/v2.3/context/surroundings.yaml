@@ -12,9 +12,10 @@
 # `parcel_footprint` and `parcel_vertex_elevations` describe the ground -
 # which is what decides whether they look down on you, where their water goes,
 # and what they shade - while `footprint` plus the roof fields are only enough
-# massing to cast a shadow. Neighbouring land is drawn flat here because its
-# level is known and its shape is not; the estate's own parcel gets six real
-# corner elevations.
+# massing to cast a shadow. The neighbours' land, the lane and the track tile
+# the ground around the plot: each outline shares its edges with the plot or
+# with the next one, and a shared corner carries the same elevation on both
+# sides, so the site reads as one surface.
 #
 # Everything is stated in THIS model's frame: a neighbour's
 # `ground_elevation_offset_m` is metres above the cottage threshold, not above
@@ -27,31 +28,34 @@ neighbor_properties:
     direction: NE
     cadastral_id: NH-2183
     property_type: residential-single
-    distance_from_boundary_m: 9.5
+    distance_from_boundary_m: 8.9
     occupancy: permanent
     noise_level: quiet
     household_count: 1
-    position: {x: 49, y: -1}
+    position: {x: 25.83, y: -15.05}
 
-    # The neighbour's land: 988 m², relative to the position above.
+    # The neighbour's land: 2723 m², relative to the position above.
     parcel_footprint:
       shape: polygon
       vertices:
-        - {x: -19, y: -13}
-        - {x: 19, y: -13}
-        - {x: 19, y: 13}
-        - {x: -19, y: 13}
-    parcel_vertex_elevations: [3.1, 3.1, 3.1, 3.1]
-    ground_elevation_offset_m: 3.1
+        - {x: -55.53, y: 8.86}
+        - {x: 50.47, y: 16.65}
+        - {x: 50.17, y: -12.95}
+        - {x: -55.83, y: -12.95}
+    parcel_vertex_elevations: [4.08, 0.96, 4.57, 7.22]
+    ground_elevation_offset_m: 3.12
+    # The same level as an observation in centimetres - the field the privacy and
+    # drainage questions read (CQ29).
+    terrain_elevation_offset_cm: 312
 
     # Building massing - enough to cast a shadow, not a model of their house.
     footprint:
       shape: polygon
       vertices:
-        - {x: -9, y: -7}
-        - {x: 1, y: -7}
-        - {x: 1, y: 1}
-        - {x: -9, y: 1}
+        - {x: 12.17, y: 1.55}
+        - {x: 22.17, y: 1.55}
+        - {x: 22.17, y: 9.55}
+        - {x: 12.17, y: 9.55}
     building_stories: 2
     building_height_m: 7.6
     eave_height_m: 4.4
@@ -59,7 +63,6 @@ neighbor_properties:
     roof_ridge_height_m: 7.6
     has_pv_panels: true
     pv_panel_roof_side: S
-    boundary_segment_refs: [BS002]
     resident_refs: [PRS003]
     description: >
       Stone farmhouse uphill to the north-east. Its south roof slope carries
@@ -70,31 +73,34 @@ neighbor_properties:
     direction: E
     cadastral_id: NH-2186
     property_type: residential-single
-    distance_from_boundary_m: 6
+    distance_from_boundary_m: 5.3
     occupancy: weekend
     noise_level: quiet
     household_count: 1
-    position: {x: 66, y: 24}
+    position: {x: 57.53, y: 29}
 
-    # The neighbour's land: 768 m², relative to the position above.
+    # The neighbour's land: 430 m², relative to the position above.
     parcel_footprint:
       shape: polygon
       vertices:
-        - {x: -12, y: -16}
-        - {x: 12, y: -16}
-        - {x: 12, y: 16}
-        - {x: -12, y: 16}
-    parcel_vertex_elevations: [1, 1, 1, 1]
-    ground_elevation_offset_m: 1
+        - {x: -5.53, y: -13}
+        - {x: 9.64, y: -13}
+        - {x: 7.73, y: 12}
+        - {x: -11.53, y: 12}
+    parcel_vertex_elevations: [-0.7, -0.54, -3.52, -2.6]
+    ground_elevation_offset_m: -1.49
+    # The same level as an observation in centimetres - the field the privacy and
+    # drainage questions read (CQ29).
+    terrain_elevation_offset_cm: -149
 
     # Building massing - enough to cast a shadow, not a model of their house.
     footprint:
       shape: polygon
       vertices:
-        - {x: -8, y: -8}
-        - {x: 0, y: -8}
-        - {x: 0, y: -1}
-        - {x: -8, y: -1}
+        - {x: -1.53, y: -7}
+        - {x: 6.47, y: -7}
+        - {x: 6.47, y: 0}
+        - {x: -1.53, y: 0}
     building_stories: 1
     building_height_m: 6.2
     eave_height_m: 3.1
@@ -113,18 +119,22 @@ neighbor_properties:
     distance_from_boundary_m: 0
     occupancy: vacant
     noise_level: quiet
-    position: {x: 31, y: 61.5}
+    position: {x: 41.13, y: 52.68}
 
-    # The neighbour's land: 1050 m², relative to the position above.
+    # The neighbour's land: 977 m², relative to the position above.
     parcel_footprint:
       shape: polygon
       vertices:
-        - {x: -21, y: -12.5}
-        - {x: 21, y: -12.5}
-        - {x: 21, y: 12.5}
-        - {x: -21, y: 12.5}
-    parcel_vertex_elevations: [-3.6, -3.6, -3.6, -3.6]
-    ground_elevation_offset_m: -3.6
+        - {x: -23.13, y: -5.68}
+        - {x: 4.87, y: -11.68}
+        - {x: 24.12, y: -11.68}
+        - {x: 22.37, y: 11.32}
+        - {x: -33.13, y: 7.32}
+    parcel_vertex_elevations: [-3.2, -2.6, -3.52, -6.27, -4.4]
+    ground_elevation_offset_m: -4
+    # The same level as an observation in centimetres - the field the privacy and
+    # drainage questions read (CQ29).
+    terrain_elevation_offset_cm: -400
     has_pv_panels: false
     boundary_segment_refs: [BS004]
     description: >
@@ -139,24 +149,60 @@ neighbor_properties:
     distance_from_boundary_m: 0
     occupancy: vacant
     noise_level: quiet
-    position: {x: -20, y: 23}
+    position: {x: -12.87, y: 31.25}
 
-    # The neighbour's land: 1064 m², relative to the position above.
+    # The neighbour's land: 2156 m², relative to the position above.
     parcel_footprint:
       shape: polygon
       vertices:
-        - {x: -14, y: -19}
-        - {x: 14, y: -19}
-        - {x: 14, y: 19}
-        - {x: -14, y: 19}
-    parcel_vertex_elevations: [0.8, 0.8, 0.8, 0.8]
-    ground_elevation_offset_m: 0.8
+        - {x: 12.87, y: -31.25}
+        - {x: -17.13, y: -33.45}
+        - {x: -21.13, y: -7.25}
+        - {x: -17.13, y: 24.75}
+        - {x: 20.87, y: 28.75}
+        - {x: 30.87, y: 15.75}
+        - {x: 8.87, y: -7.25}
+    parcel_vertex_elevations: [3.2, 4.08, 1.02, -2.96, -4.4, -3.2, 0.1]
+    ground_elevation_offset_m: -0.31
+    # The same level as an observation in centimetres - the field the privacy and
+    # drainage questions read (CQ29).
+    terrain_elevation_offset_cm: -31
     has_pv_panels: false
     boundary_segment_refs: [BS005]
     description: >
       Hazel coppice on the west bank, cut on a seven-year rotation. Its edge
       trees overhang the drive.
     tags: [coppice, overhang]
+  - id: NP005
+    name: Hollybank paddock (north-east)
+    direction: NE
+    cadastral_id: NH-2185
+    property_type: agricultural
+    distance_from_boundary_m: 0
+    occupancy: vacant
+    noise_level: quiet
+    position: {x: 54.51, y: 9.13}
+
+    # The neighbour's land: 290 m², relative to the position above.
+    parcel_footprint:
+      shape: polygon
+      vertices:
+        - {x: -20.51, y: -6.63}
+        - {x: 13.49, y: -4.13}
+        - {x: 12.65, y: 6.87}
+        - {x: -2.51, y: 6.87}
+    parcel_vertex_elevations: [2.2, 1.2, -0.54, -0.7]
+    ground_elevation_offset_m: 0.54
+    # The same level as an observation in centimetres - the field the privacy and
+    # drainage questions read (CQ29).
+    terrain_elevation_offset_cm: 54
+    has_pv_panels: false
+    boundary_segment_refs: [BS002]
+    resident_refs: [PRS003]
+    description: >
+      Hollybank's grazing paddock between the lane, the track and the
+      post-and-rail fence. The farmhouse looks across it to the cottage.
+    tags: [grazing, paddock]
 
 # ── Roads ─────────────────────────────────────────────────────────────────
 roads:
@@ -171,11 +217,11 @@ roads:
     # road against this model's datum, so a lane above the plot reads as above it.
     centerline:
       vertices:
-        - {x: -12, y: -3.6, z: 4.3}
-        - {x: 0, y: -2.6, z: 3.6}
-        - {x: 34, y: -0.2, z: 3}
-        - {x: 58, y: 1.6, z: 2.5}
-    borders_neighbor_refs: [NP001]
+        - {x: -29.85, y: -4.2, z: 4.08}
+        - {x: 0.15, y: -1.99, z: 3.2}
+        - {x: 34.15, y: 0.51, z: 2.2}
+        - {x: 76.15, y: 3.59, z: 0.96}
+    borders_neighbor_refs: [NP001, NP004, NP005]
     description: >
       Single-track lane with passing places, running along the top of the
       plot.
@@ -191,10 +237,11 @@ roads:
     # road against this model's datum, so a lane above the plot reads as above it.
     centerline:
       vertices:
-        - {x: 55, y: 1.2, z: 2.6}
-        - {x: 56.5, y: 20, z: 0.9}
-        - {x: 54, y: 44, z: -2.4}
-    borders_neighbor_refs: [NP002, NP003]
+        - {x: 69.65, y: 3.12, z: 1.15}
+        - {x: 68.66, y: 16.11, z: -0.54}
+        - {x: 66.75, y: 41.11, z: -3.52}
+        - {x: 65, y: 64.11, z: -6.27}
+    borders_neighbor_refs: [NP002, NP003, NP005]
     description: >
       Private farm track east of the stone wall, carrying occasional tractor
       traffic to the meadow.

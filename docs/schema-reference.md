@@ -1,6 +1,6 @@
 # Realm Schema Reference
 
-Every entity in schema v2.3, with its identifier prefix and its fields. This document is generated from the schema files themselves, so it states what the validator actually enforces rather than a description of it that might have fallen behind.
+Every entity in schema v2.4, with its identifier prefix and its fields. This document is generated from the schema files themselves, so it states what the validator actually enforces rather than a description of it that might have fallen behind.
 
 For how to author a model, read the [modeling guide](./modeling-guide.md); for where the files go and how identifiers are formed, the [file conventions](./file-conventions.md). This page is the lookup, not the introduction.
 
@@ -19,6 +19,8 @@ For how to author a model, read the [modeling guide](./modeling-guide.md); for w
 | `WSG` | [Wall Segment](#wall-segment---wsg) | Topology | `topology/construction.schema.yaml` |
 | `SLB` | [Floor Slab](#floor-slab---slb) | Topology | `topology/construction.schema.yaml` |
 | `RFP` | [Roof Plane](#roof-plane---rfp) | Topology | `topology/construction.schema.yaml` |
+| `COL` | [Column](#column---col) | Topology | `topology/construction.schema.yaml` |
+| `BEAM` | [Beam](#beam---beam) | Topology | `topology/construction.schema.yaml` |
 | `FRN` | [Furniture](#furniture---frn) | Topology | `topology/equipment.schema.yaml` |
 | `EQP` | [Equipment](#equipment---eqp) | Topology | `topology/equipment.schema.yaml` |
 | `LP` | [Land Parcel](#land-parcel---lp) | Topology | `topology/estate.schema.yaml` |
@@ -53,7 +55,7 @@ For how to author a model, read the [modeling guide](./modeling-guide.md); for w
 | `EF` | [Environmental Factor](#environmental-factor---ef) | Context | `context/surroundings.schema.yaml` |
 | `RD` | [Road Corridor](#road-corridor---rd) | Context | `context/surroundings.schema.yaml` |
 
-42 entity types.
+44 entity types.
 
 ## Model root and cross-cutting
 
@@ -123,6 +125,7 @@ Accepts `x-` extension fields.
 | `to_state` | string | - | Desired state after the change. Example: `10kWp solar PV with 13.5kWh battery`. |
 | `actual_state` | string | - | What the change actually left behind, when that differs from the intended state or when the closure is worth recording in its own words. Work carried out in a different way than planned is the normal case rather than a fault, and a closed change that never records one is an unverified closure. Example: `Mesh sewn onto three wires; no panels and no cable ties were used`. |
 | `outcome` | enum | - | How this one item ended, when the change as a whole has a status that does not say it. `done` when the item was carried out, `superseded` when another item or change did its work, `abandoned` when it was dropped and nothing replaced it. Absent while the item is still open. A completed change may carry an abandoned item; `actual_state` says what stands there instead. One of: `done`, `superseded`, `abandoned`. Example: `abandoned`. |
+| `effect` | `estate_change_effect` | - | What this item does to the model, in a form a tool can apply without reading prose: the record it adds or replaces, the fields it changes, or the retirement it records. Optional; an item without it stays a description that is listed and reported as not executable. Answers CQ53. Used by T8. |
 
 ### `events.schema.yaml`
 
@@ -266,7 +269,7 @@ Accepts `x-` extension fields.
 
 ### `topology/construction.schema.yaml`
 
-AI-agent-generated construction geometry layer. Defines wall segments, floor slabs, roof planes, and building shells as first-class entities with 3D coordinates. Derived from semantic estate descriptions by an AI agent; authoritative for 2D floor plan and 3D rendering. One file per floor (FLR###.yaml) or per simple building (BLD###.yaml).
+AI-agent-generated construction geometry layer. Defines wall segments, floor slabs, roof planes, columns, beams and building shells as first-class entities with 3D coordinates. Derived from semantic estate descriptions by an AI agent; authoritative for 2D floor plan and 3D rendering. One file per floor (FLR###.yaml) or per simple building (BLD###.yaml).
 
 #### Wall Segment - `WSG###`
 
@@ -277,10 +280,13 @@ A continuous section of wall with uniform thickness and material. Defined by sta
 | `id` | string | yes |  |
 | `start` | `position` | yes | Start of the wall centerline in model coordinates (meters). |
 | `end` | `position` | yes | End of the wall centerline in model coordinates (meters). |
+| `start_joint` | `wall_joint` | - | How this wall meets the other walls at its start point: it runs through, abuts, or is mitred. Without it the joint follows the rule stated on wall_joint. Answers CQ59. Example: `through`. |
+| `end_joint` | `wall_joint` | - | How this wall meets the other walls at its end point: it runs through, abuts, or is mitred. Without it the joint follows the rule stated on wall_joint. Answers CQ59. Example: `abuts`. |
 | `base_elevation_m` | number | - | Bottom of the wall above vertical datum. Default `0`. |
-| `height_m` | number | - | Floor-to-ceiling height of this wall segment. Example: `2.6`. |
+| `height_m` | number | - | Height of this wall segment from base_elevation_m to its top: the level top of a plain wall, the eaves line where the two slopes of a gable start, or the lowest point of a top_profile. Example: `2.6`. |
 | `thickness_cm` | number | yes | Example: `24`. |
-| `gable_peak_elevation_m` | number | - | Elevation of the gable peak for triangular wall tops. |
+| `gable_peak_elevation_m` | number | - | Elevation above vertical datum of the peak of a symmetric gable top, at the middle of the wall. The two slopes start at base_elevation_m + height_m at both ends of the wall. A gable whose peak is off-centre is stated as a top_profile instead; a wall states one or the other. |
+| `top_profile` | list of `wall_top_point` | - | The top edge of a wall whose top is not level, as points along its centreline: two points for a wall under a mono-pitch roof, three for a gable whose peak is off-centre, more for a stepped top. The edge runs straight from point to point; the first point is at the start and the last at the end. Without it the top is level at base_elevation_m + height_m, or a symmetric gable when gable_peak_elevation_m is stated. Answers CQ55. at least 2 item(s). |
 | `is_exterior` | boolean | yes | True if this wall faces outside the building envelope. |
 | `wall_type` | enum | - | One of: `exterior`, `interior-load-bearing`, `interior-partition`. Example: `exterior`. |
 | `material` | string | - | Example: `gazobeton`. |
@@ -290,6 +296,8 @@ A continuous section of wall with uniform thickness and material. Defined by sta
 | `openings` | list of `wall_opening` | - | Windows and doors placed on this wall segment. |
 | `wing_ref` | `wing_ref` | - | Structural wing this wall segment belongs to. |
 | `derived_from` | string | - | Which semantic wall this was derived from (e.g., 'RM001.walls.E'). Example: `RM001.walls.E`. |
+| `dimension_source` | `dimension_source` | - | How the heights, elevations, pitches and sizes stated on this element are known. Answers CQ58. |
+| `dimension_accuracy_m` | `dimension_accuracy_m` | - | How far a dimension stated on this element may lie from the true value. Answers CQ58. |
 | `tags` | `tags` | - |  |
 
 #### Floor Slab - `SLB###`
@@ -306,6 +314,8 @@ A horizontal structural element (floor or ceiling slab). Defined by a polygon ou
 | `slab_type` | enum | - | One of: `ground-floor`, `intermediate`, `roof-slab`, `basement`. |
 | `material` | string | - | Example: `reinforced-concrete`. |
 | `derived_from` | string | - | Example: `FLR001 + BLD001.footprint`. |
+| `dimension_source` | `dimension_source` | - | How the heights, elevations, pitches and sizes stated on this element are known. Answers CQ58. |
+| `dimension_accuracy_m` | `dimension_accuracy_m` | - | How far a dimension stated on this element may lie from the true value. Answers CQ58. |
 | `tags` | `tags` | - |  |
 
 #### Roof Plane - `RFP###`
@@ -325,6 +335,55 @@ A planar surface of the roof. A gable roof has 2 planes; a hip roof has 4. Each 
 | `overhang_cm` | number | - | min 0. |
 | `has_pv_panels` | boolean | - | Whether photovoltaic panels are mounted on this plane. |
 | `derived_from` | string | - | Example: `BLD001 (gable, pitch=35, ridge=E)`. |
+| `dimension_source` | `dimension_source` | - | How the heights, elevations, pitches and sizes stated on this element are known. Answers CQ58. |
+| `dimension_accuracy_m` | `dimension_accuracy_m` | - | How far a dimension stated on this element may lie from the true value. Answers CQ58. |
+| `tags` | `tags` | - |  |
+
+#### Column - `COL###`
+
+A post or column: a vertical member standing on its own that carries a roof, a beam or an upper floor, such as a post of an open gazebo, a carport or a porch. Stated by where its foot stands, how high it reaches and its cross-section. Answers CQ54. Used by T5.
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| `id` | string | yes |  |
+| `position` | `position` | yes | Centre of the column's foot in model coordinates (meters). |
+| `base_elevation_m` | number | - | Bottom of the column above vertical datum. Default `0`. Example: `0`. |
+| `height_m` | number | yes | From the column's base to its top; the top is where the roof or beam it carries rests. Example: `2.15`. |
+| `section_shape` | enum | - | Shape of the column's cross-section. One of: `square`, `rectangular`, `round`. Default `"square"`. |
+| `width_cm` | number | yes | Side of a square section, the side along rotation_degrees of a rectangular one, or the diameter of a round one. Example: `12`. |
+| `depth_cm` | number | - | Second side of a rectangular section; stated only for a rectangular one. Example: `20`. |
+| `rotation_degrees` | number | - | Clockwise rotation of the section from north, as a building's rotation is measured. 0 puts width_cm along the east-west axis. Default `0`. min 0. Example: `0`. |
+| `material` | string | - | Example: `timber`. |
+| `supports_roof_plane_refs` | list of `roof_plane_ref` | - | Roof planes whose underside rests on this column's top. |
+| `floor_ref` | `floor_ref` | - | Floor this column belongs to, in a floor's construction document. |
+| `wing_ref` | `wing_ref` | - | Structural wing this column belongs to. |
+| `derived_from` | string | - | What the column was derived from, such as a building's description or a measured survey. Example: `BLD101 description`. |
+| `dimension_source` | `dimension_source` | - | How the heights, elevations, pitches and sizes stated on this element are known. Answers CQ58. |
+| `dimension_accuracy_m` | `dimension_accuracy_m` | - | How far a dimension stated on this element may lie from the true value. Answers CQ58. |
+| `tags` | `tags` | - |  |
+
+#### Beam - `BEAM###`
+
+A beam: a horizontal or sloped member that rests on columns or walls and carries a roof, such as a beam on top of a gazebo's posts or a wall plate along the top of a wall. Stated by the plan line of its centreline from start to end, the elevation of its top at each end and its rectangular cross-section; its underside is its top less its depth. Answers CQ56. Used by T5.
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| `id` | string | yes |  |
+| `start` | `position` | yes | Start of the beam's centreline in plan, in model coordinates (meters). |
+| `end` | `position` | yes | End of the beam's centreline in plan, in model coordinates (meters). |
+| `top_elevation_start_m` | number | yes | Elevation of the beam's top at its start point above vertical datum. Example: `2.3`. |
+| `top_elevation_end_m` | number | yes | Elevation of the beam's top at its end point above vertical datum; the same as at the start for a level beam, different for a sloped one. Example: `2.3`. |
+| `width_cm` | number | yes | Horizontal side of the beam's cross-section. Example: `10`. |
+| `depth_cm` | number | yes | Vertical side of the beam's cross-section, from its underside to its top. Example: `16`. |
+| `material` | string | - | Example: `timber`. |
+| `rests_on_column_refs` | list of `column_ref` | - | Columns whose tops carry this beam's underside. |
+| `rests_on_wall_segment_refs` | list of `wall_segment_ref` | - | Wall segments whose tops carry this beam's underside, at one of the beam's ends or along it. |
+| `supports_roof_plane_refs` | list of `roof_plane_ref` | - | Roof planes whose underside rests on this beam's top. |
+| `floor_ref` | `floor_ref` | - | Floor this beam belongs to, in a floor's construction document. |
+| `wing_ref` | `wing_ref` | - | Structural wing this beam belongs to. |
+| `derived_from` | string | - | What the beam was derived from, such as a building's description, photographs or a measured survey. Example: `photographs of the gazebo`. |
+| `dimension_source` | `dimension_source` | - | How the heights, elevations, pitches and sizes stated on this element are known. Answers CQ58. |
+| `dimension_accuracy_m` | `dimension_accuracy_m` | - | How far a dimension stated on this element may lie from the true value. Answers CQ58. |
 | `tags` | `tags` | - |  |
 
 ### `topology/equipment.schema.yaml`
@@ -443,6 +502,8 @@ Accepts `x-` extension fields.
 | `description` | string | - |  |
 | `equipment_refs` | list of `equipment_ref` | - | Equipment placed in this building (shed, gazebo). Used when the building has no formal rooms. Redundant with equipment.building_ref. |
 | `furniture_refs` | list of `furniture_ref` | - | Furniture placed in this building (shed, gazebo). Used when the building has no formal rooms. Redundant with furniture.building_ref. |
+| `dimension_source` | `dimension_source` | - | How the heights, elevations, pitches and sizes stated on this element are known. Answers CQ58. |
+| `dimension_accuracy_m` | `dimension_accuracy_m` | - | How far a dimension stated on this element may lie from the true value. Answers CQ58. |
 | `tags` | `tags` | - |  |
 
 #### Wing - `WNG###`
@@ -464,6 +525,8 @@ A structural section of a building with its own footprint and roof geometry. Eve
 | `roof_overhang_cm` | number | - | min 0. Example: `40`. |
 | `ground_elevation_m` | number | - | Ground level of this wing above vertical datum, if different from building.ground_elevation_m. For split-level or stepped buildings. Example: `0`. |
 | `description` | string | - |  |
+| `dimension_source` | `dimension_source` | - | How the heights, elevations, pitches and sizes stated on this element are known. Answers CQ58. |
+| `dimension_accuracy_m` | `dimension_accuracy_m` | - | How far a dimension stated on this element may lie from the true value. Answers CQ58. |
 | `tags` | `tags` | - |  |
 
 #### Floor - `FLR###`
@@ -484,6 +547,8 @@ A storey or level within a building. Level 0 = ground floor, negative = basement
 | `wing_ref` | `wing_ref` | - | Structural wing this floor belongs to. Required when the parent building has multiple wings. Optional for single-wing buildings (inferred from the sole wing). Omit for floors spanning the entire building across wing boundaries. |
 | `footprint` | `polygon_footprint` | - | Floor plan outline in building-local coordinates. May differ from building footprint for partial floors (e.g., basement doesn't extend under garage). When absent, inherited from building (or wing) footprint. |
 | `description` | string | - |  |
+| `dimension_source` | `dimension_source` | - | How the heights, elevations, pitches and sizes stated on this element are known. Answers CQ58. |
+| `dimension_accuracy_m` | `dimension_accuracy_m` | - | How far a dimension stated on this element may lie from the true value. Answers CQ58. |
 | `tags` | `tags` | - |  |
 
 #### Room - `RM###`
@@ -1315,7 +1380,7 @@ Definitions the planes draw on. The reference types (`parcel_ref`, `room_ref` an
 | Type | Shape | Notes |
 |---|---|---|
 | `semver` | pattern `^\d+\.\d+\.\d+(-[a-zA-Z0-9.]+)?(\+[a-zA-Z0-9.]+)?$` | Semantic version string (MAJOR.MINOR.PATCH). Example: `1.0.0`. |
-| `schema_version` | enum | Realm schema version this document targets. The v2.3 schemas accept documents declaring 2.2.0, 2.1.0 and 2.0.0; 2.3.0 is additive over 2.2.0, and 2.2.0 renamed the migration entity to estate_change, so a document older than that which uses the construct needs the rename before it will validate. One of: `2.3.0`, `2.2.0`, `2.1.0`, `2.0.0`. |
+| `schema_version` | enum | Realm schema version this document targets. The v2.4 schemas accept documents declaring 2.4.2, 2.4.1, 2.4.0, 2.3.0, 2.2.0, 2.1.0 and 2.0.0. 2.4.2 is additive over 2.4.1, 2.4.1 over 2.4.0, 2.4.0 over 2.3.0 and 2.3.0 over 2.2.0; 2.2.0 renamed the migration entity to estate_change, so a document older than that which uses the construct needs the rename before it will validate. A document that uses a change item's `effect` declares 2.4.0 or later; a document that states a column, a beam, a wall top profile, a dimension source or a time zone declares 2.4.1 or later; a document that states a wall joint declares 2.4.2. One of: `2.4.2`, `2.4.1`, `2.4.0`, `2.3.0`, `2.2.0`, `2.1.0`, `2.0.0`. |
 | `tags` | list of string | Arbitrary classification tags for filtering and grouping. One tag has a fixed meaning: `enum-borrowed` marks an entity whose enum-valued field carries the nearest existing value because the right one does not exist yet, so the borrowing is findable by query when the vocabulary is extended. |
 | `iso_date` | string (date) | Date in YYYY-MM-DD format. Example: `2026-03-08`. |
 | `flexible_date` | pattern `^\d{4}-(0[1-9]|1[0-2])(-(0[1-9]|[12]\d|3[01]))?$` | A full calendar date, or a year and month when the day is not known. Recorded events often come from memory or from a receipt that names only the month; this type keeps that distinction visible instead of inviting an invented day. Lexicographic order is chronological order, so values sort correctly whichever precision they carry. Example: `2025-04-18`. |
@@ -1327,6 +1392,8 @@ Definitions the planes draw on. The reference types (`parcel_ref`, `room_ref` an
 | `position3d` | object | Property-relative position with elevation above vertical datum. |
 | `position_accuracy_m` | number | Radius within which the true point lies, in metres, for the entity's position and for any outline placed relative to it. Every answer that uses the position carries this number with it. min 0. Example: `0.1`. |
 | `position_source` | enum | How the position was obtained. `surveyed` from a cadastral or instrument survey; `tape` from tape measurements off known points; `gps` from a satellite fix, which needs the realm's WGS84 origin to be declared before it can be placed; `estimated` by eye or from a description. One of: `surveyed`, `tape`, `gps`, `estimated`. Example: `tape`. |
+| `dimension_source` | enum | How the heights, elevations, pitches and sizes stated on this element are known: `surveyed` from an instrument survey; `tape` measured on site by tape or laser; `design-document` read from the building's drawings or design documents; `estimated` by eye, from photographs or from a description, and still to be confirmed. Where the element has a derived_from field it says what the values were estimated from and what they are to be confirmed against. Absent, the model does not say how the dimensions are known. Answers CQ58. One of: `surveyed`, `tape`, `design-document`, `estimated`. Example: `estimated`. |
+| `dimension_accuracy_m` | number | How far a height, elevation or size stated on this element may lie from the true value, in metres. Answers CQ58. min 0. Example: `0.01`. |
 | `position_derived_from` | `positioned_element_ref` | The element this position was placed relative to. Records that the dependency exists, not the offset: correct the named element and this one is due for correction too. The offset stays in the description. Example: `CMP042`. |
 | `derivation` | object | Where a value came from when it was not measured on site: the statement it was read from and the date it was written down. A later survey then corrects a derivation instead of guessing whether the numbers were ever measured. |
 | `placed_member` | object | One unit of a group entity that stands for several identical things, such as one lamp of a lighting component or one shrub of a planting. The group carries the count, the care and the attributes; the member carries only where it stands, in absolute model coordinates with a height above the vertical datum, an optional label, and where the point came from when it was derived rather than measured. A unit that needs a history of its own becomes an entity and leaves this list. |
@@ -1360,6 +1427,8 @@ Definitions the planes draw on. The reference types (`parcel_ref`, `room_ref` an
 | `wall_segment_ref` | pattern `^([a-z][a-z0-9-]*\.)?WSG\d{3,}$` | Typed reference to a wall segment in the construction layer (v2.0). Example: `WSG001`. |
 | `slab_ref` | pattern `^([a-z][a-z0-9-]*\.)?SLB\d{3,}$` | Typed reference to a floor/ceiling slab in the construction layer (v2.0). Example: `SLB001`. |
 | `roof_plane_ref` | pattern `^([a-z][a-z0-9-]*\.)?RFP\d{3,}$` | Typed reference to a roof plane in the construction layer (v2.0). Example: `RFP001`. |
+| `column_ref` | pattern `^([a-z][a-z0-9-]*\.)?COL\d{3,}$` | Typed reference to a post or column in the construction layer. Example: `COL001`. |
+| `beam_ref` | pattern `^([a-z][a-z0-9-]*\.)?BEAM\d{3,}$` | Typed reference to a beam in the construction layer. Example: `BEAM001`. |
 | `event_ref` | pattern `^([a-z][a-z0-9-]*\.)?EVT\d{3,}$` | Typed reference to an Event entity in the event log (v2.0). Example: `EVT001`. |
 | `estate_change_ref` | pattern `^([a-z][a-z0-9-]*\.)?ECH\d{3,}[a-z]?$` | Typed reference to an Estate Change entity. The optional trailing letter addresses one member of a change family, so a reference can name either the family parent or a single member of it. Example: `ECH015`. |
 | `epic_ref` | pattern `^([a-z][a-z0-9-]*\.)?EPK\d{3,}$` | Typed reference to an Epic, a named group of estate changes with a display order. Example: `EPK001`. |

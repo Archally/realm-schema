@@ -36,18 +36,18 @@ parcels:
     footprint:
       shape: polygon
       vertices:
-        - {x: -23.55, y: -22.19}   # N (abs 0, 0) ground +3.4 m
-        - {x: 10.45, y: -19.69}   # NE (abs 34, 2.5) ground +2.8 m
-        - {x: 28.45, y: -6.19}   # E (abs 52, 16) ground +1.3 m
-        - {x: 22.45, y: 18.81}   # SE (abs 46, 41) ground -1.8 m
-        - {x: -5.55, y: 24.81}   # S (abs 18, 47) ground -3 m
-        - {x: -27.55, y: 1.81}   # W (abs -4, 24) ground +0.3 m
+        - {x: -23.55, y: -22.19}   # N (abs 0, 0) ground +3.2 m
+        - {x: 10.45, y: -19.69}   # NE (abs 34, 2.5) ground +2.2 m
+        - {x: 28.45, y: -6.19}   # E (abs 52, 16) ground -0.7 m
+        - {x: 22.45, y: 18.81}   # SE (abs 46, 41) ground -2.6 m
+        - {x: -5.55, y: 24.81}   # S (abs 18, 47) ground -3.2 m
+        - {x: -27.55, y: 1.81}   # W (abs -4, 24) ground +0.1 m
 
     # One elevation per footprint vertex, in the same order. A viewer fans the
     # polygon from its centroid and tilts each triangle, so these six numbers are
     # the whole terrain model - there is no separate height grid.
-    vertex_elevations: [3.4, 2.8, 1.3, -1.8, -3, 0.3]
-    elevation_m: 0.5
+    vertex_elevations: [3.2, 2.2, -0.7, -2.6, -3.2, 0.1]
+    elevation_m: -0.17
     description: >
       Irregular six-sided plot of 1927 m², falling from the lane on the north
       side to the stream at the south. The cottage and barn stand on two cut
@@ -83,8 +83,8 @@ buildings:
     # eave and ridge are the MAXIMA over this building's wings, not separate
     # measurements - a building that disagreed with its own wings would be
     # reporting two different roofs.
-    eave_height_m: 4.6
-    ridge_height_m: 8.2
+    eave_height_m: 5.2
+    ridge_height_m: 8.8
     description: >
       Two-storey stone cottage with a single-storey rear lean-to, set on a
       levelled terrace cut into the hillside. The terrace is the model's Z
@@ -107,7 +107,7 @@ buildings:
         - {x: 3.5, y: 3}   # abs 37, 24
         - {x: -3.5, y: 3}   # abs 30, 24
     rotation_degrees: 0
-    ground_elevation_m: -1.2
+    ground_elevation_m: -0.5
     exterior_wall_thickness_cm: 25
 
     # eave and ridge are the MAXIMA over this building's wings, not separate
@@ -116,7 +116,7 @@ buildings:
     eave_height_m: 2.9
     ridge_height_m: 5
     description: >
-      Detached barn east of the cottage, on its own platform 1.2 m lower.
+      Detached barn east of the cottage, on its own platform 0.5 m lower.
       Reached from the drive; no internal connection to the house.
     tags: [stone, detached, workshop]
 
@@ -138,8 +138,8 @@ wings:
     roof_type: gable
     roof_pitch_degrees: 42
     ridge_direction: E
-    eave_height_m: 4.6
-    ridge_height_m: 8.2
+    eave_height_m: 5.2
+    ridge_height_m: 8.8
     roof_overhang_cm: 40
     description: >
       The original two-storey range, 11.0 m along the ridge by 8.0 m deep.
@@ -161,7 +161,7 @@ wings:
     roof_type: mono-pitch
     roof_pitch_degrees: 15
     eave_height_m: 2.7
-    ridge_height_m: 3.9
+    ridge_height_m: 3.64
     roof_overhang_cm: 25
     description: >
       Single-storey lean-to added across the rear elevation, 7.6 m by 3.5 m.
@@ -187,7 +187,7 @@ wings:
     ridge_height_m: 5
     roof_overhang_cm: 30
     description: >
-      Detached barn, 7.0 m by 6.0 m, standing 1.2 m below the cottage terrace
+      Detached barn, 7.0 m by 6.0 m, standing 0.5 m below the cottage terrace
       on the natural fall of the ground. One open bay, used as garaging and
       workshop.
 
@@ -226,8 +226,8 @@ floors:
     wing_ref: WNG003
     area_sqm: 42
     ceiling_height_m: 2.8
-    base_elevation_m: -1.2
-    finished_floor_elevation_m: -1.1
+    base_elevation_m: -0.5
+    finished_floor_elevation_m: -0.4
     slab_thickness_cm: 15
     description: >
       A single undivided bay. Concrete slab laid over the original earth
@@ -1008,9 +1008,9 @@ outdoor_zones:
         - {x: 8.76, y: 7.75}   # abs 25.6, 16
     sun_exposure: full-sun
     # Slope read off the terrain triangle under this zone's centroid, which sits
-    # at 2.25 m relative to the datum.
+    # at 1.79 m relative to the datum.
     slope_direction: S
-    slope_percent: 12.2
+    slope_percent: 13.2
     description: >
       Gravel drive from the gate on the lane down to the barn forecourt.
     tags: [gravel, access]
@@ -1030,9 +1030,9 @@ outdoor_zones:
     sun_exposure: full-sun
     soil_type: loam
     # Slope read off the terrain triangle under this zone's centroid, which sits
-    # at 2.2 m relative to the datum.
+    # at 1.88 m relative to the datum.
     slope_direction: S
-    slope_percent: 12.9
+    slope_percent: 13.3
     description: >
       Lawn between the lane and the cottage, falling gently to the west.
     tags: [lawn, front]
@@ -1051,9 +1051,9 @@ outdoor_zones:
         - {x: -5.5, y: 2}   # abs 14, 31.5
     sun_exposure: full-sun
     # Slope read off the terrain triangle under this zone's centroid, which sits
-    # at -0.53 m relative to the datum.
+    # at -1.02 m relative to the datum.
     slope_direction: S
-    slope_percent: 14.2
+    slope_percent: 12.8
     description: >
       Paved terrace on the retained platform behind the cottage. The retaining
       wall along its south edge holds back 1.4 m of hillside.
@@ -1074,9 +1074,9 @@ outdoor_zones:
     sun_exposure: full-sun
     soil_type: clay
     # Slope read off the terrain triangle under this zone's centroid, which sits
-    # at -0.48 m relative to the datum.
-    slope_direction: S
-    slope_percent: 12.4
+    # at -1.31 m relative to the datum.
+    slope_direction: SE
+    slope_percent: 9.3
     description: >
       Six standard fruit trees on the east slope, grazed under by the
       neighbour's sheep in autumn.
@@ -1101,9 +1101,9 @@ outdoor_zones:
     soil_type: loam
     soil_profile_refs: [SOIL001]
     # Slope read off the terrain triangle under this zone's centroid, which sits
-    # at -1.26 m relative to the datum.
+    # at -1.61 m relative to the datum.
     slope_direction: S
-    slope_percent: 14.2
+    slope_percent: 12.8
     description: >
       Four raised beds cut into the slope as shallow terraces, with a herb
       strip along the north edge.
@@ -1128,9 +1128,9 @@ outdoor_zones:
     soil_type: silt
     soil_profile_refs: [SOIL002]
     # Slope read off the terrain triangle under this zone's centroid, which sits
-    # at -2.09 m relative to the datum.
+    # at -2.56 m relative to the datum.
     slope_direction: S
-    slope_percent: 13.9
+    slope_percent: 12.3
     description: >
       Rough grass at the bottom of the fall, wet in winter and the first place
       to catch frost.
@@ -1150,9 +1150,9 @@ outdoor_zones:
         - {x: -2.25, y: 4.25}   # abs 25.5, 24.5
     sun_exposure: partial-sun
     # Slope read off the terrain triangle under this zone's centroid, which sits
-    # at 0.74 m relative to the datum.
+    # at -0.09 m relative to the datum.
     slope_direction: S
-    slope_percent: 11.5
+    slope_percent: 15.6
     description: >
       Turning and standing space in front of the barn door.
     tags: [gravel, access]
@@ -1172,9 +1172,9 @@ outdoor_zones:
     sun_exposure: partial-shade
     soil_type: loam
     # Slope read off the terrain triangle under this zone's centroid, which sits
-    # at 0.13 m relative to the datum.
+    # at -0.3 m relative to the datum.
     slope_direction: S
-    slope_percent: 14.2
+    slope_percent: 12.8
     description: >
       Three timber bays and a leaf-mould cage on the west bank, in the shade
       of the coppice and a short barrow-push above the vegetable beds.
@@ -1194,9 +1194,9 @@ outdoor_zones:
         - {x: -0.67, y: 2.21}   # abs 19.2, 16
     sun_exposure: full-sun
     # Slope read off the terrain triangle under this zone's centroid, which sits
-    # at 1.55 m relative to the datum.
+    # at 1 m relative to the datum.
     slope_direction: S
-    slope_percent: 12.2
+    slope_percent: 13.2
     description: >
       Flagstone path from the front door north to the drive.
     tags: [paved, access]
@@ -1215,9 +1215,9 @@ outdoor_zones:
         - {x: -0.5, y: 3.5}   # abs 25, 31.5
     sun_exposure: partial-sun
     # Slope read off the terrain triangle under this zone's centroid, which sits
-    # at -0.28 m relative to the datum.
+    # at -0.89 m relative to the datum.
     slope_direction: S
-    slope_percent: 13.9
+    slope_percent: 12.3
     description: >
       Gravel path from the barn forecourt down the side of the cottage to the
       south terrace.

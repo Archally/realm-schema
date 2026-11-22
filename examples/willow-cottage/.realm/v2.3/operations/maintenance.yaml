@@ -155,6 +155,71 @@ maintenance_tasks:
     description: >
       The annual cut SOIL002 has always described and nothing scheduled.
     tags: [garden, seasonal, meadow]
+  - id: MT007
+    name: Septic tank desludge
+    task_type: cleaning
+    kind: infrastructure
+    target_ref: SYS006
+    schedule:
+      rrule: RRULE:FREQ=YEARLY;BYMONTH=5
+      summary: Every May
+    priority: high
+    season: spring
+    estimated_duration_minutes: 60
+    instructions: >
+      The tanker empties both chambers; check the outlet baffle and that the
+      drainage field is not ponding.
+    cost_category_ref: CC002
+    estimated_cost: 260
+    currency: GBP
+    executions:
+    - date: "2025-05-14"
+      note: >
+        Sludge at about a third of the depth; baffle intact.
+    description: >
+      Emptied once a year, after the meadow has dried enough for the tanker to
+      cross it.
+    tags: [water, drainage]
+  - id: MT008
+    name: Rainwater filter clean
+    task_type: cleaning
+    kind: infrastructure
+    target_ref: SYS004
+    schedule:
+      rrule: RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=1SA
+      summary: First Saturday in March, every year
+    priority: medium
+    season: spring
+    estimated_duration_minutes: 30
+    instructions: >
+      Lift the filter basket from the tank's inlet chamber, hose it clean and
+      check that the overflow is clear.
+    description: >
+      A spring clean of the filter before the irrigation season starts drawing
+      on the tank.
+    tags: [water, garden]
+  - id: MT009
+    name: Pear mulch and feed
+    task_type: mulching
+    kind: garden
+    target_ref: SPM004
+    schedule:
+      rrule: RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=3SA
+      summary: Third Saturday in March, every year
+    priority: medium
+    season: spring
+    estimated_duration_minutes: 60
+    instructions: >
+      Pull back the old mulch, scatter a handful of potash and lay 5 cm of
+      compost in a ring clear of the trunk.
+    tools_required: [wheelbarrow, garden fork]
+    executions:
+    - date: "2025-03-15"
+      note: >
+        First mulch ring, about 1.5 m across.
+    description: >
+      Holds moisture in the heavy clay around the stressed pear.
+    tags: [orchard, seasonal]
 
 # ── Cost categories ───────────────────────────────────────────────────────
 cost_categories:

@@ -10,9 +10,6 @@ export const SCHEMA_BASE_URI = "https://archally.dev/realm/";
 
 /** Typed ID pattern for realm entities. */
 // The trailing-letter branch is scoped to ECH, matching `metamodel.any_entity_ref`.
-// Without it the rule layers silently skipped every member of a change family - 18 of
-// 60 estate changes on cewice, measured 2026-08-29 - so a rule could not fire on the
-// entities the families exist to describe, and reported nothing rather than failing.
 export const ID_RE = /^([a-z][a-z0-9-]*\.)?([A-Z]{1,5}\d{3,}|ECH\d{3,}[a-z])$/;
 
 /**
@@ -27,11 +24,7 @@ export function entityPrefix(id) {
 /**
  * Maps model data file (relative path) → schema file (relative to schema/).
  *
- * This IS the standalone backend's resolver - `structural.mjs` reads it for every
- * file it validates. When layers 1-2 are served by realm-core instead, core's own
- * generic resolver answers the same question, and the two must agree about which
- * files are governed at all: a file one side validates and the other never opens is
- * a difference in verdict that no count of errors reveals.
+ * The standalone validator uses this mapping to select a schema for each data file.
  */
 export const DATA_FILE_TO_SCHEMA = {
   "realm.yaml":                   "realm.schema.yaml",
@@ -54,10 +47,7 @@ export const DATA_FILE_TO_SCHEMA = {
   "estate-changes.yaml":          "estate-change.schema.yaml",
   "risk-register.yaml":           "risks.schema.yaml",
   "events.yaml":                  "events.schema.yaml",
-  // The config is a sibling of the model rather than part of it, but it has a
-  // schema and realm-core validates it, so this side does too. Leaving it out
-  // meant the published validator reported a clean model where the MCP server
-  // reported an invalid config - the same model, two verdicts.
+  // The validator checks the model configuration against its own schema.
   "realm-config.yaml":            "realm-config.schema.yaml",
 };
 
@@ -111,10 +101,6 @@ export function tryLoadYaml(filePath) {
   }
 }
 
-// ─── Schema loading ─────────────────────────────────────────────────────────
-// (loadSchemaRegistry/makeAjv removed 2026-06-12 — Ajv validation is delegated
-//  to @archally/realm-core; see ../validate-realm.mjs header.)
-
 // ─── Config loading ─────────────────────────────────────────────────────────
 
 export function loadConfig(configPath) {
@@ -148,17 +134,21 @@ export function extractEntities(modelFiles) {
     const isConstruction = relPath.startsWith("topology/construction/");
 
     if (isConstruction) {
-      // Construction files: specific property structure
-      for (const key of ["wall_segments", "roof_planes"]) {
+      // Construction files: specific property structure. Each element also records the
+      // building or floor its document describes, because a roof is often stated in a
+      // building-level document and the walls under it in floor documents, and the rules
+      // that judge a building as a whole need to find both.
+      const document = constructionDocumentOf(data);
+      for (const key of ["wall_segments", "roof_planes", "columns", "beams"]) {
         if (!Array.isArray(data[key])) continue;
         for (const item of data[key]) {
           if (!item?.id || !ID_RE.test(item.id)) continue;
-          addEntity(item.id, key, item, relPath);
+          addEntity(item.id, key, item, relPath, document);
         }
       }
       for (const key of ["floor_slab", "ceiling_slab"]) {
         if (!data[key]?.id || !ID_RE.test(data[key].id)) continue;
-        addEntity(data[key].id, key, data[key], relPath);
+        addEntity(data[key].id, key, data[key], relPath, document);
       }
     } else {
       // Standard plane files: arrays of entities
@@ -172,16 +162,62 @@ export function extractEntities(modelFiles) {
     }
   }
 
-  function addEntity(id, type, data, file) {
+  function addEntity(id, type, data, file, document) {
     if (allIds.has(id)) {
       duplicates.push({ id, file });
     } else {
       allIds.add(id);
-      entities.set(id, { type, data, file });
+      entities.set(id, document ? { type, data, file, document } : { type, data, file });
     }
   }
 
   return { entities, allIds, duplicates };
+}
+
+/**
+ * The building or floor a construction document describes: `{ building_ref, floor_ref }`,
+ * each a string or null.
+ */
+function constructionDocumentOf(data) {
+  return {
+    building_ref: typeof data.building_ref === "string" ? data.building_ref : null,
+    floor_ref: typeof data.floor_ref === "string" ? data.floor_ref : null,
+  };
+}
+
+/**
+ * The construction elements of a model grouped by the building they belong to.
+ *
+ * A roof plane belongs to the building it names; any other element to the building its
+ * document describes, directly or through the document's floor. Returns one group per
+ * building: `{ building, walls, columns, beams, roofs }`, each list holding
+ * `{ id, data, buildingDocument }`, where `buildingDocument` is true for an element of a
+ * building-level document (a simple building without floors).
+ *
+ * @param {Map<string, {type: string, data: Record<string, any>, file: string, document?: {building_ref: string|null, floor_ref: string|null}}>} entities
+ */
+export function constructionByBuilding(entities) {
+  const groups = new Map();
+  const groupOf = (building) => {
+    if (!groups.has(building)) groups.set(building, { building, walls: [], columns: [], beams: [], roofs: [] });
+    return groups.get(building);
+  };
+  for (const [id, entity] of entities) {
+    if (!entity.document) continue;
+    const prefix = entityPrefix(id);
+    const document = entity.document;
+    const floorBuilding = document.floor_ref ? entities.get(document.floor_ref)?.data?.building_ref : null;
+    const documentBuilding = document.building_ref ?? floorBuilding ?? document.floor_ref ?? entity.file;
+    const buildingDocument = Boolean(document.building_ref) && !document.floor_ref;
+    const element = { id, data: entity.data, buildingDocument };
+    if (prefix === "RFP") {
+      const named = typeof entity.data.building_ref === "string" ? entity.data.building_ref : documentBuilding;
+      groupOf(named).roofs.push(element);
+    } else if (prefix === "WSG") groupOf(documentBuilding).walls.push(element);
+    else if (prefix === "COL") groupOf(documentBuilding).columns.push(element);
+    else if (prefix === "BEAM") groupOf(documentBuilding).beams.push(element);
+  }
+  return [...groups.values()];
 }
 
 // ─── Geometry helpers ───────────────────────────────────────────────────────
@@ -229,6 +265,129 @@ export function polygonsOverlapArea(polyA, polyB) {
   return overlapX * overlapY;
 }
 
+/** Whether a value is a number that is neither infinite nor NaN. */
+export function isFiniteNumber(value) {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+/**
+ * The point of segment a-b nearest to `point`: its parameter `t` in [0, 1] from a to b,
+ * and its plan distance from `point`.
+ */
+export function projectOnSegment(point, a, b) {
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  const lengthSquared = dx * dx + dy * dy;
+  let t = 0;
+  if (lengthSquared > 0) {
+    t = Math.max(0, Math.min(1, ((point.x - a.x) * dx + (point.y - a.y) * dy) / lengthSquared));
+  }
+  return { t, distance: Math.hypot(point.x - (a.x + t * dx), point.y - (a.y + t * dy)) };
+}
+
+/**
+ * Where segments a-b and c-d cross: the parameter along a-b, or null when they do not
+ * cross (parallel segments included).
+ */
+export function segmentCrossing(a, b, c, d) {
+  const rx = b.x - a.x;
+  const ry = b.y - a.y;
+  const sx = d.x - c.x;
+  const sy = d.y - c.y;
+  const denominator = rx * sy - ry * sx;
+  if (Math.abs(denominator) < 1e-12) return null;
+  const t = ((c.x - a.x) * sy - (c.y - a.y) * sx) / denominator;
+  const u = ((c.x - a.x) * ry - (c.y - a.y) * rx) / denominator;
+  if (t < 0 || t > 1 || u < 0 || u > 1) return null;
+  return t;
+}
+
+/** A point at parameter t along segment a-b. */
+export function pointAlong(a, b, t) {
+  return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
+}
+
+/**
+ * The elevation of a planar roof surface above plan point (x, y), from its first three
+ * vertices, or null when those vertices do not span a plane that a plan point can be
+ * lifted onto (collinear, or a vertical face).
+ */
+export function planeElevationAt(vertices3d, x, y) {
+  if (!Array.isArray(vertices3d) || vertices3d.length < 3) return null;
+  const [p, q, r] = vertices3d;
+  const u = { x: q.x - p.x, y: q.y - p.y, z: q.z - p.z };
+  const v = { x: r.x - p.x, y: r.y - p.y, z: r.z - p.z };
+  const normal = { x: u.y * v.z - u.z * v.y, y: u.z * v.x - u.x * v.z, z: u.x * v.y - u.y * v.x };
+  if (Math.abs(normal.z) < 1e-12) return null;
+  return p.z - (normal.x * (x - p.x) + normal.y * (y - p.y)) / normal.z;
+}
+
+/**
+ * Whether a plan point lies inside a polygon, or within `tolerance` metres of its outline.
+ */
+export function polygonCovers(vertices, point, tolerance) {
+  let inside = false;
+  for (let i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
+    const a = vertices[i];
+    const b = vertices[j];
+    const crosses = a.y > point.y !== b.y > point.y;
+    if (crosses && point.x < ((b.x - a.x) * (point.y - a.y)) / (b.y - a.y) + a.x) inside = !inside;
+  }
+  if (inside) return true;
+  for (let i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
+    if (projectOnSegment(point, vertices[j], vertices[i]).distance <= tolerance) return true;
+  }
+  return false;
+}
+
+/**
+ * The elevation of a wall segment's top at parameter t along it (0 at its start, 1 at its
+ * end): its top profile, else a symmetric gable, else the level top at base + height.
+ * Null when the wall states no height and no profile.
+ */
+export function wallTopAt(wall, t) {
+  const base = wall.base_elevation_m ?? 0;
+  if (Array.isArray(wall.top_profile) && wall.top_profile.length >= 2) {
+    const lengthCm = distance2d(wall.start, wall.end) * 100;
+    const offset = t * lengthCm;
+    const points = wall.top_profile;
+    if (offset <= points[0].offset_from_start_cm) return points[0].elevation_m;
+    for (let i = 1; i < points.length; i++) {
+      const before = points[i - 1];
+      const after = points[i];
+      if (offset > after.offset_from_start_cm) continue;
+      const span = after.offset_from_start_cm - before.offset_from_start_cm;
+      if (span <= 0) return after.elevation_m;
+      return before.elevation_m + ((offset - before.offset_from_start_cm) / span) * (after.elevation_m - before.elevation_m);
+    }
+    return points[points.length - 1].elevation_m;
+  }
+  if (wall.height_m == null) return null;
+  const eave = base + wall.height_m;
+  if (wall.gable_peak_elevation_m != null) {
+    return eave + (1 - Math.abs(2 * t - 1)) * (wall.gable_peak_elevation_m - eave);
+  }
+  return eave;
+}
+
+/**
+ * A building's footprint in model coordinates: its `footprint` vertices rotated clockwise
+ * by `rotation_degrees` about the centroid and offset by `position`. Null when the building
+ * states no position or no polygon footprint.
+ */
+export function buildingOutline(building) {
+  const vertices = building?.footprint?.vertices;
+  const position = building?.position;
+  if (!Array.isArray(vertices) || vertices.length < 3 || !position) return null;
+  const radians = ((building.rotation_degrees ?? 0) * Math.PI) / 180;
+  const cos = Math.cos(radians);
+  const sin = Math.sin(radians);
+  return vertices.map((vertex) => ({
+    x: position.x + vertex.x * cos + vertex.y * sin,
+    y: position.y - vertex.x * sin + vertex.y * cos,
+  }));
+}
+
 export function boundingBox(vertices) {
   let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
   for (const v of vertices) {
@@ -246,22 +405,13 @@ export function boundingBox(vertices) {
  * Files to skip when walking a model: generator inputs and asset manifests, which
  * describe how a model is USED rather than what it contains.
  *
- * `realm-config` is deliberately absent. This list used to begin with a bare
- * "config", which swallowed it, and the published validator therefore reported a
- * clean model where realm-core reported an invalid config - the same model, two
- * verdicts, and no count of errors would have shown which file the difference was
- * in. The config has a schema, so it is validated (see DATA_FILE_TO_SCHEMA).
+ * The validator includes `realm-config.yaml` and checks it against its schema.
  */
 const EXCLUDE_PATTERNS = ["manifest", "schedule-planner", "garden-care"];
 
 /**
  * Collect the model's YAML files for the rule layers, keyed by project-relative
  * posix path, with the construction subset alongside.
- *
- * Lives here rather than in the runner because `rl check` reports the same rule
- * layers and needs the same input. Two walks would agree until one of them learned
- * about a new directory, and the disagreement would surface as a rule that quietly
- * stopped seeing part of the model.
  */
 export function discoverModelFiles(modelDir) {
   // Matched against the MODEL-RELATIVE path, not the absolute one: a consumer whose

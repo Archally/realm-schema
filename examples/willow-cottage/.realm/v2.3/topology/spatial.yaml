@@ -50,14 +50,14 @@ spatial_relations:
   - from_ref: NP001
     to_ref: LP001
     relation_type: overlooks
-    distance_m: 34.4
+    distance_m: 37.3
     notes: >
       Hollybank stands 3.1 m above the cottage terrace and looks down across
       its paddock.
   - from_ref: NP004
     to_ref: OZ001
     relation_type: shades
-    distance_m: 39.7
+    distance_m: 37.6
     notes: >
       The coppice on the west bank keeps the drive in shade until mid-morning.
   - from_ref: BS004
@@ -77,6 +77,6 @@ spatial_relations:
   - from_ref: OZ006
     to_ref: NP003
     relation_type: drains-to
-    distance_m: 20.3
+    distance_m: 17.3
     notes: >
       Surface water off the lower meadow crosses the boundary into the stream.

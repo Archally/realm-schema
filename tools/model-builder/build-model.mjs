@@ -16,12 +16,7 @@ import { resolveRelationType } from "./relation-types.mjs";
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 
 /**
- * Where the validator's discovery and extraction live, in either tree.
- *
- * The published layout nests the validator one directory deeper than the canonical one, so
- * a single relative path is correct in exactly one of the two and silently wrong in the
- * other - wrong in a way no hash comparison can see, because the bytes match and only the
- * resolution fails.
+ * Supported paths to the validator's model discovery and entity extraction helpers.
  */
 const HELPERS_CANDIDATES = [
   path.resolve(HERE, "../validator/core/helpers.mjs"),
@@ -33,12 +28,6 @@ const PLANES = new Set(["topology", "infrastructure", "nature", "operations", "c
 
 /**
  * The plane a model file sits in: the nearest ancestor directory that names one.
- *
- * Searched from the file upwards rather than read off the first path segment, because
- * those paths are relative to whatever directory the caller pointed at. Pointing at
- * `.realm/v2.3` makes the first segment `topology`; pointing one level higher makes it
- * `.realm`, and every entity silently loses its plane - the same model, described
- * differently depending on how it was opened.
  *
  * @param {string} file
  */
@@ -67,6 +56,8 @@ const TYPE_OF_COLLECTION = {
   tools: "tool",
   wall_segments: "wall_segment",
   roof_planes: "roof_plane",
+  columns: "column",
+  beams: "beam",
   floor_slab: "floor_slab",
   // A ceiling slab is a floor slab in the ceiling position: `construction.schema.yaml`
   // defines the key as `$ref: "#/$defs/floor_slab"`, so the key says where the slab sits and
@@ -106,12 +97,9 @@ const TYPE_OF_COLLECTION = {
 /**
  * The model directory itself, given either it or a project folder containing it.
  *
- * A realm model lives at `<project>/.realm/v<N>/`, and pointing one level too high is the
- * obvious mistake to make from a shell. It does not fail: file discovery still finds the
- * YAML, but the paths it reports are one segment longer than the schema mapping expects,
- * so files whose collection key is singular stop being recognised as collections and their
- * entities are dropped. Measured on the worked example: three slabs, no error, no warning
- * - a model 2% smaller than the same model opened one directory down.
+ * A directory containing `realm.yaml` resolves directly. For project folders, the builder
+ * looks for a version directory under `.realm/` containing `realm.yaml`, in descending
+ * directory name order. If no such directory exists, it returns the supplied directory.
  *
  * @param {string} dir
  * @returns {string}
@@ -375,11 +363,8 @@ export function toRealmModel(extracted, meta = {}, spatialRelations = []) {
 
   return {
     schema: "realm",
-    // The model's own identity, from `realm.yaml`: what the property is called, where it is,
-    // which schema version it declares. Every entity carried through and the thing they all
-    // belong to did not, so a consumer could describe 145 rooms and walls without being able
-    // to say whose they were. `realm.yaml` holds metadata only - no entity collection lives
-    // there - so it is carried whole rather than field by field.
+    // The graph includes all metadata from `realm.yaml`, including the property's name,
+    // location and declared schema version.
     realm: meta,
     planes: [...planesPresent].sort(),
     entities,

@@ -104,6 +104,18 @@ export const RELATION_TYPES = {
     building_ref: "covers",
     wing_ref: "covers",
   },
+  column: {
+    supports_roof_plane_refs: "supports",
+    floor_ref: "part-of",
+    wing_ref: "part-of",
+  },
+  beam: {
+    rests_on_column_refs: "rests-on",
+    rests_on_wall_segment_refs: "rests-on",
+    supports_roof_plane_refs: "supports",
+    floor_ref: "part-of",
+    wing_ref: "part-of",
+  },
 
   // ── Infrastructure - systems ──
   system: {

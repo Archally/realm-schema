@@ -1,0 +1,19 @@
+# Juniper Lane (fictional): a mono-pitch shed whose two side walls have raked tops that follow
+# the roof, rising from 2.10 m at the front to 2.40 m at the back.
+building_ref: BLD102
+generated_from:
+  semantic_source_refs: ["topology/estate.yaml"]
+  schema_version: "2.4.1"
+  generated_at: "2026-11-18T10:00:00Z"
+  generator: "manual"
+wall_segments:
+  - { id: WSG101, start: { x: 32.4, y: 5.0 }, end: { x: 30.0, y: 5.0 }, base_elevation_m: 0, height_m: 2.10, thickness_cm: 8, is_exterior: true, wall_type: exterior, material: timber, wing_ref: WNG102,
+      openings: [ { opening_type: door, offset_from_start_cm: 75, width_cm: 90, height_cm: 190 } ] }
+  - { id: WSG102, start: { x: 30.0, y: 5.0 }, end: { x: 30.0, y: 6.8 }, base_elevation_m: 0, height_m: 2.10, thickness_cm: 8, is_exterior: true, wall_type: exterior, material: timber, wing_ref: WNG102,
+      top_profile: [ { offset_from_start_cm: 0, elevation_m: 2.10 }, { offset_from_start_cm: 180, elevation_m: 2.40 } ] }
+  - { id: WSG103, start: { x: 30.0, y: 6.8 }, end: { x: 32.4, y: 6.8 }, base_elevation_m: 0, height_m: 2.40, thickness_cm: 8, is_exterior: true, wall_type: exterior, material: timber, wing_ref: WNG102 }
+  - { id: WSG104, start: { x: 32.4, y: 6.8 }, end: { x: 32.4, y: 5.0 }, base_elevation_m: 0, height_m: 2.10, thickness_cm: 8, is_exterior: true, wall_type: exterior, material: timber, wing_ref: WNG102,
+      top_profile: [ { offset_from_start_cm: 0, elevation_m: 2.40 }, { offset_from_start_cm: 180, elevation_m: 2.10 } ] }
+roof_planes:
+  - { id: RFP105, building_ref: BLD102, wing_ref: WNG102, surface_type: slope, facing_direction: S, pitch_degrees: 9.46, overhang_cm: 15,
+      vertices_3d: [ { x: 29.85, y: 4.85, z: 2.075 }, { x: 32.55, y: 4.85, z: 2.075 }, { x: 32.55, y: 6.95, z: 2.425 }, { x: 29.85, y: 6.95, z: 2.425 } ] }

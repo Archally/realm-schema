@@ -21,8 +21,11 @@
 # `connects_to_ref` - not two doors in one wall.
 #
 # All coordinates are model-absolute. Elevations are metres above the vertical
-# datum, so this floor's slab sits at 2.85 m and its walls rise 2.35 m from
-# there.
+# datum, so this floor's slab sits at 2.85 m and a partition rises 2.35 m from
+# there, to the ceiling. An outside or load-bearing wall goes on: to the next
+# storey's floor where there is one, else to the eave of the roof it holds up.
+# A gable end is one segment with its peak under the ridge, even where several
+# rooms stand behind it.
 # ═════════════════════════════════════════════════════════════════════════════
 
 floor_ref: FLR002
@@ -31,13 +34,13 @@ building_ref: BLD001
 generated_from:
   semantic_source_refs:
     - "topology/estate.yaml"
-  schema_version: "2.3.0"
+  schema_version: "2.4.1"
   generated_at: "2026-09-01T00:00:00Z"
   generator: gen-willow-cottage
   human_edited: false
   inference_log:
     rooms_processed: 6
-    walls_generated: 17
+    walls_generated: 15
     openings_mapped: 12
 
 building_shell:
@@ -51,13 +54,13 @@ building_shell:
       - {x: 21.6, y: 27.5}
       - {x: 14, y: 27.5}
   ground_elevation_m: 0
-  eave_elevation_m: 4.6
-  ridge_elevation_m: 8.2
+  eave_elevation_m: 5.2
+  ridge_elevation_m: 8.8
 
 # No floor slab: this storey's floor is the ceiling slab of the storey below,
 # which declares it. One physical slab, one entity.
 
-# ── Wall segments (17) ────────────────────────────────────────────────────
+# ── Wall segments (15) ────────────────────────────────────────────────────
 wall_segments:
   - id: WSG023
     start: {x: 14, y: 16}
@@ -120,22 +123,32 @@ wall_segments:
     floor_ref: FLR002
     wing_ref: WNG001
     derived_from: RM009.walls.S
-  - id: WSG026
-    start: {x: 14, y: 20.4}
+  - id: WSG044
+    start: {x: 14, y: 24}
     end: {x: 14, y: 16}
     thickness_cm: 30
     is_exterior: true
     wall_type: exterior
     base_elevation_m: 2.85
     height_m: 2.35
+    gable_peak_elevation_m: 8.8
     material: rubble-stone
-    right_space_ref: RM009
+    right_space_ref: RM012
     floor_ref: FLR002
     wing_ref: WNG001
-    derived_from: RM009.walls.W
+    derived_from: RM012.walls.W + RM009.walls.W
     openings:
       - opening_type: window
-        offset_from_start_cm: 160
+        offset_from_start_cm: 130
+        width_cm: 80
+        height_cm: 90
+        sill_height_cm: 130
+        head_height_cm: 220
+        depth_cm: 30
+        glazing: double
+        source_room_ref: RM012
+      - opening_type: window
+        offset_from_start_cm: 520
         width_cm: 90
         height_cm: 115
         sill_height_cm: 85
@@ -227,19 +240,20 @@ wall_segments:
     floor_ref: FLR002
     wing_ref: WNG001
     derived_from: RM011.walls.N
-  - id: WSG031
+  - id: WSG045
     start: {x: 25, y: 16}
-    end: {x: 25, y: 20.4}
+    end: {x: 25, y: 24}
     thickness_cm: 30
     is_exterior: true
     wall_type: exterior
     base_elevation_m: 2.85
     height_m: 2.35
+    gable_peak_elevation_m: 8.8
     material: rubble-stone
     right_space_ref: RM011
     floor_ref: FLR002
     wing_ref: WNG001
-    derived_from: RM011.walls.E
+    derived_from: RM011.walls.E + RM014.walls.E
     openings:
       - opening_type: window
         offset_from_start_cm: 100
@@ -301,29 +315,6 @@ wall_segments:
     floor_ref: FLR002
     wing_ref: WNG001
     derived_from: RM012.walls.S
-  - id: WSG035
-    start: {x: 14, y: 24}
-    end: {x: 14, y: 20.4}
-    thickness_cm: 30
-    is_exterior: true
-    wall_type: exterior
-    base_elevation_m: 2.85
-    height_m: 2.35
-    material: rubble-stone
-    right_space_ref: RM012
-    floor_ref: FLR002
-    wing_ref: WNG001
-    derived_from: RM012.walls.W
-    openings:
-      - opening_type: window
-        offset_from_start_cm: 130
-        width_cm: 80
-        height_cm: 90
-        sill_height_cm: 130
-        head_height_cm: 220
-        depth_cm: 30
-        glazing: double
-        source_room_ref: RM012
   - id: WSG036
     start: {x: 21.6, y: 20.4}
     end: {x: 21.6, y: 24}
@@ -371,19 +362,6 @@ wall_segments:
         depth_cm: 30
         glazing: double
         source_room_ref: RM013
-  - id: WSG038
-    start: {x: 25, y: 20.4}
-    end: {x: 25, y: 24}
-    thickness_cm: 30
-    is_exterior: true
-    wall_type: exterior
-    base_elevation_m: 2.85
-    height_m: 2.35
-    material: rubble-stone
-    right_space_ref: RM014
-    floor_ref: FLR002
-    wing_ref: WNG001
-    derived_from: RM014.walls.E
   - id: WSG039
     start: {x: 25, y: 24}
     end: {x: 21.6, y: 24}

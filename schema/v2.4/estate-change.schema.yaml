@@ -1,0 +1,652 @@
+---
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "estate-change.schema.yaml"
+title: "Realm Estate Change"
+description: >
+  Tracks planned changes and undertakings concerning the estate as AS-IS to
+  TO-BE transitions. Each estate change is a discrete undertaking (add solar
+  panels, replace fence, plant new hedge, apply to a listing platform) with
+  timeline, status, dependencies, impact on existing entities, required
+  resources, and a record of what was actually carried out.
+
+x-gdsm:
+  version: "2.4.0"
+  methodology: "GDSM v1.0"
+  plane: null
+  domain_slice: null
+  designed_for:
+    - id: T8
+      name: "Estate Change Planning Report"
+      mfs_target: 80
+  competency_questions:
+    - "CQ23: What changes are planned for the property, what is their timeline, and what is their current status?"
+    - "CQ31: What tools, materials, and equipment are required for each estate change, what quantities are needed, and what is their availability?"
+    - "CQ34: When was each change actually carried out, what did it cost, and what state did it leave behind?"
+    - "CQ53: What will the estate look like once a chosen set of planned changes is carried out, and which change items say what they do precisely enough to be applied without reading their prose?"
+  fitness:
+    last_evaluated: "2026-11-18"
+    method: >
+      Structural for the release as a whole (2.4.0 adds one optional block to a
+      change item and four definitions, and removes, renames, retypes or narrows
+      nothing, so no task's fitness can fall against 2.3.0); numeric for CQ53,
+      estimated by judgment against the schema and its valid and rejected
+      examples, not computed. Dimensions: CC concept coverage, AC attribute
+      coverage, RE relation expressiveness, CE constraint expressiveness, AG
+      answer generation.
+    scores:
+      CQ53: {cc: 90, ac: 85, re: 70, ce: 75, ag: 40, mean: 72, weakest: "ag: a to-be estate needs a tool that applies effects; re: references inside an effect resolve only in the projected state"}
+  non_goals:
+    - "Detailed resource scheduling (who uses what tool when) - only preparatory checklists"
+    - "Contractor bidding and selection"
+    - "Permit application tracking"
+  status: draft
+  owned_by: null
+  schema_ref_prefix: "ECH"
+
+type: object
+additionalProperties: false
+properties:
+  estate_changes:
+    type: array
+    title: "Estate Changes"
+    description: "Planned changes to the estate, tracking AS-IS to TO-BE transitions. Answers CQ23."
+    items:
+      $ref: "#/$defs/estate_change"
+  epics:
+    type: array
+    title: "Epics"
+    description: "Named groups that estate changes belong to, in display order. Answers CQ23 for a reader who plans by theme."
+    items:
+      $ref: "#/$defs/epic"
+
+$defs:
+  epic:
+    type: object
+    title: "Epic"
+    description: >
+      A named group of estate changes that a schedule or a Gantt chart
+      groups by: the building, the garden, privacy, the forest. An epic
+      carries a name and an order and nothing else; how a view colours it
+      belongs to that view's configuration. Answers CQ23.
+    required: [id, name, order]
+    additionalProperties: false
+    properties:
+      id:
+        $ref: "metamodel.schema.yaml#/$defs/epic_ref"
+        title: "EPK### Identifier"
+      name:
+        type: string
+        title: "Epic Name"
+        minLength: 1
+        examples: ["Ogród", "Budynek"]
+      order:
+        type: integer
+        title: "Display Order"
+        description: "Position of this epic when epics are listed or drawn; lower comes first. Unique within a model."
+        minimum: 1
+        examples: [1, 4]
+      description:
+        type: string
+      tags:
+        $ref: "metamodel.schema.yaml#/$defs/tags"
+
+  estate_change:
+    type: object
+    title: "Estate Change"
+    description: >
+      A planned change or undertaking concerning the estate, with lifecycle
+      tracking. Moves through statuses from proposed to approved to
+      in-progress to completed or cancelled. A change may belong to a family
+      of related changes, and a family may be one branch of a set of mutually
+      exclusive scenarios. Answers CQ23, CQ31, CQ34.
+    required: [id, name, status]
+    additionalProperties: false
+    patternProperties:
+      "^x-":
+        description: "Extension fields for domain-specific scheduling metadata (seasonal windows, risk/issue linkage)."
+    properties:
+      id:
+        $ref: "metamodel.schema.yaml#/$defs/estate_change_ref"
+        title: "ECH### Identifier"
+      name:
+        type: string
+        title: "Estate Change Name"
+        minLength: 1
+        examples: ["Install Rooftop Solar Array", "Replace North Fence", "Plant Privacy Hedge"]
+      summary:
+        type: string
+        title: "Summary"
+        description: "One-paragraph description of the planned change."
+        examples: ["Install 10kWp solar PV system on south-facing roof of main house with battery storage"]
+      status:
+        type: string
+        title: "Status"
+        description: >
+          Current lifecycle state of this estate change. A family parent
+          carries a status of its own; a rule reports when it disagrees with
+          the rollup of its members.
+        enum:
+          - "proposed"
+          - "approved"
+          - "scheduled"
+          - "in-progress"
+          - "completed"
+          - "cancelled"
+          - "deferred"
+        examples: ["proposed"]
+      priority:
+        type: string
+        title: "Priority"
+        enum: ["critical", "high", "medium", "low"]
+        examples: ["high"]
+      # ── Timeline ──
+      proposed_date:
+        $ref: "metamodel.schema.yaml#/$defs/iso_date"
+        title: "Date Proposed"
+      planned_start_date:
+        $ref: "metamodel.schema.yaml#/$defs/iso_date"
+        title: "Planned Start"
+      planned_end_date:
+        $ref: "metamodel.schema.yaml#/$defs/iso_date"
+        title: "Planned Completion"
+      actual_start_date:
+        $ref: "metamodel.schema.yaml#/$defs/iso_date"
+        title: "Actual Start"
+      actual_end_date:
+        $ref: "metamodel.schema.yaml#/$defs/iso_date"
+        title: "Actual Completion"
+      completed_date:
+        $ref: "metamodel.schema.yaml#/$defs/iso_date"
+        title: "Completed Date"
+      affected_entity_refs:
+        type: array
+        title: "Affected Entity References"
+        items:
+          type: string
+        uniqueItems: true
+      # ── Changes ──
+      changes:
+        type: array
+        title: "Entity Changes"
+        description: >
+          Specific changes to realm entities: add, modify, replace, or
+          remove systems, zones, plantings, boundaries, etc.
+        items:
+          type: object
+          title: "Change"
+          required: [action, entity_type]
+          additionalProperties: false
+          properties:
+            action:
+              type: string
+              title: "Action"
+              enum: ["add", "modify", "replace", "remove", "relocate"]
+              examples: ["add"]
+            entity_type:
+              type: string
+              title: "Entity Type"
+              description: "Type of entity being changed."
+              examples: ["system", "boundary_segment", "planting", "building", "outdoor_zone"]
+            entity_ref:
+              type: string
+              title: "Entity Reference"
+              description: "ID of the existing entity being modified/replaced/removed."
+              examples: ["SYS001", "BS003"]
+            description:
+              type: string
+              title: "Change Description"
+              examples: ["Add 10kWp solar PV system on main house roof"]
+            from_state:
+              type: string
+              title: "From State (AS-IS)"
+              description: "Current state before the change."
+              examples: ["No solar generation"]
+            to_state:
+              type: string
+              title: "To State (TO-BE)"
+              description: "Desired state after the change."
+              examples: ["10kWp solar PV with 13.5kWh battery"]
+            actual_state:
+              type: string
+              title: "Actual State (AS-BUILT)"
+              description: >
+                What the change actually left behind, when that differs from
+                the intended state or when the closure is worth recording in
+                its own words. Work carried out in a different way than
+                planned is the normal case rather than a fault, and a closed
+                change that never records one is an unverified closure.
+              examples: ["Mesh sewn onto three wires; no panels and no cable ties were used"]
+            outcome:
+              type: string
+              title: "Outcome"
+              description: >
+                How this one item ended, when the change as a whole has a
+                status that does not say it. `done` when the item was carried
+                out, `superseded` when another item or change did its work,
+                `abandoned` when it was dropped and nothing replaced it.
+                Absent while the item is still open. A completed change may
+                carry an abandoned item; `actual_state` says what stands
+                there instead.
+              enum: ["done", "superseded", "abandoned"]
+              examples: ["abandoned"]
+            effect:
+              $ref: "#/$defs/estate_change_effect"
+              title: "Executable Effect"
+              description: >
+                What this item does to the model, in a form a tool can apply
+                without reading prose: the record it adds or replaces, the
+                fields it changes, or the retirement it records. Optional; an
+                item without it stays a description that is listed and
+                reported as not executable. Answers CQ53. Used by T8.
+          allOf:
+            # An item with an effect names its entity by a typed id. An item
+            # without one keeps a free-text entity_ref.
+            - if: {required: [effect]}
+              then:
+                required: [entity_ref]
+                properties:
+                  entity_ref: {$ref: "metamodel.schema.yaml#/$defs/any_entity_ref"}
+            - if: {required: [effect], properties: {action: {const: "add"}}}
+              then:
+                properties:
+                  effect:
+                    required: [after]
+                    not: {anyOf: [{required: [property_changes]}, {required: [lifecycle]}]}
+            - if: {required: [effect], properties: {action: {const: "replace"}}}
+              then:
+                properties:
+                  effect:
+                    oneOf: [{required: [after]}, {required: [property_changes]}]
+                    not: {required: [lifecycle]}
+            - if: {required: [effect], properties: {action: {enum: ["modify", "relocate"]}}}
+              then:
+                properties:
+                  effect:
+                    required: [property_changes]
+                    not: {anyOf: [{required: [after]}, {required: [lifecycle]}, {required: [construction]}]}
+            - if: {required: [effect], properties: {action: {const: "relocate"}}}
+              then:
+                properties:
+                  effect:
+                    properties:
+                      property_changes:
+                        items:
+                          properties:
+                            property: {$ref: "#/$defs/relocation_property"}
+            - if: {required: [effect], properties: {action: {const: "remove"}}}
+              then:
+                properties:
+                  effect:
+                    required: [lifecycle]
+                    not: {anyOf: [{required: [after]}, {required: [property_changes]}, {required: [construction]}]}
+      # ── Required Resources (v1.4) ──
+      required_resources:
+        type: array
+        title: "Required Resources"
+        description: >
+          Tools, materials, and equipment needed to execute this estate change.
+          Drives preparatory checklist generation (PDF) and purchase
+          planning. Answers CQ31.
+        items:
+          $ref: "#/$defs/required_resource"
+      # ── Impact ──
+      affected_system_refs:
+        type: array
+        title: "Affected Systems"
+        description: "Existing systems impacted by this estate change."
+        items:
+          $ref: "metamodel.schema.yaml#/$defs/system_ref"
+        uniqueItems: true
+      affected_zone_refs:
+        type: array
+        title: "Affected Zones"
+        items:
+          $ref: "metamodel.schema.yaml#/$defs/outdoor_zone_ref"
+        uniqueItems: true
+      # ── Dependencies ──
+      depends_on_estate_change_refs:
+        type: array
+        title: "Dependencies"
+        description: "Estate changes that must be completed before this one can start."
+        items:
+          $ref: "metamodel.schema.yaml#/$defs/estate_change_ref"
+        uniqueItems: true
+        examples: [["ECH001"]]
+      # ── Family and scenario grouping (v2.2) ──
+      part_of_change_ref:
+        $ref: "metamodel.schema.yaml#/$defs/estate_change_ref"
+        title: "Parent Estate Change"
+        description: >
+          The family this change belongs to. A family parent carries the
+          shared budget, goal and condition its members work towards, and
+          lets a risk or an issue address the whole family rather than
+          guessing at one member. The edge is held by the member, so the
+          parent needs no list; membership must not form a cycle.
+        examples: ["ECH009"]
+      variant_group:
+        type: string
+        title: "Variant Group"
+        description: >
+          Names a set of mutually exclusive scenarios, declared on the parent
+          of each competing branch. Exactly one branch is ever carried out,
+          so members of one group are alternatives rather than dependencies
+          and their statuses are not rolled up together.
+        minLength: 1
+        examples: ["property-exit"]
+      epic_refs:
+        type: array
+        title: "Epics"
+        description: >
+          The epics this change belongs to, most specific first. A view that
+          groups by one epic uses the first; a change with no epic is listed
+          under its own heading rather than left out.
+        items:
+          $ref: "metamodel.schema.yaml#/$defs/epic_ref"
+        uniqueItems: true
+        examples: [["EPK003"], ["EPK006", "EPK005", "EPK002"]]
+      # ── Execution history (v2.2) ──
+      executions:
+        type: array
+        title: "Executions"
+        description: >
+          What was actually carried out, and when. A change closed without
+          one records no evidence that anything happened. Counts, totals and
+          the most recent date are read from this list rather than stored
+          beside it. Answers CQ34.
+        items:
+          $ref: "metamodel.schema.yaml#/$defs/execution"
+      # ── Coordinator (v1.4) ──
+      coordinator_ref:
+        $ref: "metamodel.schema.yaml#/$defs/person_ref"
+        title: "Coordinator"
+        description: "Person responsible for coordinating this estate change. Answers CQ32."
+      # ── Cost ──
+      estimated_cost:
+        type: number
+        title: "Estimated Cost"
+        minimum: 0
+        examples: [15000, 2500]
+      currency:
+        type: string
+        title: "Currency"
+        pattern: "^[A-Z]{3}$"
+        examples: ["EUR"]
+      description:
+        type: string
+      lifecycle:
+        $ref: "metamodel.schema.yaml#/$defs/lifecycle"
+        title: "Lifecycle"
+        description: "Set when this record has ended; absent means active. Retired records are excluded by default and counted."
+      tags:
+        $ref: "metamodel.schema.yaml#/$defs/tags"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Required Resource (v1.4) - checklist item for estate change preparation
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  required_resource:
+    type: object
+    title: "Required Resource"
+    description: >
+      A tool, material, or piece of equipment needed to execute an estate change.
+      Supports optional references to existing TL or EQP entities for
+      inventory cross-checking. Used for deterministic PDF checklist
+      generation and purchase planning. Answers CQ31.
+    required: [name, category, availability]
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+        title: "Resource Name"
+        description: "Human-readable name of the required resource."
+        minLength: 1
+        examples: ["Spawarka MIG/MAG", "Beton B20", "Taczka"]
+      category:
+        type: string
+        title: "Resource Category"
+        description: "Classification for checklist grouping."
+        enum:
+          - "tool"
+          - "material"
+          - "equipment"
+      availability:
+        type: string
+        title: "Availability Status"
+        description: "Whether this resource is available on-site or needs to be acquired."
+        enum:
+          - "on-site"
+          - "to-purchase"
+          - "to-check"
+          - "to-borrow"
+          - "to-rent"
+      quantity:
+        type: number
+        title: "Quantity"
+        description: "Amount needed. Omit for items where quantity is implicit (e.g., 1 ladder)."
+        exclusiveMinimum: 0
+        examples: [17, 650, 2000]
+      unit:
+        type: string
+        title: "Unit"
+        description: "Unit of measurement for quantity (e.g., szt., kg, l, m, m²)."
+        minLength: 1
+        examples: ["szt.", "kg", "l", "m", "m²"]
+      tool_ref:
+        $ref: "metamodel.schema.yaml#/$defs/tool_ref"
+        title: "Tool Reference"
+        description: "Reference to an existing TL### entity in the tool inventory."
+      equipment_ref:
+        $ref: "metamodel.schema.yaml#/$defs/equipment_ref"
+        title: "Equipment Reference"
+        description: "Reference to an existing EQP### entity in the equipment inventory."
+      estimated_cost:
+        type: number
+        title: "Estimated Cost"
+        description: "Estimated acquisition cost for items that need purchasing."
+        minimum: 0
+        examples: [250, 50]
+      currency:
+        type: string
+        title: "Currency"
+        pattern: "^[A-Z]{3}$"
+        examples: ["PLN"]
+      notes:
+        type: string
+        title: "Notes"
+        description: "Where to buy, specifications, alternatives, or other preparation notes."
+        examples: ["Leroy Merlin, 2× big bag", "W garażu RM012"]
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # Executable effect - what one change item does to the model
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  estate_change_effect:
+    type: object
+    title: "Estate Change Effect"
+    description: >
+      The executable part of one change item: the state the model is in once
+      the item is carried out. `add` carries the new record in `after`;
+      `replace` carries a whole new record in `after` (a different id
+      supersedes the old record, the same id replaces it) or field changes in
+      `property_changes`; `modify` and `relocate` carry field changes, and
+      `relocate` only position and location fields; `remove` carries the
+      `lifecycle` the record ends with, so references to it keep resolving.
+      The effect is the plan; what was actually built is recorded in
+      `actual_state`, `executions` and the model itself. Answers CQ53.
+    additionalProperties: false
+    minProperties: 1
+    properties:
+      after:
+        $ref: "#/$defs/estate_record"
+        title: "Record After"
+        description: >
+          The whole record as it stands once the item is carried out, valid
+          against its own entity type. Its id equals the item's entity_ref for
+          an add and for a replace that keeps the id.
+      property_changes:
+        type: array
+        title: "Property Changes"
+        description: "Field changes to the existing record named by entity_ref, applied in order."
+        minItems: 1
+        items:
+          $ref: "#/$defs/effect_property_change"
+      lifecycle:
+        $ref: "metamodel.schema.yaml#/$defs/lifecycle"
+        title: "Lifecycle After Removal"
+        description: >
+          How a removed record ends. Its state is `retired`; the record stays so
+          that references to it keep resolving.
+        properties:
+          state: {const: "retired"}
+        examples: [{state: retired, retired_reason: "Herb strip lifted; the bed was turfed over"}]
+      construction:
+        $ref: "topology/construction.schema.yaml"
+        title: "Construction Document After"
+        description: >
+          The construction geometry document of a building or floor once the
+          item is carried out: walls, slabs, roof planes and shell. It replaces
+          the document of the same building or floor, or adds one when none
+          exists. Used with an add or replace of a building or floor.
+      materialized_on:
+        $ref: "metamodel.schema.yaml#/$defs/flexible_date"
+        title: "Materialized On"
+        description: >
+          When the model itself was updated to show this effect. Absent means
+          the model does not show it yet, so a to-be view applies it; present
+          means the model already shows it, so no view applies it again.
+          Independent of the change's status and the item's outcome, which say
+          what happened on the ground.
+        examples: ["2026-10-20"]
+
+  effect_property_change:
+    type: object
+    title: "Effect Property Change"
+    description: >
+      One field change on an existing record, in the same vocabulary as the
+      Blueprint migration property change. `set` assigns `value`, `unset`
+      removes the field, `append` adds `value` to a list, `remove-item` removes
+      `value` from a list. `old_value`, when given, is the value the change
+      expects to find; a tool refuses the change when the model holds another.
+    required: [kind, property]
+    additionalProperties: false
+    properties:
+      kind:
+        type: string
+        title: "Kind"
+        enum: ["set", "unset", "append", "remove-item"]
+        examples: ["set"]
+      property:
+        type: string
+        title: "Property Path"
+        description: "Field name, or a dot-separated path into a nested field."
+        pattern: "^[a-z_][a-z0-9_]*(\\.[a-z0-9_]+)*$"
+        examples: ["rated_capacity", "position.x"]
+      value:
+        title: "Value"
+        description: "The value to set, append or remove. Its type is the field's type."
+        examples: [5000, {x: 22.5, y: 33.0}]
+      old_value:
+        title: "Expected Old Value"
+        description: "The value the field holds before the change, when the change depends on it."
+        examples: [3000]
+      description:
+        type: string
+        title: "Description"
+        examples: ["Second tank doubles the stored volume"]
+    allOf:
+      - if: {properties: {kind: {const: "unset"}}}
+        then: {not: {required: [value]}}
+        else: {required: [value]}
+
+  relocation_property:
+    type: string
+    title: "Relocation Property"
+    description: >
+      A field a relocation may change: a position, its accuracy, source and
+      derivation, a rotation, an absolute outline or route, an elevation, or
+      the zone, room, building, floor, wing or parcel the record sits in.
+    pattern: "^(position|position_start|position_end|position_accuracy_m|position_source|position_derived_from|rotation_degrees|vertices|route|elevation_m|base_elevation_m|ground_elevation_m|outdoor_zone_ref|room_ref|building_ref|floor_ref|wing_ref|parcel_ref|parcel_refs)(\\.[a-z0-9_]+)*$"
+    examples: ["position", "outdoor_zone_ref"]
+
+  estate_record:
+    type: object
+    title: "Estate Record"
+    description: >
+      A record of any estate entity held in a plane file, validated against
+      the entity type its id prefix names. Construction elements (walls, slabs,
+      roof planes) change through a construction document instead, and plan
+      records (estate changes, epics, risks, issues, events) are not estate.
+    required: [id]
+    properties:
+      id:
+        type: string
+        title: "Record Id"
+        pattern: "^([a-z][a-z0-9-]*\\.)?(LP|BLD|FLR|RM|OZ|BS|SYS|CMP|UC|NN|IOT|NL|CBR|PPR|SPM|PTG|BMF|SCP|SOIL|MT|NR|CC|WRT|REG|NP|SC|FRN|EQP|TL|EF|PRS|REC|WNG)\\d{3,}$"
+        examples: ["BLD003", "PTG007"]
+    allOf:
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?LP\\d{3,}$"}}}
+        then: {$ref: "topology/estate.schema.yaml#/$defs/parcel"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?BLD\\d{3,}$"}}}
+        then: {$ref: "topology/estate.schema.yaml#/$defs/building"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?FLR\\d{3,}$"}}}
+        then: {$ref: "topology/estate.schema.yaml#/$defs/floor"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?RM\\d{3,}$"}}}
+        then: {$ref: "topology/estate.schema.yaml#/$defs/room"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?OZ\\d{3,}$"}}}
+        then: {$ref: "topology/estate.schema.yaml#/$defs/outdoor_zone"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?BS\\d{3,}$"}}}
+        then: {$ref: "topology/boundary.schema.yaml#/$defs/boundary_segment"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?SYS\\d{3,}$"}}}
+        then: {$ref: "infrastructure/systems.schema.yaml#/$defs/system"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?CMP\\d{3,}$"}}}
+        then: {$ref: "infrastructure/systems.schema.yaml#/$defs/component"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?UC\\d{3,}$"}}}
+        then: {$ref: "infrastructure/systems.schema.yaml#/$defs/utility_connection"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?NN\\d{3,}$"}}}
+        then: {$ref: "infrastructure/network.schema.yaml#/$defs/network_node"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?IOT\\d{3,}$"}}}
+        then: {$ref: "infrastructure/network.schema.yaml#/$defs/iot_device"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?NL\\d{3,}$"}}}
+        then: {$ref: "infrastructure/network.schema.yaml#/$defs/network_link"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?CBR\\d{3,}$"}}}
+        then: {$ref: "infrastructure/systems.schema.yaml#/$defs/cable_run"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?PPR\\d{3,}$"}}}
+        then: {$ref: "infrastructure/systems.schema.yaml#/$defs/pipe_run"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?SPM\\d{3,}$"}}}
+        then: {$ref: "nature/vegetation.schema.yaml#/$defs/specimen"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?PTG\\d{3,}$"}}}
+        then: {$ref: "nature/vegetation.schema.yaml#/$defs/planting"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?BMF\\d{3,}$"}}}
+        then: {$ref: "nature/biomass.schema.yaml#/$defs/biomass_flow"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?SCP\\d{3,}$"}}}
+        then: {$ref: "nature/care.schema.yaml#/$defs/species_care_profile"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?SOIL\\d{3,}$"}}}
+        then: {$ref: "nature/soil.schema.yaml#/$defs/soil_profile"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?MT\\d{3,}$"}}}
+        then: {$ref: "operations/maintenance.schema.yaml#/$defs/maintenance_task"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?NR\\d{3,}$"}}}
+        then: {$ref: "operations/maintenance.schema.yaml#/$defs/notification_rule"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?CC\\d{3,}$"}}}
+        then: {$ref: "operations/maintenance.schema.yaml#/$defs/cost_category"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?WRT\\d{3,}$"}}}
+        then: {$ref: "operations/compliance.schema.yaml#/$defs/warranty"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?REG\\d{3,}$"}}}
+        then: {$ref: "operations/compliance.schema.yaml#/$defs/regulatory_requirement"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?NP\\d{3,}$"}}}
+        then: {$ref: "context/surroundings.schema.yaml#/$defs/neighbor_property"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?SC\\d{3,}$"}}}
+        then: {$ref: "context/surroundings.schema.yaml#/$defs/shared_concern"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?FRN\\d{3,}$"}}}
+        then: {$ref: "topology/equipment.schema.yaml#/$defs/furniture"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?EQP\\d{3,}$"}}}
+        then: {$ref: "topology/equipment.schema.yaml#/$defs/equipment"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?TL\\d{3,}$"}}}
+        then: {$ref: "topology/tools.schema.yaml#/$defs/tool"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?EF\\d{3,}$"}}}
+        then: {$ref: "context/surroundings.schema.yaml#/$defs/environmental_factor"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?PRS\\d{3,}$"}}}
+        then: {$ref: "context/persons.schema.yaml#/$defs/person"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?REC\\d{3,}$"}}}
+        then: {$ref: "nature/recommendations.schema.yaml#/$defs/planting_recommendation"}
+      - if: {properties: {id: {pattern: "^([a-z][a-z0-9-]*\\.)?WNG\\d{3,}$"}}}
+        then: {$ref: "topology/estate.schema.yaml#/$defs/wing"}

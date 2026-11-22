@@ -1,0 +1,21 @@
+# Juniper Lane (fictional): schema variants in one document - an off-centre gable wall stated
+# as a top profile, a rectangular and a round column, a sloped beam resting on both, and a
+# beam that crosses the gable wall in the middle of its span and rests on it there.
+building_ref: BLD104
+generated_from:
+  semantic_source_refs: ["topology/estate.yaml"]
+  schema_version: "2.4.1"
+  generated_at: "2026-11-18T10:00:00Z"
+  generator: "manual"
+wall_segments:
+  - { id: WSG110, start: { x: 0, y: 0 }, end: { x: 6, y: 0 }, base_elevation_m: 0, height_m: 2.5, thickness_cm: 24, is_exterior: false,
+      top_profile: [ { offset_from_start_cm: 0, elevation_m: 2.5 }, { offset_from_start_cm: 400, elevation_m: 4.6 }, { offset_from_start_cm: 600, elevation_m: 2.5 } ] }
+columns:
+  - { id: COL021, position: { x: 1.0, y: 2.0 }, height_m: 2.4, section_shape: rectangular, width_cm: 14, depth_cm: 20, rotation_degrees: 90, material: glulam }
+  - { id: COL022, position: { x: 4.0, y: 2.0 }, height_m: 2.7, section_shape: round, width_cm: 20, material: steel }
+  - { id: COL023, position: { x: 5.0, y: 1.0 }, height_m: 2.98, width_cm: 12, material: timber }
+beams:
+  - { id: BEAM021, start: { x: 1.0, y: 2.0 }, end: { x: 4.0, y: 2.0 }, top_elevation_start_m: 2.60, top_elevation_end_m: 2.90, width_cm: 10, depth_cm: 20, material: glulam,
+      rests_on_column_refs: [COL021, COL022] }
+  - { id: BEAM022, start: { x: 5.0, y: 1.0 }, end: { x: 5.0, y: -1.0 }, top_elevation_start_m: 3.10, top_elevation_end_m: 4.24, width_cm: 10, depth_cm: 12, material: timber,
+      rests_on_column_refs: [COL023], rests_on_wall_segment_refs: [WSG110] }

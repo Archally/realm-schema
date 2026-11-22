@@ -1,0 +1,24 @@
+# Juniper Lane (fictional): one parcel and four small buildings, each with one wing whose
+# footprint is the building's. Footprint vertices are relative to the building's position.
+parcels:
+  - { id: LP101, name: "Juniper Lane plot" }
+buildings:
+  - { id: BLD101, name: "Gazebo", building_type: gazebo, parcel_ref: LP101, wing_refs: [WNG101], position: { x: 21.8, y: 11.8 },
+      footprint: { shape: polygon, vertices: [ { x: -1.8, y: -1.8 }, { x: 1.8, y: -1.8 }, { x: 1.8, y: 1.8 }, { x: -1.8, y: 1.8 } ] } }
+  - { id: BLD102, name: "Shed", building_type: shed, parcel_ref: LP101, wing_refs: [WNG102], position: { x: 31.2, y: 5.9 },
+      footprint: { shape: polygon, vertices: [ { x: -1.2, y: -0.9 }, { x: 1.2, y: -0.9 }, { x: 1.2, y: 0.9 }, { x: -1.2, y: 0.9 } ] } }
+  - { id: BLD103, name: "Woodstore", building_type: shed, parcel_ref: LP101, wing_refs: [WNG103], position: { x: 41.5, y: 20.6 },
+      footprint: { shape: polygon, vertices: [ { x: -1.5, y: -0.62 }, { x: 1.5, y: -0.62 }, { x: 1.5, y: 0.62 }, { x: -1.5, y: 0.62 } ] },
+      dimension_source: estimated }
+  - { id: BLD104, name: "Workshop", building_type: workshop, parcel_ref: LP101, wing_refs: [WNG104], position: { x: 3.0, y: 1.25 },
+      footprint: { shape: polygon, vertices: [ { x: -3.0, y: -1.25 }, { x: 3.0, y: -1.25 }, { x: 3.0, y: 1.25 }, { x: -3.0, y: 1.25 } ] } }
+wings:
+  - { id: WNG101, name: "Gazebo", building_ref: BLD101, roof_type: hip, roof_pitch_degrees: 32.3, ridge_direction: N, roof_overhang_cm: 31,
+      footprint: { shape: polygon, vertices: [ { x: -1.8, y: -1.8 }, { x: 1.8, y: -1.8 }, { x: 1.8, y: 1.8 }, { x: -1.8, y: 1.8 } ] } }
+  - { id: WNG102, name: "Shed", building_ref: BLD102, roof_type: shed, roof_pitch_degrees: 9.46, ridge_direction: E, roof_overhang_cm: 15,
+      footprint: { shape: polygon, vertices: [ { x: -1.2, y: -0.9 }, { x: 1.2, y: -0.9 }, { x: 1.2, y: 0.9 }, { x: -1.2, y: 0.9 } ] } }
+  - { id: WNG103, name: "Woodstore", building_ref: BLD103, roof_type: shed, roof_pitch_degrees: 19.33, ridge_direction: E, roof_overhang_cm: 10,
+      footprint: { shape: polygon, vertices: [ { x: -1.5, y: -0.62 }, { x: 1.5, y: -0.62 }, { x: 1.5, y: 0.62 }, { x: -1.5, y: 0.62 } ] },
+      dimension_source: tape, dimension_accuracy_m: 0.02 }
+  - { id: WNG104, name: "Workshop", building_ref: BLD104, roof_type: flat,
+      footprint: { shape: polygon, vertices: [ { x: -3.0, y: -1.25 }, { x: 3.0, y: -1.25 }, { x: 3.0, y: 1.25 }, { x: -3.0, y: 1.25 } ] } }

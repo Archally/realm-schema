@@ -1,0 +1,34 @@
+# Juniper Lane (fictional): an open 3.6 by 3.6 m gazebo on four posts, with four beams on the
+# posts carrying a hip roof. The posts stop under the beams (top 2.14 m) and the beams' tops
+# (2.30 m) meet the roof planes.
+building_ref: BLD101
+generated_from:
+  semantic_source_refs: ["topology/estate.yaml"]
+  schema_version: "2.4.1"
+  generated_at: "2026-11-18T10:00:00Z"
+  generator: "manual"
+wall_segments: []
+columns:
+  - { id: COL001, position: { x: 20.06, y: 10.06 }, base_elevation_m: 0.15, height_m: 1.99, width_cm: 12, material: timber, wing_ref: WNG101 }
+  - { id: COL002, position: { x: 23.54, y: 10.06 }, base_elevation_m: 0.15, height_m: 1.99, width_cm: 12, material: timber, wing_ref: WNG101 }
+  - { id: COL003, position: { x: 23.54, y: 13.54 }, base_elevation_m: 0.15, height_m: 1.99, width_cm: 12, material: timber, wing_ref: WNG101 }
+  - { id: COL004, position: { x: 20.06, y: 13.54 }, base_elevation_m: 0.15, height_m: 1.99, width_cm: 12, material: timber, wing_ref: WNG101 }
+beams:
+  - { id: BEAM001, start: { x: 20.06, y: 10.06 }, end: { x: 23.54, y: 10.06 }, top_elevation_start_m: 2.30, top_elevation_end_m: 2.30, width_cm: 10, depth_cm: 16, material: timber, wing_ref: WNG101,
+      rests_on_column_refs: [COL001, COL002], supports_roof_plane_refs: [RFP101],
+      derived_from: "photographs of the gazebo; to confirm against the building's drawings", dimension_source: estimated, dimension_accuracy_m: 0.05 }
+  - { id: BEAM002, start: { x: 23.54, y: 10.06 }, end: { x: 23.54, y: 13.54 }, top_elevation_start_m: 2.30, top_elevation_end_m: 2.30, width_cm: 10, depth_cm: 16, material: timber, wing_ref: WNG101,
+      rests_on_column_refs: [COL002, COL003], supports_roof_plane_refs: [RFP102] }
+  - { id: BEAM003, start: { x: 23.54, y: 13.54 }, end: { x: 20.06, y: 13.54 }, top_elevation_start_m: 2.30, top_elevation_end_m: 2.30, width_cm: 10, depth_cm: 16, material: timber, wing_ref: WNG101,
+      rests_on_column_refs: [COL003, COL004], supports_roof_plane_refs: [RFP103] }
+  - { id: BEAM004, start: { x: 20.06, y: 13.54 }, end: { x: 20.06, y: 10.06 }, top_elevation_start_m: 2.30, top_elevation_end_m: 2.30, width_cm: 10, depth_cm: 16, material: timber, wing_ref: WNG101,
+      rests_on_column_refs: [COL004, COL001], supports_roof_plane_refs: [RFP104] }
+roof_planes:
+  - { id: RFP101, building_ref: BLD101, wing_ref: WNG101, surface_type: slope, facing_direction: S, pitch_degrees: 32.3,
+      vertices_3d: [ { x: 19.75, y: 9.75, z: 2.104 }, { x: 23.85, y: 9.75, z: 2.104 }, { x: 21.8, y: 11.8, z: 3.40 } ] }
+  - { id: RFP102, building_ref: BLD101, wing_ref: WNG101, surface_type: slope, facing_direction: E, pitch_degrees: 32.3,
+      vertices_3d: [ { x: 23.85, y: 9.75, z: 2.104 }, { x: 23.85, y: 13.85, z: 2.104 }, { x: 21.8, y: 11.8, z: 3.40 } ] }
+  - { id: RFP103, building_ref: BLD101, wing_ref: WNG101, surface_type: slope, facing_direction: N, pitch_degrees: 32.3,
+      vertices_3d: [ { x: 23.85, y: 13.85, z: 2.104 }, { x: 19.75, y: 13.85, z: 2.104 }, { x: 21.8, y: 11.8, z: 3.40 } ] }
+  - { id: RFP104, building_ref: BLD101, wing_ref: WNG101, surface_type: slope, facing_direction: W, pitch_degrees: 32.3,
+      vertices_3d: [ { x: 19.75, y: 13.85, z: 2.104 }, { x: 19.75, y: 9.75, z: 2.104 }, { x: 21.8, y: 11.8, z: 3.40 } ] }

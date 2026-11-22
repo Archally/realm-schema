@@ -1,7 +1,9 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// Layer 4: Cross-Layer Consistency (C01-C10)
+// Layer 4: Cross-Layer Consistency (C01-C11)
 // Semantic ↔ Construction alignment checks.
 // ═══════════════════════════════════════════════════════════════════════════════
+
+import { constructionByBuilding } from "./helpers.mjs";
 
 export function validateCrossLayer(entities, constructionFiles, config) {
   const issues = [];
@@ -41,23 +43,11 @@ export function validateCrossLayer(entities, constructionFiles, config) {
     }
   }
 
-  // ── C02: Wall thickness match (±tolerance) ──
-  // TODO: requires compass-direction → WSG line mapping (spatial reasoning)
-  // Deferred to viewers-v2 plan Step 03 (validate_construction MCP tool)
-
-  // ── C03: is_exterior consistency ──
-  // (Requires compass-direction to WSG mapping — deferred)
-
-  // ── C04: Adjacency consistency ──
-  // (Requires spatial analysis — deferred)
-
   // ── C05: Opening coverage ──
   // An interior door is declared semantically by BOTH rooms it joins, once from
   // each side, but exists ONCE in the construction layer: on the wall segment
   // derived from one of them, with `source_room_ref` naming that room and
-  // `connects_to_ref` naming the other. Counting only `source_room_ref` therefore
-  // reports the room on the far side as missing an opening that is fully modelled,
-  // and acting on that report would put a second door in a wall that has one.
+  // `connects_to_ref` naming the other.
   // An opening is covered for a room when it TOUCHES the room from either side.
   const semanticOpeningCount = new Map();
   for (const [roomId, roomData] of roomsWithWalls) {
@@ -85,9 +75,6 @@ export function validateCrossLayer(entities, constructionFiles, config) {
       issues.push({ severity: "warning", rule: "C05", entity: roomId, message: `Room has ${count} semantic openings but only ${constructionCount} present in the construction layer` });
     }
   }
-
-  // ── C06: Opening width match ──
-  // (Would need per-opening matching — deferred to spatial analysis)
 
   // ── C07: SLB count ≥ FLR count per building ──
   const floorsByBld = new Map();
@@ -149,6 +136,15 @@ export function validateCrossLayer(entities, constructionFiles, config) {
         }
       }
     }
+  }
+
+  // ── C11: A building with roof planes has walls or columns under them ──
+  // Judged per building across its construction documents: a house states its roof
+  // planes in a building-level document and its walls in floor documents. Beams alone do
+  // not carry a roof, because a beam itself rests on walls or columns.
+  for (const group of constructionByBuilding(entities)) {
+    if (group.roofs.length === 0 || group.walls.length > 0 || group.columns.length > 0) continue;
+    issues.push({ severity: "warning", rule: "C11", entity: group.building, message: `Building has ${group.roofs.length} roof plane(s) but neither wall segments nor columns under them` });
   }
 
   return { issues };

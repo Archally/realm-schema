@@ -1,0 +1,48 @@
+# ═════════════════════════════════════════════════════════════════════════════
+# Risks and issues
+#
+# Schema: risks.schema.yaml
+#
+# GENERATED from a layout specification. Areas, elevations, wall segments and
+# opening offsets are computed rather than typed, which is why they agree with
+# one another. An edit made here is replaced the next time the model is
+# generated - copy it before adapting it.
+#
+# A risk is something that might happen and is being watched; an issue is
+# something that already has. They share a file and a severity scale but not a
+# prefix, because the question you ask of each is different: a risk has a
+# mitigation, an issue has current measures and usually an estate change.
+# ═════════════════════════════════════════════════════════════════════════════
+
+risks:
+  - id: RSK001
+    name: Frost damage to orchard blossom
+    category: operational
+    severity: moderate
+    status: monitoring
+    entity_refs: [SPM003, SPM004, OZ004, EF002]
+    description: >
+      Cold air draining down the fall settles at the stream and reaches the
+      lower orchard. A late frost during blossom costs most of the crop.
+    mitigation: >
+      The orchard stops short of the meadow, and the two most exposed trees
+      are the pear and the youngest apple. Fleece is kept for forecast frosts
+      after the first blossom.
+    tags: [frost, orchard]
+
+# ── Issues - already happening ────────────────────────────────────────────
+issues:
+  - id: ISS001
+    name: East wall bulging near the south end
+    category: structural
+    severity: moderate
+    status: open
+    entity_refs: [BS003, NP002]
+    description: >
+      About six metres of the dry stone wall has moved outward, worst near the
+      south end. Measured 2026-02-18: a lean of roughly 120 mm over 1.5 m of
+      height.
+    current_measures: >
+      Inspected each spring under MT005; rebuild approved as ECH001 for
+      October.
+    tags: [structural, boundary]

@@ -21,12 +21,12 @@ const escapeMarkdown = value => String(value)
   .replaceAll('_', '&#95;').replaceAll('[', '&#91;').replaceAll(']', '&#93;')
   .replaceAll('|', '&#124;').replaceAll('\r', ' ').replaceAll('\n', ' ');
 
-function render(schemaDirectory, output) {
+function render(schemaLine, schemaDirectory, output) {
   const sources = files(schemaDirectory);
   if (!sources.length) {
     throw new Error('No schema files found');
   }
-  const lines = ['# Realm v2.3 schema atlas', '',
+  const lines = [`# Realm ${schemaLine} schema atlas`, '',
     'Generated from the shipped YAML schemas. The YAML schemas define validation; this atlas lists fields, definitions, references and selected constraints rather than replacing a validator.',
     '', '## Schema files', ''];
   for (const source of sources) {
@@ -65,14 +65,13 @@ function render(schemaDirectory, output) {
 try {
   const [mode, ...argumentsList] = process.argv.slice(2);
   if (!['generate', 'check'].includes(mode)) {
-    throw new Error('Usage: cli.mjs generate|check [--schema directory] [--out file]');
+    throw new Error('Usage: cli.mjs generate|check [--line vMAJOR.MINOR] [--schema directory] [--out file]');
   }
-  let schemaDirectory = resolve('schema/v2.3');
-  let output = resolve('docs/schema-atlas/2026-11-06-reference.md');
+  const options = { '--line': 'v2.4', '--schema': undefined, '--out': undefined };
   for (let index = 0; index < argumentsList.length; index++) {
     const argument = argumentsList[index];
     const value = argumentsList[index + 1];
-    const known = ['--schema', '--out'].includes(argument);
+    const known = Object.hasOwn(options, argument);
     const complete = Boolean(value) && !value.startsWith('--');
     if (!known) {
       throw new Error(`Unknown or incomplete option: ${argument}`);
@@ -80,14 +79,16 @@ try {
     if (!complete) {
       throw new Error(`Unknown or incomplete option: ${argument}`);
     }
+    options[argument] = value;
     index++;
-    if (argument === '--schema') {
-      schemaDirectory = resolve(value);
-    } else {
-      output = resolve(value);
-    }
   }
-  const body = render(schemaDirectory, output);
+  const schemaLine = options['--line'];
+  if (!/^v\d+\.\d+$/.test(schemaLine)) {
+    throw new Error('Schema line must use vMAJOR.MINOR');
+  }
+  const schemaDirectory = resolve(options['--schema'] ?? `schema/${schemaLine}`);
+  const output = resolve(options['--out'] ?? `docs/schema-atlas/2026-11-22-${schemaLine}-reference.md`);
+  const body = render(schemaLine, schemaDirectory, output);
   if (mode === 'generate') {
     mkdirSync(dirname(output), { recursive: true });
     writeFileSync(output, body);

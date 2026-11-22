@@ -174,6 +174,126 @@ specimens:
       own tree. It carries the belt's winter density at the height a hedge
       cannot.
     tags: [shelter, evergreen]
+  - id: SPM007
+    name: Egremont Russet
+    specimen_type: tree-fruit
+    species: Malus domestica
+    common_name: Apple
+    outdoor_zone_ref: OZ004
+    position: {x: 42, y: 27.6}
+    height_m: 3.6
+    canopy_radius_m: 1.9
+    trunk_diameter_cm: 13
+    crown_bottom_height_m: 1.1
+    canopy_shape: sphere
+    mature_height_m: 4.5
+    height_measured_date: "2026-03-12"
+    condition: healthy
+    planted_date: "2012-12-01"
+    sun_requirement: full-sun
+    water_requirement: moderate
+    leaf_retention: deciduous
+    bloom_months: [4, 5]
+    description: >
+      Dessert apple on MM106 rootstock, picked in late September and stored in
+      the barn.
+    tags: [orchard, fruit]
+  - id: SPM008
+    name: Victoria plum
+    specimen_type: tree-fruit
+    species: Prunus domestica
+    common_name: Plum
+    outdoor_zone_ref: OZ004
+    position: {x: 36, y: 26.6}
+    height_m: 4.4
+    canopy_radius_m: 2.3
+    trunk_diameter_cm: 18
+    crown_bottom_height_m: 1
+    canopy_shape: ellipsoid-wide
+    mature_height_m: 5
+    height_measured_date: "2026-03-12"
+    condition: healthy
+    planted_date: "2011-11-18"
+    sun_requirement: full-sun
+    water_requirement: moderate
+    leaf_retention: deciduous
+    bloom_months: [4]
+    description: >
+      Self-fertile plum in the shelter of the barn; pruned only in summer,
+      against silver leaf.
+    tags: [orchard, fruit]
+  - id: SPM009
+    name: Morello cherry
+    specimen_type: tree-fruit
+    species: Prunus cerasus
+    common_name: Sour cherry
+    outdoor_zone_ref: OZ004
+    position: {x: 43.4, y: 33.2}
+    height_m: 3.2
+    canopy_radius_m: 1.7
+    trunk_diameter_cm: 11
+    crown_bottom_height_m: 0.9
+    canopy_shape: sphere
+    mature_height_m: 4
+    height_measured_date: "2026-03-12"
+    condition: healthy
+    planted_date: "2018-02-24"
+    sun_requirement: full-sun
+    water_requirement: moderate
+    leaf_retention: deciduous
+    bloom_months: [4, 5]
+    description: >
+      Sour cherry for jam on the orchard's east edge, netted against birds in
+      July.
+    tags: [orchard, fruit]
+  - id: SPM010
+    name: Discovery apple
+    specimen_type: tree-fruit
+    species: Malus domestica
+    common_name: Apple
+    outdoor_zone_ref: OZ004
+    position: {x: 29.8, y: 33.8}
+    height_m: 2.6
+    canopy_radius_m: 1.3
+    trunk_diameter_cm: 8
+    crown_bottom_height_m: 0.8
+    canopy_shape: sphere
+    mature_height_m: 4
+    height_measured_date: "2026-03-12"
+    condition: healthy
+    planted_date: "2021-11-27"
+    sun_requirement: full-sun
+    water_requirement: moderate
+    leaf_retention: deciduous
+    bloom_months: [4]
+    description: >
+      The youngest apple, an early dessert variety at the lower edge of the
+      orchard, where a late frost reaches first.
+    tags: [orchard, fruit, watch]
+  - id: SPM011
+    name: Elder by the compost
+    specimen_type: shrub-deciduous
+    species: Sambucus nigra
+    common_name: Elder
+    outdoor_zone_ref: OZ008
+    position: {x: 9.2, y: 23}
+    height_m: 3
+    canopy_radius_m: 1.6
+    trunk_diameter_cm: 10
+    crown_bottom_height_m: 0.6
+    canopy_shape: irregular
+    mature_height_m: 6
+    height_measured_date: "2026-03-12"
+    condition: healthy
+    estimated_age_years: 15
+    sun_requirement: partial-shade
+    water_requirement: moderate
+    leaf_retention: deciduous
+    bloom_months: [6]
+    description: >
+      Self-sown elder that shades the compost bays in summer; its flowers are
+      picked in June.
+    tags: [wildlife, self-sown]
 
 # ── Plantings ─────────────────────────────────────────────────────────────
 plantings:
@@ -296,3 +416,49 @@ plantings:
       fed, and wet enough from November to March that nothing can be taken off
       it.
     tags: [wet, uncultivated, hay]
+  - id: PTG006
+    name: Terrace bank planting
+    planting_type: ground-cover
+    species_mix:
+    - species: Thymus serpyllum
+      common_name: Wild thyme
+      proportion_percent: 60
+    - species: Aubrieta deltoidea
+      common_name: Aubretia
+      proportion_percent: 40
+    outdoor_zone_ref: OZ003
+    position: {x: 16, y: 31}
+    area_sqm: 4
+    age_years: 3
+    season: year-round
+    sun_requirement: full-sun
+    water_requirement: low
+    render_as: ground-cover
+    description: >
+      Creeping thyme and aubretia set into the terrace risers, holding the
+      soil where they grow.
+    tags: [slope, perennial]
+  - id: PTG007
+    name: Cottage border
+    planting_type: mixed-border
+    species_mix:
+    - species: Lavandula angustifolia
+      common_name: Lavender
+      proportion_percent: 40
+    - species: Nepeta x faassenii
+      common_name: Catmint
+      proportion_percent: 35
+    - species: Geranium 'Rozanne'
+      common_name: Hardy geranium
+      proportion_percent: 25
+    outdoor_zone_ref: OZ002
+    position: {x: 11.5, y: 14.5}
+    area_sqm: 9
+    age_years: 6
+    season: summer
+    sun_requirement: full-sun
+    water_requirement: low
+    description: >
+      Lavender, catmint and hardy geraniums in the bed below the cottage's
+      north-west corner, against the lawn.
+    tags: [ornamental, pollinators]

@@ -1,6 +1,6 @@
 # Willow Cottage - garden care
 
-> Generated from a Realm model: 187 entities, 700 relations, 5 planes, Realm schema v2.3.0. 6 specimens, 5 plantings, 4 care profiles, 2 soil profiles.
+> Generated from a Realm model: 211 entities, 772 relations, 5 planes, Realm schema v2.4.1. 11 specimens, 7 plantings, 4 care profiles, 2 soil profiles.
 
 **Willow Cottage, Brackwater Lane, Nether Hollowby, South West England, England**
 
@@ -10,20 +10,20 @@
 
 | Zone | Name | Type | Area | Sun | Slope | Soil | Growing |
 |---|---|---|---|---|---|---|---|
-| OZ001 | Drive | driveway | 62.6 m2 | full-sun | 12.2% S | - | nothing recorded |
-| OZ002 | Front garden | lawn | 210 m2 | full-sun | 12.9% S | - | 1 specimens, 1 plantings |
-| OZ003 | South terrace | terrace | 44 m2 | full-sun | 14.2% S | - | nothing recorded |
-| OZ004 | Orchard | orchard | 230 m2 | full-sun | 12.4% S | - | 2 specimens |
-| OZ005 | Vegetable garden | vegetable-garden | 103 m2 | full-sun | 14.2% S | SOIL001 | 2 specimens, 3 plantings |
-| OZ006 | Lower meadow | meadow | 177.5 m2 | partial-sun | 13.9% S | SOIL002 | 1 specimens, 1 plantings |
-| OZ007 | Barn forecourt | gravel-area | 38.3 m2 | partial-sun | 11.5% S | - | nothing recorded |
-| OZ008 | Compost corner | compost-area | 36 m2 | partial-shade | 14.2% S | - | nothing recorded |
-| OZ009 | Front path | path | 6.2 m2 | full-sun | 12.2% S | - | nothing recorded |
-| OZ010 | East path | path | 7 m2 | partial-sun | 13.9% S | - | nothing recorded |
+| OZ001 | Drive | driveway | 62.6 m2 | full-sun | 13.2% S | - | nothing recorded |
+| OZ002 | Front garden | lawn | 210 m2 | full-sun | 13.3% S | - | 1 specimens, 2 plantings |
+| OZ003 | South terrace | terrace | 44 m2 | full-sun | 12.8% S | - | 1 plantings |
+| OZ004 | Orchard | orchard | 230 m2 | full-sun | 9.3% SE | - | 6 specimens |
+| OZ005 | Vegetable garden | vegetable-garden | 103 m2 | full-sun | 12.8% S | SOIL001 | 2 specimens, 3 plantings |
+| OZ006 | Lower meadow | meadow | 177.5 m2 | partial-sun | 12.3% S | SOIL002 | 1 specimens, 1 plantings |
+| OZ007 | Barn forecourt | gravel-area | 38.3 m2 | partial-sun | 15.6% S | - | nothing recorded |
+| OZ008 | Compost corner | compost-area | 36 m2 | partial-shade | 12.8% S | - | 1 specimens |
+| OZ009 | Front path | path | 6.2 m2 | full-sun | 13.2% S | - | nothing recorded |
+| OZ010 | East path | path | 7 m2 | partial-sun | 12.3% S | - | nothing recorded |
 
 ## Plantings and specimens
 
-### Specimens (6)
+### Specimens (11)
 
 | Specimen | Name | Species | Zone | Size | Condition | Protected | Care profile |
 |---|---|---|---|---|---|---|---|
@@ -33,8 +33,13 @@
 | SPM004 | Conference pear | Pyrus communis | Orchard (OZ004) | 4.1 m, canopy r 2.2 m, trunk 16 cm | stressed | - | - |
 | SPM005 | Shelter pine | Pinus sylvestris | Vegetable garden (OZ005) | 9.8 m, canopy r 3.4 m, trunk 41 cm | healthy | - | Evergreen shelter (SCP003) |
 | SPM006 | The unclipped holly | Ilex aquifolium | Vegetable garden (OZ005) | 4.6 m, canopy r 1.3 m, trunk 14 cm | healthy | - | Evergreen shelter (SCP003) |
+| SPM007 | Egremont Russet | Malus domestica | Orchard (OZ004) | 3.6 m, canopy r 1.9 m, trunk 13 cm | healthy | - | - |
+| SPM008 | Victoria plum | Prunus domestica | Orchard (OZ004) | 4.4 m, canopy r 2.3 m, trunk 18 cm | healthy | - | - |
+| SPM009 | Morello cherry | Prunus cerasus | Orchard (OZ004) | 3.2 m, canopy r 1.7 m, trunk 11 cm | healthy | - | - |
+| SPM010 | Discovery apple | Malus domestica | Orchard (OZ004) | 2.6 m, canopy r 1.3 m, trunk 8 cm | healthy | - | - |
+| SPM011 | Elder by the compost | Sambucus nigra | Compost corner (OZ008) | 3 m, canopy r 1.6 m, trunk 10 cm | healthy | - | - |
 
-### Plantings (5)
+### Plantings (7)
 
 | Planting | Name | Species | Zone | Size | Sun | Water | Care profile |
 |---|---|---|---|---|---|---|---|
@@ -43,6 +48,8 @@
 | PTG003 | Herb strip | - | Vegetable garden (OZ005) | 6 m2 | full-sun | low | - |
 | PTG004 | South-west shelter belt | Crataegus monogyna +3 | Vegetable garden (OZ005) | 46, 210-290 cm, spaced 45 cm | full-sun | low | Evergreen shelter (SCP003) |
 | PTG005 | Hay meadow | Holcus lanatus +3 | Lower meadow (OZ006) | 177.5 m2 | partial-sun | high | Hay meadow (SCP004) |
+| PTG006 | Terrace bank planting | Thymus serpyllum +1 | South terrace (OZ003) | 4 m2 | full-sun | low | - |
+| PTG007 | Cottage border | Lavandula angustifolia +2 | Front garden (OZ002) | 9 m2 | full-sun | low | - |
 
 ## Soil
 

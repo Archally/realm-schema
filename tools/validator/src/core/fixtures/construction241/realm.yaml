@@ -1,0 +1,12 @@
+# Juniper Lane (fictional): the root of the construction 2.4.1 rule fixtures. The coordinates
+# are a round point chosen for the example, not a surveyed place.
+version: "1.0.0"
+schemaVersion: "2.4.1"
+name: "Juniper Lane"
+location:
+  address: "4 Juniper Lane"
+  city: "Juniper Lane"
+  country: "England"
+  latitude: 51.5
+  longitude: -0.12
+  time_zone: "Europe/London"
