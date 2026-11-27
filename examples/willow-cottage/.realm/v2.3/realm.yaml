@@ -33,7 +33,7 @@
 # ═════════════════════════════════════════════════════════════════════════════
 
 version: "1.0.0"
-schemaVersion: "2.4.1"
+schemaVersion: "2.4.3"
 x-language: en
 name: Willow Cottage
 description: >

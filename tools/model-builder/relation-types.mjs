@@ -51,6 +51,9 @@ export const RELATION_TYPES = {
     // Nested in the staircase block (2.3.1); reached the same way.
     connects_to_floor_ref: "connects-to",
     arrives_in_room_ref: "connects-to",
+    // Nested in heating and heating.emitters[] (2.4.3); reached by the recursive scan, keyed bare.
+    system_ref: "heated-by",
+    component_ref: "heated-by",
   },
   outdoor_zone: {
     position_derived_from: "position-derived-from", // 2.3.0

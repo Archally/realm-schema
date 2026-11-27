@@ -70,3 +70,790 @@ estate_changes:
       one. Deferred behind the wall rebuild, which needs the same access along
       the orchard edge.
     tags: [water, garden]
+  - id: ECH003
+    name: Add garden gazebo, enlarge front lawn, and transplant borders
+    status: approved
+    priority: medium
+    proposed_date: "2026-07-05"
+    planned_start_date: "2026-10-20"
+    planned_end_date: "2026-10-30"
+    affected_entity_refs: [BLD003, WNG004, OZ002, PTG007, PTG003]
+    affected_zone_refs: [OZ002, OZ005]
+    coordinator_ref: PRS001
+    estimated_cost: 4800
+    currency: GBP
+    changes:
+    - action: add
+      entity_type: building
+      entity_ref: BLD003
+      description: >
+        Erect a 4 m by 3 m open timber gazebo on the upper front lawn.
+      from_state: >
+        Open turf in the middle of the front garden
+      to_state: >
+        Timber garden gazebo BLD003 (12 m²) at (5.5, 11.5) on a 1.45 m datum pad
+      effect:
+        after:
+          id: BLD003
+          name: Garden gazebo
+          building_type: gazebo
+          parcel_ref: LP001
+          wing_refs:
+            - WNG004
+          floors_count: 1
+          total_area_sqm: 12
+          position:
+            x: 5.5
+            y: 11.5
+          footprint:
+            shape: polygon
+            vertices:
+              - x: -2
+                y: -1.5
+              - x: 2
+                y: -1.5
+              - x: 2
+                y: 1.5
+              - x: -2
+                y: 1.5
+          rotation_degrees: 0
+          ground_elevation_m: 1.45
+          eave_height_m: 2.3
+          ridge_height_m: 3.1
+          description: Open-sided timber gazebo set on a small level pad in the front garden.
+          tags:
+            - gazebo
+            - timber
+            - garden
+    - action: add
+      entity_type: wing
+      entity_ref: WNG004
+      description: >
+        Single pitched-roof pavilion wing composing the garden gazebo.
+      from_state: >
+        No structure on the pad
+      to_state: >
+        Timber gazebo wing WNG004 (4 m by 3 m, hip roof to 3.1 m ridge)
+      effect:
+        after:
+          id: WNG004
+          name: Gazebo pavilion
+          building_ref: BLD003
+          footprint:
+            shape: polygon
+            vertices:
+              - x: -2
+                y: -1.5
+              - x: 2
+                y: -1.5
+              - x: 2
+                y: 1.5
+              - x: -2
+                y: 1.5
+          roof_type: hip
+          roof_pitch_degrees: 28
+          ridge_direction: E
+          eave_height_m: 2.3
+          ridge_height_m: 3.1
+          roof_overhang_cm: 35
+          description: Single 4.0 m by 3.0 m open timber pavilion wing under a hipped shingle roof.
+    - action: modify
+      entity_type: outdoor_zone
+      entity_ref: OZ002
+      description: >
+        Extend the south edge of the front lawn by two metres to open space
+        around the gazebo.
+      from_state: >
+        Front lawn 210 m² ending along y = 16 m
+      to_state: >
+        Front lawn 242 m² extending south to y = 18 m
+      effect:
+        property_changes:
+          - kind: set
+            property: area_sqm
+            old_value: 210
+            value: 242
+          - kind: set
+            property: footprint.vertices
+            old_value:
+              - x: -6.32
+                y: -7.18
+              - x: 7.52
+                y: -7.18
+              - x: 7.52
+                y: 6.82
+              - x: -8.65
+                y: 6.82
+            value:
+              - x: -6.32
+                y: -7.18
+              - x: 7.52
+                y: -7.18
+              - x: 7.52
+                y: 8.82
+              - x: -8.65
+                y: 8.82
+    - action: relocate
+      entity_type: planting
+      entity_ref: PTG007
+      description: >
+        Lift and replant the cottage border two metres south along the new lawn
+        edge.
+      from_state: >
+        Cottage border at (11.5, 14.5) in OZ002
+      to_state: >
+        Cottage border relocated to (11.5, 16.5) along the extended south edge
+        of OZ002
+      effect:
+        property_changes:
+          - kind: set
+            property: position
+            old_value:
+              x: 11.5
+              y: 14.5
+            value:
+              x: 11.5
+              y: 16.5
+    - action: relocate
+      entity_type: planting
+      entity_ref: PTG003
+      description: >
+        Transplant the herb strip to the sunnier south-east bed of the vegetable
+        garden.
+      from_state: >
+        Herb strip at (21, 32.3) in OZ005
+      to_state: >
+        Herb strip transplanted to (22.5, 35.5) in OZ005
+      effect:
+        property_changes:
+          - kind: set
+            property: position
+            old_value:
+              x: 21
+              y: 32.3
+            value:
+              x: 22.5
+              y: 35.5
+    description: >
+      Executable future-estate plan adding a timber garden gazebo in the front
+      garden, extending the front lawn southward by two metres, and
+      transplanting the cottage border and herb strip with explicit
+      coordinates.
+    tags: [gazebo, lawn, planting, to-be]
+  - id: ECH004
+    name: Plant north-east boundary screening hedge along post-and-rail fence
+    status: proposed
+    priority: medium
+    proposed_date: "2026-11-26"
+    affected_entity_refs: [BS002, OZ011, PTG008, OZ012, PTG009]
+    coordinator_ref: PRS001
+    estimated_cost: 195
+    currency: GBP
+    changes:
+    - action: add
+      entity_type: outdoor_zone
+      entity_ref: OZ011
+      description: >
+        Reserve the 9.60 m full-sun planting strip along BS002 (0.50-10.10 m).
+      from_state: >
+        Unplanted grass verge inside BS002
+      to_state: >
+        Dedicated full-sun planting strip OZ011 (11.5 m²) along BS002
+      effect:
+        after:
+          id: OZ011
+          name: North-east fence strip - sunny upper stretch
+          zone_type: garden
+          parcel_ref: LP001
+          area_sqm: 11.5
+          position:
+            x: 37.76
+            y: 6.32
+          position_source: estimated
+          position_accuracy_m: 0.25
+          position_derived_from: BS002
+          footprint:
+            shape: polygon
+            vertices:
+              - x: -3.48
+                y: -3.36
+              - x: 4.2
+                y: 2.4
+              - x: 3.48
+                y: 3.36
+              - x: -4.2
+                y: -2.4
+          sun_exposure: full-sun
+          soil_type: loam
+          description: Upper 9.60 m planting strip 0.80 m inside post-and-rail fence BS002, open to southern
+            and western sun across the drive and paddock.
+          tags:
+            - hedge-strip
+            - proposed
+            - full-sun
+    - action: add
+      entity_type: planting
+      entity_ref: PTG008
+      description: >
+        Plant 25 Common beech (Fagus sylvatica) at 40 cm spacing along the 9.60
+        m full-sun stretch.
+      from_state: >
+        No screening hedge along stretch A of BS002
+      to_state: >
+        25 Common beech plants (PTG008) at 40 cm spacing in OZ011
+      effect:
+        after:
+          id: PTG008
+          name: North-east hedge - sunny upper stretch
+          planting_type: hedge
+          species: Fagus sylvatica
+          common_name: Common beech
+          outdoor_zone_ref: OZ011
+          position:
+            x: 37.76
+            y: 6.32
+          position_source: estimated
+          position_accuracy_m: 0.25
+          position_derived_from: BS002
+          footprint:
+            shape: polygon
+            vertices:
+              - x: -3.6
+                y: -3.2
+              - x: 4.08
+                y: 2.56
+              - x: 3.6
+                y: 3.2
+              - x: -4.08
+                y: -2.56
+          count: 25
+          spacing_cm: 40
+          target_height_m: 2.2
+          species_confirmed: true
+          season: year-round
+          sun_requirement: full-sun
+          water_requirement: moderate
+          render_as: row
+          leaf_retention: semi-evergreen
+          care_profile_ref: SCP002
+          members:
+            - position:
+                x: 33.92
+                y: 3.44
+                z: 2.07
+              label: NE-A01
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 34.24
+                y: 3.68
+                z: 2.01
+              label: NE-A02
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 34.56
+                y: 3.92
+                z: 1.96
+              label: NE-A03
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 34.88
+                y: 4.16
+                z: 1.91
+              label: NE-A04
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 35.2
+                y: 4.4
+                z: 1.86
+              label: NE-A05
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 35.52
+                y: 4.64
+                z: 1.81
+              label: NE-A06
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 35.84
+                y: 4.88
+                z: 1.76
+              label: NE-A07
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 36.16
+                y: 5.12
+                z: 1.7
+              label: NE-A08
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 36.48
+                y: 5.36
+                z: 1.65
+              label: NE-A09
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 36.8
+                y: 5.6
+                z: 1.6
+              label: NE-A10
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 37.12
+                y: 5.84
+                z: 1.55
+              label: NE-A11
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 37.44
+                y: 6.08
+                z: 1.5
+              label: NE-A12
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 37.76
+                y: 6.32
+                z: 1.45
+              label: NE-A13
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 38.08
+                y: 6.56
+                z: 1.4
+              label: NE-A14
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 38.4
+                y: 6.8
+                z: 1.34
+              label: NE-A15
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 38.72
+                y: 7.04
+                z: 1.29
+              label: NE-A16
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 39.04
+                y: 7.28
+                z: 1.24
+              label: NE-A17
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 39.36
+                y: 7.52
+                z: 1.19
+              label: NE-A18
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 39.68
+                y: 7.76
+                z: 1.14
+              label: NE-A19
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 40
+                y: 8
+                z: 1.09
+              label: NE-A20
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 40.32
+                y: 8.24
+                z: 1.03
+              label: NE-A21
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 40.64
+                y: 8.48
+                z: 0.98
+              label: NE-A22
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 40.96
+                y: 8.72
+                z: 0.93
+              label: NE-A23
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 41.28
+                y: 8.96
+                z: 0.88
+              label: NE-A24
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 41.6
+                y: 9.2
+                z: 0.83
+              label: NE-A25
+              derivation:
+                derived_from: BS002 stretch A (0.5..10.1 m, inset 0.8 m, 40 cm spacing)
+                derived_on: 2026-11-26
+          description: "Sunny upper stretch (9.60 m usable along BS002 from 0.50 m to 10.10 m, after 0.50 m NE
+            corner clearance). Common beech at 40 cm spacing: floor(960 / 40) + 1 = 25 plants, continuing
+            the roadside beech run around the north-east corner."
+          tags:
+            - screening
+            - proposed
+            - hedge
+            - full-sun
+    - action: add
+      entity_type: outdoor_zone
+      entity_ref: OZ012
+      description: >
+        Reserve the 9.50 m partial-shade planting strip along BS002 (12.50-22.00
+        m).
+      from_state: >
+        Unplanted grass verge inside BS002
+      to_state: >
+        Dedicated partial-shade planting strip OZ012 (11.4 m²) along BS002
+      effect:
+        after:
+          id: OZ012
+          name: North-east fence strip - shaded lower stretch
+          zone_type: garden
+          parcel_ref: LP001
+          area_sqm: 11.4
+          position:
+            x: 47.32
+            y: 13.49
+          position_source: estimated
+          position_accuracy_m: 0.25
+          position_derived_from: BS002
+          footprint:
+            shape: polygon
+            vertices:
+              - x: -3.44
+                y: -3.33
+              - x: 4.16
+                y: 2.37
+              - x: 3.44
+                y: 3.33
+              - x: -4.16
+                y: -2.37
+          sun_exposure: partial-shade
+          soil_type: clay
+          description: Lower 9.50 m planting strip 0.80 m inside post-and-rail fence BS002, shaded in the
+            afternoon by Stone barn BLD002 and east stone wall BS003.
+          tags:
+            - hedge-strip
+            - proposed
+            - partial-shade
+    - action: add
+      entity_type: planting
+      entity_ref: PTG009
+      description: >
+        Plant 20 Common holly (Ilex aquifolium) at 50 cm spacing along the 9.50
+        m partial-shade stretch.
+      from_state: >
+        No screening hedge along stretch B of BS002
+      to_state: >
+        20 Common holly plants (PTG009) at 50 cm spacing in OZ012
+      effect:
+        after:
+          id: PTG009
+          name: North-east hedge - shaded lower stretch
+          planting_type: hedge
+          species: Ilex aquifolium
+          common_name: Common holly
+          outdoor_zone_ref: OZ012
+          position:
+            x: 47.32
+            y: 13.49
+          position_source: estimated
+          position_accuracy_m: 0.25
+          position_derived_from: BS002
+          footprint:
+            shape: polygon
+            vertices:
+              - x: -3.56
+                y: -3.17
+              - x: 4.04
+                y: 2.53
+              - x: 3.56
+                y: 3.17
+              - x: -4.04
+                y: -2.53
+          count: 20
+          spacing_cm: 50
+          target_height_m: 2.2
+          species_confirmed: true
+          season: year-round
+          sun_requirement: partial-shade
+          water_requirement: low
+          render_as: row
+          leaf_retention: evergreen
+          care_profile_ref: SCP003
+          members:
+            - position:
+                x: 43.52
+                y: 10.64
+                z: 0.52
+              label: NE-B01
+              derivation:
+                derived_from: BS002 stretch B (12.5..22 m, inset 0.8 m, 50 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 43.92
+                y: 10.94
+                z: 0.45
+              label: NE-B02
+              derivation:
+                derived_from: BS002 stretch B (12.5..22 m, inset 0.8 m, 50 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 44.32
+                y: 11.24
+                z: 0.39
+              label: NE-B03
+              derivation:
+                derived_from: BS002 stretch B (12.5..22 m, inset 0.8 m, 50 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 44.72
+                y: 11.54
+                z: 0.33
+              label: NE-B04
+              derivation:
+                derived_from: BS002 stretch B (12.5..22 m, inset 0.8 m, 50 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 45.12
+                y: 11.84
+                z: 0.26
+              label: NE-B05
+              derivation:
+                derived_from: BS002 stretch B (12.5..22 m, inset 0.8 m, 50 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 45.52
+                y: 12.14
+                z: 0.2
+              label: NE-B06
+              derivation:
+                derived_from: BS002 stretch B (12.5..22 m, inset 0.8 m, 50 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 45.92
+                y: 12.44
+                z: 0.13
+              label: NE-B07
+              derivation:
+                derived_from: BS002 stretch B (12.5..22 m, inset 0.8 m, 50 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 46.32
+                y: 12.74
+                z: 0.07
+              label: NE-B08
+              derivation:
+                derived_from: BS002 stretch B (12.5..22 m, inset 0.8 m, 50 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 46.72
+                y: 13.04
+                z: 0
+              label: NE-B09
+              derivation:
+                derived_from: BS002 stretch B (12.5..22 m, inset 0.8 m, 50 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 47.12
+                y: 13.34
+                z: -0.06
+              label: NE-B10
+              derivation:
+                derived_from: BS002 stretch B (12.5..22 m, inset 0.8 m, 50 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 47.52
+                y: 13.64
+                z: -0.13
+              label: NE-B11
+              derivation:
+                derived_from: BS002 stretch B (12.5..22 m, inset 0.8 m, 50 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 47.92
+                y: 13.94
+                z: -0.19
+              label: NE-B12
+              derivation:
+                derived_from: BS002 stretch B (12.5..22 m, inset 0.8 m, 50 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 48.32
+                y: 14.24
+                z: -0.25
+              label: NE-B13
+              derivation:
+                derived_from: BS002 stretch B (12.5..22 m, inset 0.8 m, 50 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 48.72
+                y: 14.54
+                z: -0.32
+              label: NE-B14
+              derivation:
+                derived_from: BS002 stretch B (12.5..22 m, inset 0.8 m, 50 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 49.12
+                y: 14.84
+                z: -0.38
+              label: NE-B15
+              derivation:
+                derived_from: BS002 stretch B (12.5..22 m, inset 0.8 m, 50 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 49.52
+                y: 15.14
+                z: -0.45
+              label: NE-B16
+              derivation:
+                derived_from: BS002 stretch B (12.5..22 m, inset 0.8 m, 50 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 49.92
+                y: 15.44
+                z: -0.51
+              label: NE-B17
+              derivation:
+                derived_from: BS002 stretch B (12.5..22 m, inset 0.8 m, 50 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 50.32
+                y: 15.74
+                z: -0.58
+              label: NE-B18
+              derivation:
+                derived_from: BS002 stretch B (12.5..22 m, inset 0.8 m, 50 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 50.72
+                y: 16.04
+                z: -0.64
+              label: NE-B19
+              derivation:
+                derived_from: BS002 stretch B (12.5..22 m, inset 0.8 m, 50 cm spacing)
+                derived_on: 2026-11-26
+            - position:
+                x: 51.12
+                y: 16.34
+                z: -0.7
+              label: NE-B20
+              derivation:
+                derived_from: BS002 stretch B (12.5..22 m, inset 0.8 m, 50 cm spacing)
+                derived_on: 2026-11-26
+          description: "Shaded lower stretch (9.50 m usable along BS002 from 12.50 m to 22.00 m, after the
+            2.40 m gate gap and 0.50 m east corner clearance). Shade-tolerant evergreen Common holly at 50
+            cm spacing: floor(950 / 50) + 1 = 20 plants; stock-safe beside Hollybank paddock NP005."
+          tags:
+            - screening
+            - proposed
+            - hedge
+            - partial-shade
+    - action: modify
+      entity_type: boundary_segment
+      entity_ref: BS002
+      description: >
+        Link both planned hedge stretches (PTG008, PTG009) as visual screening
+        along BS002.
+      from_state: >
+        Transparent post-and-rail fence with no screening plantings
+      to_state: >
+        Semi-transparent year-round boundary screened by PTG008 and PTG009 (45
+        plants across 19.10 m usable of 22.50 m gross)
+      effect:
+        property_changes:
+          - kind: set
+            property: screening_planting_refs
+            value:
+              - PTG008
+              - PTG009
+          - kind: set
+            property: screening_opacity
+            old_value: transparent
+            value: semi-transparent
+          - kind: set
+            property: year_round_screening
+            value: true
+    required_resources:
+    - name: Common beech (Fagus sylvatica) hedge whips, 60-80 cm
+      category: material
+      availability: to-purchase
+      quantity: 25
+      unit: plants
+      estimated_cost: 75
+      currency: GBP
+      notes: >
+        Stretch A (OZ011, full-sun): 9.60 m usable length at 40 cm spacing,
+        inclusive endpoints -> floor(960 / 40) + 1 = 25 plants.
+    - name: Common holly (Ilex aquifolium) hedge plants, 60-80 cm
+      category: material
+      availability: to-purchase
+      quantity: 20
+      unit: plants
+      estimated_cost: 120
+      currency: GBP
+      notes: >
+        Stretch B (OZ012, partial-shade behind barn): 9.50 m usable length at 50
+        cm spacing, inclusive endpoints -> floor(950 / 50) + 1 = 20 plants.
+    description: >
+      Proposed executable hedge planting along the 22.50 m north-east
+      post-and-rail fence BS002 against Hollybank paddock. Deducts 0.50 m NE
+      corner clearance, a 2.40 m central maintenance gate gap and 0.50 m east
+      corner clearance (3.40 m non-plantable), leaving 19.10 m usable in two
+      exposure stretches: 9.60 m full-sun (OZ011, 25 Common beech at 40 cm)
+      and 9.50 m partial-shade behind the barn (OZ012, 20 Common holly at 50
+      cm). Count rule per stretch: floor(usable_cm / spacing_cm) + 1; order
+      total 45 plants.
+    tags: [hedge, boundary, screening, to-be]

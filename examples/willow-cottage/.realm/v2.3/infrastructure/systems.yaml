@@ -35,12 +35,36 @@ systems:
     position: {x: 25.8, y: 22.4}
     utility_connection_ref: UC001
     warranty_ref: WRT001
-    component_refs: [CMP001, CMP002, CMP004, CMP005, CMP019, CMP020]
+    component_refs: [CMP001, CMP002, CMP004, CMP005, CMP019, CMP020, CMP059, CMP060, CMP061, CMP062, CMP063, CMP064, CMP065]
     feeds_system_refs: [SYS002]
+    distribution_zones:
+    - zone_ref: RM001
+      role: underfloor-heating
+    - zone_ref: RM002
+      role: underfloor-heating
+    - zone_ref: RM003
+      role: underfloor-heating
+    - zone_ref: RM004
+      role: underfloor-heating
+    - zone_ref: RM006
+      role: underfloor-heating
+    - zone_ref: RM007
+      role: underfloor-heating
+    - zone_ref: RM008
+      role: underfloor-heating
+    - zone_ref: RM009
+      role: radiator
+    - zone_ref: RM011
+      role: radiator
+    - zone_ref: RM012
+      role: radiator
+    - zone_ref: RM013
+      role: radiator
     description: >
       Outdoor unit on a plinth against the cottage's east gable, sheltered
-      from the prevailing south-westerlies. Feeds underfloor heating on the
-      ground floor and radiators above.
+      from the prevailing south-westerlies. Feeds four ground-floor underfloor
+      loops (CMP059-CMP062) and four upstairs radiators (CMP005,
+      CMP063-CMP065).
     tags: [primary-heating, electric]
   - id: SYS002
     name: Domestic hot water
@@ -67,10 +91,12 @@ systems:
     building_ref: BLD001
     room_ref: RM007
     utility_connection_ref: UC001
-    component_refs: [CMP003, CMP008, CMP009, CMP010, CMP011, CMP012, CMP013, CMP014, CMP015, CMP016, CMP017, CMP018, CMP021, CMP022, CMP023, CMP024, CMP025, CMP026]
+    component_refs: [CMP003, CMP008, CMP009, CMP010, CMP011, CMP012, CMP013, CMP014, CMP015, CMP016, CMP017, CMP018, CMP021, CMP022, CMP023, CMP024, CMP025, CMP026, CMP029, CMP030, CMP031, CMP032, CMP033, CMP034, CMP035, CMP036, CMP037, CMP038, CMP039, CMP040, CMP041, CMP042, CMP043, CMP044, CMP045, CMP046, CMP047, CMP048, CMP049, CMP050, CMP051, CMP052, CMP053, CMP054]
     feeds_system_refs: [SYS001, SYS002]
     description: >
-      Consumer unit in the utility room, with a submain running to the barn.
+      Sixteen-way RCBO consumer unit in the utility room serving seven cottage
+      and outdoor circuits plus a submain to the barn board, with all 21
+      house, barn and outdoor socket outlets scheduled.
     tags: [electrical]
   - id: SYS004
     name: Rainwater harvesting
@@ -119,6 +145,24 @@ systems:
       One camera at the gate watching the drive; it keeps a week of recordings
       on its own card.
     tags: [security]
+  - id: SYS008
+    name: Sitting room wood-burning stove
+    system_type: heating
+    fuel_source: wood
+    rated_capacity: 5
+    capacity_unit: kW
+    installed_date: "2018-10-15"
+    building_ref: BLD001
+    room_ref: RM003
+    component_refs: [CMP055, CMP056, CMP057, CMP058]
+    distribution_zones:
+    - zone_ref: RM003
+      role: secondary-stove
+    description: >
+      Secondary wood-burning stove on the sitting room east gable hearth,
+      vented through a lined flue and the original rubble-stone chimney stack;
+      swept annually under REG002.
+    tags: [secondary-heating, wood-stove, chimney]
 
 # ── Components - the replaceable parts ────────────────────────────────────
 components:
@@ -206,9 +250,9 @@ components:
     position_accuracy_m: 0.25
     position_derived_from: RM007
     description: >
-      Fictional layout fixture, estimated rather than surveyed. Manifold
-      serving the ground-floor underfloor loops; individual loops are not
-      enumerated.
+      Fictional layout fixture, estimated rather than surveyed. Four-port
+      manifold serving ground-floor underfloor loops CMP059-CMP062 and the
+      upstairs radiator circuit (CMP005, CMP063-CMP065).
     tags: [fictional-house-systems]
   - id: CMP005
     name: Bathroom radiator
@@ -221,8 +265,9 @@ components:
     position_accuracy_m: 0.25
     position_derived_from: RM012
     description: >
-      Fictional layout fixture, estimated rather than surveyed. Representative
-      upstairs heating terminal.
+      Fictional layout fixture, estimated rather than surveyed. Bathroom towel
+      radiator on the first-floor heating circuit, served from manifold CMP004
+      via riser WSG012.
     tags: [fictional-house-systems]
   - id: CMP006
     name: Bathroom basin mixer
@@ -252,8 +297,8 @@ components:
     mounting_height_cm: 90
     description: >
       Fictional layout fixture, estimated rather than surveyed. Hot and cold
-      terminal; the hot pipe connection is known but its physical path is
-      deliberately unrecorded.
+      terminal fed from the cold main (PPR010) and hot water cylinder
+      (PPR011).
     tags: [fictional-house-systems]
   - id: CMP008
     name: Heat pump RCBO
@@ -348,8 +393,8 @@ components:
     position_derived_from: RM015
     circuit_ref: CMP014
     description: >
-      Fictional layout fixture, estimated rather than surveyed. Representative
-      barn terminal; no whole-property circuit schedule is implied.
+      Fictional layout fixture, estimated rather than surveyed. Workbench twin
+      socket in the barn bay, on the barn socket final circuit CMP014.
     tags: [fictional-house-systems]
   - id: CMP016
     name: Heat pump isolator
@@ -549,6 +594,840 @@ components:
       Fictional layout fixture, estimated rather than surveyed. Hose point on
       the irrigation line at the orchard's west end, for young trees in a dry
       spell.
+    tags: [fictional-house-systems]
+  - id: CMP029
+    name: Kitchen and utility RCBO
+    system_ref: SYS003
+    component_type: protective-device
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM007
+    fed_from_ref: CMP003
+    specs:
+    - key: rating
+      value: "32"
+      unit: A
+    - key: curve
+      value: B
+    - key: rcd_sensitivity
+      value: "30"
+      unit: mA
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. 32 A RCBO in
+      consumer unit CMP003 protecting the kitchen and utility socket ring.
+    tags: [fictional-house-systems]
+  - id: CMP030
+    name: Kitchen and utility sockets circuit
+    system_ref: SYS003
+    component_type: circuit
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM007
+    protected_by_ref: CMP029
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Ring final
+      circuit serving the kitchen worktop, kitchen appliance and utility room
+      sockets.
+    tags: [fictional-house-systems]
+  - id: CMP031
+    name: Ground-floor sockets RCBO
+    system_ref: SYS003
+    component_type: protective-device
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM007
+    fed_from_ref: CMP003
+    specs:
+    - key: rating
+      value: "32"
+      unit: A
+    - key: curve
+      value: B
+    - key: rcd_sensitivity
+      value: "30"
+      unit: mA
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. 32 A RCBO in
+      consumer unit CMP003 protecting the ground-floor socket circuit.
+    tags: [fictional-house-systems]
+  - id: CMP032
+    name: Ground-floor sockets circuit
+    system_ref: SYS003
+    component_type: circuit
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM007
+    protected_by_ref: CMP031
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Ring final
+      circuit serving the hall, sitting room, dining room, stair hall, study
+      and cloakroom sockets.
+    tags: [fictional-house-systems]
+  - id: CMP033
+    name: First-floor sockets RCBO
+    system_ref: SYS003
+    component_type: protective-device
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM007
+    fed_from_ref: CMP003
+    specs:
+    - key: rating
+      value: "32"
+      unit: A
+    - key: curve
+      value: B
+    - key: rcd_sensitivity
+      value: "30"
+      unit: mA
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. 32 A RCBO in
+      consumer unit CMP003 protecting the first-floor socket circuit.
+    tags: [fictional-house-systems]
+  - id: CMP034
+    name: First-floor sockets circuit
+    system_ref: SYS003
+    component_type: circuit
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM007
+    protected_by_ref: CMP033
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Ring final
+      circuit serving all three bedrooms, the landing and the box room.
+    tags: [fictional-house-systems]
+  - id: CMP035
+    name: House lighting and shaver RCBO
+    system_ref: SYS003
+    component_type: protective-device
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM007
+    fed_from_ref: CMP003
+    specs:
+    - key: rating
+      value: "6"
+      unit: A
+    - key: curve
+      value: B
+    - key: rcd_sensitivity
+      value: "30"
+      unit: mA
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. 6 A RCBO in
+      consumer unit CMP003 protecting cottage lighting and the bathroom
+      isolating shaver socket.
+    tags: [fictional-house-systems]
+  - id: CMP036
+    name: House lighting and shaver circuit
+    system_ref: SYS003
+    component_type: circuit
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM007
+    protected_by_ref: CMP035
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Final lighting
+      circuit also supplying the bathroom dual-voltage shaver socket CMP054.
+    tags: [fictional-house-systems]
+  - id: CMP037
+    name: Kitchen worktop socket
+    system_ref: SYS003
+    component_type: socket-outlet
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM001
+    position: {x: 15, y: 16.3}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM001
+    mounting_height_cm: 115
+    circuit_ref: CMP030
+    specs:
+    - key: gangs
+      value: "2"
+    - key: rating
+      value: "13"
+      unit: A
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Twin switched
+      13 A worktop socket on the north wall beside the range cooker.
+    tags: [fictional-house-systems]
+  - id: CMP038
+    name: Kitchen appliance socket
+    system_ref: SYS003
+    component_type: socket-outlet
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM001
+    position: {x: 14.3, y: 19.6}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM001
+    mounting_height_cm: 45
+    circuit_ref: CMP030
+    specs:
+    - key: gangs
+      value: "2"
+    - key: rating
+      value: "13"
+      unit: A
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Twin 13 A
+      low-level socket on the west wall for the fridge-freezer and small
+      appliances.
+    tags: [fictional-house-systems]
+  - id: CMP039
+    name: Utility room appliance socket
+    system_ref: SYS003
+    component_type: socket-outlet
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM007
+    position: {x: 14.3, y: 26.2}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM007
+    mounting_height_cm: 45
+    circuit_ref: CMP030
+    specs:
+    - key: gangs
+      value: "2"
+    - key: rating
+      value: "13"
+      unit: A
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Twin 13 A
+      socket on the west wall serving the washing machine.
+    tags: [fictional-house-systems]
+  - id: CMP040
+    name: Entrance hall socket
+    system_ref: SYS003
+    component_type: socket-outlet
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM002
+    position: {x: 18.5, y: 18.8}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM002
+    mounting_height_cm: 30
+    circuit_ref: CMP032
+    specs:
+    - key: gangs
+      value: "2"
+    - key: rating
+      value: "13"
+      unit: A
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Twin 13 A
+      skirting-level socket on the west wall of the entrance hall.
+    tags: [fictional-house-systems]
+  - id: CMP041
+    name: Sitting room west wall socket
+    system_ref: SYS003
+    component_type: socket-outlet
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM003
+    position: {x: 21.9, y: 17.6}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM003
+    mounting_height_cm: 30
+    circuit_ref: CMP032
+    specs:
+    - key: gangs
+      value: "2"
+    - key: rating
+      value: "13"
+      unit: A
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Twin 13 A
+      socket on the west wall of the sitting room for floor lamps.
+    tags: [fictional-house-systems]
+  - id: CMP042
+    name: Sitting room south wall socket
+    system_ref: SYS003
+    component_type: socket-outlet
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM003
+    position: {x: 23.4, y: 20.1}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM003
+    mounting_height_cm: 30
+    circuit_ref: CMP032
+    specs:
+    - key: gangs
+      value: "2"
+    - key: rating
+      value: "13"
+      unit: A
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Twin 13 A
+      socket on the south wall of the sitting room, clear of the east-gable
+      stove hearth.
+    tags: [fictional-house-systems]
+  - id: CMP043
+    name: Dining room east wall socket
+    system_ref: SYS003
+    component_type: socket-outlet
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM004
+    position: {x: 17.9, y: 22.2}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM004
+    mounting_height_cm: 30
+    circuit_ref: CMP032
+    specs:
+    - key: gangs
+      value: "2"
+    - key: rating
+      value: "13"
+      unit: A
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Twin 13 A
+      socket on the east wall behind the dining sideboard.
+    tags: [fictional-house-systems]
+  - id: CMP044
+    name: Stair hall understair socket
+    system_ref: SYS003
+    component_type: socket-outlet
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM005
+    position: {x: 18.6, y: 21.4}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM005
+    mounting_height_cm: 30
+    circuit_ref: CMP032
+    specs:
+    - key: gangs
+      value: "2"
+    - key: rating
+      value: "13"
+      unit: A
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Twin 13 A
+      socket inside the understair cupboard for vacuum charging.
+    tags: [fictional-house-systems]
+  - id: CMP045
+    name: Study desk socket
+    system_ref: SYS003
+    component_type: socket-outlet
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM006
+    position: {x: 22.8, y: 23.7}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM006
+    mounting_height_cm: 30
+    circuit_ref: CMP032
+    specs:
+    - key: gangs
+      value: "2"
+    - key: rating
+      value: "13"
+      unit: A
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Twin 13 A
+      socket on the south wall under the study desk.
+    tags: [fictional-house-systems]
+  - id: CMP046
+    name: Study network cabinet socket
+    system_ref: SYS003
+    component_type: socket-outlet
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM006
+    position: {x: 23.6, y: 21.4}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM006
+    mounting_height_cm: 30
+    circuit_ref: CMP032
+    specs:
+    - key: gangs
+      value: "2"
+    - key: rating
+      value: "13"
+      unit: A
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Twin 13 A
+      socket beside router NN001 supplying the fibre terminal and PoE
+      injector.
+    tags: [fictional-house-systems]
+  - id: CMP047
+    name: Cloakroom boot-storage socket
+    system_ref: SYS003
+    component_type: socket-outlet
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM008
+    position: {x: 21.3, y: 25.8}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM008
+    mounting_height_cm: 45
+    circuit_ref: CMP032
+    specs:
+    - key: gangs
+      value: "2"
+    - key: rating
+      value: "13"
+      unit: A
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Twin 13 A
+      socket by the east-wall boot bench; cloakroom has WC and basin only (no
+      bath or shower).
+    tags: [fictional-house-systems]
+  - id: CMP048
+    name: Principal bedroom north socket
+    system_ref: SYS003
+    component_type: socket-outlet
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM009
+    position: {x: 17.2, y: 16.3}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM009
+    mounting_height_cm: 30
+    circuit_ref: CMP034
+    specs:
+    - key: gangs
+      value: "2"
+    - key: rating
+      value: "13"
+      unit: A
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Twin 13 A
+      bedside socket on the north wall of the principal bedroom.
+    tags: [fictional-house-systems]
+  - id: CMP049
+    name: Principal bedroom south socket
+    system_ref: SYS003
+    component_type: socket-outlet
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM009
+    position: {x: 16, y: 20.1}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM009
+    mounting_height_cm: 30
+    circuit_ref: CMP034
+    specs:
+    - key: gangs
+      value: "2"
+    - key: rating
+      value: "13"
+      unit: A
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Twin 13 A
+      socket on the south wall of the principal bedroom.
+    tags: [fictional-house-systems]
+  - id: CMP050
+    name: Landing socket
+    system_ref: SYS003
+    component_type: socket-outlet
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM010
+    position: {x: 18.5, y: 18.4}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM010
+    mounting_height_cm: 30
+    circuit_ref: CMP034
+    specs:
+    - key: gangs
+      value: "2"
+    - key: rating
+      value: "13"
+      unit: A
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Twin 13 A
+      socket on the landing west wall for upstairs cleaning.
+    tags: [fictional-house-systems]
+  - id: CMP051
+    name: Bedroom two socket
+    system_ref: SYS003
+    component_type: socket-outlet
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM011
+    position: {x: 22, y: 18.2}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM011
+    mounting_height_cm: 30
+    circuit_ref: CMP034
+    specs:
+    - key: gangs
+      value: "2"
+    - key: rating
+      value: "13"
+      unit: A
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Twin 13 A
+      socket on the west wall of bedroom two.
+    tags: [fictional-house-systems]
+  - id: CMP052
+    name: Bedroom three socket
+    system_ref: SYS003
+    component_type: socket-outlet
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM013
+    position: {x: 18.6, y: 22.8}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM013
+    mounting_height_cm: 30
+    circuit_ref: CMP034
+    specs:
+    - key: gangs
+      value: "2"
+    - key: rating
+      value: "13"
+      unit: A
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Twin 13 A
+      socket on the west wall of bedroom three.
+    tags: [fictional-house-systems]
+  - id: CMP053
+    name: Box room socket
+    system_ref: SYS003
+    component_type: socket-outlet
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM014
+    position: {x: 22, y: 22.2}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM014
+    mounting_height_cm: 30
+    circuit_ref: CMP034
+    specs:
+    - key: gangs
+      value: "2"
+    - key: rating
+      value: "13"
+      unit: A
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Twin 13 A
+      socket on the west wall of the box room.
+    tags: [fictional-house-systems]
+  - id: CMP054
+    name: Bathroom shaver socket
+    system_ref: SYS003
+    component_type: socket-outlet
+    installed_date: "2019-11-08"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM012
+    position: {x: 15.3, y: 22}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM012
+    mounting_height_cm: 135
+    circuit_ref: CMP036
+    specs:
+    - key: kind
+      value: shaver-isolating-transformer
+    - key: voltage
+      value: 230/115
+      unit: V
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Dual-voltage
+      isolating shaver socket (BS EN 61558-2-5) beside the bathroom basin; no
+      standard 13 A socket is fitted in the bathroom.
+    tags: [fictional-house-systems]
+  - id: CMP055
+    name: Sitting room wood-burning stove
+    system_ref: SYS008
+    component_type: wood-stove
+    installed_date: "2018-10-15"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM003
+    position: {x: 24.4, y: 19.2}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM003
+    specs:
+    - key: rated_output
+      value: "5"
+      unit: kW
+    - key: fuel
+      value: seasoned-hardwood
+    - key: sweep_access
+      value: removable-baffle-and-soot-door
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Secondary 5 kW
+      cast-iron wood-burning stove on the east gable hearth of the sitting
+      room.
+    tags: [fictional-house-systems]
+  - id: CMP056
+    name: Insulated chimney flue liner
+    system_ref: SYS008
+    component_type: flue
+    installed_date: "2018-10-15"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM011
+    position: {x: 24.6, y: 19.2}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: CMP055
+    specs:
+    - key: diameter
+      value: "150"
+      unit: mm
+    - key: material
+      value: 316L-stainless-steel
+    - key: insulation
+      value: vermiculite-backfill
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. 150 mm
+      twin-skin stainless liner rising vertically through the east gable
+      chimney breast behind bedroom two.
+    tags: [fictional-house-systems]
+  - id: CMP057
+    name: East gable chimney stack
+    system_ref: SYS008
+    component_type: chimney-stack
+    installed_date: "1868-01-01"
+    expected_lifespan_years: 150
+    building_ref: BLD001
+    position: {x: 24.7, y: 19.2}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: BLD001
+    specs:
+    - key: material
+      value: rubble-stone
+    - key: cowl
+      value: bird-guard-rain-cap
+    - key: access_point
+      value: east-gable-ridge
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Original
+      rubble-stone east gable chimney stack terminating above the ridge with a
+      bird-guard cowl; roof-level 3D massing is deferred.
+    tags: [fictional-house-systems]
+  - id: CMP058
+    name: Chimney sweeping soot door
+    system_ref: SYS008
+    component_type: chimney-access
+    installed_date: "2018-10-15"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM003
+    position: {x: 24.7, y: 19.2}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: CMP055
+    mounting_height_cm: 120
+    specs:
+    - key: opening_size
+      value: 150x150
+      unit: mm
+    - key: seal
+      value: ceramic-rope-gasket
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Sealed
+      sweeping access hatch in the flue register plate above the sitting room
+      stove, allowing brush rods straight up liner CMP056.
+    tags: [fictional-house-systems]
+  - id: CMP059
+    name: Underfloor loop 1 - kitchen and dining
+    system_ref: SYS001
+    component_type: underfloor-loop
+    installed_date: "2023-03-14"
+    expected_lifespan_years: 40
+    building_ref: BLD001
+    position: {x: 16.1, y: 19}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: BLD001
+    specs:
+    - key: manifold_port
+      value: "1"
+    - key: pipe_length
+      value: "95"
+      unit: m
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Ground-floor
+      screed loop from manifold CMP004 serving Kitchen (RM001) and Dining room
+      (RM004).
+    tags: [fictional-house-systems]
+  - id: CMP060
+    name: Underfloor loop 2 - hall and sitting room
+    system_ref: SYS001
+    component_type: underfloor-loop
+    installed_date: "2023-03-14"
+    expected_lifespan_years: 40
+    building_ref: BLD001
+    position: {x: 22.8, y: 18.2}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: BLD001
+    specs:
+    - key: manifold_port
+      value: "2"
+    - key: pipe_length
+      value: "90"
+      unit: m
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Ground-floor
+      screed loop from manifold CMP004 serving Entrance hall (RM002) and
+      Sitting room (RM003).
+    tags: [fictional-house-systems]
+  - id: CMP061
+    name: Underfloor loop 3 - study
+    system_ref: SYS001
+    component_type: underfloor-loop
+    installed_date: "2023-03-14"
+    expected_lifespan_years: 40
+    building_ref: BLD001
+    room_ref: RM006
+    position: {x: 23.3, y: 22.2}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM006
+    specs:
+    - key: manifold_port
+      value: "3"
+    - key: pipe_length
+      value: "55"
+      unit: m
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Ground-floor
+      screed loop from manifold CMP004 serving Study (RM006).
+    tags: [fictional-house-systems]
+  - id: CMP062
+    name: Underfloor loop 4 - utility and cloakroom
+    system_ref: SYS001
+    component_type: underfloor-loop
+    installed_date: "2023-03-14"
+    expected_lifespan_years: 40
+    building_ref: BLD001
+    position: {x: 19.6, y: 25.8}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: BLD001
+    specs:
+    - key: manifold_port
+      value: "4"
+    - key: pipe_length
+      value: "75"
+      unit: m
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Ground-floor
+      screed loop from manifold CMP004 serving Utility room (RM007) and
+      Cloakroom (RM008).
+    tags: [fictional-house-systems]
+  - id: CMP063
+    name: Principal bedroom radiator
+    system_ref: SYS001
+    component_type: radiator
+    installed_date: "2023-03-14"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM009
+    position: {x: 16, y: 16.3}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM009
+    mounting_height_cm: 45
+    specs:
+    - key: radiator_type
+      value: panel-radiator
+    - key: wall
+      value: N
+    description: >
+      Fictional layout fixture, estimated rather than surveyed.
+      Low-temperature double-panel radiator under the north window in
+      Principal bedroom (RM009).
+    tags: [fictional-house-systems]
+  - id: CMP064
+    name: Bedroom two radiator
+    system_ref: SYS001
+    component_type: radiator
+    installed_date: "2023-03-14"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM011
+    position: {x: 24.7, y: 17.5}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM011
+    mounting_height_cm: 45
+    specs:
+    - key: radiator_type
+      value: panel-radiator
+    - key: wall
+      value: E
+    description: >
+      Fictional layout fixture, estimated rather than surveyed.
+      Low-temperature double-panel radiator under the east window in Bedroom
+      two (RM011).
+    tags: [fictional-house-systems]
+  - id: CMP065
+    name: Bedroom three radiator
+    system_ref: SYS001
+    component_type: radiator
+    installed_date: "2023-03-14"
+    expected_lifespan_years: 25
+    building_ref: BLD001
+    room_ref: RM013
+    position: {x: 19.9, y: 23.7}
+    position_source: estimated
+    position_accuracy_m: 0.25
+    position_derived_from: RM013
+    mounting_height_cm: 45
+    specs:
+    - key: radiator_type
+      value: panel-radiator
+    - key: wall
+      value: S
+    description: >
+      Fictional layout fixture, estimated rather than surveyed.
+      Low-temperature double-panel radiator under the south window in Bedroom
+      three (RM013).
     tags: [fictional-house-systems]
 
 # ── Utility connections - where the estate meets someone else's network ────
@@ -1062,10 +1941,659 @@ pipe_runs:
     to_ref: CMP007
     flow_direction: from-to
     through_refs: [RM007, RM004, RM001]
+    route:
+      legs:
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 16
+            y: 25
+            z: 0.45
+          - x: 16
+            y: 18.5
+            z: 0.45
+          - x: 15.5
+            y: 18.5
+            z: 0.45
+          - x: 15.5
+            y: 18.5
+            z: 1.05
+        placement: surface
     description: >
-      Fictional layout fixture, estimated rather than surveyed. Connection
-      known; physical route deliberately not recorded. Through-rooms are
-      topology, not drawable geometry.
+      Fictional layout fixture, estimated rather than surveyed. Insulated hot
+      feed running alongside the cold kitchen branch from utility room RM007
+      through dining room RM004 to the kitchen mixer.
+    tags: [fictional-house-systems]
+  - id: PPR012
+    name: Manifold flow to underfloor loop 1
+    system_ref: SYS001
+    medium: heating-water
+    from_ref: CMP004
+    to_ref: CMP059
+    flow_direction: from-to
+    through_refs: [RM007, RM004, RM001]
+    route:
+      legs:
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 17
+            y: 25
+            z: 0.45
+          - x: 17
+            y: 25
+            z: 0.1
+        placement: surface
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 17
+            y: 25
+            z: 0.1
+          - x: 17
+            y: 22.2
+            z: 0.1
+          - x: 16.1
+            y: 22.2
+            z: 0.1
+          - x: 16.1
+            y: 19
+            z: 0.1
+        placement: under-floor
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Underfloor
+      screed flow from manifold port 1 to Dining room RM004 and Kitchen RM001.
+    tags: [fictional-house-systems]
+  - id: PPR013
+    name: Underfloor loop 1 return to manifold
+    system_ref: SYS001
+    medium: heating-water
+    from_ref: CMP059
+    to_ref: CMP004
+    flow_direction: from-to
+    through_refs: [RM001, RM004, RM007]
+    route:
+      legs:
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 16.1
+            y: 19
+            z: 0.1
+          - x: 16.1
+            y: 22.2
+            z: 0.1
+          - x: 17
+            y: 22.2
+            z: 0.1
+          - x: 17
+            y: 25
+            z: 0.1
+        placement: under-floor
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 17
+            y: 25
+            z: 0.1
+          - x: 17
+            y: 25
+            z: 0.45
+        placement: surface
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Underfloor
+      screed return from Kitchen RM001 and Dining room RM004 to manifold port
+      1.
+    tags: [fictional-house-systems]
+  - id: PPR014
+    name: Manifold flow to underfloor loop 2
+    system_ref: SYS001
+    medium: heating-water
+    from_ref: CMP004
+    to_ref: CMP060
+    flow_direction: from-to
+    through_refs: [RM007, RM008, RM005, RM002, RM003]
+    route:
+      legs:
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 17
+            y: 25
+            z: 0.45
+          - x: 17
+            y: 25
+            z: 0.1
+        placement: surface
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 17
+            y: 25
+            z: 0.1
+          - x: 19.5
+            y: 25
+            z: 0.1
+          - x: 19.5
+            y: 18.2
+            z: 0.1
+          - x: 22.8
+            y: 18.2
+            z: 0.1
+        placement: under-floor
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Underfloor
+      screed flow from manifold port 2 to Entrance hall RM002 and Sitting room
+      RM003.
+    tags: [fictional-house-systems]
+  - id: PPR015
+    name: Underfloor loop 2 return to manifold
+    system_ref: SYS001
+    medium: heating-water
+    from_ref: CMP060
+    to_ref: CMP004
+    flow_direction: from-to
+    through_refs: [RM003, RM002, RM005, RM008, RM007]
+    route:
+      legs:
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 22.8
+            y: 18.2
+            z: 0.1
+          - x: 19.5
+            y: 18.2
+            z: 0.1
+          - x: 19.5
+            y: 25
+            z: 0.1
+          - x: 17
+            y: 25
+            z: 0.1
+        placement: under-floor
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 17
+            y: 25
+            z: 0.1
+          - x: 17
+            y: 25
+            z: 0.45
+        placement: surface
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Underfloor
+      screed return from Sitting room RM003 and Entrance hall RM002 to
+      manifold port 2.
+    tags: [fictional-house-systems]
+  - id: PPR016
+    name: Manifold flow to underfloor loop 3
+    system_ref: SYS001
+    medium: heating-water
+    from_ref: CMP004
+    to_ref: CMP061
+    flow_direction: from-to
+    through_refs: [RM007, RM008, RM005, RM006]
+    route:
+      legs:
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 17
+            y: 25
+            z: 0.45
+          - x: 17
+            y: 25
+            z: 0.1
+        placement: surface
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 17
+            y: 25
+            z: 0.1
+          - x: 19.8
+            y: 25
+            z: 0.1
+          - x: 19.8
+            y: 22.2
+            z: 0.1
+          - x: 23.3
+            y: 22.2
+            z: 0.1
+        placement: under-floor
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Underfloor
+      screed flow from manifold port 3 to Study RM006.
+    tags: [fictional-house-systems]
+  - id: PPR017
+    name: Underfloor loop 3 return to manifold
+    system_ref: SYS001
+    medium: heating-water
+    from_ref: CMP061
+    to_ref: CMP004
+    flow_direction: from-to
+    through_refs: [RM006, RM005, RM008, RM007]
+    route:
+      legs:
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 23.3
+            y: 22.2
+            z: 0.1
+          - x: 19.8
+            y: 22.2
+            z: 0.1
+          - x: 19.8
+            y: 25
+            z: 0.1
+          - x: 17
+            y: 25
+            z: 0.1
+        placement: under-floor
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 17
+            y: 25
+            z: 0.1
+          - x: 17
+            y: 25
+            z: 0.45
+        placement: surface
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Underfloor
+      screed return from Study RM006 to manifold port 3.
+    tags: [fictional-house-systems]
+  - id: PPR018
+    name: Manifold flow to underfloor loop 4
+    system_ref: SYS001
+    medium: heating-water
+    from_ref: CMP004
+    to_ref: CMP062
+    flow_direction: from-to
+    through_refs: [RM007, RM008]
+    route:
+      legs:
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 17
+            y: 25
+            z: 0.45
+          - x: 17
+            y: 25
+            z: 0.1
+        placement: surface
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 17
+            y: 25
+            z: 0.1
+          - x: 17
+            y: 25.8
+            z: 0.1
+          - x: 19.6
+            y: 25.8
+            z: 0.1
+        placement: under-floor
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Underfloor
+      screed flow from manifold port 4 serving Utility room RM007 and
+      Cloakroom RM008.
+    tags: [fictional-house-systems]
+  - id: PPR019
+    name: Underfloor loop 4 return to manifold
+    system_ref: SYS001
+    medium: heating-water
+    from_ref: CMP062
+    to_ref: CMP004
+    flow_direction: from-to
+    through_refs: [RM008, RM007]
+    route:
+      legs:
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 19.6
+            y: 25.8
+            z: 0.1
+          - x: 17
+            y: 25.8
+            z: 0.1
+          - x: 17
+            y: 25
+            z: 0.1
+        placement: under-floor
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 17
+            y: 25
+            z: 0.1
+          - x: 17
+            y: 25
+            z: 0.45
+        placement: surface
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. Underfloor
+      screed return from Cloakroom RM008 and Utility room RM007 to manifold
+      port 4.
+    tags: [fictional-house-systems]
+  - id: PPR020
+    name: Manifold flow to principal bedroom radiator
+    system_ref: SYS001
+    medium: heating-water
+    from_ref: CMP004
+    to_ref: CMP063
+    flow_direction: from-to
+    through_refs: [RM007, RM012, RM009]
+    route:
+      legs:
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 17
+            y: 25
+            z: 0.45
+          - x: 16
+            y: 24
+            z: 0.45
+        placement: surface
+      - kind: vertical
+        wall_segment_ref: WSG012
+        offset_cm: 220
+        from_elevation_m: 0.45
+        to_elevation_m: 3.25
+        placement: surface
+      - kind: free
+        floor_ref: FLR002
+        path:
+          vertices:
+          - x: 16
+            y: 24
+            z: 3.25
+          - x: 16
+            y: 20.4
+            z: 3.25
+          - x: 16
+            y: 16.3
+            z: 3.25
+          - x: 16
+            y: 16.3
+            z: 3.4
+        placement: surface
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. First-floor
+      radiator flow rising via WSG012 to Principal bedroom RM009.
+    tags: [fictional-house-systems]
+  - id: PPR021
+    name: Principal bedroom radiator return to manifold
+    system_ref: SYS001
+    medium: heating-water
+    from_ref: CMP063
+    to_ref: CMP004
+    flow_direction: from-to
+    through_refs: [RM009, RM012, RM007]
+    route:
+      legs:
+      - kind: free
+        floor_ref: FLR002
+        path:
+          vertices:
+          - x: 16
+            y: 16.3
+            z: 3.4
+          - x: 16
+            y: 16.3
+            z: 3.25
+          - x: 16
+            y: 20.4
+            z: 3.25
+          - x: 16
+            y: 24
+            z: 3.25
+        placement: surface
+      - kind: vertical
+        wall_segment_ref: WSG012
+        offset_cm: 220
+        from_elevation_m: 3.25
+        to_elevation_m: 0.45
+        placement: surface
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 16
+            y: 24
+            z: 0.45
+          - x: 17
+            y: 25
+            z: 0.45
+        placement: surface
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. First-floor
+      radiator return from Principal bedroom RM009 via WSG012.
+    tags: [fictional-house-systems]
+  - id: PPR022
+    name: Manifold flow to bedroom two radiator
+    system_ref: SYS001
+    medium: heating-water
+    from_ref: CMP004
+    to_ref: CMP064
+    flow_direction: from-to
+    through_refs: [RM007, RM012, RM010, RM011]
+    route:
+      legs:
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 17
+            y: 25
+            z: 0.45
+          - x: 16
+            y: 24
+            z: 0.45
+        placement: surface
+      - kind: vertical
+        wall_segment_ref: WSG012
+        offset_cm: 220
+        from_elevation_m: 0.45
+        to_elevation_m: 3.25
+        placement: surface
+      - kind: free
+        floor_ref: FLR002
+        path:
+          vertices:
+          - x: 16
+            y: 24
+            z: 3.25
+          - x: 18.2
+            y: 20.4
+            z: 3.25
+          - x: 21.6
+            y: 17.5
+            z: 3.25
+          - x: 24.7
+            y: 17.5
+            z: 3.25
+          - x: 24.7
+            y: 17.5
+            z: 3.4
+        placement: surface
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. First-floor
+      radiator flow rising via WSG012 across Landing RM010 to Bedroom two
+      RM011.
+    tags: [fictional-house-systems]
+  - id: PPR023
+    name: Bedroom two radiator return to manifold
+    system_ref: SYS001
+    medium: heating-water
+    from_ref: CMP064
+    to_ref: CMP004
+    flow_direction: from-to
+    through_refs: [RM011, RM010, RM012, RM007]
+    route:
+      legs:
+      - kind: free
+        floor_ref: FLR002
+        path:
+          vertices:
+          - x: 24.7
+            y: 17.5
+            z: 3.4
+          - x: 24.7
+            y: 17.5
+            z: 3.25
+          - x: 21.6
+            y: 17.5
+            z: 3.25
+          - x: 18.2
+            y: 20.4
+            z: 3.25
+          - x: 16
+            y: 24
+            z: 3.25
+        placement: surface
+      - kind: vertical
+        wall_segment_ref: WSG012
+        offset_cm: 220
+        from_elevation_m: 3.25
+        to_elevation_m: 0.45
+        placement: surface
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 16
+            y: 24
+            z: 0.45
+          - x: 17
+            y: 25
+            z: 0.45
+        placement: surface
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. First-floor
+      radiator return from Bedroom two RM011 via WSG012.
+    tags: [fictional-house-systems]
+  - id: PPR024
+    name: Manifold flow to bedroom three radiator
+    system_ref: SYS001
+    medium: heating-water
+    from_ref: CMP004
+    to_ref: CMP065
+    flow_direction: from-to
+    through_refs: [RM007, RM012, RM013]
+    route:
+      legs:
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 17
+            y: 25
+            z: 0.45
+          - x: 16
+            y: 24
+            z: 0.45
+        placement: surface
+      - kind: vertical
+        wall_segment_ref: WSG012
+        offset_cm: 220
+        from_elevation_m: 0.45
+        to_elevation_m: 3.25
+        placement: surface
+      - kind: free
+        floor_ref: FLR002
+        path:
+          vertices:
+          - x: 16
+            y: 24
+            z: 3.25
+          - x: 18.2
+            y: 23.7
+            z: 3.25
+          - x: 19.9
+            y: 23.7
+            z: 3.25
+          - x: 19.9
+            y: 23.7
+            z: 3.4
+        placement: surface
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. First-floor
+      radiator flow rising via WSG012 to Bedroom three RM013.
+    tags: [fictional-house-systems]
+  - id: PPR025
+    name: Bedroom three radiator return to manifold
+    system_ref: SYS001
+    medium: heating-water
+    from_ref: CMP065
+    to_ref: CMP004
+    flow_direction: from-to
+    through_refs: [RM013, RM012, RM007]
+    route:
+      legs:
+      - kind: free
+        floor_ref: FLR002
+        path:
+          vertices:
+          - x: 19.9
+            y: 23.7
+            z: 3.4
+          - x: 19.9
+            y: 23.7
+            z: 3.25
+          - x: 18.2
+            y: 23.7
+            z: 3.25
+          - x: 16
+            y: 24
+            z: 3.25
+        placement: surface
+      - kind: vertical
+        wall_segment_ref: WSG012
+        offset_cm: 220
+        from_elevation_m: 3.25
+        to_elevation_m: 0.45
+        placement: surface
+      - kind: free
+        floor_ref: FLR001
+        path:
+          vertices:
+          - x: 16
+            y: 24
+            z: 0.45
+          - x: 17
+            y: 25
+            z: 0.45
+        placement: surface
+    description: >
+      Fictional layout fixture, estimated rather than surveyed. First-floor
+      radiator return from Bedroom three RM013 via WSG012.
     tags: [fictional-house-systems]
 
 # ── Electrical cables - protected circuits and physical routes ────────────

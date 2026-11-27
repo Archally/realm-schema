@@ -56,5 +56,25 @@ regulatory_requirements:
     next_due_date: "2029-11-12"
     certified_inspector_required: true
     description: >
-      Periodic inspection and report on the fixed wiring, cottage and barn.
-    tags: [electrical, statutory]
+      Periodic inspection and report (EICR) retained for home insurance.
+      Reviewed scope: cottage consumer unit CMP003, barn sub-board CMP012, all
+      8 protected circuits and all 21 located socket outlets across cottage,
+      barn and garden.
+    tags: [electrical, statutory, insurance]
+  - id: REG002
+    name: Annual chimney sweep and flue check
+    requirement_type: chimney-sweep
+    inspection_schedule:
+      rrule: RRULE:FREQ=YEARLY;BYMONTH=9
+      summary: Every September, before the heating season
+    jurisdiction: England and Wales
+    target_system_refs: [SYS008]
+    target_building_refs: [BLD001]
+    last_inspection_date: "2025-09-22"
+    next_due_date: "2026-09-22"
+    certified_inspector_required: true
+    description: >
+      Annual brush sweep and smoke draw test of sitting room stove CMP055,
+      liner CMP056, stack CMP057 and soot door CMP058 by a certified chimney
+      sweep; certificate retained for building insurance.
+    tags: [chimney, fire-safety, insurance]

@@ -220,6 +220,32 @@ maintenance_tasks:
     description: >
       Holds moisture in the heavy clay around the stressed pear.
     tags: [orchard, seasonal]
+  - id: MT010
+    name: Annual chimney sweep
+    task_type: cleaning
+    kind: infrastructure
+    target_ref: SYS008
+    schedule:
+      rrule: RRULE:FREQ=YEARLY;BYMONTH=9;BYDAY=3MO
+      summary: Third Monday in September, every year
+    priority: high
+    season: autumn
+    estimated_duration_minutes: 60
+    instructions: >
+      Sweep the 150 mm stainless liner CMP056 via sitting room soot door
+      CMP058 and stove baffle CMP055, check east gable stack and rain cowl
+      CMP057, perform a smoke draw test, and file the sweep certificate.
+    regulatory_requirement_ref: REG002
+    cost_category_ref: CC004
+    estimated_cost: 95
+    currency: GBP
+    executions:
+    - date: "2025-09-22"
+      note: >
+        Light dry soot only; liner and rain cowl clear. Certificate issued.
+    description: >
+      Yearly sweep required ahead of winter burning under REG002.
+    tags: [chimney, fire-safety, seasonal]
 
 # ── Cost categories ───────────────────────────────────────────────────────
 cost_categories:
@@ -247,3 +273,11 @@ cost_categories:
     description: >
       Fibre service to the study.
     tags: [utilities]
+  - id: CC004
+    name: Chimney sweep
+    category_type: chimney-sweep
+    annual_budget_estimate: 95
+    currency: GBP
+    description: >
+      Annual certified sweep and flue draw check for the sitting room stove.
+    tags: [chimney, heating]

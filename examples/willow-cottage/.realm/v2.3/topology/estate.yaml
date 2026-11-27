@@ -292,6 +292,12 @@ rooms:
         head_height_cm: 198
         depth_cm: 12
         opens_to_room_ref: RM004
+    heating:
+      emitters:
+        - kind: underfloor-heating
+          component_ref: CMP059
+      description: >
+        Served by ground-floor underfloor loop 1 (CMP059) from manifold CMP004.
     description: >
       Range cooker against the north wall, butler sink under the window.
     tags: [ground-floor, wet-room]
@@ -350,6 +356,12 @@ rooms:
         head_height_cm: 198
         depth_cm: 12
         opens_to_room_ref: RM005
+    heating:
+      emitters:
+        - kind: underfloor-heating
+          component_ref: CMP060
+      description: >
+        Served by ground-floor underfloor loop 2 (CMP060) from manifold CMP004.
     description: >
       Front door on the north elevation, opening onto the path across the
       front garden.
@@ -402,6 +414,17 @@ rooms:
         depth_cm: 30
         glazing: double
         panes: 2
+    heating:
+      emitters:
+        - kind: underfloor-heating
+          component_ref: CMP060
+        - kind: stove
+          component_ref: CMP055
+          wall: E
+      description: >
+        Primary heat from ground-floor underfloor loop 2 (CMP060, SYS001);
+        occasional secondary heat from east-gable wood-burning stove CMP055
+        (SYS008).
     description: >
       Wood-burning stove in the east gable; two windows on the east wall.
     tags: [ground-floor, wood-stove]
@@ -452,6 +475,12 @@ rooms:
         head_height_cm: 198
         depth_cm: 30
         opens_to_room_ref: RM007
+    heating:
+      emitters:
+        - kind: underfloor-heating
+          component_ref: CMP059
+      description: >
+        Served by ground-floor underfloor loop 1 (CMP059) from manifold CMP004.
     description: >
       Open to the kitchen through a wide doorway; french doors to the terrace.
     tags: [ground-floor]
@@ -507,6 +536,10 @@ rooms:
       step_count: 14
       going_cm: 24
       width_cm: 90
+    heating:
+      emitters: []
+      description: >
+        Unheated circulation space.
     description: >
       The understair cupboard is beneath the flight.
     tags: [ground-floor, circulation]
@@ -557,6 +590,13 @@ rooms:
         head_height_cm: 205
         depth_cm: 30
         glazing: double
+    heating:
+      emitters:
+        - kind: underfloor-heating
+          component_ref: CMP061
+      description: >
+        Served by dedicated ground-floor underfloor loop 3 (CMP061) from
+        manifold CMP004.
     description: >
       South-facing, over the terrace. Wired for the network cabinet.
     tags: [ground-floor, workspace]
@@ -605,6 +645,13 @@ rooms:
         head_height_cm: 220
         depth_cm: 22
         glazing: double
+    heating:
+      emitters:
+        - kind: underfloor-heating
+          component_ref: CMP062
+      description: >
+        Houses manifold CMP004 and cylinder CMP002; served by ground-floor
+        underfloor loop 4 (CMP062).
     description: >
       Hot-water cylinder, washing machine, and the back door to the yard.
     tags: [ground-floor, wet-room, plant]
@@ -645,6 +692,12 @@ rooms:
         depth_cm: 22
         glazing: double
         openable: true
+    heating:
+      emitters:
+        - kind: underfloor-heating
+          component_ref: CMP062
+      description: >
+        Served by ground-floor underfloor loop 4 (CMP062) from manifold CMP004.
     description: >
       WC and basin, boot storage along the east wall.
     tags: [ground-floor, wet-room]
@@ -697,6 +750,14 @@ rooms:
         head_height_cm: 198
         depth_cm: 12
         opens_to_room_ref: RM010
+    heating:
+      emitters:
+        - kind: panel-radiator
+          component_ref: CMP063
+          wall: N
+      description: >
+        Heated by north-wall panel radiator CMP063 from manifold CMP004 via
+        riser WSG012.
     description: >
       Over the kitchen; two windows, north and west.
     tags: [first-floor]
@@ -754,6 +815,10 @@ rooms:
         head_height_cm: 200
         depth_cm: 30
         glazing: double
+    heating:
+      emitters: []
+      description: >
+        Unheated circulation space.
     description: >
       Hatch to the roof space in the ceiling.
     tags: [first-floor, circulation]
@@ -795,6 +860,15 @@ rooms:
         depth_cm: 30
         glazing: double
         panes: 2
+    heating:
+      emitters:
+        - kind: panel-radiator
+          component_ref: CMP064
+          wall: E
+      description: >
+        Heated by east-wall panel radiator CMP064 from manifold CMP004 via riser
+        WSG012; insulated stove flue CMP056 also rises inside the east gable
+        breast.
     description: >
       East gable room, over the sitting room.
     tags: [first-floor]
@@ -836,6 +910,14 @@ rooms:
         head_height_cm: 198
         depth_cm: 12
         opens_to_room_ref: RM013
+    heating:
+      emitters:
+        - kind: towel-radiator
+          component_ref: CMP005
+          wall: E
+      description: >
+        Heated by bathroom radiator CMP005 from manifold CMP004 via riser
+        WSG012.
     description: >
       Cast-iron bath under the west window; airing cupboard on the north wall.
     tags: [first-floor, wet-room]
@@ -895,6 +977,14 @@ rooms:
         head_height_cm: 198
         depth_cm: 12
         opens_to_room_ref: RM014
+    heating:
+      emitters:
+        - kind: panel-radiator
+          component_ref: CMP065
+          wall: S
+      description: >
+        Heated by south-wall panel radiator CMP065 from manifold CMP004 via
+        riser WSG012.
     description: >
       Small double, south-facing over the terrace.
     tags: [first-floor]
@@ -935,6 +1025,10 @@ rooms:
         head_height_cm: 210
         depth_cm: 30
         glazing: single
+    heating:
+      emitters: []
+      description: >
+        Unheated store.
     description: >
       Unheated store over the study; the water tank stands here.
     tags: [first-floor, storage]
@@ -986,6 +1080,10 @@ rooms:
         head_height_cm: 230
         depth_cm: 25
         glazing: single
+    heating:
+      emitters: []
+      description: >
+        Unheated outbuilding bay.
     description: >
       One undivided bay: a car at the west end, workbench and tools at the
       east.

@@ -4,6 +4,25 @@ All notable changes to `@archally/realm-schema`. Versions follow the schema vers
 a model declaring `schemaVersion: "2.3.0"` validates against `schema/v2.3/`, and so does one
 still declaring `2.2.0`, because 2.3 removed nothing.
 
+## 2.4.3 - 2026-11-27
+
+**Additive.** Models valid under 2.4.2 remain valid in 2.4.3. A model that uses
+room heat emitters declares `schemaVersion: "2.4.3"`.
+
+- A room's optional `heating.emitters` lists all the emitters that heat it. An
+  empty list records that the room has no emitters. An omitted list means emitter
+  coverage is unrecorded. Each entry specifies an emitter kind and can reference
+  a component or system. List a shared emitter in every room it heats. A room
+  with an emitter list omits the older single-emitter fields.
+- The model quality checker warns when a heating system's declared
+  `distribution_zones` and rooms' emitter lists establish conflicting coverage.
+  The warning is advisory and leaves schema validity unaffected.
+- The model graph uses `heated-by` for room links to heating components and
+  systems, including links from the older single-emitter fields. Consumers
+  filtering for the previous field-derived predicates can use `heated-by`.
+- Willow Cottage includes additional sockets, a stove and chimney, heating
+  zones, and a proposed hedge.
+
 ## 2.4.2 - 2026-11-21
 
 **Additive.** The 2.4.2 schema accepts every model valid under 2.4.1. A document that states a wall joint requires schema version 2.4.2.

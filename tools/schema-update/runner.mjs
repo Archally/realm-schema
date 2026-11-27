@@ -7,12 +7,13 @@ import { update as update003 } from "./updates/003-additive-2-2-to-2-3.mjs";
 import { update as update004 } from "./updates/004-additive-2-3-to-2-4.mjs";
 import { update as update005 } from "./updates/005-additive-2-4-0-to-2-4-1.mjs";
 import { update as update006 } from "./updates/006-additive-2-4-1-to-2-4-2.mjs";
+import { update as update007 } from "./updates/007-additive-2-4-2-to-2-4-3.mjs";
 
 /**
  * Version order, single pass - see resolveChain. A model on 2.0 must receive
  * 001 then 002 in one run.
  */
-const ALL_UPDATES = [update001, update002, update003, update004, update005, update006];
+const ALL_UPDATES = [update001, update002, update003, update004, update005, update006, update007];
 
 /**
  * Which schema version a model is written against.

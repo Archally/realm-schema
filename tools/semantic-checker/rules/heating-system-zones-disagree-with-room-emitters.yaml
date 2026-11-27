@@ -1,0 +1,23 @@
+engineVersion: "0.1"
+rules:
+  - id: heating-system-zones-disagree-with-room-emitters
+    severity: warn
+    description: >-
+      A heating system may state distribution_zones while active rooms declare a
+      complete heating.emitters list. When both are present, every active room
+      whose emitters list resolves to this system (directly or through a live
+      component) should be listed in distribution_zones, and every listed active
+      room whose emitters list has known system membership throughout should
+      include this system. Rooms without an emitters list, legacy single-emitter
+      rooms, anonymous or unresolved emitters, outdoor zones and ended records
+      are left out of the comparison.
+    find:
+      entity_type: system
+    filter:
+      field_eq:
+        data.system_type: heating
+    check:
+      custom:
+        module: ./heating-system-zones-disagree-with-room-emitters.mjs
+        export: checkHeatingSystemZonesDisagreeWithRoomEmitters
+    message: 'Heating system "{id}" ({name|''unnamed''}) distribution_zones disagrees with room heating.emitters: {details}.'

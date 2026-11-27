@@ -24,6 +24,7 @@ Findings are reported, not enforced. A rule here states an opinion about what ma
 | [`cost-category-without-budget`](#cost-category-without-budget) | every `cost_category` | info |
 | [`electrical-requirement-without-system`](#electrical-requirement-without-system) | every `regulatory_requirement` | info |
 | [`estate-change-without-cost`](#estate-change-without-cost) | every `estate_change` | info |
+| [`heating-system-zones-disagree-with-room-emitters`](#heating-system-zones-disagree-with-room-emitters) | every `system` whose `system_type` is `heating` | warn |
 | [`iot-device-without-subject`](#iot-device-without-subject) | every `iot_device` | info |
 | [`planting-without-care-profile`](#planting-without-care-profile) | every `planting` | warn |
 | [`protective-device-without-source`](#protective-device-without-source) | every `component` | warn |
@@ -37,7 +38,7 @@ Findings are reported, not enforced. A rule here states an opinion about what ma
 | [`terminal-without-circuit`](#terminal-without-circuit) | every `component` | info |
 | [`undescribed-authored-entity`](#undescribed-authored-entity) | every entity, except `wall_segment`, `roof_plane`, `floor_slab` | info |
 
-20 rules.
+21 rules.
 
 ### boundary-segment-without-parcel
 
@@ -141,6 +142,18 @@ Estate change "{id}" ({name|'unnamed'}) carries no cost estimate - it cannot be 
 ```
 
 Planned work without an estimate cannot be sequenced against a budget, which is one of the two things an estate-change register exists for. Info rather than warn because an early-stage change legitimately has no number yet, and because a change already applied has a real cost recorded elsewhere.
+
+### heating-system-zones-disagree-with-room-emitters
+
+**warn** - reported; fails only under `--strict`. Applies to every `system` whose `system_type` is `heating`.
+
+What you will see:
+
+```
+Heating system "{id}" ({name|'unnamed'}) distribution_zones disagrees with room heating.emitters: {details}.
+```
+
+A heating system may state distribution_zones while active rooms declare a complete heating.emitters list. When both are present, every active room whose emitters list resolves to this system (directly or through a live component) should be listed in distribution_zones, and every listed active room whose emitters list has known system membership throughout should include this system. Rooms without an emitters list, legacy single-emitter rooms, anonymous or unresolved emitters, outdoor zones and ended records are left out of the comparison.
 
 ### iot-device-without-subject
 

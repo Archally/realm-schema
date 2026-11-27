@@ -34,7 +34,7 @@ building_ref: BLD002
 generated_from:
   semantic_source_refs:
     - "topology/estate.yaml"
-  schema_version: "2.4.1"
+  schema_version: "2.4.3"
   generated_at: "2026-09-01T00:00:00Z"
   generator: gen-willow-cottage
   human_edited: false

@@ -146,7 +146,7 @@ jobs:
           fi
           echo "OK: the stale document was rejected"
 
-      - name: Willow Cottage 2.3.0 migrates to 2.4.2 and validates
+      - name: Willow Cottage 2.3.0 migrates to 2.4.3 and validates
         run: |
           fixture=fixtures/willow-cottage-2.3.0
           roundtrip="$(mktemp -d)"
@@ -154,10 +154,10 @@ jobs:
           cp -R "$fixture/." "$roundtrip"
           cp -R "$fixture/." "$expected"
           grep -qx 'schemaVersion: "2.3.0"' "$fixture/realm.yaml"
-          sed 's/^schemaVersion: "2\.3\.0"$/schemaVersion: "2.4.2"/' "$fixture/realm.yaml" > "$expected/realm.yaml"
+          sed 's/^schemaVersion: "2\.3\.0"$/schemaVersion: "2.4.3"/' "$fixture/realm.yaml" > "$expected/realm.yaml"
           npm run -s schema-update -- "$roundtrip"
           diff -r "$roundtrip" "$expected"
-          echo "OK: the model declares 2.4.2 and its records are unchanged"
+          echo "OK: the model declares 2.4.3 and its records are unchanged"
           npm run -s validate -- --model "$roundtrip" --schemas schema/v2.4
           printf '%s\n' "migration_expected=$expected" >> "$GITHUB_ENV"
 

@@ -12,7 +12,7 @@
 # walks the model, and reads this one by name for its tolerances.
 # ═════════════════════════════════════════════════════════════════════════════
 
-schema_version: "2.4.1"
+schema_version: "2.4.3"
 
 inference:
   # Defaults for deriving construction geometry from the semantic layer.

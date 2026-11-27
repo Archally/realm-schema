@@ -13,7 +13,7 @@ import path from "node:path";
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 
-import { loadRules, runChecker } from "@archally/semantic-checker";
+import { loadExtensions, loadRules, runChecker } from "@archally/semantic-checker";
 import { toCheckableModel } from "./adapter.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -29,6 +29,24 @@ export const RULE_DIR_CANDIDATES = [
   path.resolve(HERE, "../semantic-rules"),
   path.resolve(HERE, "rules"),
 ];
+
+/**
+ * Whether `ruleDir` points to the shipped trusted rule pack. Executable custom
+ * extensions are loaded only for shipped rules; alternate rule directories remain
+ * strictly data-only.
+ *
+ * @param {string} ruleDir
+ * @returns {boolean}
+ */
+function isShippedRuleDir(ruleDir) {
+  const resolvedTarget = fs.realpathSync(path.resolve(ruleDir));
+  return RULE_DIR_CANDIDATES.some((candidate) => {
+    if (!fs.existsSync(candidate)) {
+      return false;
+    }
+    return fs.realpathSync(candidate) === resolvedTarget;
+  });
+}
 
 /**
  * @param {string} [explicit] a directory named by the caller, which must exist
@@ -53,7 +71,7 @@ export function resolveRuleDir(explicit) {
  *
  * @param {unknown} source a built model, or the raw extraction map
  * @param {{ ruleDir?: string, rule?: string }} [options]
- * @returns {Promise<{ ruleDir: string, rules: Array<{id: string}>, issues: Array<{ruleId: string, severity: string, message: string, entityId?: string}> }>}
+ * @returns {Promise<{ ruleDir: string, rules: Array<{id: string}>, issues: Array<{ruleId: string, severity: string, message: string, entityId?: string}>, excludedRetired: number }>}
  */
 export async function checkRealmModel(source, options = {}) {
   const ruleDir = resolveRuleDir(options.ruleDir);
@@ -63,7 +81,8 @@ export async function checkRealmModel(source, options = {}) {
     throw new Error(`no rule with id "${options.rule}" in ${ruleDir}`);
   }
   const checkable = toCheckableModel(source);
-  const issues = runChecker(checkable, rules);
+  const extensions = isShippedRuleDir(ruleDir) ? await loadExtensions(rules) : undefined;
+  const issues = runChecker(checkable, rules, undefined, extensions);
   // Ended records (lifecycle retired or superseded) are left out before any rule runs, and
   // the count travels with the result: a consumer that excludes them says how many.
   return { ruleDir, rules, issues, excludedRetired: checkable.metadata?.excludedRetired ?? 0 };

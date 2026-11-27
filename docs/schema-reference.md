@@ -780,7 +780,7 @@ Accepts `x-` extension fields.
 | `serial_number` | string | - |  |
 | `installed_date` | `iso_date` | - |  |
 | `expected_lifespan_years` | integer | - | Manufacturer's expected service life. Used by T1 for replacement planning. min 1. Example: `15`. |
-| `room_ref` | `room_ref` | - |  |
+| `room_ref` | `room_ref` | - | Room where this component is physically located. Omit when a component spans several rooms, such as an underfloor heating loop under two rooms; keep building_ref and an optional position as its label point, and list the component in each served room's heating emitters. |
 | `position_accuracy_m` | `position_accuracy_m` | - |  |
 | `position_source` | `position_source` | - |  |
 | `position_derived_from` | `position_derived_from` | - |  |
@@ -1380,7 +1380,7 @@ Definitions the planes draw on. The reference types (`parcel_ref`, `room_ref` an
 | Type | Shape | Notes |
 |---|---|---|
 | `semver` | pattern `^\d+\.\d+\.\d+(-[a-zA-Z0-9.]+)?(\+[a-zA-Z0-9.]+)?$` | Semantic version string (MAJOR.MINOR.PATCH). Example: `1.0.0`. |
-| `schema_version` | enum | Realm schema version this document targets. The v2.4 schemas accept documents declaring 2.4.2, 2.4.1, 2.4.0, 2.3.0, 2.2.0, 2.1.0 and 2.0.0. 2.4.2 is additive over 2.4.1, 2.4.1 over 2.4.0, 2.4.0 over 2.3.0 and 2.3.0 over 2.2.0; 2.2.0 renamed the migration entity to estate_change, so a document older than that which uses the construct needs the rename before it will validate. A document that uses a change item's `effect` declares 2.4.0 or later; a document that states a column, a beam, a wall top profile, a dimension source or a time zone declares 2.4.1 or later; a document that states a wall joint declares 2.4.2. One of: `2.4.2`, `2.4.1`, `2.4.0`, `2.3.0`, `2.2.0`, `2.1.0`, `2.0.0`. |
+| `schema_version` | enum | Realm schema version this document targets. The v2.4 schemas accept documents declaring 2.4.3, 2.4.2, 2.4.1, 2.4.0, 2.3.0, 2.2.0, 2.1.0 and 2.0.0. 2.4.3 is additive over 2.4.2, 2.4.2 over 2.4.1, 2.4.1 over 2.4.0, 2.4.0 over 2.3.0 and 2.3.0 over 2.2.0; 2.2.0 renamed the migration entity to estate_change, so a document older than that which uses the construct needs the rename before it will validate. A document that uses a change item's `effect` declares 2.4.0 or later; a document that states a column, a beam, a wall top profile, a dimension source or a time zone declares 2.4.1 or later; a document that states a wall joint declares 2.4.2 or later; a document that states room heat emitters declares 2.4.3. One of: `2.4.3`, `2.4.2`, `2.4.1`, `2.4.0`, `2.3.0`, `2.2.0`, `2.1.0`, `2.0.0`. |
 | `tags` | list of string | Arbitrary classification tags for filtering and grouping. One tag has a fixed meaning: `enum-borrowed` marks an entity whose enum-valued field carries the nearest existing value because the right one does not exist yet, so the borrowing is findable by query when the vocabulary is extended. |
 | `iso_date` | string (date) | Date in YYYY-MM-DD format. Example: `2026-03-08`. |
 | `flexible_date` | pattern `^\d{4}-(0[1-9]|1[0-2])(-(0[1-9]|[12]\d|3[01]))?$` | A full calendar date, or a year and month when the day is not known. Recorded events often come from memory or from a receipt that names only the month; this type keeps that distinction visible instead of inviting an invented day. Lexicographic order is chronological order, so values sort correctly whichever precision they carry. Example: `2025-04-18`. |

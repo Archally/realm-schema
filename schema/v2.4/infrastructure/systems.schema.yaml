@@ -9,7 +9,7 @@ description: >
   all built systems from solar panels to sewage. Infrastructure plane.
 
 x-gdsm:
-  version: "2.3.2"
+  version: "2.4.3"
   methodology: "GDSM v1.0"
   plane: "infrastructure"
   domain_slice: null
@@ -32,12 +32,14 @@ x-gdsm:
     - "CQ50: Which protective device feeds a given circuit, and in which board, in which room, does it sit?"
     - "CQ51: Where is the riser that carries cables between floors: which wall, at what offset, over what height?"
     - "CQ52: Where does a cable run horizontally: along or inside which wall segments, at what height, through which rooms, and where does a cable of unknown purpose emerge?"
+    - "CQ62: For a room, which pipe runs bring heating water to its emitters, and which rooms do they pass?"
   fitness:
-    last_evaluated: "2026-09-04"
+    last_evaluated: "2026-11-26"
     method: >
-      Structural for the release as a whole (2.3.0 is additive only, so no task's
-      fitness can fall); numeric per question for the electrical questions, as
-      estimated in the design record against a model authored to the shapes.
+      Structural for the release as a whole (2.4.3 and 2.3.0 are additive only,
+      so no task's fitness can fall); numeric per question for the electrical
+      questions, as estimated in the design record against a model authored to
+      the shapes. Projected estimates for CQ62 remain advisory.
       Dimensions: CC concept coverage, AC attribute coverage, RE relation
       expressiveness, CE constraint expressiveness, AG answer generation.
     scores:
@@ -383,6 +385,11 @@ $defs:
       room_ref:
         $ref: "../metamodel.schema.yaml#/$defs/room_ref"
         title: "Located in Room"
+        description: >
+          Room where this component is physically located. Omit when a component
+          spans several rooms, such as an underfloor heating loop under two
+          rooms; keep building_ref and an optional position as its label point,
+          and list the component in each served room's heating emitters.
       position_accuracy_m:
         $ref: "../metamodel.schema.yaml#/$defs/position_accuracy_m"
       position_source:

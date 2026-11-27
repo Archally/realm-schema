@@ -8,7 +8,7 @@ YAML-based schema for modeling **private real estate**: a dual-layer spatial for
 
 > **Status: the schema, the validator, the model-quality checker, the model builder, the
 > renderer, the schema updater, the documentation and a worked example ship.** What you get
-> is the current **2.4.2** schema under [`schema/v2.4/`](./schema/v2.4/), the tools that read a
+> is the current **2.4.3** schema under [`schema/v2.4/`](./schema/v2.4/), the tools that read a
 > model written against it, four guides under [`docs/`](./docs/), and Willow Cottage.
 
 ## Validating a model
@@ -177,7 +177,7 @@ to move a model to the current release.
 | 2.0 to 2.1 | Nothing. 2.1 added enum values, optional fields and `x-` extension keys and removed nothing, so a valid 2.0 document is a valid 2.1 document. Only the declared version moves |
 | 2.1 to 2.2 | Renames the migration entity to `estate_change`: `MIG###` ids become `ECH###`, `migrations.yaml` becomes `estate-changes.yaml`, `migrations:` becomes `estate_changes:`, and every `*migration_ref*` field takes the new name |
 | 2.2 to 2.3 | Nothing. 2.3 added optional fields, enum values, one entity and one root key and removed nothing, so a valid 2.2 document is a valid 2.3 document. Only the declared version moves; a fact a model kept in an `x-` extension moves onto the new field by hand |
-| 2.3 to 2.4.2 | Advances the declaration in `realm.yaml` through 2.4.0, 2.4.1 and 2.4.2. The model's records stay the same |
+| 2.3 to 2.4.3 | Advances the declaration in `realm.yaml` through 2.4.0, 2.4.1, 2.4.2 and 2.4.3. The model's records stay the same |
 
 A model several versions behind receives every update in one run, in order.
 
@@ -222,13 +222,13 @@ Cross-cutting: estate changes, risks/issues, and a chronological event log.
 
 ## Schema
 
-- **Version:** 2.4.2 (JSON Schema draft 2020-12, expressed in YAML)
+- **Version:** 2.4.3 (JSON Schema draft 2020-12, expressed in YAML)
 - **Methodology:** GDSM v1.0 (Goal-Driven Schema Modeling)
 - **Location:** [`schema/v2.4/`](./schema/v2.4/) - root composition + `metamodel`, `estate-change`, `risks`, `events`, `realm-config`, and per-plane subfolders (`topology/`, `infrastructure/`, `nature/`, `operations/`, `context/`, `visualization/`).
 
 Each plane's data files are validated independently against their own schema; cross-cutting files validate against `estate-change`, `risks`, and `events`.
 
-The validation scripts select v2.4 by default. See the [changelog](./CHANGELOG.md) for the schema additions in 2.4.0 through 2.4.2.
+The validation scripts select v2.4 by default. See the [changelog](./CHANGELOG.md) for the schema additions in 2.4.0 through 2.4.3.
 
 ## License
 

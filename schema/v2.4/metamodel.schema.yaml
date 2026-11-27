@@ -9,7 +9,7 @@ description: >
   entry point for machine traversal.
 
 x-gdsm:
-  version: "2.4.2"
+  version: "2.4.3"
   methodology: "GDSM v1.0"
   suite_name: "Realm"
   suite_description: >
@@ -453,15 +453,16 @@ $defs:
     title: "Schema Version"
     description: >
       Realm schema version this document targets. The v2.4 schemas accept
-      documents declaring 2.4.2, 2.4.1, 2.4.0, 2.3.0, 2.2.0, 2.1.0 and 2.0.0.
-      2.4.2 is additive over 2.4.1, 2.4.1 over 2.4.0, 2.4.0 over 2.3.0 and
-      2.3.0 over 2.2.0; 2.2.0 renamed the migration entity to estate_change,
+      documents declaring 2.4.3, 2.4.2, 2.4.1, 2.4.0, 2.3.0, 2.2.0, 2.1.0 and 2.0.0.
+      2.4.3 is additive over 2.4.2, 2.4.2 over 2.4.1, 2.4.1 over 2.4.0, 2.4.0 over
+      2.3.0 and 2.3.0 over 2.2.0; 2.2.0 renamed the migration entity to estate_change,
       so a document older than that which uses the construct needs the rename
       before it will validate. A document that uses a change item's `effect`
       declares 2.4.0 or later; a document that states a column, a beam, a wall
       top profile, a dimension source or a time zone declares 2.4.1 or later;
-      a document that states a wall joint declares 2.4.2.
-    enum: ["2.4.2", "2.4.1", "2.4.0", "2.3.0", "2.2.0", "2.1.0", "2.0.0"]
+      a document that states a wall joint declares 2.4.2 or later; a document
+      that states room heat emitters declares 2.4.3.
+    enum: ["2.4.3", "2.4.2", "2.4.1", "2.4.0", "2.3.0", "2.2.0", "2.1.0", "2.0.0"]
 
   # ═══════════════════════════════════════════════════════════════════════════
   # Common

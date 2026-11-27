@@ -8,7 +8,7 @@ description: >
   land ownership down to individual rooms and garden areas. Topology plane.
 
 x-gdsm:
-  version: "2.4.1"
+  version: "2.4.3"
   methodology: "GDSM v1.0"
   plane: "topology"
   domain_slice: null
@@ -28,18 +28,23 @@ x-gdsm:
     - "CQ34: What are the building heights (eave, ridge) for shadow and elevation analysis?"
     - "CQ35: Which rooms do the stairs join, and how many steps is it between two floors?"
     - "CQ58: How is each stated dimension known - surveyed, measured, read from the drawings or estimated - and how far may it be off?"
+    - "CQ60: Which heat emitters give heat into a given room - their kind, the component and its system - and which kinds are not installed?"
+    - "CQ61: Which rooms does a given heating component serve?"
   fitness:
-    last_evaluated: "2026-11-18"
+    last_evaluated: "2026-11-26"
     method: >
-      Structural: release 2.4.1 adds two optional dimension provenance
+      Structural: release 2.4.3 adds an optional room_heating.emitters list
+      and room_heat_emitter definition, and removes, renames, retypes or
+      narrows nothing, so no task's fitness can fall against 2.4.2.
+      Release 2.4.1 adds two optional dimension provenance
       properties to a building, a wing and a floor, and removes, renames,
       retypes or narrows nothing, so no task's fitness can fall against 2.4.0.
       Release 2.3.1 adds one optional property and its definition and
       removes, renames, retypes or narrows nothing, so no task's fitness can fall
       against 2.3.0. Release 2.3.0 adds optional properties, enum values,
-      definitions and entity types on the same terms against 2.2.0. No numeric baseline was recorded
-      before this release; the electrical questions in the systems file carry the
-      first per-question estimates.
+      definitions and entity types on the same terms against 2.2.0. Projected
+      per-question estimates remain advisory and are not recorded as numeric
+      scores here.
     scores: {}
   non_goals:
     - "Detailed insulation layer specs (R-value, individual layers)"
@@ -1074,17 +1079,45 @@ $defs:
     type: object
     title: "Room Heating"
     description: >
-      Structured heating details for a room: type(s), location, and link
-      to infrastructure system/component.
+      How a room is heated. `emitters` lists every heat emitter in the room;
+      the single-emitter fields remain for models that use them, and a room
+      that states `emitters` states none of them.
     additionalProperties: false
+    allOf:
+      - if:
+          required: [emitters]
+        then:
+          not:
+            anyOf:
+              - required: [has_underfloor]
+              - required: [radiator_type]
+              - required: [radiator_wall]
+              - required: [system_ref]
+              - required: [component_ref]
     properties:
+      emitters:
+        type: array
+        title: "Heat Emitters"
+        description: >
+          Every heat emitter that gives heat into this room: an underfloor, wall
+          or ceiling heating loop, a radiator, a convector, a fan coil, an
+          electric heater or a stove. The list is complete: a kind that is not
+          listed is not installed, and an empty list states that the room has
+          no heat emitter. An emitter that heats several rooms, such as an
+          underfloor loop under two rooms, is listed in each of them, and the
+          rooms an emitter serves are the rooms that list it. Absent means not
+          recorded.
+        items:
+          $ref: "#/$defs/room_heat_emitter"
+        uniqueItems: true
       has_underfloor:
         type: boolean
         title: "Has Underfloor Heating"
+        description: "Whether the room has underfloor heating. Superseded by emitters."
       radiator_type:
         type: string
         title: "Radiator Type"
-        description: "Type of radiator if present. Omit if no radiator."
+        description: "Type of radiator if present. Omit if no radiator. Superseded by emitters."
         enum:
           - "panel-radiator"
           - "towel-radiator"
@@ -1096,15 +1129,64 @@ $defs:
       radiator_wall:
         $ref: "../metamodel.schema.yaml#/$defs/compass_direction"
         title: "Radiator Wall"
-        description: "Wall where the radiator is mounted."
+        description: "Wall where the radiator is mounted. Superseded by emitters."
       system_ref:
         $ref: "../metamodel.schema.yaml#/$defs/system_ref"
         title: "Heating System"
-        description: "Infrastructure heating system serving this room."
+        description: "Infrastructure heating system serving this room. Superseded by emitters."
       component_ref:
         $ref: "../metamodel.schema.yaml#/$defs/component_ref"
         title: "Radiator Component"
-        description: "Specific radiator component in the infrastructure model."
+        description: "Specific radiator component in the infrastructure model. Superseded by emitters."
+      description:
+        type: string
+
+  room_heat_emitter:
+    type: object
+    title: "Room Heat Emitter"
+    description: >
+      One heat emitter of a room: its kind and an optional reference to the
+      component or its heating system. The optional compass wall locates the
+      emitter in this room.
+    required: [kind]
+    additionalProperties: false
+    allOf:
+      - if:
+          required: [component_ref]
+        then:
+          not:
+            required: [system_ref]
+    properties:
+      kind:
+        type: string
+        title: "Emitter Kind"
+        description: "Kind of heat emitter giving heat into the room."
+        enum:
+          - "underfloor-heating"
+          - "wall-heating"
+          - "ceiling-heating"
+          - "panel-radiator"
+          - "towel-radiator"
+          - "convector"
+          - "fan-coil"
+          - "electric-heater"
+          - "stove"
+        examples: ["underfloor-heating", "stove"]
+      component_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/component_ref"
+        title: "Emitter Component"
+        description: "The infrastructure component that is this emitter: a loop, a radiator or a stove."
+        examples: ["CMP060"]
+      system_ref:
+        $ref: "../metamodel.schema.yaml#/$defs/system_ref"
+        title: "Heating System"
+        description: "The heating system the emitter belongs to, when the emitter is not recorded as a component."
+        examples: ["SYS001"]
+      wall:
+        $ref: "../metamodel.schema.yaml#/$defs/compass_direction"
+        title: "On Wall"
+        description: "The direction of the wall in this room. Omit when a component wall anchor already identifies it."
+        examples: ["E"]
       description:
         type: string
 

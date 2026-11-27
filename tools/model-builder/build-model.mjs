@@ -254,6 +254,9 @@ function collectRelations(node, sourceId, sourceType, ids, out, seen, warnings) 
 
   for (const [key, value] of Object.entries(record)) {
     if (NOT_ENTITY_REFS.has(key)) continue;
+    // REMACH-D19: planned refs inside an estate_change item's `effect` block are
+    // checked in the projected state, not as baseline graph relations.
+    if (sourceType === "estate_change" && key === "effect") continue;
 
     if (key.endsWith("_refs") && Array.isArray(value)) {
       for (const target of value) if (typeof target === "string") add(key, target);
@@ -389,6 +392,78 @@ export async function buildRealmModel(modelDir) {
     loadRealmMeta(modelDir),
   ]);
   return toRealmModel(sources.entities, meta, sources.spatialRelations);
+}
+
+/**
+ * Build a realm model from an in-memory map of relative path -> YAML string.
+ *
+ * Reads no disk and uses the same collection mapping, construction extraction,
+ * spatial_relations handling, and relation derivation as `buildRealmModel`.
+ *
+ * @param {Map<string, string> | Record<string, string>} files
+ */
+export async function buildRealmModelFromMap(files) {
+  const { parse } = await import("yaml");
+  const entries = files instanceof Map ? [...files.entries()] : Object.entries(files);
+  /** @type {Array<[string, string]>} */
+  const normalized = entries
+    .map(([key, value]) => [key.replace(/\\/g, "/").replace(/^\.\//, ""), value])
+    .sort(([a], [b]) => a.localeCompare(b));
+
+  /** @type {Record<string, unknown>} */
+  let meta = {};
+  /** @type {Map<string, {type: string, data: Record<string, unknown>, file: string}>} */
+  const extracted = new Map();
+  /** @type {Record<string, unknown>[]} */
+  const spatialRelations = [];
+
+  for (const [file, content] of normalized) {
+    if (!file.endsWith(".yaml") && !file.endsWith(".yml")) continue;
+    let parsed;
+    try {
+      parsed = parse(content);
+    } catch {
+      continue;
+    }
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) continue;
+    const doc = /** @type {Record<string, unknown>} */ (parsed);
+
+    if (file === "realm.yaml" || file === "realm.yml") {
+      meta = doc;
+      continue;
+    }
+
+    if (planeOf(file) === "topology" && Array.isArray(doc["spatial_relations"])) {
+      for (const row of doc["spatial_relations"]) {
+        if (row && typeof row === "object") spatialRelations.push(row);
+      }
+    }
+
+    for (const [collectionKey, value] of Object.entries(doc)) {
+      if (!(collectionKey in TYPE_OF_COLLECTION)) continue;
+      if (Array.isArray(value)) {
+        for (const item of value) {
+          if (!item || typeof item !== "object" || Array.isArray(item)) continue;
+          const record = /** @type {Record<string, unknown>} */ (item);
+          if (typeof record["id"] === "string" && record["id"].length > 0) {
+            extracted.set(record["id"], { type: collectionKey, data: record, file });
+          }
+        }
+      } else if (
+        (collectionKey === "floor_slab" || collectionKey === "ceiling_slab") &&
+        value &&
+        typeof value === "object" &&
+        !Array.isArray(value)
+      ) {
+        const record = /** @type {Record<string, unknown>} */ (value);
+        if (typeof record["id"] === "string" && record["id"].length > 0) {
+          extracted.set(record["id"], { type: collectionKey, data: record, file });
+        }
+      }
+    }
+  }
+
+  return toRealmModel(extracted, meta, spatialRelations);
 }
 
 /**

@@ -1,6 +1,6 @@
 # Willow Cottage
 
-> Generated from a Realm model: 211 entities, 772 relations, 5 planes, Realm schema v2.4.1.
+> Generated from a Realm model: 268 entities, 1131 relations, 5 planes, Realm schema v2.4.3.
 
 **Willow Cottage, Brackwater Lane, Nether Hollowby, South West England, England**
 
@@ -209,6 +209,13 @@ flowchart LR
     CMP005("Bathroom radiator<br/>CMP005")
     CMP019("Heat pump condensate soakaway<br/>CMP019")
     CMP020("Outdoor temperature sensor<br/>CMP020")
+    CMP059("Underfloor loop 1 - kitchen and dining<br/>CMP059")
+    CMP060("Underfloor loop 2 - hall and sitting room<br/>CMP060")
+    CMP061("Underfloor loop 3 - study<br/>CMP061")
+    CMP062("Underfloor loop 4 - utility and cloakroom<br/>CMP062")
+    CMP063("Principal bedroom radiator<br/>CMP063")
+    CMP064("Bedroom two radiator<br/>CMP064")
+    CMP065("Bedroom three radiator<br/>CMP065")
     UC001(["Mains electricity<br/>UC001"])
     SYS002["Domestic hot water<br/>SYS002"]
     CMP006("Bathroom basin mixer<br/>CMP006")
@@ -234,17 +241,55 @@ flowchart LR
     CMP024("East path bollard, north<br/>CMP024")
     CMP025("East path bollard, south<br/>CMP025")
     CMP026("Barn outside socket<br/>CMP026")
+    CMP029("Kitchen and utility RCBO<br/>CMP029")
+    CMP030("Kitchen and utility sockets circuit<br/>CMP030")
+    CMP031("Ground-floor sockets RCBO<br/>CMP031")
+    CMP032("Ground-floor sockets circuit<br/>CMP032")
+    CMP033("First-floor sockets RCBO<br/>CMP033")
+    CMP034("First-floor sockets circuit<br/>CMP034")
+    CMP035("House lighting and shaver RCBO<br/>CMP035")
+    CMP036("House lighting and shaver circuit<br/>CMP036")
+    CMP037("Kitchen worktop socket<br/>CMP037")
+    CMP038("Kitchen appliance socket<br/>CMP038")
+    CMP039("Utility room appliance socket<br/>CMP039")
+    CMP040("Entrance hall socket<br/>CMP040")
+    CMP041("Sitting room west wall socket<br/>CMP041")
+    CMP042("Sitting room south wall socket<br/>CMP042")
+    CMP043("Dining room east wall socket<br/>CMP043")
+    CMP044("Stair hall understair socket<br/>CMP044")
+    CMP045("Study desk socket<br/>CMP045")
+    CMP046("Study network cabinet socket<br/>CMP046")
+    CMP047("Cloakroom boot-storage socket<br/>CMP047")
+    CMP048("Principal bedroom north socket<br/>CMP048")
+    CMP049("Principal bedroom south socket<br/>CMP049")
+    CMP050("Landing socket<br/>CMP050")
+    CMP051("Bedroom two socket<br/>CMP051")
+    CMP052("Bedroom three socket<br/>CMP052")
+    CMP053("Box room socket<br/>CMP053")
+    CMP054("Bathroom shaver socket<br/>CMP054")
     SYS004["Rainwater harvesting<br/>SYS004"]
     SYS005["Garden irrigation<br/>SYS005"]
     CMP028("Orchard standpipe<br/>CMP028")
     SYS006["Septic tank<br/>SYS006"]
     SYS007["Drive security<br/>SYS007"]
+    SYS008["Sitting room wood-burning stove<br/>SYS008"]
+    CMP055("Sitting room wood-burning stove<br/>CMP055")
+    CMP056("Insulated chimney flue liner<br/>CMP056")
+    CMP057("East gable chimney stack<br/>CMP057")
+    CMP058("Chimney sweeping soot door<br/>CMP058")
     SYS001 -->|"contains"| CMP001
     SYS001 -->|"contains"| CMP002
     SYS001 -->|"contains"| CMP004
     SYS001 -->|"contains"| CMP005
     SYS001 -->|"contains"| CMP019
     SYS001 -->|"contains"| CMP020
+    SYS001 -->|"contains"| CMP059
+    SYS001 -->|"contains"| CMP060
+    SYS001 -->|"contains"| CMP061
+    SYS001 -->|"contains"| CMP062
+    SYS001 -->|"contains"| CMP063
+    SYS001 -->|"contains"| CMP064
+    SYS001 -->|"contains"| CMP065
     UC001 -->|"feeds"| SYS001
     SYS001 -->|"feeds"| SYS002
     SYS002 -->|"contains"| CMP002
@@ -270,22 +315,53 @@ flowchart LR
     SYS003 -->|"contains"| CMP024
     SYS003 -->|"contains"| CMP025
     SYS003 -->|"contains"| CMP026
+    SYS003 -->|"contains"| CMP029
+    SYS003 -->|"contains"| CMP030
+    SYS003 -->|"contains"| CMP031
+    SYS003 -->|"contains"| CMP032
+    SYS003 -->|"contains"| CMP033
+    SYS003 -->|"contains"| CMP034
+    SYS003 -->|"contains"| CMP035
+    SYS003 -->|"contains"| CMP036
+    SYS003 -->|"contains"| CMP037
+    SYS003 -->|"contains"| CMP038
+    SYS003 -->|"contains"| CMP039
+    SYS003 -->|"contains"| CMP040
+    SYS003 -->|"contains"| CMP041
+    SYS003 -->|"contains"| CMP042
+    SYS003 -->|"contains"| CMP043
+    SYS003 -->|"contains"| CMP044
+    SYS003 -->|"contains"| CMP045
+    SYS003 -->|"contains"| CMP046
+    SYS003 -->|"contains"| CMP047
+    SYS003 -->|"contains"| CMP048
+    SYS003 -->|"contains"| CMP049
+    SYS003 -->|"contains"| CMP050
+    SYS003 -->|"contains"| CMP051
+    SYS003 -->|"contains"| CMP052
+    SYS003 -->|"contains"| CMP053
+    SYS003 -->|"contains"| CMP054
     UC001 -->|"feeds"| SYS003
     SYS003 -->|"feeds"| SYS001
     SYS003 -->|"feeds"| SYS002
     SYS004 -->|"feeds"| SYS005
     SYS005 -->|"contains"| CMP028
+    SYS008 -->|"contains"| CMP055
+    SYS008 -->|"contains"| CMP056
+    SYS008 -->|"contains"| CMP057
+    SYS008 -->|"contains"| CMP058
 ```
 
 | System | Name | Type | Where | Supply | Parts | Installed |
 |---|---|---|---|---|---|---|
-| SYS001 | Air-source heat pump | heating | Willow Cottage (BLD001) | Mains electricity (UC001) | CMP001, CMP002, CMP004, CMP005, CMP019, CMP020 | 2023-03-14 |
+| SYS001 | Air-source heat pump | heating | Willow Cottage (BLD001) | Mains electricity (UC001) | CMP001, CMP002, CMP004, CMP005, CMP019, CMP020, CMP059, CMP060, CMP061, CMP062, CMP063, CMP064, CMP065 | 2023-03-14 |
 | SYS002 | Domestic hot water | hot-water | Utility room (RM007) | Mains water (UC002) | CMP002, CMP006, CMP007, CMP027 | 2023-03-14 |
-| SYS003 | Electrical distribution | electrical-distribution | Utility room (RM007) | Mains electricity (UC001) | CMP003, CMP008, CMP009, CMP010, CMP011, CMP012, CMP013, CMP014, CMP015, CMP016, CMP017, CMP018, CMP021, CMP022, CMP023, CMP024, CMP025, CMP026 | - |
+| SYS003 | Electrical distribution | electrical-distribution | Utility room (RM007) | Mains electricity (UC001) | CMP003, CMP008, CMP009, CMP010, CMP011, CMP012, CMP013, CMP014, CMP015, CMP016, CMP017, CMP018, CMP021, CMP022, CMP023, CMP024, CMP025, CMP026, CMP029, CMP030, CMP031, CMP032, CMP033, CMP034, CMP035, CMP036, CMP037, CMP038, CMP039, CMP040, CMP041, CMP042, CMP043, CMP044, CMP045, CMP046, CMP047, CMP048, CMP049, CMP050, CMP051, CMP052, CMP053, CMP054 | - |
 | SYS004 | Rainwater harvesting | rainwater-collection | Compost corner (OZ008) | - | - | 2024-05-02 |
 | SYS005 | Garden irrigation | irrigation | Vegetable garden (OZ005) | - | CMP028 | - |
 | SYS006 | Septic tank | sewage | Lower meadow (OZ006) | - | - | 1978-06-01 |
 | SYS007 | Drive security | security | Front garden (OZ002) | - | - | 2025-10-04 |
+| SYS008 | Sitting room wood-burning stove | heating | Sitting room (RM003) | - | CMP055, CMP056, CMP057, CMP058 | 2018-10-15 |
 
 ### Utility connections
 
@@ -314,12 +390,13 @@ flowchart LR
 | MT004 | Gutter and downpipe clear | Willow Cottage (BLD001) | First Saturday in November, every year | autumn | high | 120 min | - | 2025-11-01 |
 | MT005 | Retaining wall inspection | West retaining wall (BS005) | Every April | spring | medium | 45 min | - | - |
 
-### infrastructure (3)
+### infrastructure (4)
 
 | Task | Name | Target | When | Season | Priority | Duration | Cost | Last done |
 |---|---|---|---|---|---|---|---|---|
 | MT001 | Heat pump annual service | Air-source heat pump (SYS001) | Second Monday in September, every year | autumn | high | 90 min | 180 GBP | 2025-09-08 |
 | MT007 | Septic tank desludge | Septic tank (SYS006) | Every May | spring | high | 60 min | 260 GBP | 2025-05-14 |
+| MT010 | Annual chimney sweep | Sitting room wood-burning stove (SYS008) | Third Monday in September, every year | autumn | high | 60 min | 95 GBP | 2025-09-22 |
 | MT008 | Rainwater filter clean | Rainwater harvesting (SYS004) | First Saturday in March, every year | spring | medium | 30 min | - | - |
 
 ### garden (4)
@@ -338,19 +415,22 @@ flowchart LR
 | CC001 | Electricity | 1740 GBP | 180 GBP |
 | CC002 | Water and drainage | 504 GBP | 260 GBP |
 | CC003 | Broadband | 456 GBP | - |
+| CC004 | Chimney sweep | 95 GBP | 95 GBP |
 
 ## Planned work
 
-### approved (1)
+### approved (2)
 
 | Change | Name | Priority | Planned | Affects | Cost |
 |---|---|---|---|---|---|
 | ECH001 | Rebuild the bulging section of the east wall | high | 2026-10-05 to 2026-10-16 | BS003, OZ004, BS003 | 2400 GBP |
+| ECH003 | Add garden gazebo, enlarge front lawn, and transplant borders | medium | 2026-10-20 to 2026-10-30 | OZ002, PTG003, PTG007, OZ002, OZ005, OZ002, PTG003, PTG007 | 4800 GBP |
 
-### proposed (1)
+### proposed (2)
 
 | Change | Name | Priority | Planned | Affects | Cost |
 |---|---|---|---|---|---|
+| ECH004 | Plant north-east boundary screening hedge along post-and-rail fence | medium | - | BS002, BS002 | 195 GBP |
 | ECH002 | Extend rainwater harvesting to the barn roof | low | - | BLD002, SYS004, OZ007, SYS004 | 900 GBP |
 
 ### Risks
@@ -380,6 +460,7 @@ flowchart LR
 | Requirement | Name | Type | Inspection | Last | Next due | Applies to |
 |---|---|---|---|---|---|---|
 | REG001 | Fixed electrical installation inspection | electrical-safety | - | 2024-11-12 | 2029-11-12 | BLD001, BLD002, SYS003 |
+| REG002 | Annual chimney sweep and flue check | chimney-sweep | - | 2025-09-22 | 2026-09-22 | BLD001, SYS008 |
 
 ### Warranties
 
@@ -412,28 +493,29 @@ flowchart LR
 | Plane | Entities |
 |---|---|
 | context | 14 |
-| infrastructure | 62 |
+| infrastructure | 114 |
 | nature | 26 |
-| operations | 14 |
+| operations | 17 |
 | topology | 89 |
-| (cross-cutting) | 6 |
+| (cross-cutting) | 8 |
 
 | Type | Count | Plane |
 |---|---|---|
-| component | 28 | infrastructure |
+| component | 65 | infrastructure |
+| pipe_run | 25 | infrastructure |
 | room | 15 | topology |
-| pipe_run | 11 | infrastructure |
 | specimen | 11 | nature |
+| maintenance_task | 10 | operations |
 | outdoor_zone | 10 | topology |
-| maintenance_task | 9 | operations |
+| system | 8 | infrastructure |
 | planting | 7 | nature |
-| system | 7 | infrastructure |
 | boundary_segment | 5 | topology |
 | cable_run | 5 | infrastructure |
 | iot_device | 5 | infrastructure |
 | neighbor_property | 5 | context |
+| cost_category | 4 | operations |
+| estate_change | 4 | - |
 | species_care_profile | 4 | nature |
-| cost_category | 3 | operations |
 | environmental_factor | 3 | context |
 | floor | 3 | topology |
 | person | 3 | context |
@@ -441,20 +523,19 @@ flowchart LR
 | wing | 3 | topology |
 | biomass_flow | 2 | nature |
 | building | 2 | topology |
-| estate_change | 2 | - |
 | event | 2 | - |
 | network_node | 2 | infrastructure |
+| regulatory_requirement | 2 | operations |
 | road_corridor | 2 | context |
 | soil_profile | 2 | nature |
 | equipment | 1 | topology |
 | issue | 1 | - |
 | network_link | 1 | infrastructure |
 | parcel | 1 | topology |
-| regulatory_requirement | 1 | operations |
 | risk | 1 | - |
 | shared_concern | 1 | context |
 | warranty | 1 | operations |
 
-162 authored entities, 49 derived.
+219 authored entities, 49 derived.
 
 49 further entities form the construction layer (41 wall_segment, 5 roof_plane, 3 floor_slab). They are derived from the rooms, wings and floors above rather than authored, and are summarised rather than listed - pass --geometry to enumerate them.
